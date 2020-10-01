@@ -1,6 +1,6 @@
-# prp-be
+# prp-fe
 
-Precision Reporters Platform BE
+Precision Reporters Platform FE
 
 
 ## Table of Contents
