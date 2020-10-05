@@ -1,3 +1,1 @@
-export const helper = () => {
-
-}
+export default function helper() {}
