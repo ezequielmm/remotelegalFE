@@ -1,7 +1,5 @@
 import React from "react";
 import style from "styled-components";
-import "./App.less";
-import AntButton from "./AntButton";
 
 const Container = style.div`
   background-color: #17232d;
@@ -20,7 +18,6 @@ function App() {
             <header>
                 <Title>Precision Reporters</Title>
             </header>
-            <AntButton />
         </Container>
     );
 }
