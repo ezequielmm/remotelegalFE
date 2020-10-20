@@ -20,7 +20,7 @@ jobs:
           ${{ runner.os }}-build-
           ${{ runner.os }}-
     - name: Install Dependencies
-      if: steps.yarn-cache.outputs.cache-hit != 'true'
+      #if: steps.yarn-cache.outputs.cache-hit != 'true'
       run: yarn install
     - name: Build
       run: yarn build
