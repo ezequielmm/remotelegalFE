@@ -14,12 +14,16 @@ export default {
                 options: ["default", "primary", "secondary", "ghost", "dashed", "link", "text"],
             },
         },
+        disabled: { control: "boolean" },
+        children: { control: "text" },
     },
 } as Meta;
 
-const Template: Story = (args) => <Button {...args}>Button</Button>;
+const Template: Story = (args) => <Button {...args}>{args.children}</Button>;
 
 export const PRButton = Template.bind({});
 PRButton.args = {
     type: "primary",
+    disabled: false,
+    children: "Button",
 };

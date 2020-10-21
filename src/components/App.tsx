@@ -1,9 +1,10 @@
 import React from "react";
 import "antd/dist/antd.less";
+import "../assets/fonts/fontface.less";
 import { ThemeProvider } from "styled-components";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Amplify from "aws-amplify";
-import { theme } from "../constants/theme";
+import { theme } from "../constants/styles/theme";
 import Login from "../routes/login/login";
 import Authenticator from "./authenticator/authenticator";
 

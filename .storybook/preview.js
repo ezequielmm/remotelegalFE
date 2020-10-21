@@ -1,7 +1,7 @@
 import React from "react"
-import "antd/dist/antd.less"
 import { ThemeProvider } from "styled-components"
-import { theme } from "../src/constants/theme.js"
+import { theme } from "../src/constants/styles/theme"
+import "../src/assets/fonts/fontface.less"
 
 export const decorators = [
     (Story) => (

@@ -7,7 +7,7 @@ import * as ERRORS from "../../routes/login/constants/errors";
 import * as CONSTANTS from "../constants/login";
 import Login from "../../routes/login/login";
 import * as AUTH from "../mocks/Auth";
-import { theme } from "../../constants/theme";
+import { theme } from "../../constants/styles/theme";
 
 Amplify.configure({
     Auth: CONSTANTS.AMPLIFY_CONFIG,

@@ -1,0 +1,15 @@
+.include-font(@family, @name, @weight: 400, @style: normal) {
+    @font-face {
+        font-family: @family;
+        src: url("./@{family}/@{name}.ttf") format("truetype");
+        font-weight: @weight;
+        font-style: @style;
+    }
+}
+
+.include-font("Merriweather", "Merriweather-Regular");
+.include-font("Merriweather", "Merriweather-Light", 300);
+.include-font("Merriweather", "Merriweather-Bold", 700);
+.include-font("Lato", "Lato-Regular");
+.include-font("Lato", "Lato-Light", 300);
+.include-font("Lato", "Lato-Bold", 700);

@@ -3,6 +3,7 @@ import { Button as AntButton } from "antd";
 import { ButtonProps, ButtonType } from "antd/lib/button/button";
 
 import styled from "styled-components";
+import { getREM } from "../../constants/styles/utils";
 
 export type ButtonTypeExtended = ButtonType | "secondary";
 
@@ -22,30 +23,40 @@ const buttonDefault = ({ children, type, ...rest }: IButtonProps) => {
 
 const StyledButton = styled(buttonDefault)<IButtonProps>`
     ${({ type, theme }) => {
-        const secondaryColor = theme.colors.secondary;
-        const textColor = theme.default.textColorInverse;
+        const { textColor, fontSizes } = theme.default;
+        const { secondary } = theme.colors;
 
-        return (
-            type === "secondary" &&
-            `
-            background: ${secondaryColor[5]};
-            border-color: ${secondaryColor[5]};
-            color: ${textColor};
-
-            &:hover,
-            &:focus {
-                background: ${secondaryColor[4]};
-                border-color: ${secondaryColor[4]};
+        const typeStyle =
+            type === "secondary"
+                ? `
+                background: ${secondary[5]};
+                border-color: ${secondary[5]};
                 color: ${textColor};
-            }
 
-            &:active {
-                background: ${secondaryColor[6]};
-                border-color: ${secondaryColor[6]};
-                color: ${textColor};
-            }
-            `
-        );
+                &:hover,
+                &:focus {
+                    background: ${secondary[4]};
+                    border-color: ${secondary[4]};
+                    color: ${textColor};
+                }
+
+                &:active {
+                    background: ${secondary[6]};
+                    border-color: ${secondary[6]};
+                    color: ${textColor};
+                }
+                `
+                : "";
+
+        const styles = `
+            min-width: ${getREM(9.375)};
+            font-size: ${getREM(fontSizes[7])};
+            line-height: 2;
+            text-transform: uppercase;
+            ${typeStyle}
+            `;
+
+        return styles;
     }}
 `;
 
