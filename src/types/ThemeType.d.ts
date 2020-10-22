@@ -1,4 +1,4 @@
-import { theme } from "../constants/theme";
+import { theme } from "../constants/styles/theme";
 import "styled-components";
 
 type Theme = typeof theme;
