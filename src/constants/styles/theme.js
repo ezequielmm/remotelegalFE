@@ -66,7 +66,7 @@ const modifiedVariables = {
     "@alert-success-border-color": theme.default.successColor,
     "@alert-warning-border-color": theme.default.warningColor,
     "@alert-error-border-color": theme.default.errorColor,
-    "@alert-warning-bg-color": "~`colorPalette('@{warning-color}', 2) `",
+    "@alert-warning-bg-color": theme.colors.warning[2],
     "@font-family": theme.default.fontFamily,
     "@font-size-base": getPX(theme.default.fontSizeBase, spacing.baseUnit),
     "@heading-1-size": getREM(theme.default.fontSizes[0]),
