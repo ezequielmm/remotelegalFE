@@ -9,11 +9,12 @@ export interface ITitleProps {
     level?: 1 | 2 | 3 | 4 | 5 | 6;
     weight?: "light" | "regular" | "bold";
     ellipsis?: boolean;
+    noMargin?: boolean;
     children: string;
 }
 
 const StyledHeader = styled.div<ITitleProps>`
-    ${({ level, weight, ellipsis, theme }) => {
+    ${({ level, weight, ellipsis, noMargin, theme }) => {
         const {
             textColor,
             headerFontFamily,
@@ -40,17 +41,24 @@ const StyledHeader = styled.div<ITitleProps>`
             line-height: ${lineHeightBase};
             margin-bottom: ${getEM(typographyTitleMarginBottom)};
             ${ellipsisStyle}
+            ${noMargin ? "margin: 0;" : ""}
         `;
 
         return styles;
     }}
 `;
 
-const title = ({ level = 1, weight, ellipsis = true, children }: ITitleProps) => {
+const title = ({ level = 1, weight, ellipsis = true, noMargin, children }: ITitleProps) => {
     const headerTag = level ? `h${level}` : "h1";
 
     return (
-        <StyledHeader as={headerTag as HeadingTag} weight={weight} level={level} ellipsis={ellipsis}>
+        <StyledHeader
+            as={headerTag as HeadingTag}
+            weight={weight}
+            level={level}
+            ellipsis={ellipsis}
+            noMargin={noMargin}
+        >
             {children}
         </StyledHeader>
     );

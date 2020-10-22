@@ -21,6 +21,7 @@ export default {
             },
         },
         ellipsis: { control: "boolean" },
+        noMargin: { control: "boolean" },
         children: { control: "text" },
     },
 } as Meta;
@@ -32,5 +33,6 @@ PRTitle.args = {
     level: 1,
     weight: "bold",
     ellipsis: true,
+    noMargin: false,
     children: "Merriweather example title",
 };

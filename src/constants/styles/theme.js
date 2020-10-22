@@ -40,6 +40,8 @@ const theme = {
         // Button
         btnFontWeight: 700,
         btnHeightBase: spacing.heightBase,
+        // Input
+        inputHeightBase: spacing.heightBase,
         /** Custom */
         secondary: colors.deepBlue[5], // color base
         baseUnit: spacing.baseUnit,
@@ -83,6 +85,12 @@ const modifiedVariables = {
     "@btn-disable-color": theme.default.disabledColor,
     "@btn-disable-bg": theme.default.disabledBg,
     "@btn-disable-border": theme.default.disabledBg,
+    "@input-height-base": getPX(theme.default.inputHeightBase, theme.default.baseUnit),
+    "@input-padding-horizontal": getREM(theme.default.spaces[3]),
+    "@input-padding-vertical-base": getREM(theme.default.spaces[2]),
+    "@input-disabled-bg": theme.default.disabledBg,
+    "@input-disabled-color": theme.default.disabledColor,
+    // "@input-placeholder-color:": theme.default.disabledBg, // ! doesn't work
 };
 
 module.exports = { theme, modifiedVariables };

@@ -1,14 +1,15 @@
 import React, { useState } from "react";
 import { Auth } from "aws-amplify";
-import { Redirect, useHistory } from "react-router-dom";
+import { Redirect, useHistory, Link } from "react-router-dom";
+import { Col, Row, Form, Space } from "antd";
 import useInput from "../../hooks/useInput";
+import { InputWrapper } from "../../components/Input/styles";
 import * as Components from "./components/components";
 import Container from "../../components/container/container";
-import Label from "../../components/label/label";
-import Link from "../../components/link/link";
+import Label from "../../components/Label";
 import Button from "../../components/Button";
-import Paragraph from "../../components/paragraph/paragraph";
-import ErrorParagraph from "../../components/errorparagraph/errorparagraph";
+import Title from "../../components/Typography/Title";
+import Text from "../../components/Typography/Text";
 import * as ERRORS from "./constants/errors";
 import useAuthentication from "../../hooks/useAuthentication";
 import isInputEmpty from "../../helpers/isInputEmpty";
@@ -62,25 +63,54 @@ const Login = ({ location }: LoginProps) => {
     ) : (
         <Container>
             <Components.StyledFormContainer>
-                <Components.StyledForm onFinish={onSubmit}>
-                    <Paragraph style={{ marginBottom: "0" }}>Welcome</Paragraph>
-                    <Paragraph small="true">Log in into your account</Paragraph>
-                    <Label htmlFor="email">Email</Label>
-                    {emailInput}
-                    <ErrorParagraph>{emailErrorMessage}</ErrorParagraph>
-                    <Components.StyledLabelContainer>
-                        <Label htmlFor="password">Password</Label>
-                        {/*  <Link to="/password-recovery">Forgot password?</Link> */}
-                    </Components.StyledLabelContainer>
-                    {passwordInput}
-                    <ErrorParagraph>{passwordErrorMessage}</ErrorParagraph>
-                    <Button disabled={disabledButton} htmlType="submit">
-                        Log in
-                    </Button>
-                    <ErrorParagraph>{submitError}</ErrorParagraph>
-                    <Components.StyledNewUserParagraph>New user?</Components.StyledNewUserParagraph>
-                    <Link to="/sign-up">Create an account</Link>
-                </Components.StyledForm>
+                <Row justify="center" align="middle">
+                    <Col xs={20} sm={16} lg={14} xxl={12}>
+                        <Form onFinish={onSubmit}>
+                            <Space direction="vertical" size="large" style={{ width: "100%" }}>
+                                <div>
+                                    <Title level={3} weight="light" noMargin>
+                                        Welcome
+                                    </Title>
+                                    <Text size="large">Log in into your account</Text>
+                                </div>
+                                <InputWrapper>
+                                    <Label htmlFor="email">Email</Label>
+                                    {emailInput}
+                                    {emailErrorMessage && (
+                                        <Text size="small" state="error">
+                                            {emailErrorMessage}
+                                        </Text>
+                                    )}
+                                </InputWrapper>
+                                <InputWrapper>
+                                    <Components.StyledLabelContainer>
+                                        <Label htmlFor="password">Password</Label>
+                                        {/*  <Link to="/password-recovery">Forgot password?</Link> */}
+                                    </Components.StyledLabelContainer>
+                                    {passwordInput}
+                                    {passwordErrorMessage && (
+                                        <Text size="small" state="error">
+                                            {passwordErrorMessage}
+                                        </Text>
+                                    )}
+                                </InputWrapper>
+                                <Button type="primary" block disabled={disabledButton} htmlType="submit">
+                                    Log in
+                                </Button>
+                                {submitError && <Text state="error">{submitError}</Text>}
+                                <Space size="small" style={{ width: "100%" }}>
+                                    <Text>New user? </Text>
+                                    <Link
+                                        to="/sign-up"
+                                        component={() => {
+                                            return <Button type="link">Create an account</Button>;
+                                        }}
+                                    />
+                                </Space>
+                            </Space>
+                        </Form>
+                    </Col>
+                </Row>
             </Components.StyledFormContainer>
         </Container>
     );

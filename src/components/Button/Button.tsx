@@ -26,7 +26,7 @@ const StyledButton = styled(buttonDefault)<IButtonProps>`
         const { textColor, fontSizes } = theme.default;
         const { secondary } = theme.colors;
 
-        const typeStyle =
+        const typeSecondaryStyle =
             type === "secondary"
                 ? `
                 background: ${secondary[5]};
@@ -48,12 +48,27 @@ const StyledButton = styled(buttonDefault)<IButtonProps>`
                 `
                 : "";
 
+        const typeLinkStyle =
+            type === "link"
+                ? `
+                text-transform: unset;
+                padding: 0;
+                line-height: inherit;
+                min-width: 0;
+                height: unset;
+                &::first-letter {
+                    text-transform: uppercase;
+                }
+                `
+                : "";
+
         const styles = `
             min-width: ${getREM(9.375)};
             font-size: ${getREM(fontSizes[7])};
             line-height: 2;
             text-transform: uppercase;
-            ${typeStyle}
+            ${typeLinkStyle}
+            ${typeSecondaryStyle}
             `;
 
         return styles;

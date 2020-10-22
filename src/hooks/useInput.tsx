@@ -1,7 +1,13 @@
 import React, { useState } from "react";
-import { Input } from "antd";
+import Input from "../components/Input";
 
-const useInput = (name: string, placeholder?: string, type?: string, isInvalid?: { (value: string): boolean }) => {
+const useInput = (
+    name: string,
+    placeholder?: string,
+    type?: string,
+    isInvalid?: { (value: string): boolean },
+    disabled?: boolean
+) => {
     const [inputValue, setValue] = useState("");
     const [touched, setTouched] = useState(false);
     const [invalid, setInvalid] = useState(false);
@@ -27,6 +33,8 @@ const useInput = (name: string, placeholder?: string, type?: string, isInvalid?:
                 }
                 setValue(value);
             }}
+            disabled={disabled}
+            invalid={invalid}
         />
     );
 

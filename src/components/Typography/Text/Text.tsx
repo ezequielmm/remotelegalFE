@@ -48,6 +48,7 @@ const StyledText = styled.span<ITextProps>`
             overflow-wrap: normal;
             max-width: 100%;
             display: inline-block;
+            vertical-align: top;
             `
             : "";
 

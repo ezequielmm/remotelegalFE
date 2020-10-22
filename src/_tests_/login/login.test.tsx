@@ -3,11 +3,11 @@ import Amplify, { Auth } from "aws-amplify";
 import { render, waitForDomChange, fireEvent, waitForElement } from "@testing-library/react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
+import { theme } from "../../constants/styles/theme";
 import * as ERRORS from "../../routes/login/constants/errors";
 import * as CONSTANTS from "../constants/login";
 import Login from "../../routes/login/login";
 import * as AUTH from "../mocks/Auth";
-import { theme } from "../../constants/styles/theme";
 
 Amplify.configure({
     Auth: CONSTANTS.AMPLIFY_CONFIG,
@@ -25,7 +25,7 @@ test("Inputs are validated onBlur on first load and the button is disabled", asy
             </BrowserRouter>
         </ThemeProvider>
     );
-    const button = getByRole("button");
+    const button = getByRole("button", { name: /Log in/i });
     expect(button).toBeDisabled();
     const emailInput = getByPlaceholderText(CONSTANTS.EMAIL_PLACEHOLDER);
     const passwordInput = getByPlaceholderText(CONSTANTS.PASSWORD_PLACEHOLDER);
@@ -91,7 +91,7 @@ test("Button is enabled after inputs are validated", async () => {
             </BrowserRouter>
         </ThemeProvider>
     );
-    const button = getByRole("button");
+    const button = getByRole("button", { name: /Log in/i });
     const emailInput = getByPlaceholderText(CONSTANTS.EMAIL_PLACEHOLDER);
     const passwordInput = getByPlaceholderText(CONSTANTS.PASSWORD_PLACEHOLDER);
     fireEvent.change(emailInput, { target: { value: "test1@gmail.com" } });
@@ -113,7 +113,7 @@ test("Auth is called with the right parameters", async () => {
             </BrowserRouter>
         </ThemeProvider>
     );
-    const button = getByRole("button");
+    const button = getByRole("button", { name: /Log in/i });
     const emailInput = getByPlaceholderText(CONSTANTS.EMAIL_PLACEHOLDER);
     const passwordInput = getByPlaceholderText(CONSTANTS.PASSWORD_PLACEHOLDER);
     fireEvent.change(emailInput, { target: { value: "test1@gmail.com" } });
@@ -141,7 +141,7 @@ test("Shows correct error message when credentials are invalid", async () => {
             </BrowserRouter>
         </ThemeProvider>
     );
-    const button = getByRole("button");
+    const button = getByRole("button", { name: /Log in/i });
     const emailInput = getByPlaceholderText(CONSTANTS.EMAIL_PLACEHOLDER);
     const passwordInput = getByPlaceholderText(CONSTANTS.PASSWORD_PLACEHOLDER);
     fireEvent.change(emailInput, { target: { value: "test1@gmail.com" } });
@@ -168,7 +168,7 @@ test("Shows correct error message when confirmation is pending", async () => {
             </BrowserRouter>
         </ThemeProvider>
     );
-    const button = getByRole("button");
+    const button = getByRole("button", { name: /Log in/i });
     const emailInput = getByPlaceholderText(CONSTANTS.EMAIL_PLACEHOLDER);
     const passwordInput = getByPlaceholderText(CONSTANTS.PASSWORD_PLACEHOLDER);
     fireEvent.change(emailInput, { target: { value: "test1@gmail.com" } });
@@ -193,7 +193,7 @@ test("Shows correct error message when there´s a network error", async () => {
             </BrowserRouter>
         </ThemeProvider>
     );
-    const button = getByRole("button");
+    const button = getByRole("button", { name: /Log in/i });
     const emailInput = getByPlaceholderText(CONSTANTS.EMAIL_PLACEHOLDER);
     const passwordInput = getByPlaceholderText(CONSTANTS.PASSWORD_PLACEHOLDER);
     fireEvent.change(emailInput, { target: { value: "test1@gmail.com" } });
@@ -233,7 +233,7 @@ test("Redirects when successful sign in", async () => {
             </BrowserRouter>
         </ThemeProvider>
     );
-    const button = getByRole("button");
+    const button = getByRole("button", { name: /Log in/i });
     const emailInput = getByPlaceholderText(CONSTANTS.EMAIL_PLACEHOLDER);
     const passwordInput = getByPlaceholderText(CONSTANTS.PASSWORD_PLACEHOLDER);
     fireEvent.change(emailInput, { target: { value: "test1@gmail.com" } });
