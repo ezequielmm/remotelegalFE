@@ -46,6 +46,13 @@ jobs:
       id: extract-branch
       shell: bash
       run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+
+    - name: Getting appropriate ENV file
+      uses: canastro/copy-file-action@master
+      with:
+        source: ./env/.env.${{ steps.extract-branch.outputs.branch }}
+        target: .env
+
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
@@ -57,6 +64,7 @@ jobs:
       with:
         name: publish-build
         path: ./build
+        
     - name: Extract Bucket & CloudFront Distribution Id for Develop
       if: ${{ steps.extract-branch.outputs.branch == 'develop' }}
       shell: bash
