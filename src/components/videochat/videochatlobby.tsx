@@ -1,7 +1,7 @@
 import React from "react";
 import { Form, Input, Button } from "antd";
 import styled from "styled-components";
-import Paragraph from "../../components/paragraph/paragraph";
+import Title from "../../components/Typography/Title";
 
 const VideoChatLobby = ({ username, roomName, handleSubmit }) => {
     const layout = {
@@ -26,7 +26,9 @@ const VideoChatLobby = ({ username, roomName, handleSubmit }) => {
                 initialValues={{ remember: true }}
                 onFinish={handleSubmit}
             >
-                <Paragraph>Create a Room</Paragraph>
+                <Title level={3} weight="light" noMargin>
+                    Create a Room
+                </Title>
                 <Form.Item label="Name" name="name">
                     <Input value={username} />
                 </Form.Item>
