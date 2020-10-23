@@ -6,6 +6,7 @@ import { ContainerSmall } from "./Decorators";
 
 import Input from "../components/Input";
 import Text from "../components/Typography/Text";
+import Label from "../components/Label";
 import useInput from "../hooks/useInput";
 import { InputWrapper } from "../components/Input/styles";
 import isInvalidEMail from "../helpers/isInvalidEmail";
@@ -46,7 +47,7 @@ PRInputIcon.argTypes = {
     prefix: { control: { disable: true } },
 };
 
-export const PRInputLabel: Story = (args) => {
+export const PRInputValidation: Story = (args) => {
     const { inputValue: emailValue, input: emailInput, invalid: emailInvalid } = useInput(
         "email",
         args.placeholder,
@@ -57,7 +58,7 @@ export const PRInputLabel: Story = (args) => {
 
     return (
         <InputWrapper>
-            <Text uppercase>Label</Text>
+            <Label htmlFor="email">Email</Label>
             {emailInput}
             {emailInvalid && !emailValue.length && (
                 <Text size="small" state="error">
@@ -67,11 +68,11 @@ export const PRInputLabel: Story = (args) => {
         </InputWrapper>
     );
 };
-PRInputLabel.argTypes = {
+PRInputValidation.argTypes = {
     errorMessage: { control: "text" },
     invalid: { control: "disabled" },
 };
-PRInputLabel.args = {
+PRInputValidation.args = {
     ...PRInput.args,
     errorMessage: "Complete this field, please",
 };

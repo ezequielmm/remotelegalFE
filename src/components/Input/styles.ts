@@ -3,7 +3,9 @@ import styled from "styled-components";
 import { getREM } from "../../constants/styles/utils";
 import { IInputProps } from "./Input";
 
-export const StyledInput = styled(AntInput)<IInputProps>`
+export const StyledInput = styled(AntInput).attrs((props: IInputProps) => ({
+    invalid: props.invalid ? "true" : undefined,
+}))<IInputProps>`
     ${({ size, invalid, theme }) => {
         const { inputHeightBase, disabledColor, errorColor } = theme.default;
 

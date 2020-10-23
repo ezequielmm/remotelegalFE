@@ -90,7 +90,6 @@ const modifiedVariables = {
     "@input-padding-vertical-base": getREM(theme.default.spaces[2]),
     "@input-disabled-bg": theme.default.disabledBg,
     "@input-disabled-color": theme.default.disabledColor,
-    // "@input-placeholder-color:": theme.default.disabledBg, // ! doesn't work
 };
 
 module.exports = { theme, modifiedVariables };
