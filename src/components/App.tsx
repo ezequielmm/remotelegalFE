@@ -8,6 +8,7 @@ import { createBrowserHistory } from "history";
 import ReactGA from "react-ga";
 import { theme } from "../constants/styles/theme";
 import Login from "../routes/login/login";
+import VideoChat from "../components/videochat/videochat";
 import Authenticator from "./authenticator/authenticator";
 
 function App() {
@@ -43,6 +44,7 @@ function App() {
                 <Switch>
                     <Route exact path="/" component={Login} />
                     <Authenticator>
+                        <Route exact path="/videochat" component={VideoChat} />
                         <Route exact path="/dashboard" component={Dashboard} />
                     </Authenticator>
                 </Switch>
