@@ -22,6 +22,19 @@ jobs:
     - name: Install Dependencies
       #if: steps.yarn-cache.outputs.cache-hit != 'true'
       run: yarn install
+
+    - name: Extract Branch Name for ENV file replacement
+      id: extract-branch-for-replacement
+      shell: bash
+      run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+
+    - name: Getting appropriate ENV file
+      if: contains(github.ref, 'develop') || contains(github.ref, 'qa')
+      uses: canastro/copy-file-action@master
+      with:
+        source: ./env/.env.${{ steps.extract-branch-for-replacement.outputs.branch }}
+        target: .env
+
     - name: Build
       run: yarn build
     - name: Test
