@@ -8,9 +8,8 @@ const ParticipantContainer = styled.div<{ isLocalParticipant: boolean }>`
     overflow: hidden;
     text-align: center;
     video {
-        height: ${ ({isLocalParticipant}) => isLocalParticipant ? "70vh": "20vh" }
+        height: ${({ isLocalParticipant }) => (isLocalParticipant ? "70vh" : "20vh")};
     }
-    
 `;
 
 const Identity = styled.div`

@@ -1,5 +1,6 @@
 import React from "react";
 import "antd/dist/antd.less";
+import "../assets/fonts/fontface.less";
 import { ThemeProvider } from "styled-components";
 import { Router, Route, Switch } from "react-router-dom";
 import Amplify from "aws-amplify";
@@ -8,6 +9,7 @@ import { createBrowserHistory } from "history";
 import ReactGA from "react-ga";
 import { theme } from "../constants/styles/theme";
 import Login from "../routes/login/login";
+import SignUp from "../routes/signup/signup";
 import VideoChat from "../components/videochat/videochat";
 import Authenticator from "./authenticator/authenticator";
 
@@ -43,6 +45,8 @@ function App() {
             <Router history={history}>
                 <Switch>
                     <Route exact path="/" component={Login} />
+                    <Route path="/verifyUser" component={Login} />
+                    <Route exact path="/sign-up" component={SignUp} />
                     <Authenticator>
                         <Route exact path="/videochat" component={VideoChat} />
                         <Route exact path="/dashboard" component={Dashboard} />

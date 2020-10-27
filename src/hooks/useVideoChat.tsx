@@ -14,7 +14,7 @@ const useVideoChat = () => {
                 const session = await Auth.currentSession();
                 let idToken = session.getIdToken();
                 let jwt = idToken.getJwtToken();
-                
+
                 const requestOptions = {
                     method: "POST",
                     headers: {
@@ -69,7 +69,7 @@ const useVideoChat = () => {
         room.on("participantConnected", participantConnected);
         room.on("participantDisconnected", participantDisconnected);
         room.participants.forEach(participantConnected);
-    }
+    };
 
     const joinToRoom = useCallback(
         async (token: string, roomName: string) => {
@@ -79,7 +79,6 @@ const useVideoChat = () => {
                 });
                 dispatch(actions.joinToRoom(room));
                 configParticipantsListeners(room);
-                
             } catch (error) {
                 setError(JSON.stringify(error));
             }

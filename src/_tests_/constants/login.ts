@@ -4,5 +4,5 @@ export const AMPLIFY_CONFIG = {
     userPoolWebClientId: "720vhm6a065test11hsps6vgtr",
 };
 
-export const EMAIL_PLACEHOLDER = "Enter your Email";
-export const PASSWORD_PLACEHOLDER = "Enter your Password";
+export const EMAIL_PLACEHOLDER = "Enter your email";
+export const PASSWORD_PLACEHOLDER = "Enter your password";

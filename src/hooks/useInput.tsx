@@ -5,15 +5,18 @@ const useInput = (
     name: string,
     placeholder?: string,
     type?: string,
-    isInvalid?: { (value: string): boolean },
-    disabled?: boolean
+    isInvalid?: {
+        (value: string): boolean;
+    },
+    disabled?: boolean,
+    maxLength?: number
 ) => {
     const [inputValue, setValue] = useState("");
     const [touched, setTouched] = useState(false);
     const [invalid, setInvalid] = useState(false);
-
     const input = (
         <Input
+            maxLength={maxLength}
             type={type}
             placeholder={placeholder}
             name={name}
@@ -38,7 +41,7 @@ const useInput = (
         />
     );
 
-    return { inputValue, input, invalid };
+    return { inputValue, input, invalid, setInvalid, touched };
 };
 
 export default useInput;

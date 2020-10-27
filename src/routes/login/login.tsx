@@ -14,6 +14,8 @@ import * as ERRORS from "./constants/errors";
 import useAuthentication from "../../hooks/useAuthentication";
 import isInputEmpty from "../../helpers/isInputEmpty";
 import isInvalidEMail from "../../helpers/isInvalidEmail";
+import buildRequestOptions from "../../helpers/buildRequestOptions";
+import useFetch from "../../hooks/useFetch";
 
 interface LoginProps {
     location?: {
@@ -22,6 +24,22 @@ interface LoginProps {
 }
 
 const Login = ({ location }: LoginProps) => {
+    const queryParams = window.location.search;
+    const verificationHash = new URLSearchParams(queryParams).get("verificationHash");
+
+    const requestObj = buildRequestOptions("POST", {
+        verificationHash,
+    });
+
+    const { error, data, fetchAPI } = useFetch(`${process.env.REACT_APP_BASE_BE_URL}/api/Users/verifyUser`, requestObj);
+
+    React.useEffect(() => {
+        if (verificationHash) {
+            fetchAPI();
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [verificationHash]);
+
     const params = location?.state;
     const history = useHistory();
     const [submitError, setSubmitError] = useState("");
@@ -29,14 +47,14 @@ const Login = ({ location }: LoginProps) => {
     const { isAuthenticated } = useAuthentication();
     const { inputValue: emailValue, input: emailInput, invalid: emailInvalid } = useInput(
         "email",
-        "Enter your Email",
+        "Enter your email",
         undefined,
         isInvalidEMail
     );
 
     const { inputValue: passwordValue, input: passwordInput, invalid: passwordInvalid } = useInput(
         "password",
-        "Enter your Password",
+        "Enter your password",
         "password",
         isInputEmpty
     );
@@ -53,11 +71,13 @@ const Login = ({ location }: LoginProps) => {
             return setSubmitError(ERRORS.AWS_ERRORS[e.message] || ERRORS.NETWORK_ERROR);
         }
     };
-    const disabledButton = loading || emailInvalid || passwordInvalid || !emailValue || !passwordValue;
     const emailErrorMessage =
         (emailInvalid && !emailValue.length && ERRORS.EMPTY_EMAIL_ERROR) ||
         (emailInvalid && ERRORS.INVALID_EMAIL_ERROR);
+
     const passwordErrorMessage = passwordInvalid && ERRORS.EMPTY_PASSWORD_ERROR;
+
+    const disabledButton = isInvalidEMail(emailValue) || loading || isInputEmpty(passwordValue);
     return isAuthenticated ? (
         <Redirect to="/dashboard" />
     ) : (
@@ -71,8 +91,22 @@ const Login = ({ location }: LoginProps) => {
                                     <Title level={3} weight="light" noMargin>
                                         Welcome
                                     </Title>
-                                    <Text size="large">Log in into your account</Text>
+                                    <Text size="large">Log into your account</Text>
                                 </div>
+                                {data && (
+                                    <div
+                                        style={{
+                                            padding: "1rem",
+                                            marginBottom: "1rem",
+                                            background: "#D9D8C3",
+                                            border: "2px solid #8A9A0E",
+                                            borderRadius: "12px",
+                                        }}
+                                    >
+                                        Your email has been verified successfully
+                                    </div>
+                                )}
+                                {error && <p>{ERRORS.NETWORK_ERROR}</p>}
                                 <InputWrapper>
                                     <Label htmlFor="email">Email</Label>
                                     {emailInput}
@@ -95,17 +129,14 @@ const Login = ({ location }: LoginProps) => {
                                     )}
                                 </InputWrapper>
                                 <Button type="primary" block disabled={disabledButton} htmlType="submit">
-                                    Log in
+                                    Login
                                 </Button>
                                 {submitError && <Text state="error">{submitError}</Text>}
                                 <Space size="small" style={{ width: "100%" }}>
                                     <Text>New user? </Text>
-                                    <Link
-                                        to="/sign-up"
-                                        component={() => {
-                                            return <Button type="link">Create an account</Button>;
-                                        }}
-                                    />
+                                    <Link to="/sign-up">
+                                        <Button type="link">Create an account</Button>
+                                    </Link>
                                 </Space>
                             </Space>
                         </Form>
