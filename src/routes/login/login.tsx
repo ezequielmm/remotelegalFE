@@ -1,12 +1,10 @@
 import React, { useState } from "react";
 import { Auth } from "aws-amplify";
 import { Redirect, useHistory, Link } from "react-router-dom";
-import { Col, Row, Form, Space } from "antd";
+import { Col, Row, Form, Space, Alert } from "antd";
 import useInput from "../../hooks/useInput";
 import { InputWrapper } from "../../components/Input/styles";
-import * as Components from "./components/components";
 import Container from "../../components/container/container";
-import Label from "../../components/Label";
 import Button from "../../components/Button";
 import Title from "../../components/Typography/Title";
 import Text from "../../components/Typography/Text";
@@ -82,67 +80,68 @@ const Login = ({ location }: LoginProps) => {
         <Redirect to="/dashboard" />
     ) : (
         <Container>
-            <Components.StyledFormContainer>
-                <Row justify="center" align="middle">
-                    <Col xs={20} sm={16} lg={14} xxl={12}>
-                        <Form onFinish={onSubmit}>
-                            <Space direction="vertical" size="large" style={{ width: "100%" }}>
-                                <div>
-                                    <Title level={3} weight="light" noMargin>
-                                        Welcome
-                                    </Title>
-                                    <Text size="large">Log into your account</Text>
-                                </div>
-                                {data && (
-                                    <div
-                                        style={{
-                                            padding: "1rem",
-                                            marginBottom: "1rem",
-                                            background: "#D9D8C3",
-                                            border: "2px solid #8A9A0E",
-                                            borderRadius: "12px",
-                                        }}
-                                    >
-                                        Your email has been verified successfully
-                                    </div>
-                                )}
-                                {error && <p>{ERRORS.NETWORK_ERROR}</p>}
-                                <InputWrapper>
-                                    <Label htmlFor="email">Email</Label>
-                                    {emailInput}
-                                    {emailErrorMessage && (
-                                        <Text size="small" state="error">
-                                            {emailErrorMessage}
-                                        </Text>
-                                    )}
-                                </InputWrapper>
-                                <InputWrapper>
-                                    <Components.StyledLabelContainer>
-                                        <Label htmlFor="password">Password</Label>
-                                        {/*  <Link to="/password-recovery">Forgot password?</Link> */}
-                                    </Components.StyledLabelContainer>
-                                    {passwordInput}
-                                    {passwordErrorMessage && (
-                                        <Text size="small" state="error">
-                                            {passwordErrorMessage}
-                                        </Text>
-                                    )}
-                                </InputWrapper>
+            <Row justify="center" align="middle">
+                <Col xs={20} sm={16} lg={14} xxl={12}>
+                    <Form onFinish={onSubmit} layout="vertical">
+                        <Space direction="vertical" size="large" style={{ width: "100%" }}>
+                            <div>
+                                <Title level={3} weight="light" noMargin>
+                                    Welcome
+                                </Title>
+                                <Text size="large">Log in into your account</Text>
+                            </div>
+                            {data && (
+                                <Alert message="Your email has been verified successfully" type="success" showIcon />
+                            )}
+                            {error && <Alert message={ERRORS.NETWORK_ERROR} type="error" showIcon />}
+                            {submitError && <Alert message={submitError} type="error" showIcon />}
+                            <div>
+                                <Form.Item label="Email" htmlFor="email">
+                                    <InputWrapper>
+                                        {emailInput}
+                                        {emailErrorMessage && (
+                                            <Text size="small" state="error">
+                                                {emailErrorMessage}
+                                            </Text>
+                                        )}
+                                    </InputWrapper>
+                                </Form.Item>
+                                <Form.Item
+                                    label={
+                                        <>
+                                            <Text size="small" uppercase>
+                                                Password
+                                            </Text>
+                                            <Link to="/password-recovery" style={{ textTransform: "initial" }}>
+                                                <Button type="link">Forgot password?</Button>
+                                            </Link>
+                                        </>
+                                    }
+                                    htmlFor="password"
+                                >
+                                    <InputWrapper>
+                                        {passwordInput}
+                                        {passwordErrorMessage && (
+                                            <Text size="small" state="error">
+                                                {passwordErrorMessage}
+                                            </Text>
+                                        )}
+                                    </InputWrapper>
+                                </Form.Item>
                                 <Button type="primary" block disabled={disabledButton} htmlType="submit">
                                     Login
                                 </Button>
-                                {submitError && <Text state="error">{submitError}</Text>}
-                                <Space size="small" style={{ width: "100%" }}>
-                                    <Text>New user? </Text>
-                                    <Link to="/sign-up">
-                                        <Button type="link">Create an account</Button>
-                                    </Link>
-                                </Space>
+                            </div>
+                            <Space size="small" style={{ width: "100%" }}>
+                                <Text>New user? </Text>
+                                <Link to="/sign-up">
+                                    <Button type="link">Create an account</Button>
+                                </Link>
                             </Space>
-                        </Form>
-                    </Col>
-                </Row>
-            </Components.StyledFormContainer>
+                        </Space>
+                    </Form>
+                </Col>
+            </Row>
         </Container>
     );
 };

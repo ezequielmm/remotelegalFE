@@ -8,12 +8,13 @@ export interface ITextProps {
     weight?: "light" | "regular" | "bold";
     uppercase?: boolean;
     ellipsis?: boolean;
-    state?: "error" | "warning" | "success" | "info" | "primary" | "secondary" | undefined;
+    block?: boolean;
+    state?: "primary" | "secondary" | "disabled" | "error" | "warning" | "success" | "info" | undefined;
     children: string;
 }
 
 const StyledText = styled.span<ITextProps>`
-    ${({ size, weight, state, uppercase, ellipsis, theme }) => {
+    ${({ size, weight, state, uppercase, ellipsis, block, theme }) => {
         const { textColor, fontSizes } = theme.default;
 
         const fontSize = (textSize, sizes) => {
@@ -47,10 +48,11 @@ const StyledText = styled.span<ITextProps>`
             white-space: nowrap;
             overflow-wrap: normal;
             max-width: 100%;
-            display: inline-block;
             vertical-align: top;
             `
             : "";
+
+        const displayStyle = block ? `display: block;` : `display: inline-block;`;
 
         const styles = `
             color: ${textColor};
@@ -60,15 +62,16 @@ const StyledText = styled.span<ITextProps>`
             ${stateStyle}
             ${uppercaseStyle}
             ${ellipsisStyle}
+            ${displayStyle}
         `;
 
         return styles;
     }}
 `;
 
-const text = ({ size, weight, state, uppercase = false, ellipsis = true, children }: ITextProps) => {
+const text = ({ size, weight, state, uppercase = false, ellipsis = true, block = false, children }: ITextProps) => {
     return (
-        <StyledText size={size} weight={weight} state={state} uppercase={uppercase} ellipsis={ellipsis}>
+        <StyledText size={size} weight={weight} state={state} uppercase={uppercase} ellipsis={ellipsis} block={block}>
             {children}
         </StyledText>
     );

@@ -6,7 +6,7 @@ import { ContainerSmall } from "./Decorators";
 
 import Input from "../components/Input";
 import Text from "../components/Typography/Text";
-import Label from "../components/Label";
+import { Form } from "antd";
 import useInput from "../hooks/useInput";
 import { InputWrapper } from "../components/Input/styles";
 import isInvalidEMail from "../helpers/isInvalidEmail";
@@ -47,7 +47,7 @@ PRInputIcon.argTypes = {
     prefix: { control: { disable: true } },
 };
 
-export const PRInputValidation: Story = (args) => {
+export const PRInputForm: Story = (args) => {
     const { inputValue: emailValue, input: emailInput, invalid: emailInvalid } = useInput(
         "email",
         args.placeholder,
@@ -57,22 +57,25 @@ export const PRInputValidation: Story = (args) => {
     );
 
     return (
-        <InputWrapper>
-            <Label htmlFor="email">Email</Label>
-            {emailInput}
-            {emailInvalid && !emailValue.length && (
-                <Text size="small" state="error">
-                    {args.errorMessage}
-                </Text>
-            )}
-        </InputWrapper>
+        <Form layout="vertical">
+            <Form.Item label="Email" htmlFor="email">
+                <InputWrapper>
+                    {emailInput}
+                    {emailInvalid && !emailValue.length && (
+                        <Text size="small" state="error">
+                            {args.errorMessage}
+                        </Text>
+                    )}
+                </InputWrapper>
+            </Form.Item>
+        </Form>
     );
 };
-PRInputValidation.argTypes = {
+PRInputForm.argTypes = {
     errorMessage: { control: "text" },
     invalid: { control: "disabled" },
 };
-PRInputValidation.args = {
+PRInputForm.args = {
     ...PRInput.args,
     errorMessage: "Complete this field, please",
 };

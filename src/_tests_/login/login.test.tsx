@@ -14,7 +14,7 @@ Amplify.configure({
 });
 
 const Dashboard = () => {
-    return <div>Log In Successfully</div>;
+    return <div>Login Successfully</div>;
 };
 
 test("Inputs are validated onBlur on first load and the button is disabled", async () => {
@@ -218,7 +218,7 @@ test("Redirects when user is signed in on load", async () => {
         </ThemeProvider>
     );
 
-    await waitForElement(() => getByText("Log In Successfully"));
+    await waitForElement(() => getByText("Login Successfully"));
 });
 
 test("Redirects when successful sign in", async () => {
@@ -240,5 +240,5 @@ test("Redirects when successful sign in", async () => {
     await waitForDomChange();
     fireEvent.change(passwordInput, { target: { value: "aaaa" } });
     fireEvent.click(button);
-    await waitForElement(() => getByText("Log In Successfully"));
+    await waitForElement(() => getByText("Login Successfully"));
 });

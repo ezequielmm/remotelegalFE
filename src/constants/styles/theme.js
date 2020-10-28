@@ -67,8 +67,9 @@ const modifiedVariables = {
     "@alert-warning-border-color": theme.default.warningColor,
     "@alert-error-border-color": theme.default.errorColor,
     "@alert-warning-bg-color": theme.colors.warning[2],
+    "@alert-icon-top": getREM(theme.default.fontSizes[4] / 2 + theme.default.baseUnit - 1),
     "@font-family": theme.default.fontFamily,
-    "@font-size-base": getPX(theme.default.fontSizeBase, spacing.baseUnit),
+    "@font-size-base": getREM(theme.default.fontSizeBase),
     "@heading-1-size": getREM(theme.default.fontSizes[0]),
     "@heading-2-size": getREM(theme.default.fontSizes[1]),
     "@heading-3-size": getREM(theme.default.fontSizes[2]),
@@ -90,6 +91,8 @@ const modifiedVariables = {
     "@input-padding-vertical-base": getREM(theme.default.spaces[2]),
     "@input-disabled-bg": theme.default.disabledBg,
     "@input-disabled-color": theme.default.disabledColor,
+    "@form-item-label-font-size": getREM(theme.default.fontSizes[8]),
+    "@form-vertical-label-padding": `0 0 ${getREM(theme.default.spaces[1])}`,
 };
 
 module.exports = { theme, modifiedVariables };

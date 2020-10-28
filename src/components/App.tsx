@@ -1,6 +1,6 @@
 import React from "react";
 import "antd/dist/antd.less";
-import "../assets/fonts/fontface.less";
+import "../assets/less/global.less";
 import { ThemeProvider } from "styled-components";
 import { Router, Route, Switch } from "react-router-dom";
 import Amplify from "aws-amplify";
@@ -10,7 +10,7 @@ import ReactGA from "react-ga";
 import { theme } from "../constants/styles/theme";
 import Login from "../routes/login/login";
 import SignUp from "../routes/signup/signup";
-import VideoChat from "../components/videochat/videochat";
+import VideoChat from "./videochat/videochat";
 import Authenticator from "./authenticator/authenticator";
 
 function App() {

@@ -33,7 +33,7 @@ test("Inputs are validated onBlur on first load and the button is disabled", asy
             </BrowserRouter>
         </ThemeProvider>
     );
-    const button = getByRole("button");
+    const button = getByRole("button", { name: /Create account/i });
     expect(button).toBeDisabled();
     const emailInput = getByPlaceholderText(CONSTANTS.EMAIL_PLACEHOLDER);
     const passwordInput = getByPlaceholderText(CONSTANTS.PASSWORD_PLACEHOLDER);
@@ -74,7 +74,7 @@ test("Inputs are validated onChange", async () => {
             </BrowserRouter>
         </ThemeProvider>
     );
-    const button = getByRole("button");
+    const button = getByRole("button", { name: /Create account/i });
     expect(button).toBeDisabled();
     const emailInput = getByPlaceholderText(CONSTANTS.EMAIL_PLACEHOLDER);
     const passwordInput = getByPlaceholderText(CONSTANTS.PASSWORD_PLACEHOLDER);
