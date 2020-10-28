@@ -164,7 +164,11 @@ test("Phone validation works properly", async () => {
 });
 
 test("Code sent screen shows when fetch works properly", async () => {
-    global.fetch = jest.fn().mockImplementation(() => Promise.resolve({ ok: true, json: () => ({}) }));
+    global.fetch = jest
+        .fn()
+        .mockImplementation(() =>
+            Promise.resolve({ ok: true, json: () => ({}), headers: { get: () => "application/json" } })
+        );
 
     const { getByPlaceholderText, getByText, container } = render(
         <ThemeProvider theme={theme}>
@@ -261,7 +265,7 @@ test("Error shows when fetch fails", async () => {
 });
 
 test("Code error shows when fetch fails", async () => {
-    global.fetch = jest.fn().mockImplementation(() => Promise.resolve({ status: 400 }));
+    global.fetch = jest.fn().mockImplementation(() => Promise.resolve({ status: 409, headers: { get: () => "" } }));
 
     const { getByPlaceholderText, getByText } = render(
         <ThemeProvider theme={theme}>

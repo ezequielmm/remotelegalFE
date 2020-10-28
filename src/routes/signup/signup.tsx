@@ -92,8 +92,8 @@ const SignUp = () => {
     const lastNameErrorMessage = lastNameInvalid && ERRORS.LAST_NAME_ERROR;
     const phoneErrorMessage = phoneInvalid && ERRORS.PHONE_ERROR;
     const confirmPasswordErrorMessage = confirmPasswordInvalid && ERRORS.CONFIRM_PASSWORD_ERROR;
-    const networkError = error && error !== 400 && ERRORS.NETWORK_ERROR;
-    const SignUpErrorMessage = error === 400 && ERRORS.WAITING_FOR_CODE;
+    const networkError = error && error !== 409 && ERRORS.NETWORK_ERROR;
+    const SignUpErrorMessage = error === 409 && ERRORS.WAITING_FOR_CODE;
 
     const disabledButton =
         loading ||
