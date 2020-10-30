@@ -6,6 +6,9 @@ export const AWS_ERRORS = {
 
 export const NETWORK_ERROR = "Something went wrong. Please try again.";
 
+export const INVALID_CODE_ERROR =
+    "Your verification link is no longer valid, please make sure you haven't already verified the account.";
+
 export const EMPTY_EMAIL_ERROR = "Please enter your email";
 
 export const INVALID_EMAIL_ERROR = "Please enter a valid email";

@@ -62,7 +62,7 @@ const SignUp = () => {
         invalid: confirmPasswordInvalid,
         setInvalid: setConfirmPasswordInvalid,
         touched: confirmPasswordTouched,
-    } = useInput("confirm-password", "confirm your password", "password", (value: string) => value !== passwordValue);
+    } = useInput("confirm-password", "Confirm your password", "password", (value: string) => value !== passwordValue);
 
     React.useEffect(() => {
         const passwordsMatch = passwordValue === confirmPasswordValue;
@@ -214,7 +214,7 @@ const SignUp = () => {
                                     </Button>
                                     <Space size="small" style={{ width: "100%" }}>
                                         <Text>Have an account?</Text>
-                                        <Link to="/">
+                                        <Link tabIndex={-1} to="/">
                                             <Button type="link">Log in</Button>
                                         </Link>
                                     </Space>

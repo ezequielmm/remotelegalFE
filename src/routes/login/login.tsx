@@ -31,13 +31,6 @@ const Login = ({ location }: LoginProps) => {
 
     const { error, data, fetchAPI } = useFetch(`${process.env.REACT_APP_BASE_BE_URL}/api/Users/verifyUser`, requestObj);
 
-    React.useEffect(() => {
-        if (verificationHash) {
-            fetchAPI();
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [verificationHash]);
-
     const params = location?.state;
     const history = useHistory();
     const [submitError, setSubmitError] = useState("");
@@ -76,7 +69,23 @@ const Login = ({ location }: LoginProps) => {
     const passwordErrorMessage = passwordInvalid && ERRORS.EMPTY_PASSWORD_ERROR;
 
     const disabledButton = isInvalidEMail(emailValue) || loading || isInputEmpty(passwordValue);
-    return isAuthenticated ? (
+
+    React.useEffect(() => {
+        const handleVerifyToken = async () => {
+            if (verificationHash && isAuthenticated) {
+                await Auth.signOut();
+                return fetchAPI();
+            }
+            if (verificationHash && isAuthenticated === false) {
+                fetchAPI();
+            }
+            return null;
+        };
+        handleVerifyToken();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [verificationHash, isAuthenticated]);
+
+    return isAuthenticated && !verificationHash ? (
         <Redirect to="/dashboard" />
     ) : (
         <Container>
@@ -93,7 +102,8 @@ const Login = ({ location }: LoginProps) => {
                             {data && (
                                 <Alert message="Your email has been verified successfully" type="success" showIcon />
                             )}
-                            {error && <Alert message={ERRORS.NETWORK_ERROR} type="error" showIcon />}
+                            {error && error !== 409 && <Alert message={ERRORS.NETWORK_ERROR} type="error" showIcon />}
+                            {error === 409 && <Alert message={ERRORS.INVALID_CODE_ERROR} type="error" showIcon />}
                             {submitError && <Alert message={submitError} type="error" showIcon />}
                             <div>
                                 <Form.Item label="Email" htmlFor="email">
@@ -112,8 +122,14 @@ const Login = ({ location }: LoginProps) => {
                                             <Text size="small" uppercase>
                                                 Password
                                             </Text>
-                                            <Link to="/password-recovery" style={{ textTransform: "initial" }}>
-                                                <Button type="link">Forgot password?</Button>
+                                            <Link
+                                                tabIndex={-1}
+                                                to="/password-recovery"
+                                                style={{ textTransform: "initial" }}
+                                            >
+                                                <Button tabIndex={1} type="link">
+                                                    Forgot password?
+                                                </Button>
                                             </Link>
                                         </>
                                     }
@@ -134,8 +150,10 @@ const Login = ({ location }: LoginProps) => {
                             </div>
                             <Space size="small" style={{ width: "100%" }}>
                                 <Text>New user? </Text>
-                                <Link to="/sign-up">
-                                    <Button type="link">Create an account</Button>
+                                <Link tabIndex={-1} to="/sign-up">
+                                    <Button tabIndex={1} type="link">
+                                        Create an account
+                                    </Button>
                                 </Link>
                             </Space>
                         </Space>
