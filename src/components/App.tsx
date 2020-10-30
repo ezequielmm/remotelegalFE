@@ -2,7 +2,7 @@ import React from "react";
 import "antd/dist/antd.less";
 import "../assets/less/global.less";
 import { ThemeProvider } from "styled-components";
-import { Router, Route, Switch } from "react-router-dom";
+import { Router, Route, Switch, Link } from "react-router-dom";
 import Amplify from "aws-amplify";
 import TagManager from "react-gtm-module";
 import { createBrowserHistory } from "history";
@@ -37,7 +37,14 @@ function App() {
     });
     // TODO:Dashboard
     const Dashboard = () => {
-        return <div>Log In Successfully</div>;
+        return (
+            <div>
+                Log In Successfully
+                <div>
+                    <Link to="/videochat">Videochat</Link>
+                </div>
+            </div>
+        );
     };
 
     return (
