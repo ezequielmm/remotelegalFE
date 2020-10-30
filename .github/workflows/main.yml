@@ -1,6 +1,14 @@
 name: Build, Test & Deploy
 
-on: [push]
+on:
+  push:
+    branches:
+      - develop
+      - qa
+  pull_request:
+    branches-ignore:
+      - develop
+      - qa
 
 jobs:
   build-test:
@@ -20,7 +28,7 @@ jobs:
           ${{ runner.os }}-build-
           ${{ runner.os }}-
     - name: Install Dependencies
-      #if: steps.yarn-cache.outputs.cache-hit != 'true'
+      if: steps.yarn-cache.outputs.cache-hit != 'true'
       run: yarn install
 
     - name: Extract Branch Name for ENV file replacement
