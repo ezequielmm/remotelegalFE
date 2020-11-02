@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { getREM, getWeightNumber } from "../../../constants/styles/utils";
 
 export interface ITextProps {
-    size?: "small" | "default" | "large";
+    size?: "small" | "default" | "large" | "extralarge";
     weight?: "light" | "regular" | "bold";
     uppercase?: boolean;
     ellipsis?: boolean;
@@ -28,7 +28,9 @@ const StyledText = styled.span<ITextProps>`
                 case "large":
                     value = getREM(sizes[6]);
                     break;
-
+                case "extralarge":
+                    value = getREM(sizes[4]);
+                    break;
                 default:
                     value = getREM(sizes[7]);
                     break;

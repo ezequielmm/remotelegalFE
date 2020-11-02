@@ -213,7 +213,7 @@ test("Code sent screen shows when fetch works properly", async () => {
     });
     await waitForElement(() => getByText("Check your mailbox"));
     expect(getByText("test@test1.com")).toBeInTheDocument();
-    expect(getByText("Didn´t get the email?")).toBeInTheDocument();
+    expect(getByText("Didn’t get the email?")).toBeInTheDocument();
     expect(getByText("Click here to resend it")).toBeInTheDocument();
 });
 

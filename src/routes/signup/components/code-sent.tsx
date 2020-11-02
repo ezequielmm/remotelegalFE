@@ -1,7 +1,12 @@
 import React from "react";
+import { Col, Row, Alert, Space } from "antd";
 import { NETWORK_ERROR } from "../constants/errors";
 import useFetch from "../../../hooks/useFetch";
 import buildRequestOptions from "../../../helpers/buildRequestOptions";
+import Title from "../../../components/Typography/Title";
+import Text from "../../../components/Typography/Text";
+import { StyledButtonLink } from "./components";
+import { theme } from "../../../constants/styles/theme";
 
 interface CodeSentProps {
     email: string;
@@ -23,59 +28,27 @@ const CodeSent = ({ email }: CodeSentProps) => {
     };
     return (
         <>
-            <p
-                style={{
-                    fontFamily: "Merriweather",
-                    textAlign: "center",
-                    fontSize: "36px",
-                    margin: 0,
-                    color: "#14232E",
-                }}
-            >
-                Check your mailbox
-            </p>
-            <p
-                style={{
-                    fontFamily: "Merriweather",
-                    textAlign: "center",
-                    fontSize: "24px",
-                    margin: 0,
-                    color: "#14232E",
-                }}
-            >
-                {email}
-            </p>
-            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "3rem" }}>
-                <p
-                    style={{
-                        fontFamily: "Lato",
-                        fontWeight: "bold",
-                        color: "#8591A6",
-                        fontSize: "20px",
-                        marginBottom: "0",
-                    }}
-                >
-                    Didn´t get the email?
-                </p>
-                <button
-                    type="button"
-                    style={{ appearance: "none", border: "none", cursor: "pointer" }}
-                    onClick={handleLinkFetch}
-                >
-                    <p
-                        style={{
-                            fontFamily: "Lato",
-                            fontSize: "20px",
-                            fontWeight: "bold",
-                            color: "#C09853",
-                            margin: "0",
-                        }}
-                    >
-                        Click here to resend it
-                    </p>
-                </button>
-                {error && <p>{NETWORK_ERROR}</p>}
-            </div>
+            <Row justify="center">
+                <Space direction="vertical" size={theme.default.spaces[11] * theme.default.baseUnit}>
+                    {error && <Alert message={NETWORK_ERROR} type="error" showIcon />}
+                    <Col style={{ textAlign: "center" }}>
+                        <Title level={3} weight="light" noMargin>
+                            Check your mailbox
+                        </Title>
+                        <Title level={4} weight="light">
+                            {email}
+                        </Title>
+                    </Col>
+                    <Space size="small" align="start">
+                        <Text size="extralarge" state="disabled">
+                            Didn’t get the email?
+                        </Text>
+                        <StyledButtonLink type="link" onClick={handleLinkFetch}>
+                            Click here to resend it
+                        </StyledButtonLink>
+                    </Space>
+                </Space>
+            </Row>
         </>
     );
 };
