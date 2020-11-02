@@ -15,13 +15,13 @@ const useFetch = (url: string, options?: RequestInit) => {
             const response = await fetch(url, options);
             const contentType = response.headers.get("content-type");
             setLoading(false);
+            if (!response.ok) {
+                throw response.status;
+            }
             if (contentType && contentType.indexOf("application/json") !== -1) {
                 return setData(await response.json());
             }
-            if (response.ok) {
-                return setData(response);
-            }
-            throw response.status;
+            return setData(response);
         } catch (fetchError) {
             setLoading(false);
             setError(fetchError);
