@@ -18,4 +18,11 @@ const lightestGray = "#F9F9F9";
 const white = "#FFFFFF";
 const neutrals = [black, darkGray, gray, lightGray, lightestGray, white];
 
-module.exports.colors = { gold, deepBlue, neutrals, pickleGreen, mustardYellow, chilliRed, cloudGray };
+// In Depo pallet
+const indigoDye = "#1A3C57";
+const prussianBlue = "#032A43";
+const starCommandBlue = "#137BBC";
+const inDepoBlack = "#0D1E2C";
+const inDepo = [inDepoBlack, prussianBlue, indigoDye, starCommandBlue];
+
+module.exports.colors = { gold, deepBlue, neutrals, pickleGreen, mustardYellow, chilliRed, cloudGray, inDepo };

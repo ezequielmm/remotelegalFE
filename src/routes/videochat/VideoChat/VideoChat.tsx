@@ -1,8 +1,8 @@
 import React, { useState, useCallback } from "react";
 import { Button } from "antd";
-import Lobby from "./videochatlobby";
-import VideoChatRoom from "./videochatroom";
-import useVideoChat from "../../hooks/useVideoChat";
+import Lobby from "../VideoChatLobby/VideoChatLobby";
+import VideoChatRoom from "../VideoChatRoom/VideoChatRoom";
+import useVideoChat from "../../../hooks/useVideoChat";
 import styled from "styled-components";
 
 const VideoChat = () => {

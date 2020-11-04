@@ -1,41 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import { LocalParticipant, RemoteParticipant } from "twilio-video";
-import { Button } from "antd";
-import styled from "styled-components";
+import { StyledParticipantMask, StyledIdentityBox } from "./styles";
 
-const ParticipantContainer = styled.div<{ isLocalParticipant: boolean }>`
-    position: relative;
-    overflow: hidden;
-    text-align: center;
-    video {
-        height: ${({ isLocalParticipant }) => (isLocalParticipant ? "70vh" : "20vh")};
-    }
-`;
-
-const Identity = styled.div`
-    color: white;
-    position: absolute;
-    bottom: 30px;
-    left: 0;
-    right: 0;
-`;
-const Mute = styled(Button)`
-    display: block;
-    margin: 5px auto;
-`;
-
-const Participant = ({
-    participant,
-    isLocalParticipant,
-    showAudioControl,
-}: {
-    participant: LocalParticipant | RemoteParticipant;
-    isLocalParticipant?: boolean;
-    showAudioControl?: boolean;
-}) => {
+const Participant = ({ participant }: { participant: LocalParticipant | RemoteParticipant }) => {
     const [videoTracks, setVideoTracks] = useState([]);
     const [audioTracks, setAudioTracks] = useState([]);
-    const [isMuted, setIsMuted] = useState(false);
 
     const videoRef = useRef();
     const audioRef = useRef();
@@ -96,22 +65,16 @@ const Participant = ({
         }
     }, [audioTracks]);
 
-    useEffect(() => {
-        if (showAudioControl) {
-            audioTracks.forEach((audioTrack) => {
-                isMuted && audioTrack.isEnabled ? audioTrack.disable() : audioTrack.enable();
-            });
-        }
-    }, [isMuted, audioTracks, showAudioControl]);
-
-    const audioText = isMuted ? "Audio disabled" : "Audio enabled";
     return (
-        <ParticipantContainer isLocalParticipant={isLocalParticipant}>
-            <video ref={videoRef} autoPlay={true} />
-            <audio ref={audioRef} autoPlay={true} />
-            {showAudioControl && <Mute onClick={() => setIsMuted(!isMuted)}>{audioText}</Mute>}
-            <Identity>{participant.identity}</Identity>
-        </ParticipantContainer>
+        <StyledParticipantMask>
+            <video ref={videoRef} autoPlay />
+            <audio ref={audioRef} autoPlay />
+            <StyledIdentityBox>
+                <span>
+                    <b>{participant.identity}</b>
+                </span>
+            </StyledIdentityBox>
+        </StyledParticipantMask>
     );
 };
 

@@ -10,7 +10,7 @@ import ReactGA from "react-ga";
 import { theme } from "../constants/styles/theme";
 import Login from "../routes/login/login";
 import SignUp from "../routes/signup/signup";
-import VideoChat from "./videochat/videochat";
+import VideoChat from "../routes/videochat/VideoChat/VideoChat";
 import Authenticator from "./authenticator/authenticator";
 
 function App() {

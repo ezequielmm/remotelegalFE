@@ -1,7 +1,7 @@
 import React from "react";
 import { Form, Input, Button } from "antd";
 import styled from "styled-components";
-import Title from "../Typography/Title";
+import Title from "../../../components/Typography/Title";
 
 const VideoChatLobby = ({ username, roomName, handleSubmit }) => {
     const layout = {

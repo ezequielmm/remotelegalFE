@@ -13,6 +13,7 @@ const theme = {
         warning: colors.mustardYellow,
         error: colors.chilliRed,
         disabled: colors.cloudGray,
+        inDepo: colors.inDepo,
     },
     default: {
         /** Ant Design */
