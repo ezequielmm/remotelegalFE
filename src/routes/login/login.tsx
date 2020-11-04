@@ -145,7 +145,7 @@ const Login = ({ location }: LoginProps) => {
                                     </InputWrapper>
                                 </Form.Item>
                                 <Button type="primary" block disabled={disabledButton} htmlType="submit">
-                                    Login
+                                    Log In
                                 </Button>
                             </div>
                             <Space size="small" style={{ width: "100%" }}>
