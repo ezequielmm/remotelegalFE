@@ -54,8 +54,8 @@ function App() {
                         <Layout menuRoutes={CONSTANTS.menuRoutes}>
                             <Route exact path="/dashboard" component={Dashboard} />
                             <Route exact path="/my-cases" component={MyCases} />
+                            <Route exact path="/videochat" component={VideoChat} />
                         </Layout>
-                        <Route exact path="/videochat" component={VideoChat} />
                     </Authenticator>
                 </Switch>
             </Router>
