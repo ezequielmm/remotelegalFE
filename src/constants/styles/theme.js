@@ -27,9 +27,11 @@ const theme = {
         highlightColor: colors.chilliRed[5],
         disabledColor: colors.cloudGray[7],
         disabledBg: colors.cloudGray[5],
+        whiteColor: colors.neutrals[6],
+        blackColor: colors.neutrals[0],
         // Font
         textColor: colors.neutrals[0],
-        textColorInverse: colors.neutrals[5],
+        textColorInverse: colors.neutrals[6],
         fontFamily: fonts.fontFamily,
         fontSizeBase: fonts.fontSizeBase,
         lineHeightBase: fonts.lineHeightBase,
@@ -94,6 +96,15 @@ const modifiedVariables = {
     "@input-disabled-color": theme.default.disabledColor,
     "@form-item-label-font-size": getREM(theme.default.fontSizes[8]),
     "@form-vertical-label-padding": `0 0 ${getREM(theme.default.spaces[1])}`,
+    "@layout-header-background": theme.colors.neutrals[6],
+    "@layout-sider-background": theme.colors.secondary[5],
+    "@menu-item-height": getREM(theme.default.spaces[8]),
+    "@menu-icon-size": getREM(theme.default.spaces[5]),
+    "@menu-dark-bg": theme.colors.secondary[5],
+    "@menu-dark-item-active-bg": theme.colors.secondary[4],
+    "@layout-body-background": theme.colors.neutrals[5],
+    "@layout-header-height": getREM(theme.default.spaces[11]),
+    "@layout-header-padding": getREM(theme.default.spaces[3]),
 };
 
 module.exports = { theme, modifiedVariables };

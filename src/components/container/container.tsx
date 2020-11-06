@@ -1,9 +1,8 @@
 import styled from "styled-components";
 import React from "react";
-import { Image } from "antd";
+import Logo from "../Logo";
 import { getREM } from "../../constants/styles/utils";
 
-const LogoImage = require("../../assets/login/logo.svg");
 const BgImage = require("../../assets/login/bg.jpg");
 
 export const StyledContainer = styled.div`
@@ -50,7 +49,7 @@ const Container = ({ children }: ContainerProps) => (
     <StyledContainer>
         <StyledHeaderSection>
             <header>
-                <Image src={LogoImage} alt="Remote Legal logo" />
+                <Logo version="light" />
             </header>
         </StyledHeaderSection>
         <StyledFormContainer>{children}</StyledFormContainer>

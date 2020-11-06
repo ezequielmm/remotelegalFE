@@ -9,7 +9,7 @@ export interface ITextProps {
     uppercase?: boolean;
     ellipsis?: boolean;
     block?: boolean;
-    state?: "primary" | "secondary" | "disabled" | "error" | "warning" | "success" | "info" | undefined;
+    state?: "primary" | "secondary" | "disabled" | "error" | "warning" | "success" | "info" | "white" | undefined;
     children: string;
 }
 

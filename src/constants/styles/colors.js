@@ -15,8 +15,9 @@ const darkGray = "#0F4877";
 const gray = "#A2C3D8";
 const lightGray = "#DFE8EE";
 const lightestGray = "#F9F9F9";
+const darkWhite = "#F2F5F7";
 const white = "#FFFFFF";
-const neutrals = [black, darkGray, gray, lightGray, lightestGray, white];
+const neutrals = [black, darkGray, gray, lightGray, lightestGray, darkWhite, white];
 
 // In Depo pallet
 const indigoDye = "#1A3C57";
