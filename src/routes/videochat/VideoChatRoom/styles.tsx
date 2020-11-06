@@ -70,9 +70,9 @@ export const StyledAttendeesContainer = styled.div`
 
 export const StyledParticipantContainer = styled.div`
     width: auto;
-    height: calc(25% - ${({ theme }) => getPX(theme.default.spaces[3])});
-    margin-bottom: ${({ theme }) => getREM(theme.default.spaces[3])};
-    &:last-child {
-        margin-bottom: 0;
+    height: calc(25% - 12px);
+    margin-top: ${({ theme }) => getREM(theme.default.spaces[3])};
+    &:first-child {
+        margin-top: 0;
     }
 `;
