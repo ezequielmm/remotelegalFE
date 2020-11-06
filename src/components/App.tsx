@@ -14,7 +14,6 @@ import Layout from "./Layout";
 import Authenticator from "./authenticator/authenticator";
 import Dashboard from "../routes/dashboard/dashboard";
 import VideoChat from "../routes/videochat/VideoChat/VideoChat";
-import * as CONSTANTS from "../constants/app";
 
 function App() {
     const tagManagerId = {
@@ -41,7 +40,7 @@ function App() {
 
     // TODO: MyCases
 
-    const MyCases = () => <div>My Cases</div>;
+    const MyCases = () => <Layout>My Cases</Layout>;
 
     return (
         <ThemeProvider theme={theme}>
@@ -51,11 +50,9 @@ function App() {
                     <Route path="/verifyUser" component={Login} />
                     <Route exact path="/sign-up" component={SignUp} />
                     <Authenticator>
-                        <Layout menuRoutes={CONSTANTS.menuRoutes}>
-                            <Route exact path="/dashboard" component={Dashboard} />
-                            <Route exact path="/my-cases" component={MyCases} />
-                            <Route exact path="/videochat" component={VideoChat} />
-                        </Layout>
+                        <Route exact path="/dashboard" component={Dashboard} />
+                        <Route exact path="/my-cases" component={MyCases} />
+                        <Route exact path="/videochat" component={VideoChat} />
                     </Authenticator>
                 </Switch>
             </Router>

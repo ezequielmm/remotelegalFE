@@ -11,26 +11,15 @@ import Content from "./Content";
 import { ReactComponent as Bell } from "../../assets/layout/Bell.svg";
 import { ReactComponent as Messages } from "../../assets/layout/Messages.svg";
 import { ReactComponent as DropdownArrow } from "../../assets/layout/DropdownArrow.svg";
+import * as CONSTANTS from "../../constants/layout";
 
 const { Header } = Layout;
 
-type Route = {
-    path: string;
-    name: string;
-    icon?: React.ComponentType;
-};
-
-type MenuRoute = {
-    title: string;
-    routes: Route[];
-};
-
 interface DashboardProps {
     children: React.ReactNode;
-    menuRoutes: MenuRoute[];
 }
 
-const AppLayout = ({ children, menuRoutes }: DashboardProps) => {
+const AppLayout = ({ children }: DashboardProps) => {
     const [selectedMenuItem, setSelectedMenuItem] = useState(null);
     const history = useHistory();
     const location = useLocation();
@@ -39,10 +28,12 @@ const AppLayout = ({ children, menuRoutes }: DashboardProps) => {
         routes.map((group): string => (group.includes(pathName.toLowerCase()) && pathName ? pathName : null));
 
     useEffect(() => {
-        const routesPath: string[][] = menuRoutes.map((group) => group.routes.map((route) => route.path.toLowerCase()));
+        const routesPath: string[][] = CONSTANTS.menuRoutes.map((group) =>
+            group.routes.map((route) => route.path.toLowerCase())
+        );
 
         setSelectedMenuItem(getArrSelectedMenuItem(routesPath, location.pathname));
-    }, [menuRoutes, location]);
+    }, [location]);
 
     const signOut = async () => {
         await Auth.signOut({ global: true });
@@ -87,7 +78,7 @@ const AppLayout = ({ children, menuRoutes }: DashboardProps) => {
                             selectedKeys={selectedMenuItem}
                             onSelect={(item) => history.push(`${item.key}`)}
                         >
-                            {menuRoutes.map((group) => (
+                            {CONSTANTS.menuRoutes.map((group) => (
                                 <Menu.ItemGroup
                                     title={
                                         <Text state="white" size="small">
