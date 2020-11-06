@@ -78,7 +78,7 @@ const SignUp = () => {
         lastName: lastNameValue,
         phoneNumber: phoneValue,
         password: passwordValue,
-        emailAddress: emailValue,
+        emailAddress: emailValue.trim(),
     });
 
     const { error, data, loading, fetchAPI } = useFetch(`${process.env.REACT_APP_BASE_BE_URL}/api/Users`, requestObj);

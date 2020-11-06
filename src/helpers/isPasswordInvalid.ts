@@ -1,4 +1,4 @@
 const isPasswordInvalid = (password) => {
-    return !/^((?=.*\d)(?=.*[A-Z]).{8,})$/.test(password);
+    return !/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])\S{8,}$/.test(password);
 };
 export default isPasswordInvalid;

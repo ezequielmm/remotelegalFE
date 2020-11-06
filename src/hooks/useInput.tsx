@@ -34,7 +34,8 @@ const useInput = (
                 if (isInvalid && touched) {
                     setInvalid(isInvalid(value));
                 }
-                setValue(value);
+
+                return setValue(value);
             }}
             disabled={disabled}
             invalid={invalid}
