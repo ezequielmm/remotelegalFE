@@ -13,6 +13,7 @@ import Login from "../routes/login/login";
 import SignUp from "../routes/signup/signup";
 import Authenticator from "./authenticator/authenticator";
 import Dashboard from "../routes/dashboard/dashboard";
+import MyCases from "../routes/mycases/my-cases";
 import VideoChat from "../routes/videochat/VideoChat/VideoChat";
 
 function App() {
@@ -37,10 +38,6 @@ function App() {
             userPoolWebClientId: process.env.REACT_APP_Auth_userPoolWebClientId,
         },
     });
-
-    // TODO: MyCases
-
-    const MyCases = () => <div>My Cases</div>;
 
     return (
         <ThemeProvider theme={theme}>

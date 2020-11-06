@@ -1,19 +1,28 @@
 import React from "react";
-import { useHistory, Link } from "react-router-dom";
+import { useHistory } from "react-router-dom";
+import { Card, Col, Row } from "antd";
+import Result from "../../components/Result";
 import Button from "../../components/Button";
 
 const Dashboard = () => {
     const history = useHistory();
     return (
-        <div>
-            <p>IMAGE</p>
-            <p>Welcome to Remote Legal</p>
-            <p>Want to schedule a deposition? Click the button below</p>
-            <Button onClick={() => history.push("/deposition")}>Schedule deposition</Button>
-            <div>
-                <Link to="/videochat">Videochat</Link>
-            </div>
-        </div>
+        <Row justify="center" align="middle" style={{ height: "100%" }}>
+            <Col sm={24} lg={18} xl={12} xxl={10}>
+                <Card>
+                    <Result
+                        title="Welcome to Remote Legal"
+                        subTitle="Want to schedule a deposition? Click the button below"
+                        status="empty"
+                        extra={
+                            <Button type="primary" onClick={() => history.push("/deposition")}>
+                                Schedule deposition
+                            </Button>
+                        }
+                    />
+                </Card>
+            </Col>
+        </Row>
     );
 };
 export default Dashboard;
