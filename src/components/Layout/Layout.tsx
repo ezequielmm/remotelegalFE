@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Auth } from "aws-amplify";
 import { useHistory, useLocation } from "react-router-dom";
 import { Layout, Menu, Dropdown, Row, Space } from "antd";
@@ -20,20 +20,8 @@ interface DashboardProps {
 }
 
 const AppLayout = ({ children }: DashboardProps) => {
-    const [selectedMenuItem, setSelectedMenuItem] = useState(null);
     const history = useHistory();
-    const location = useLocation();
-
-    const getArrSelectedMenuItem = (routes: string[][], pathName: string): string[] =>
-        routes.map((group): string => (group.includes(pathName.toLowerCase()) && pathName ? pathName : null));
-
-    useEffect(() => {
-        const routesPath: string[][] = CONSTANTS.menuRoutes.map((group) =>
-            group.routes.map((route) => route.path.toLowerCase())
-        );
-
-        setSelectedMenuItem(getArrSelectedMenuItem(routesPath, location.pathname));
-    }, [location]);
+    const { pathname } = useLocation();
 
     const signOut = async () => {
         await Auth.signOut({ global: true });
@@ -75,7 +63,7 @@ const AppLayout = ({ children }: DashboardProps) => {
                         </Button>
                         <Menu
                             theme="dark"
-                            selectedKeys={selectedMenuItem}
+                            defaultSelectedKeys={[pathname]}
                             onSelect={(item) => history.push(`${item.key}`)}
                         >
                             {CONSTANTS.menuRoutes.map((group) => (

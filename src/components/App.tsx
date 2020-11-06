@@ -7,10 +7,10 @@ import Amplify from "aws-amplify";
 import TagManager from "react-gtm-module";
 import { createBrowserHistory } from "history";
 import ReactGA from "react-ga";
+import RouteWithLayout from "./RouteWithLayout/RouteWithLayout";
 import { theme } from "../constants/styles/theme";
 import Login from "../routes/login/login";
 import SignUp from "../routes/signup/signup";
-import Layout from "./Layout";
 import Authenticator from "./authenticator/authenticator";
 import Dashboard from "../routes/dashboard/dashboard";
 import VideoChat from "../routes/videochat/VideoChat/VideoChat";
@@ -40,7 +40,7 @@ function App() {
 
     // TODO: MyCases
 
-    const MyCases = () => <Layout>My Cases</Layout>;
+    const MyCases = () => <div>My Cases</div>;
 
     return (
         <ThemeProvider theme={theme}>
@@ -50,8 +50,8 @@ function App() {
                     <Route path="/verifyUser" component={Login} />
                     <Route exact path="/sign-up" component={SignUp} />
                     <Authenticator>
-                        <Route exact path="/dashboard" component={Dashboard} />
-                        <Route exact path="/my-cases" component={MyCases} />
+                        <RouteWithLayout exact path="/dashboard" component={Dashboard} />
+                        <RouteWithLayout exact path="/my-cases" component={MyCases} />
                         <Route exact path="/videochat" component={VideoChat} />
                     </Authenticator>
                 </Switch>
