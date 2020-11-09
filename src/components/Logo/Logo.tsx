@@ -24,7 +24,7 @@ const StyledImage = styled(Image)`
 `;
 
 const logo = ({ alt = "Remote Legal logo", version = "dark" }: ILogoProps) => {
-    return <StyledImage src={logoSrc[version]} alt={alt} />;
+    return <StyledImage preview={false} src={logoSrc[version]} alt={alt} />;
 };
 
 export default logo;

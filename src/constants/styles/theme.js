@@ -105,6 +105,7 @@ const modifiedVariables = {
     "@layout-body-background": theme.colors.neutrals[5],
     "@layout-header-height": getREM(theme.default.spaces[11]),
     "@layout-header-padding": getREM(theme.default.spaces[3]),
+    "@result-icon-font-size": getREM(theme.default.spaces[12]),
 };
 
 module.exports = { theme, modifiedVariables };

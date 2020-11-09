@@ -28,6 +28,7 @@ export default {
         },
         uppercase: { control: "boolean" },
         ellipsis: { control: "boolean" },
+        block: { control: "boolean" },
         children: { control: "text" },
     },
 } as Meta;
@@ -41,5 +42,6 @@ PRText.args = {
     state: undefined,
     uppercase: false,
     ellipsis: true,
+    block: false,
     children: "Lato example text",
 };

@@ -4,6 +4,7 @@ import { ResultStatusType, ResultProps } from "antd/lib/result/index";
 import styled from "styled-components";
 import Icon from "../Icon";
 import { ReactComponent as EmptyFolderIcon } from "../../assets/icons/empty-folder.svg";
+import { getREM } from "../../constants/styles/utils";
 
 export interface IResultProps extends Omit<ResultProps, "status"> {
     status?: ResultStatusType | "empty";
@@ -23,6 +24,7 @@ const StyledResult = styled(resultDefault)<IResultProps>`
         const styles = `
             .ant-result-title {
                 font-family: ${theme.default.headerFontFamily};
+                font-size: ${getREM(theme.default.spaces[5])};
                 font-weight: 300;
             }
         `;
