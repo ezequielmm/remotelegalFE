@@ -20,12 +20,12 @@ interface IModalProps {
 const CaseModal = ({ open, handleClose, fetchCases }: IModalProps) => {
     const [caseNumber, setCaseNumber] = React.useState("");
     const { inputValue: caseNameValue, input: caseNameInput, invalid: caseNameInvalid, setValue } = useInput(
-        "case-title",
-        "Type a case name",
-        undefined,
         isInputEmpty,
-        false,
-        100
+        {
+            name: "case-title",
+            placeholder: "Type a case name",
+            maxLength: 100,
+        }
     );
     const caseNameErrorMessage = caseNameInvalid && "Please enter a case name";
     const requestObj = buildRequestOptions("POST", {

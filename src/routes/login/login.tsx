@@ -40,19 +40,16 @@ const Login = ({ location }: LoginProps) => {
     const [submitError, setSubmitError] = useState("");
     const [loading, setLoading] = useState(false);
     const { isAuthenticated } = useAuthentication();
-    const { inputValue: emailValue, input: emailInput, invalid: emailInvalid } = useInput(
-        "email",
-        "Enter your email",
-        undefined,
-        isInvalidEMail
-    );
+    const { inputValue: emailValue, input: emailInput, invalid: emailInvalid } = useInput(isInvalidEMail, {
+        name: "email",
+        placeholder: "Enter your email",
+    });
 
-    const { inputValue: passwordValue, input: passwordInput, invalid: passwordInvalid } = useInput(
-        "password",
-        "Enter your password",
-        "password",
-        isInputEmpty
-    );
+    const { inputValue: passwordValue, input: passwordInput, invalid: passwordInvalid } = useInput(isInputEmpty, {
+        name: "password",
+        placeholder: "Enter your password",
+        type: "password",
+    });
     const onSubmit = async () => {
         if (submitError) {
             setSubmitError("");

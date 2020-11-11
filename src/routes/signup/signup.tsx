@@ -20,41 +20,31 @@ import { InputWrapper } from "../../components/Input/styles";
 const SignUp = () => {
     const { isAuthenticated } = useAuthentication();
     const [checked, setChecked] = useState(false);
-    const { inputValue: nameValue, input: nameInput, invalid: nameInvalid } = useInput(
-        "firstname",
-        "Enter your name",
-        undefined,
-        isInputEmpty,
-        undefined,
-        50
-    );
-    const { inputValue: lastNameValue, input: lastNameInput, invalid: lastNameInvalid } = useInput(
-        "lastname",
-        "Enter last name",
-        undefined,
-        isInputEmpty,
-        undefined,
-        50
-    );
-    const { inputValue: emailValue, input: emailInput, invalid: emailInvalid } = useInput(
-        "email",
-        "Enter your email",
-        undefined,
-        isInvalidEMail
-    );
-    const { input: phoneInput, invalid: phoneInvalid, inputValue: phoneValue } = useInput(
-        "phone",
-        "Enter your mobile phone number",
-        "tel",
-        isPhoneInvalid
-    );
+    const { inputValue: nameValue, input: nameInput, invalid: nameInvalid } = useInput(isInputEmpty, {
+        name: "firstname",
+        placeholder: "Enter your name",
+        maxLength: 50,
+    });
+    const { inputValue: lastNameValue, input: lastNameInput, invalid: lastNameInvalid } = useInput(isInputEmpty, {
+        name: "lastname",
+        placeholder: "Enter last name",
+        maxLength: 50,
+    });
+    const { inputValue: emailValue, input: emailInput, invalid: emailInvalid } = useInput(isInvalidEMail, {
+        name: "email",
+        placeholder: "Enter your email",
+    });
+    const { input: phoneInput, invalid: phoneInvalid, inputValue: phoneValue } = useInput(isPhoneInvalid, {
+        name: "phone",
+        placeholder: "Enter your mobile phone number",
+        type: "tel",
+    });
 
-    const { inputValue: passwordValue, input: passwordInput, invalid: passwordInvalid } = useInput(
-        "password",
-        "Enter your password",
-        "password",
-        isPasswordInvalid
-    );
+    const { inputValue: passwordValue, input: passwordInput, invalid: passwordInvalid } = useInput(isPasswordInvalid, {
+        name: "password",
+        placeholder: "Enter your password",
+        type: "password",
+    });
 
     const {
         inputValue: confirmPasswordValue,
@@ -62,7 +52,11 @@ const SignUp = () => {
         invalid: confirmPasswordInvalid,
         setInvalid: setConfirmPasswordInvalid,
         touched: confirmPasswordTouched,
-    } = useInput("confirm-password", "Confirm your password", "password", (value: string) => value !== passwordValue);
+    } = useInput((value: string) => value !== passwordValue, {
+        name: "confirm-password",
+        placeholder: "Confirm your password",
+        type: "password",
+    });
 
     React.useEffect(() => {
         const passwordsMatch = passwordValue === confirmPasswordValue;

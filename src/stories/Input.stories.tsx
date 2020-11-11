@@ -2,11 +2,10 @@ import React from "react";
 // also exported from '@storybook/react' if you can deal with breaking changes in 6.1
 import { Story, Meta } from "@storybook/react/types-6-0";
 import { UserOutlined } from "@ant-design/icons";
+import { Form } from "antd";
 import { ContainerSmall } from "./Decorators";
-
 import Input from "../components/Input";
 import Text from "../components/Typography/Text";
-import { Form } from "antd";
 import useInput from "../hooks/useInput";
 import { InputWrapper } from "../components/Input/styles";
 import isInvalidEMail from "../helpers/isInvalidEmail";
@@ -48,13 +47,7 @@ PRInputIcon.argTypes = {
 };
 
 export const PRInputForm: Story = (args) => {
-    const { inputValue: emailValue, input: emailInput, invalid: emailInvalid } = useInput(
-        "email",
-        args.placeholder,
-        undefined,
-        isInvalidEMail,
-        args.disabled
-    );
+    const { inputValue: emailValue, input: emailInput, invalid: emailInvalid } = useInput(isInvalidEMail, args);
 
     return (
         <Form layout="vertical">

@@ -1,26 +1,19 @@
 import React, { useState } from "react";
 import Input from "../components/Input";
+import { IInputProps } from "../components/Input/Input";
 
 const useInput = (
-    name: string,
-    placeholder?: string,
-    type?: string,
     isInvalid?: {
         (value: string): boolean;
     },
-    disabled?: boolean,
-    maxLength?: number
+    inputProps?: JSX.IntrinsicAttributes & IInputProps
 ) => {
     const [inputValue, setValue] = useState("");
     const [touched, setTouched] = useState(false);
     const [invalid, setInvalid] = useState(false);
     const input = (
         <Input
-            maxLength={maxLength}
-            type={type}
-            placeholder={placeholder}
-            name={name}
-            id={name}
+            {...inputProps}
             value={inputValue}
             onBlur={({ target: { value } }) => {
                 if (!touched && isInvalid) {
@@ -37,7 +30,6 @@ const useInput = (
 
                 return setValue(value);
             }}
-            disabled={disabled}
             invalid={invalid}
         />
     );
