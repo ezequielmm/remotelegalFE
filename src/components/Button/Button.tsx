@@ -24,7 +24,7 @@ const buttonDefault = ({ children, type, ...rest }: IButtonProps) => {
 const StyledButton = styled(buttonDefault)<IButtonProps>`
     ${({ type, theme }) => {
         const { textColor, fontSizes } = theme.default;
-        const { secondary } = theme.colors;
+        const { primary, secondary } = theme.colors;
 
         const typeSecondaryStyle =
             type === "secondary"
@@ -62,6 +62,33 @@ const StyledButton = styled(buttonDefault)<IButtonProps>`
                 `
                 : "";
 
+        const typeTextStyle =
+            type === "text"
+                ? `
+                color: ${primary[5]};
+                min-width: unset;
+
+                &:hover,
+                &:active {
+                    color: ${primary[4]};
+                }
+                
+                &:focus {
+                    color: ${primary[6]};
+                }
+
+                &:hover span,
+                &:active span {
+                    text-decoration: underline;
+                }
+                &:hover,
+                &:active,
+                &:focus {
+                    background: transparent;
+                }
+                `
+                : "";
+
         const styles = `
             min-width: ${getREM(9.375)};
             font-size: ${getREM(fontSizes[7])};
@@ -69,6 +96,7 @@ const StyledButton = styled(buttonDefault)<IButtonProps>`
             text-transform: uppercase;
             ${typeLinkStyle}
             ${typeSecondaryStyle}
+            ${typeTextStyle}
             `;
 
         return styles;

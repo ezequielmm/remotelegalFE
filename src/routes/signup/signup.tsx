@@ -81,7 +81,11 @@ const SignUp = () => {
         emailAddress: emailValue.trim(),
     });
 
-    const { error, data, loading, fetchAPI } = useFetch(`${process.env.REACT_APP_BASE_BE_URL}/api/Users`, requestObj);
+    const { error, data, loading, fetchAPI } = useFetch(
+        `${process.env.REACT_APP_BASE_BE_URL}/api/Users`,
+        requestObj,
+        false
+    );
 
     const emailErrorMessage =
         emailInvalid && !emailValue.length ? ERRORS.EMPTY_EMAIL_ERROR : emailInvalid && ERRORS.INVALID_EMAIL_ERROR;
@@ -207,7 +211,7 @@ const SignUp = () => {
                                         type="primary"
                                         block
                                         disabled={disabledButton}
-                                        onClick={fetchAPI}
+                                        onClick={() => fetchAPI()}
                                         htmlType="submit"
                                     >
                                         Create account

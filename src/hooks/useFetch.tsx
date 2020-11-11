@@ -1,19 +1,43 @@
+import { Auth } from "aws-amplify";
 import React from "react";
 
-const useFetch = (url: string, options?: RequestInit) => {
+interface fetchAPIParams {
+    urlParams?: string | string[][] | Record<string, string> | URLSearchParams;
+    extraOptions?: object;
+}
+
+const useFetch = (url: string, options?: RequestInit, addToken: boolean = true) => {
     const [loading, setLoading] = React.useState(false);
     const [data, setData] = React.useState(null);
     const [error, setError] = React.useState(null);
 
     // eslint-disable-next-line consistent-return
-    const fetchAPI = async () => {
+    const fetchAPI = async ({ urlParams = {}, extraOptions = {} }: fetchAPIParams = {}) => {
+        let jwt = null;
+
+        if (addToken) {
+            const session = await Auth.currentSession();
+            jwt = session.getIdToken().getJwtToken();
+        }
         if (error) {
             setError(null);
         }
         setLoading(true);
+
+        const headers = addToken ? { ...options.headers, Authorization: `Bearer ${jwt}` } : options.headers;
         try {
-            const response = await fetch(url, options);
-            const contentType = response.headers.get("content-type");
+            const response = Object.keys(urlParams).length
+                ? await fetch(`${url}?${new URLSearchParams(urlParams)}`, {
+                      ...options,
+                      headers,
+                      ...extraOptions,
+                  })
+                : await fetch(`${url}`, {
+                      ...options,
+                      headers,
+                      ...extraOptions,
+                  });
+            const contentType = response.headers?.get("content-type");
             setLoading(false);
             if (!response.ok) {
                 throw response.status;
@@ -27,6 +51,6 @@ const useFetch = (url: string, options?: RequestInit) => {
             setError(fetchError);
         }
     };
-    return { data, error, loading, fetchAPI };
+    return { data, error, loading, fetchAPI, setData };
 };
 export default useFetch;

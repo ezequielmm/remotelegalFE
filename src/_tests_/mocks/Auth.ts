@@ -23,7 +23,7 @@ export const VALID = () => {
     });
     Auth.currentSession = jest.fn().mockImplementation(() => {
         return new Promise((resolve) => {
-            resolve("This was successfull!");
+            resolve({ getIdToken: () => ({ getJwtToken: () => "test1" }) });
         });
     });
 };

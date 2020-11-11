@@ -66,7 +66,7 @@ test("Inputs are validated onBlur on first load and the button is disabled", asy
     expect(queryByText(ERRORS.CONFIRM_PASSWORD_ERROR)).toBeTruthy();
 });
 
-test("Inputs are validated onChange", async () => {
+test("Inputs are validated onChange", async () => {
     const { getByPlaceholderText, queryByText, getByRole } = render(
         <ThemeProvider theme={theme}>
             <BrowserRouter>

@@ -17,7 +17,8 @@ const CodeSent = ({ email }: CodeSentProps) => {
     });
     const { error, loading, fetchAPI } = useFetch(
         `${process.env.REACT_APP_BASE_BE_URL}/api/Users/resendVerificationEmail`,
-        requestObj
+        requestObj,
+        false
     );
 
     const handleLinkFetch = () => {

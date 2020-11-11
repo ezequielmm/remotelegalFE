@@ -42,7 +42,7 @@ const useInput = (
         />
     );
 
-    return { inputValue, input, invalid, setInvalid, touched };
+    return { inputValue, input, invalid, setInvalid, touched, setValue };
 };
 
 export default useInput;

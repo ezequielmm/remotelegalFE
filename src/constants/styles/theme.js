@@ -73,6 +73,8 @@ const modifiedVariables = {
     "@alert-icon-top": getREM(theme.default.fontSizes[4] / 2 + theme.default.baseUnit - 1),
     "@font-family": theme.default.fontFamily,
     "@font-size-base": getREM(theme.default.fontSizeBase),
+    "@font-size-sm": getREM(theme.default.fontSizes[8]),
+    "@font-size-lg": getREM(theme.default.fontSizes[6]),
     "@heading-1-size": getREM(theme.default.fontSizes[0]),
     "@heading-2-size": getREM(theme.default.fontSizes[1]),
     "@heading-3-size": getREM(theme.default.fontSizes[2]),

@@ -29,7 +29,11 @@ const Login = ({ location }: LoginProps) => {
         verificationHash,
     });
 
-    const { error, data, fetchAPI } = useFetch(`${process.env.REACT_APP_BASE_BE_URL}/api/Users/verifyUser`, requestObj);
+    const { error, data, fetchAPI } = useFetch(
+        `${process.env.REACT_APP_BASE_BE_URL}/api/Users/verifyUser`,
+        requestObj,
+        false
+    );
 
     const params = location?.state;
     const history = useHistory();

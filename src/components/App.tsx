@@ -1,20 +1,20 @@
-import React from "react";
 import "antd/dist/antd.less";
-import "../assets/less/global.less";
-import { ThemeProvider } from "styled-components";
-import { Router, Route, Switch } from "react-router-dom";
 import Amplify from "aws-amplify";
-import TagManager from "react-gtm-module";
 import { createBrowserHistory } from "history";
+import React from "react";
 import ReactGA from "react-ga";
-import RouteWithLayout from "./RouteWithLayout/RouteWithLayout";
+import TagManager from "react-gtm-module";
+import { Route, Router, Switch } from "react-router-dom";
+import { ThemeProvider } from "styled-components";
+import "../assets/less/global.less";
 import { theme } from "../constants/styles/theme";
-import Login from "../routes/login/login";
-import SignUp from "../routes/signup/signup";
-import Authenticator from "./authenticator/authenticator";
 import Dashboard from "../routes/dashboard/dashboard";
-import MyCases from "../routes/mycases/my-cases";
+import Login from "../routes/login/login";
+import MyCases from "../routes/myCases/myCases";
+import SignUp from "../routes/signup/signup";
 import VideoChat from "../routes/videochat/VideoChat/VideoChat";
+import Authenticator from "./authenticator/authenticator";
+import RouteWithLayout from "./RouteWithLayout/RouteWithLayout";
 
 function App() {
     const tagManagerId = {
