@@ -107,7 +107,10 @@ const modifiedVariables = {
     "@layout-body-background": theme.colors.neutrals[5],
     "@layout-header-height": getREM(theme.default.spaces[11]),
     "@layout-header-padding": getREM(theme.default.spaces[3]),
-    "@result-icon-font-size": getREM(theme.default.spaces[12]),
+    "@result-icon-font-size": getREM(theme.default.spaces[13]),
+    "@result-title-font-size": getREM(theme.default.spaces[5]),
+    "@result-extra-margin": `${getREM(theme.default.spaces[7])} 0 0 0`,
+    "@card-padding-base": getREM(theme.default.spaces[13]),
 };
 
 module.exports = { theme, modifiedVariables };

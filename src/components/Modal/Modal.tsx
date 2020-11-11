@@ -4,6 +4,7 @@ import { ModalProps } from "antd/lib/modal/Modal";
 
 import styled from "styled-components";
 import { theme } from "../../constants/styles/theme";
+import { getREM } from "../../constants/styles/utils";
 
 export interface IModalProps extends ModalProps {
     onlyBody?: boolean;
@@ -20,7 +21,7 @@ const StyledModal = styled(modalDefault)<IModalProps>`
             ? `
             width: 38rem;
             .ant-modal-body {
-                padding: ${theme.default.spaces[12]}rem ${theme.default.spaces[15]}rem;
+                padding: ${getREM(theme.default.spaces[11])} ${getREM(theme.default.spaces[12])};
             }
 
             @media (max-width: 576px) {
