@@ -49,7 +49,6 @@ const RoomReducer: Reducer<IRoom, IAction> = (state: IRoom, action: IAction): IR
                 currentRoom: currentRoomToAddParticipant,
             };
         case ACTION_TYPE.VIDEO_CHAT_REMOVE_PARTICIPANT:
-            console.log("state", state, "action.payload", action.payload);
             const currentRoomToRemoveParticipant = state.currentRoom;
             currentRoomToRemoveParticipant.participants.delete(action.payload.sid);
 

@@ -17,9 +17,12 @@ function combineReducers<GS>(reducerMap: Record<string, (state: any, action: any
 const combineReducersWithInitialStates = (
     reducersMap: Record<string, [(state: any, action: any) => any, any | {}]>
 ): IGlobalReducer => {
-    const globalReducers = Object.entries(reducersMap).reduce((_, [stateKey, item]) => ({ [stateKey]: item[0] }), {});
+    const globalReducers = Object.entries(reducersMap).reduce(
+        (acc, [key, item]) => Object.assign(acc, { [key]: item[0] }),
+        {}
+    );
     const globalInitialStates = Object.entries(reducersMap).reduce(
-        (_, [stateKey, item]) => ({ [stateKey]: item[1] }),
+        (acc, [key, item]) => Object.assign(acc, { [key]: item[1] }),
         {}
     );
     const combinedGlobalReducers = combineReducers(globalReducers);

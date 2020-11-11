@@ -1,7 +1,7 @@
 import React from "react";
 import { RemoteParticipant, Room } from "twilio-video";
-import { Button } from "antd";
 import Participant from "../Participant/Participant";
+import ControlsBar from "../../../components/ControlsBar/ControlsBar";
 import {
     StyledParticipantContainer,
     StyledInDepoLayout,
@@ -30,7 +30,7 @@ const VideoChatRoom = ({ room, handleLogout }: { room: Room; handleLogout: (ev: 
                 </StyledVideoConference>
             </StyledInDepoLayout>
             <StyledRoomFooter>
-                <Button onClick={handleLogout}>Disconnect</Button>
+                <ControlsBar room={room} onEndCall={handleLogout} />
             </StyledRoomFooter>
         </StyledInDepoContainer>
     );

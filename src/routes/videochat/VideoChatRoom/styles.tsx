@@ -17,20 +17,19 @@ export const StyledVideoChatContainer = styled.div`
 export const StyledInDepoLayout = styled.div`
     display: flex;
     justify-content: center;
-    height: calc(100% - 72px);
+    height: calc(100% - ${({ theme }) => getREM(theme.default.spaces[5] * 3)});
     background: linear-gradient(
         to bottom,
-        ${({ theme }) => theme.colors.inDepo[2]} 0%,
-        ${({ theme }) => theme.colors.inDepo[2]} 60%,
-        ${({ theme }) => theme.colors.inDepo[1]} 100%
+        ${({ theme }) => theme.colors.inDepoNeutrals[2]} 0%,
+        ${({ theme }) => theme.colors.inDepoNeutrals[2]} 60%,
+        ${({ theme }) => theme.colors.inDepoNeutrals[5]} 100%
     );
     padding: ${({ theme }) => getREM(theme.default.spaces[3])};
 `;
 
 export const StyledRoomFooter = styled.div`
     width: 100%;
-    height: 72px;
-    background-color: ${({ theme }) => theme.colors.inDepo[1]};
+    height: ${({ theme }) => getREM(theme.default.spaces[5] * 3)};
 `;
 
 export const StyledVideoConference = styled.div`
@@ -51,7 +50,7 @@ export const StyledAttendeesContainer = styled.div`
     flex-direction: column;
     padding-right: ${({ theme }) => getREM(theme.default.spaces[2])};
     overflow: auto;
-    scrollbar-color: ${({ theme }) => theme.colors.inDepo[3]} ${({ theme }) => theme.colors.inDepo[1]};
+    scrollbar-color: ${({ theme }) => theme.colors.inDepoNeutrals[0]} ${({ theme }) => theme.colors.inDepoNeutrals[1]};
     scrollbar-width: thin;
 
     &::-webkit-scrollbar {
@@ -59,12 +58,12 @@ export const StyledAttendeesContainer = styled.div`
     }
 
     &::-webkit-scrollbar-track {
-        background-color: ${({ theme }) => theme.colors.inDepo[1]};
+        background-color: ${({ theme }) => theme.colors.inDepoNeutrals[1]};
     }
     &::-webkit-scrollbar-thumb {
         border-radius: ${({ theme }) => getPX(theme.default.spaces[5])};
 
-        background: ${({ theme }) => theme.colors.inDepo[3]};
+        background: ${({ theme }) => theme.colors.inDepoNeutrals[0]};
     }
 `;
 

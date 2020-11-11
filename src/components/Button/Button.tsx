@@ -23,7 +23,7 @@ const buttonDefault = ({ children, type, ...rest }: IButtonProps) => {
 
 const StyledButton = styled(buttonDefault)<IButtonProps>`
     ${({ type, theme }) => {
-        const { textColor, fontSizes } = theme.default;
+        const { textColorInverse, fontSizes } = theme.default;
         const { primary, secondary } = theme.colors;
 
         const typeSecondaryStyle =
@@ -31,19 +31,19 @@ const StyledButton = styled(buttonDefault)<IButtonProps>`
                 ? `
                 background: ${secondary[5]};
                 border-color: ${secondary[5]};
-                color: ${textColor};
+                color: ${textColorInverse}; // TODO get contrast and return white or black text
 
                 &:hover,
                 &:focus {
                     background: ${secondary[4]};
                     border-color: ${secondary[4]};
-                    color: ${textColor};
+                    color: ${textColorInverse}; // TODO get contrast and return white or black text
                 }
 
                 &:active {
                     background: ${secondary[6]};
                     border-color: ${secondary[6]};
-                    color: ${textColor};
+                    color: ${textColorInverse}; // TODO get contrast and return white or black text
                 }
                 `
                 : "";

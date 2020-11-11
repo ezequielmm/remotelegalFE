@@ -13,7 +13,9 @@ const theme = {
         warning: colors.mustardYellow,
         error: colors.chilliRed,
         disabled: colors.cloudGray,
-        inDepo: colors.inDepo,
+        inDepoNeutrals: colors.inDepoNeutrals,
+        inDepoBlue: colors.inDepoBlue,
+        inDepoRed: colors.inDepoRed,
     },
     default: {
         /** Ant Design */
@@ -51,6 +53,7 @@ const theme = {
         headerFontFamily: fonts.headerFontFamily,
         fontSizes: fonts.fontSizes,
         spaces: spacing.spaces,
+        heightBase: spacing.heightBase,
     },
 };
 

@@ -3,18 +3,11 @@ import { Button } from "antd";
 import Lobby from "../VideoChatLobby/VideoChatLobby";
 import VideoChatRoom from "../VideoChatRoom/VideoChatRoom";
 import useVideoChat from "../../../hooks/useVideoChat";
-import styled from "styled-components";
 
 const VideoChat = () => {
     const [username, setUsername] = useState("");
     const [roomName, setRoomName] = useState("");
     const { token, room, generateToken, createRoom, joinToRoom, disconnect } = useVideoChat();
-
-    const StyledButtonContainer = styled.div`
-        margin: 20px auto;
-        text-align: center;
-        width: 100%;
-    `;
 
     const handleSubmit = useCallback(
         async ({ roomName, name }) => {
@@ -28,28 +21,11 @@ const VideoChat = () => {
         [createRoom, generateToken]
     );
 
-    let VideoChatRender;
-    if (token) {
-        VideoChatRender = (
-            <div>
-                {Boolean(!room.currentRoom) && (
-                    <StyledButtonContainer>
-                        <Button onClick={(ev) => joinToRoom(token, roomName)}>Join to Room {roomName}</Button>
-                    </StyledButtonContainer>
-                )}
-                {room.currentRoom && room.currentRoom.state && (
-                    <VideoChatRoom room={room.currentRoom} handleLogout={(ev) => disconnect(room.currentRoom)} />
-                )}
-            </div>
-        );
-    } else {
-        VideoChatRender = (
-            <>
-                <Lobby username={username} roomName={roomName} handleSubmit={handleSubmit} />
-            </>
-        );
-    }
-    return VideoChatRender;
+    if (!token) return <Lobby username={username} roomName={roomName} handleSubmit={handleSubmit} />;
+    if (!room.currentRoom || !room.currentRoom.state)
+        return <Button onClick={(ev) => joinToRoom(token, roomName)}>Join to Room {roomName}</Button>;
+
+    return <VideoChatRoom room={room.currentRoom} handleLogout={() => disconnect(room.currentRoom)} />;
 };
 
 export default VideoChat;

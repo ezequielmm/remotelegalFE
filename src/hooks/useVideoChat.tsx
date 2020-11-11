@@ -77,6 +77,11 @@ const useVideoChat = () => {
                 const room = await connect(token, {
                     name: roomName,
                 });
+                // Add a listener to disconnect from the room when a user closes their browser
+                window.addEventListener("beforeunload", () => {
+                    disconnect(room);
+                });
+
                 dispatch(actions.joinToRoom(room));
                 configParticipantsListeners(room);
             } catch (error) {

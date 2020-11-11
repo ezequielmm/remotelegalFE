@@ -20,10 +20,19 @@ const white = "#FFFFFF";
 const neutrals = [black, darkGray, gray, lightGray, lightestGray, darkWhite, white];
 
 // In Depo pallet
-const indigoDye = "#1A3C57";
-const prussianBlue = "#032A43";
-const starCommandBlue = "#137BBC";
-const inDepoBlack = "#0D1E2C";
-const inDepo = [inDepoBlack, prussianBlue, indigoDye, starCommandBlue];
+const inDepoBlue = generate("#137BBC");
+const inDepoRed = generate("#BD2414");
+const inDepoNeutrals = ["#08466C", "#024066", "#1A3C57", "#08304A", "#032A43", "#0D1E2C"];
 
-module.exports.colors = { gold, deepBlue, neutrals, pickleGreen, mustardYellow, chilliRed, cloudGray, inDepo };
+module.exports.colors = {
+    gold,
+    deepBlue,
+    neutrals,
+    pickleGreen,
+    mustardYellow,
+    chilliRed,
+    cloudGray,
+    inDepoNeutrals,
+    inDepoBlue,
+    inDepoRed,
+};
