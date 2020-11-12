@@ -3,7 +3,7 @@
     "version": "0.1.0",
     "private": true,
     "dependencies": {
-        "@ant-design/colors": "^4.0.5",
+        "@ant-design/colors": "^5.0.0",
         "@ant-design/icons": "^4.2.2",
         "@babel/helper-skip-transparent-expression-wrappers": "^7.11.0",
         "@craco/craco": "^5.7.0",
