@@ -4,10 +4,10 @@ import userEvent from "@testing-library/user-event";
 import { BrowserRouter } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 import Amplify from "aws-amplify";
-import * as ERRORS from "../../routes/signup/constants/errors";
-import SignUp from "../../routes/signup/signup";
+import * as ERRORS from "../../constants/signUp";
+import SignUp from "../../routes/SignUp";
 import { theme } from "../../constants/styles/theme";
-import * as CONSTANTS from "./constants/constants";
+import * as CONSTANTS from "../constants/signUp";
 
 beforeEach(() => {
     jest.resetModules();

@@ -1,8 +1,8 @@
 import styled from "styled-components";
-import Button from "../../../components/Button";
-import { IButtonProps } from "../../../components/Button/Button";
-import { theme } from "../../../constants/styles/theme";
-import { getREM } from "../../../constants/styles/utils";
+import Button from "../../components/Button";
+import { IButtonProps } from "../../components/Button/Button";
+import { theme } from "../../constants/styles/theme";
+import { getREM } from "../../constants/styles/utils";
 
 // eslint-disable-next-line import/prefer-default-export
 export const StyledButtonLink = styled(Button)<IButtonProps>`

@@ -1,25 +1,17 @@
 import React from "react";
 import { Col, Row, Alert, Space } from "antd";
-import { NETWORK_ERROR } from "../constants/errors";
-import useFetch from "../../../hooks/useFetch";
-import buildRequestOptions from "../../../helpers/buildRequestOptions";
-import Title from "../../../components/Typography/Title";
-import Text from "../../../components/Typography/Text";
-import { StyledButtonLink } from "./components";
-import { theme } from "../../../constants/styles/theme";
+import { NETWORK_ERROR } from "../../constants/codeSent";
+import { useVerifyEmail } from "../../hooks/auth";
+import Title from "../../components/Typography/Title";
+import Text from "../../components/Typography/Text";
+import { StyledButtonLink } from "./styles";
+import { theme } from "../../constants/styles/theme";
 
 interface CodeSentProps {
     email: string;
 }
 const CodeSent = ({ email }: CodeSentProps) => {
-    const requestObj = buildRequestOptions("POST", {
-        emailAddress: email,
-    });
-    const { error, loading, fetchAPI } = useFetch(
-        `${process.env.REACT_APP_BASE_BE_URL}/api/Users/resendVerificationEmail`,
-        requestObj,
-        false
-    );
+    const { error, loading, fetchAPI } = useVerifyEmail(email);
 
     const handleLinkFetch = () => {
         if (loading) {

@@ -73,3 +73,25 @@ export const useVerifyToken = () => {
     }, [verificationHash, isAuthenticated]);
     return { isAuthenticated, verificationHash, error, data };
 };
+
+export const useSignUp = (requestBody) => {
+    const requestObj = buildRequestOptions("POST", requestBody);
+    const { error, data, loading, fetchAPI } = useFetch(
+        `${process.env.REACT_APP_BASE_BE_URL}/api/Users`,
+        requestObj,
+        false
+    );
+    return { error, data, loading, fetchAPI };
+};
+
+export const useVerifyEmail = (email) => {
+    const requestObj = buildRequestOptions("POST", {
+        emailAddress: email,
+    });
+    const { error, loading, fetchAPI } = useFetch(
+        `${process.env.REACT_APP_BASE_BE_URL}/api/Users/resendVerificationEmail`,
+        requestObj,
+        false
+    );
+    return { error, loading, fetchAPI };
+};

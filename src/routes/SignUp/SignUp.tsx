@@ -2,17 +2,15 @@ import React, { useState } from "react";
 import { Checkbox, Col, Form, Row, Space, Alert } from "antd";
 import { Redirect, Link } from "react-router-dom";
 import useInput from "../../hooks/useInput";
-import useFetch from "../../hooks/useFetch";
 import Container from "../../components/Container";
 import Button from "../../components/Button";
-import * as ERRORS from "./constants/errors";
-import useAuthentication from "../../hooks/useAuthentication";
+import * as ERRORS from "../../constants/signUp";
+import { useAuthentication, useSignUp } from "../../hooks/auth";
 import isInputEmpty from "../../helpers/isInputEmpty";
 import isInvalidEMail from "../../helpers/isInvalidEmail";
 import isPasswordInvalid from "../../helpers/isPasswordInvalid";
 import isPhoneInvalid from "../../helpers/isPhoneInvalid";
-import buildRequestOptions from "../../helpers/buildRequestOptions";
-import CodeSent from "./components/code-sent";
+import CodeSent from "../CodeSent/CodeSent";
 import Title from "../../components/Typography/Title";
 import Text from "../../components/Typography/Text";
 import { InputWrapper } from "../../components/Input/styles";
@@ -67,19 +65,13 @@ const SignUp = () => {
         }
     }, [confirmPasswordTouched, passwordValue, confirmPasswordValue, setConfirmPasswordInvalid]);
 
-    const requestObj = buildRequestOptions("POST", {
+    const { error, data, loading, fetchAPI } = useSignUp({
         firstName: nameValue,
         lastName: lastNameValue,
         phoneNumber: phoneValue,
         password: passwordValue,
         emailAddress: emailValue.trim(),
     });
-
-    const { error, data, loading, fetchAPI } = useFetch(
-        `${process.env.REACT_APP_BASE_BE_URL}/api/Users`,
-        requestObj,
-        false
-    );
 
     const emailErrorMessage =
         emailInvalid && !emailValue.length ? ERRORS.EMPTY_EMAIL_ERROR : emailInvalid && ERRORS.INVALID_EMAIL_ERROR;

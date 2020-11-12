@@ -11,7 +11,7 @@ import { theme } from "../constants/styles/theme";
 import Dashboard from "../routes/dashboard/dashboard";
 import Login from "../routes/Login";
 import MyCases from "../routes/myCases/myCases";
-import SignUp from "../routes/signup/signup";
+import SignUp from "../routes/SignUp";
 import VideoChat from "../routes/videochat/VideoChat/VideoChat";
 import Authenticator from "./authenticator/authenticator";
 import RouteWithLayout from "./RouteWithLayout/RouteWithLayout";
