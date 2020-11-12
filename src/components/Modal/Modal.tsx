@@ -16,7 +16,7 @@ const modalDefault = ({ children, ...rest }: IModalProps) => {
 };
 
 const StyledModal = styled(modalDefault)<IModalProps>`
-    ${({ onlyBody, theme }) => {
+    ${({ onlyBody, theme: styledTheme }) => {
         const stylesOnlyBody = onlyBody
             ? `
             width: 38rem;
@@ -26,7 +26,7 @@ const StyledModal = styled(modalDefault)<IModalProps>`
 
             @media (max-width: 576px) {
                 .ant-modal-body {
-                    padding: ${theme.default.spaces[7]}rem;
+                    padding: ${styledTheme.default.spaces[7]}rem;
                 }
             }
             `

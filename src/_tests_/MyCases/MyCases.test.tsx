@@ -4,11 +4,11 @@ import React from "react";
 import { BrowserRouter } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 import { FETCH_ERROR_MODAL_BUTTON, FETCH_ERROR_MODAL_TITLE } from "../../components/FetchingErrorCard/constants";
+import { CASE_COLUMNS_FIELDS, CASE_COLUMNS_TITLES, EMPTY_STATE_TITLE } from "../../constants/cases";
 import { theme } from "../../constants/styles/theme";
-import { CASE_COLUMNS_FIELDS, CASE_COLUMNS_TITLES, EMPTY_STATE_TITLE } from "../../routes/myCases/constants/constants";
-import MyCases from "../../routes/myCases/myCases";
+import MyCases from "../../routes/MyCases";
+import * as CONSTANTS from "../constants/cases";
 import * as AUTH from "../mocks/Auth";
-import * as CONSTANTS from "./constants/constants";
 
 beforeEach(() => {
     AUTH.VALID();

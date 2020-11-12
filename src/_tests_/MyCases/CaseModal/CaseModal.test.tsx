@@ -1,9 +1,9 @@
 import React from "react";
 import { render, waitForElement, fireEvent, waitForDomChange } from "@testing-library/react";
 import { ThemeProvider } from "styled-components";
-import Modal from "../../../routes/myCases/components/CaseModal";
+import Modal from "../../../routes/MyCases/CaseModal";
 import { theme } from "../../../constants/styles/theme";
-import * as CONSTANTS from "./constants/constants";
+import * as CONSTANTS from "../../constants/cases";
 import * as AUTH from "../../mocks/Auth";
 
 beforeEach(() => {

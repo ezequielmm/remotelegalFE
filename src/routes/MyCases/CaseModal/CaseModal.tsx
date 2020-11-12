@@ -1,15 +1,14 @@
 import React from "react";
 import { Space, Row, Form, Result, Alert } from "antd";
-import useInput from "../../../../hooks/useInput";
-import isInputEmpty from "../../../../helpers/isInputEmpty";
-import { InputWrapper } from "../../../../components/Input/styles";
-import Input from "../../../../components/Input";
-import Title from "../../../../components/Typography/Title";
-import Text from "../../../../components/Typography/Text";
-import useFetch from "../../../../hooks/useFetch";
-import buildRequestOptions from "../../../../helpers/buildRequestOptions";
-import Modal from "../../../../components/Modal";
-import Button from "../../../../components/Button";
+import useInput from "../../../hooks/useInput";
+import isInputEmpty from "../../../helpers/isInputEmpty";
+import { InputWrapper } from "../../../components/Input/styles";
+import Input from "../../../components/Input";
+import Title from "../../../components/Typography/Title";
+import Text from "../../../components/Typography/Text";
+import { useCreateCase } from "../../../hooks/cases/hooks";
+import Modal from "../../../components/Modal";
+import Button from "../../../components/Button";
 
 interface IModalProps {
     open: boolean;
@@ -28,15 +27,8 @@ const CaseModal = ({ open, handleClose, fetchCases }: IModalProps) => {
         }
     );
     const caseNameErrorMessage = caseNameInvalid && "Please enter a case name";
-    const requestObj = buildRequestOptions("POST", {
-        name: caseNameValue,
-        caseNumber,
-    });
     const NETWORK_ERROR = "Something went wrong. Please try again.";
-    const { error, data, loading, fetchAPI, setData } = useFetch(
-        `${process.env.REACT_APP_BASE_BE_URL}/api/Cases`,
-        requestObj
-    );
+    const { error, data, loading, createCase, setData } = useCreateCase();
 
     const handleCloseAndRedirect = () => {
         if (loading) {
@@ -90,7 +82,7 @@ const CaseModal = ({ open, handleClose, fetchCases }: IModalProps) => {
                         </div>
                         {error && <Alert message={NETWORK_ERROR} type="error" showIcon />}
                         <div>
-                            <Form onFinish={fetchAPI} layout="vertical">
+                            <Form onFinish={() => createCase(caseNameValue, caseNumber)} layout="vertical">
                                 <Form.Item label="Case Title" htmlFor="case-title">
                                     <InputWrapper>
                                         {caseNameInput}
@@ -117,7 +109,7 @@ const CaseModal = ({ open, handleClose, fetchCases }: IModalProps) => {
                                         </Button>
                                         <Button
                                             htmlType="submit"
-                                            onClick={() => fetchAPI()}
+                                            onClick={() => createCase(caseNameValue, caseNumber)}
                                             type="primary"
                                             disabled={!caseNameValue.length || loading}
                                         >

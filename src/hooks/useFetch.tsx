@@ -27,7 +27,6 @@ const useFetch = (url: string, options?: RequestInit, addToken: boolean = true) 
             setError(null);
         }
         setLoading(true);
-
         const headers = addToken ? { ...options.headers, Authorization: `Bearer ${jwt}` } : options.headers;
         try {
             const response = Object.keys(urlParams).length

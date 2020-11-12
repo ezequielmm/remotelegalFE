@@ -4,10 +4,10 @@ import { Card, Col, Table } from "antd";
 import Button from "../../components/Button";
 import FetchingErrorCard from "../../components/FetchingErrorCard/FetchingErrorCard";
 import Result from "../../components/Result";
-import useFetchCase from "../../hooks/useFetchCase";
-import * as Components from "./components/components";
-import CaseModal from "./components/CaseModal";
-import { CASE_COLUMNS_FIELDS, CASE_COLUMNS_TITLES } from "./constants/constants";
+import { useFetchCase } from "../../hooks/cases/hooks";
+import * as Components from "./styles";
+import CaseModal from "./CaseModal";
+import { CASE_COLUMNS_FIELDS, CASE_COLUMNS_TITLES } from "../../constants/cases";
 
 const MyCases = () => {
     const [openCaseModal, setOpenCaseModal] = React.useState(false);
