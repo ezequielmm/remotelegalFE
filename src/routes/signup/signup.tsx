@@ -3,7 +3,7 @@ import { Checkbox, Col, Form, Row, Space, Alert } from "antd";
 import { Redirect, Link } from "react-router-dom";
 import useInput from "../../hooks/useInput";
 import useFetch from "../../hooks/useFetch";
-import Container from "../../components/container/container";
+import Container from "../../components/Container";
 import Button from "../../components/Button";
 import * as ERRORS from "./constants/errors";
 import useAuthentication from "../../hooks/useAuthentication";

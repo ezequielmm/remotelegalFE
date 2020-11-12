@@ -1,19 +1,16 @@
-import React, { useState } from "react";
-import { Auth } from "aws-amplify";
-import { Redirect, useHistory, Link } from "react-router-dom";
+import React from "react";
+import { Redirect, Link } from "react-router-dom";
 import { Col, Row, Form, Space, Alert } from "antd";
 import useInput from "../../hooks/useInput";
 import { InputWrapper } from "../../components/Input/styles";
-import Container from "../../components/container/container";
+import Container from "../../components/Container";
 import Button from "../../components/Button";
 import Title from "../../components/Typography/Title";
 import Text from "../../components/Typography/Text";
-import * as ERRORS from "./constants/errors";
-import useAuthentication from "../../hooks/useAuthentication";
+import * as ERRORS from "../../constants/login";
 import isInputEmpty from "../../helpers/isInputEmpty";
 import isInvalidEMail from "../../helpers/isInvalidEmail";
-import buildRequestOptions from "../../helpers/buildRequestOptions";
-import useFetch from "../../hooks/useFetch";
+import { useSignIn, useVerifyToken } from "../../hooks/auth";
 
 interface LoginProps {
     location?: {
@@ -22,24 +19,6 @@ interface LoginProps {
 }
 
 const Login = ({ location }: LoginProps) => {
-    const queryParams = window.location.search;
-    const verificationHash = new URLSearchParams(queryParams).get("verificationHash");
-
-    const requestObj = buildRequestOptions("POST", {
-        verificationHash,
-    });
-
-    const { error, data, fetchAPI } = useFetch(
-        `${process.env.REACT_APP_BASE_BE_URL}/api/Users/verifyUser`,
-        requestObj,
-        false
-    );
-
-    const params = location?.state;
-    const history = useHistory();
-    const [submitError, setSubmitError] = useState("");
-    const [loading, setLoading] = useState(false);
-    const { isAuthenticated } = useAuthentication();
     const { inputValue: emailValue, input: emailInput, invalid: emailInvalid } = useInput(isInvalidEMail, {
         name: "email",
         placeholder: "Enter your email",
@@ -50,19 +29,11 @@ const Login = ({ location }: LoginProps) => {
         placeholder: "Enter your password",
         type: "password",
     });
-    const onSubmit = async () => {
-        if (submitError) {
-            setSubmitError("");
-        }
-        setLoading(true);
-        try {
-            await Auth.signIn(emailValue.trim(), passwordValue);
-            return history.push(params || "/dashboard");
-        } catch (e) {
-            setLoading(false);
-            return setSubmitError(ERRORS.AWS_ERRORS[e.message] || ERRORS.NETWORK_ERROR);
-        }
-    };
+
+    const { onSubmit, loading, submitError } = useSignIn(location, emailValue, passwordValue);
+
+    const { isAuthenticated, verificationHash, data, error } = useVerifyToken();
+
     const emailErrorMessage =
         (emailInvalid && !emailValue.length && ERRORS.EMPTY_EMAIL_ERROR) ||
         (emailInvalid && ERRORS.INVALID_EMAIL_ERROR);
@@ -70,21 +41,6 @@ const Login = ({ location }: LoginProps) => {
     const passwordErrorMessage = passwordInvalid && ERRORS.EMPTY_PASSWORD_ERROR;
 
     const disabledButton = isInvalidEMail(emailValue) || loading || isInputEmpty(passwordValue);
-
-    React.useEffect(() => {
-        const handleVerifyToken = async () => {
-            if (verificationHash && isAuthenticated) {
-                await Auth.signOut();
-                return fetchAPI();
-            }
-            if (verificationHash && isAuthenticated === false) {
-                fetchAPI();
-            }
-            return null;
-        };
-        handleVerifyToken();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [verificationHash, isAuthenticated]);
 
     return isAuthenticated && !verificationHash ? (
         <Redirect to="/dashboard" />

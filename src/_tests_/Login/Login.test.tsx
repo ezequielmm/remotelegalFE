@@ -4,9 +4,9 @@ import { render, waitForDomChange, fireEvent, waitForElement } from "@testing-li
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 import { theme } from "../../constants/styles/theme";
-import * as ERRORS from "../../routes/login/constants/errors";
+import * as ERRORS from "../../constants/login";
 import * as CONSTANTS from "../constants/login";
-import Login from "../../routes/login/login";
+import Login from "../../routes/Login";
 import * as AUTH from "../mocks/Auth";
 
 Amplify.configure({

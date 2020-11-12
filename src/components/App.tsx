@@ -9,7 +9,7 @@ import { ThemeProvider } from "styled-components";
 import "../assets/less/global.less";
 import { theme } from "../constants/styles/theme";
 import Dashboard from "../routes/dashboard/dashboard";
-import Login from "../routes/login/login";
+import Login from "../routes/Login";
 import MyCases from "../routes/myCases/myCases";
 import SignUp from "../routes/signup/signup";
 import VideoChat from "../routes/videochat/VideoChat/VideoChat";

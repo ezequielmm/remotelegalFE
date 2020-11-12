@@ -16,8 +16,12 @@ const useFetch = (url: string, options?: RequestInit, addToken: boolean = true) 
         let jwt = null;
 
         if (addToken) {
-            const session = await Auth.currentSession();
-            jwt = session.getIdToken().getJwtToken();
+            try {
+                const session = await Auth.currentSession();
+                jwt = session.getIdToken().getJwtToken();
+            } catch {
+                jwt = "";
+            }
         }
         if (error) {
             setError(null);
