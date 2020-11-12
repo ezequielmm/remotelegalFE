@@ -5,6 +5,8 @@ import { ModalProps } from "antd/lib/modal/Modal";
 import styled from "styled-components";
 import { theme } from "../../constants/styles/theme";
 import { getREM } from "../../constants/styles/utils";
+import { ReactComponent as CloseIcon } from "../../assets/icons/close.svg";
+import Icon from "../Icon";
 
 export interface IModalProps extends ModalProps {
     onlyBody?: boolean;
@@ -19,9 +21,8 @@ const StyledModal = styled(modalDefault)<IModalProps>`
     ${({ onlyBody, theme: styledTheme }) => {
         const stylesOnlyBody = onlyBody
             ? `
-            width: 38rem;
             .ant-modal-body {
-                padding: ${getREM(theme.default.spaces[11])} ${getREM(theme.default.spaces[12])};
+                padding: ${getREM(theme.default.spaces[11])} ${getREM(theme.default.spaces[13])};
             }
 
             @media (max-width: 576px) {
@@ -43,9 +44,16 @@ const StyledModal = styled(modalDefault)<IModalProps>`
 const modal = (props: IModalProps) => {
     const { children, onlyBody, ...rest } = props;
     const footer = onlyBody ? null : rest.footer;
+    const closeIcon = <Icon icon={CloseIcon} />;
 
     return (
-        <StyledModal onlyBody={onlyBody} footer={footer} {...rest} width={theme.default.baseUnit * 38}>
+        <StyledModal
+            onlyBody={onlyBody}
+            footer={footer}
+            closeIcon={closeIcon}
+            {...rest}
+            width={theme.default.baseUnit * 38}
+        >
             {children}
         </StyledModal>
     );

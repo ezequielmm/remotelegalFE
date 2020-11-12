@@ -1,10 +1,10 @@
-export const CASE_NAME_PLACEHOLDER = "Type a case name";
+export const CASE_NAME_PLACEHOLDER = "Type case name";
 
-export const CASE_NUMBER_PLACEHOLDER = "Type a case number";
+export const CASE_NUMBER_PLACEHOLDER = "Type case number";
 
 export const ADD_CASE_BUTTON = "Add case";
 
-export const CASE_NAME_ERROR_MESSAGE = "Please enter a case name";
+export const CASE_NAME_ERROR_MESSAGE = "Please enter case name";
 
 export const NETWORK_ERROR = "Something went wrong. Please try again.";
 export const NEW_CASE_SUCCESFUL = "Your case has been added successfully!";

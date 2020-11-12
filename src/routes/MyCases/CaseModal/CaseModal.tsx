@@ -1,5 +1,5 @@
 import React from "react";
-import { Space, Row, Form, Result, Alert } from "antd";
+import { Space, Row, Form, Alert } from "antd";
 import useInput from "../../../hooks/useInput";
 import isInputEmpty from "../../../helpers/isInputEmpty";
 import { InputWrapper } from "../../../components/Input/styles";
@@ -9,6 +9,7 @@ import Text from "../../../components/Typography/Text";
 import { useCreateCase } from "../../../hooks/cases/hooks";
 import Modal from "../../../components/Modal";
 import Button from "../../../components/Button";
+import Result from "../../../components/Result";
 
 interface IModalProps {
     open: boolean;
@@ -21,12 +22,12 @@ const CaseModal = ({ open, handleClose, fetchCases }: IModalProps) => {
     const { inputValue: caseNameValue, input: caseNameInput, invalid: caseNameInvalid, setValue } = useInput(
         isInputEmpty,
         {
-            name: "case-title",
-            placeholder: "Type a case name",
+            name: "case-name",
+            placeholder: "Type case name",
             maxLength: 100,
         }
     );
-    const caseNameErrorMessage = caseNameInvalid && "Please enter a case name";
+    const caseNameErrorMessage = caseNameInvalid && "Please enter case name";
     const NETWORK_ERROR = "Something went wrong. Please try again.";
     const { error, data, loading, createCase, setData } = useCreateCase();
 
@@ -53,16 +54,14 @@ const CaseModal = ({ open, handleClose, fetchCases }: IModalProps) => {
         <Modal destroyOnClose visible={open} centered onlyBody onCancel={handleCloseAndRedirect}>
             <div tabIndex={-1} onKeyDown={handleKeyDownEvent}>
                 {data ? (
-                    /* TODO: ADD STYLES */
                     <Result
-                        status="success"
+                        status="case-success"
                         title="Your case has been added successfully!"
                         subTitle="You can now start adding files, collaborators and depositions to this case"
                         extra={[
                             <Button
                                 key="new_case_button"
                                 data-testid="new_case_button"
-                                style={{ display: "block", margin: "0 auto" }}
                                 type="primary"
                                 onClick={handleCloseAndRedirect}
                             >
@@ -74,16 +73,16 @@ const CaseModal = ({ open, handleClose, fetchCases }: IModalProps) => {
                     <Space direction="vertical" size="large" style={{ width: "100%" }}>
                         <div>
                             <Title level={4} weight="light" noMargin>
-                                Add a case
+                                Add case
                             </Title>
                             <Text state="disabled" ellipsis={false}>
-                                To add a case, please complete the information below.
+                                Please complete the information below.
                             </Text>
                         </div>
                         {error && <Alert message={NETWORK_ERROR} type="error" showIcon />}
                         <div>
                             <Form onFinish={() => createCase(caseNameValue, caseNumber)} layout="vertical">
-                                <Form.Item label="Case Title" htmlFor="case-title">
+                                <Form.Item label="Name" htmlFor="case-name">
                                     <InputWrapper>
                                         {caseNameInput}
                                         <Text size="small" state="error">
@@ -91,14 +90,14 @@ const CaseModal = ({ open, handleClose, fetchCases }: IModalProps) => {
                                         </Text>
                                     </InputWrapper>
                                 </Form.Item>
-                                <Form.Item label="Case Number (optional)" htmlFor="casenumber">
+                                <Form.Item label="Number (optional)" htmlFor="case-number">
                                     <InputWrapper>
                                         <Input
                                             value={caseNumber}
                                             onChange={(e) => setCaseNumber(e.target.value)}
-                                            placeholder="Type a case number"
+                                            placeholder="Type case number"
                                             maxLength={50}
-                                            name="casenumber"
+                                            name="case-number"
                                         />
                                     </InputWrapper>
                                 </Form.Item>
@@ -108,6 +107,7 @@ const CaseModal = ({ open, handleClose, fetchCases }: IModalProps) => {
                                             Cancel
                                         </Button>
                                         <Button
+                                            data-testid="Add case"
                                             htmlType="submit"
                                             onClick={() => createCase(caseNameValue, caseNumber)}
                                             type="primary"

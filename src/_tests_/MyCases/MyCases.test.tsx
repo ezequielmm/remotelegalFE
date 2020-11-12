@@ -69,7 +69,7 @@ test("shows empty state screen when no cases loaded and go to add case modal", a
     const addCaseButton = await waitForElement(() => getByRole("button", { name: /Add Case/i }));
     fireEvent.click(addCaseButton);
     await waitForDomChange();
-    getByText("To add a case, please complete the information below.");
+    getByText("Please complete the information below.");
 });
 
 test("shows a table with 1 record with a constant name when backend returns 1 case", async () => {
@@ -109,7 +109,7 @@ test("shows a table and go to add case modal", async () => {
     const addCaseButton = await waitForElement(() => getByRole("button", { name: /Add Case/i }));
     fireEvent.click(addCaseButton);
     await waitForDomChange();
-    getByText("To add a case, please complete the information below.");
+    getByText("Please complete the information below.");
 });
 
 test("shows a table with 10 records with ascend name order by default", async () => {

@@ -15,12 +15,12 @@ beforeEach(() => {
 });
 
 test("Inputs are validated onBlur on first load and the button is disabled", async () => {
-    const { getByPlaceholderText, getByText, queryByText } = render(
+    const { getByPlaceholderText, getByText, queryByText, getByTestId } = render(
         <ThemeProvider theme={theme}>
             <Modal handleClose={jest.fn} fetchCases={jest.fn} open />
         </ThemeProvider>
     );
-    const button = getByText(CONSTANTS.ADD_CASE_BUTTON);
+    const button = getByTestId(CONSTANTS.ADD_CASE_BUTTON);
     expect(button).toBeDisabled();
     const caseNameInput = getByPlaceholderText(CONSTANTS.CASE_NAME_PLACEHOLDER);
     fireEvent.change(caseNameInput, { target: { value: "" } });
@@ -46,7 +46,7 @@ test("fetch is called with the right parameters", async () => {
             <Modal handleClose={handleClose} fetchCases={fetchCases} open />
         </ThemeProvider>
     );
-    const button = getByText(CONSTANTS.ADD_CASE_BUTTON);
+    const button = getByTestId(CONSTANTS.ADD_CASE_BUTTON);
     const caseNameInput = getByPlaceholderText(CONSTANTS.CASE_NAME_PLACEHOLDER);
     const caseNumberInput = getByPlaceholderText(CONSTANTS.CASE_NUMBER_PLACEHOLDER);
     fireEvent.change(caseNameInput, { target: { value: "test1" } });
@@ -70,12 +70,12 @@ test("Error is shown when fetch fails", async () => {
     global.fetch = jest.fn().mockImplementation(() => Promise.reject(Error("Error")));
     const fetchCases = jest.fn();
     const handleClose = jest.fn();
-    const { getByPlaceholderText, getByText } = render(
+    const { getByPlaceholderText, getByText, getByTestId } = render(
         <ThemeProvider theme={theme}>
             <Modal handleClose={handleClose} fetchCases={fetchCases} open />
         </ThemeProvider>
     );
-    const button = getByText(CONSTANTS.ADD_CASE_BUTTON);
+    const button = getByTestId(CONSTANTS.ADD_CASE_BUTTON);
     const caseNameInput = getByPlaceholderText(CONSTANTS.CASE_NAME_PLACEHOLDER);
     const caseNumberInput = getByPlaceholderText(CONSTANTS.CASE_NUMBER_PLACEHOLDER);
     fireEvent.change(caseNameInput, { target: { value: "test1" } });
