@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React from "react";
-import { Card, Col, Table } from "antd";
+import { Card, Col } from "antd";
+import CustomTable from "../../components/Table";
 import Button from "../../components/Button";
 import FetchingErrorCard from "../../components/FetchingErrorCard/FetchingErrorCard";
 import Result from "../../components/Result";
@@ -8,6 +9,7 @@ import { useFetchCase } from "../../hooks/cases/hooks";
 import * as Components from "./styles";
 import CaseModal from "./CaseModal";
 import { CASE_COLUMNS_FIELDS, CASE_COLUMNS_TITLES } from "../../constants/cases";
+import Title from "../../components/Typography/Title";
 
 const MyCases = () => {
     const [openCaseModal, setOpenCaseModal] = React.useState(false);
@@ -51,7 +53,9 @@ const MyCases = () => {
             {!error && (data === null || data?.length > 0) && (
                 <Components.TableContainer>
                     <Components.TopActions>
-                        <div> My Cases</div>
+                        <Title level={4} weight="light" noMargin>
+                            My Cases
+                        </Title>
                         <Components.ButtonContainer>
                             <Button
                                 disabled={data === null || loading}
@@ -64,7 +68,7 @@ const MyCases = () => {
                             </Button>
                         </Components.ButtonContainer>
                     </Components.TopActions>
-                    <Table
+                    <CustomTable
                         rowKey="id"
                         loading={loading}
                         dataSource={data || []}

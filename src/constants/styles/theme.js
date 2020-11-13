@@ -114,6 +114,9 @@ const modifiedVariables = {
     "@result-title-font-size": getREM(theme.default.spaces[5]),
     "@result-extra-margin": `${getREM(theme.default.spaces[7])} 0 0 0`,
     "@card-padding-base": getREM(theme.default.spaces[13]),
+    "@table-bg": "transparent",
+    "@table-header-bg": "transparent",
+    "@table-header-color": theme.colors.disabled[7],
 };
 
 module.exports = { theme, modifiedVariables };
