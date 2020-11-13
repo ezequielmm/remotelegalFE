@@ -8,7 +8,7 @@ const Dashboard = () => {
     const history = useHistory();
     return (
         <Row justify="center" align="middle" style={{ height: "100%" }}>
-            <Col sm={24} lg={18} xl={12} xxl={10}>
+            <Col sm={24} lg={18} xl={13} xxl={10}>
                 <Card>
                     <Result
                         title="Welcome to Remote Legal"

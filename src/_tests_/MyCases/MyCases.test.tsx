@@ -3,11 +3,10 @@ import userEvent from "@testing-library/user-event";
 import React from "react";
 import { BrowserRouter } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
-import { FETCH_ERROR_MODAL_BUTTON, FETCH_ERROR_MODAL_TITLE } from "../../components/FetchingErrorCard/constants";
-import { CASE_COLUMNS_FIELDS, CASE_COLUMNS_TITLES, EMPTY_STATE_TITLE } from "../../constants/cases";
 import { theme } from "../../constants/styles/theme";
 import MyCases from "../../routes/MyCases";
 import * as CONSTANTS from "../constants/cases";
+import * as COMPONENTS_CONSTANTS from "../../constants/cases";
 import * as AUTH from "../mocks/Auth";
 
 beforeEach(() => {
@@ -64,7 +63,7 @@ test("shows empty state screen when no cases loaded and go to add case modal", a
         </ThemeProvider>
     );
 
-    await waitForElement(() => getByText(EMPTY_STATE_TITLE));
+    await waitForElement(() => getByText(COMPONENTS_CONSTANTS.EMPTY_STATE_TITLE));
     expect(fetch).toHaveBeenCalledTimes(1);
     const addCaseButton = await waitForElement(() => getByRole("button", { name: /Add Case/i }));
     fireEvent.click(addCaseButton);
@@ -139,8 +138,8 @@ test("shows a table with descend case Name after click order by name button", as
     await testOrder({
         ascResponse: CONSTANTS.RESPONSE_ASC,
         descResponse: CONSTANTS.RESPONSE_DESC,
-        sortBy: CASE_COLUMNS_FIELDS[0],
-        sortButtonText: CASE_COLUMNS_TITLES[0],
+        sortBy: COMPONENTS_CONSTANTS.CASE_COLUMNS_FIELDS[0],
+        sortButtonText: COMPONENTS_CONSTANTS.CASE_COLUMNS_TITLES[0],
         textContent: `.${CONSTANTS.CASE_NAME}`,
     });
 });
@@ -149,8 +148,8 @@ test("shows a table with descend case Number after click order by name button", 
     await testOrder({
         ascResponse: CONSTANTS.RESPONSE_ASC,
         descResponse: CONSTANTS.RESPONSE_DESC,
-        sortBy: CASE_COLUMNS_FIELDS[1],
-        sortButtonText: CASE_COLUMNS_TITLES[1],
+        sortBy: COMPONENTS_CONSTANTS.CASE_COLUMNS_FIELDS[1],
+        sortButtonText: COMPONENTS_CONSTANTS.CASE_COLUMNS_TITLES[1],
         textContent: `.${CONSTANTS.CASE_NUMBER}`,
         formatText: (text) => text || "-",
     });
@@ -160,8 +159,8 @@ test("shows a table with descend case AddedBy after click order by name button",
     await testOrder({
         ascResponse: CONSTANTS.RESPONSE_ASC,
         descResponse: CONSTANTS.RESPONSE_DESC,
-        sortBy: CASE_COLUMNS_FIELDS[2],
-        sortButtonText: CASE_COLUMNS_TITLES[2],
+        sortBy: COMPONENTS_CONSTANTS.CASE_COLUMNS_FIELDS[2],
+        sortButtonText: COMPONENTS_CONSTANTS.CASE_COLUMNS_TITLES[2],
         textContent: `.${CONSTANTS.CASE_ADDED_BY}`,
     });
 });
@@ -177,8 +176,8 @@ test("shows error and try again button when get an error on fetch", async () => 
         </ThemeProvider>
     );
 
-    await waitForElement(() => getByText(FETCH_ERROR_MODAL_TITLE));
-    const refreshButton = getByRole("button", { name: new RegExp(FETCH_ERROR_MODAL_BUTTON, "i") });
+    await waitForElement(() => getByText(COMPONENTS_CONSTANTS.FETCH_ERROR_MODAL_TITLE));
+    const refreshButton = getByRole("button", { name: new RegExp(COMPONENTS_CONSTANTS.FETCH_ERROR_MODAL_BUTTON, "i") });
     expect(fetch).toHaveBeenCalledTimes(1);
     fireEvent.click(refreshButton);
     await waitForDomChange();

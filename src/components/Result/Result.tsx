@@ -4,33 +4,49 @@ import { ResultStatusType, ResultProps } from "antd/lib/result/index";
 import styled from "styled-components";
 import Icon from "../Icon";
 import { ReactComponent as EmptyFolderIcon } from "../../assets/icons/empty-folder.svg";
-import { ReactComponent as CaseSuccessIcon } from "../../assets/icons/case-success.svg";
+import { ReactComponent as SuccessCreateIcon } from "../../assets/icons/success-create.svg";
+import { ReactComponent as ErrorFetchIcon } from "../../assets/icons/error-fetch.svg";
 import { getREM } from "../../constants/styles/utils";
 
+enum CustomStatus {
+    "empty",
+    "success-create",
+    "error-fetch",
+}
+
+function isResultStatusType(status: string | number): status is ResultStatusType {
+    return (status as ResultStatusType) !== undefined;
+}
+
 export interface IResultProps extends Omit<ResultProps, "status"> {
-    status?: ResultStatusType | "empty" | "case-success";
+    status?: ResultStatusType | keyof typeof CustomStatus;
 }
 
 const emptyIcon = <Icon icon={EmptyFolderIcon} />;
-const caseSuccessIcon = <Icon icon={CaseSuccessIcon} />;
+const successCreateIcon = <Icon icon={SuccessCreateIcon} />;
+const errorFetchIcon = <Icon icon={ErrorFetchIcon} />;
 
 const resultDefault = ({ icon, status, ...rest }: IResultProps) => {
-    const defaultStatus = status === "empty" || status === "case-success" ? "info" : status;
+    const setStatus = !isResultStatusType(status) ? "info" : status;
+    const defaultStatus: ResultStatusType = setStatus;
 
-    const customStatus = () => {
+    const customIcon = () => {
         switch (status) {
             case "empty":
                 return emptyIcon;
 
-            case "case-success":
-                return caseSuccessIcon;
+            case "success-create":
+                return successCreateIcon;
+
+            case "error-fetch":
+                return errorFetchIcon;
 
             default:
                 return null;
         }
     };
 
-    const defaultIcon = customStatus() || icon;
+    const defaultIcon = icon || customIcon();
 
     return <Result status={defaultStatus} {...rest} icon={defaultIcon} />;
 };

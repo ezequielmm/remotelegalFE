@@ -1,9 +1,9 @@
 import React from "react";
-import styled from "styled-components";
-import { getREM } from "../../constants/styles/utils";
 import { Table } from "antd";
 import { DefaultRecordType } from "rc-table/lib/interface";
 import { TableProps } from "antd/lib/table/Table";
+import styled from "styled-components";
+import { getREM } from "../../constants/styles/utils";
 
 const StyledTable = styled(Table)`
     ${({ theme }) => {
@@ -59,18 +59,18 @@ const StyledTable = styled(Table)`
                             }
                         }
                     }
-                }
 
-                &.ant-table-placeholder {
-                            > td {
-                                box-shadow: 0 ${getREM(theme.default.spaces[2])} ${getREM(
+                    &.ant-table-placeholder {
+                        > td {
+                            box-shadow: 0 ${getREM(theme.default.spaces[2])} ${getREM(
             theme.default.spaces[5]
         )} 0 rgba(162, 195, 216, 0.08);
-                                padding-left: ${getREM(theme.default.spaces[5])};
-                                border-radius: ${getREM(theme.default.spaces[2])};
-                                }
+                            padding-left: ${getREM(theme.default.spaces[5])};
+                            border-radius: ${getREM(theme.default.spaces[2])};
                             }
                         }
+                    }
+                }
             }
         `;
         return styles;

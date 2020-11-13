@@ -55,15 +55,15 @@ const CaseModal = ({ open, handleClose, fetchCases }: IModalProps) => {
             <div tabIndex={-1} onKeyDown={handleKeyDownEvent}>
                 {data ? (
                     <Result
-                        status="case-success"
                         title="Your case has been added successfully!"
                         subTitle="You can now start adding files, collaborators and depositions to this case"
+                        status="success-create"
                         extra={[
                             <Button
-                                key="new_case_button"
-                                data-testid="new_case_button"
                                 type="primary"
                                 onClick={handleCloseAndRedirect}
+                                key="new_case_button"
+                                data-testid="new_case_button"
                             >
                                 Go to my cases
                             </Button>,
