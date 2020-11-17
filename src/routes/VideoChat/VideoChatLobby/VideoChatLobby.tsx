@@ -1,9 +1,10 @@
 import React from "react";
-import { Form, Input, Button } from "antd";
+import { Form, Input } from "antd";
+import Button from "../../../components/Button";
 import styled from "styled-components";
 import Title from "../../../components/Typography/Title";
 
-const VideoChatLobby = ({ username, roomName, handleSubmit }) => {
+const VideoChatLobby = ({ roomName, handleSubmit, error }) => {
     const layout = {
         labelCol: { span: 4 },
         wrapperCol: { span: 14 },
@@ -27,21 +28,18 @@ const VideoChatLobby = ({ username, roomName, handleSubmit }) => {
                 onFinish={handleSubmit}
             >
                 <Title level={3} weight="light" noMargin>
-                    Create a Room
+                    Video Chat
                 </Title>
-                <Form.Item label="Name" name="name">
-                    <Input value={username} />
-                </Form.Item>
 
                 <Form.Item label="Room name" name="roomName">
                     <Input value={roomName} />
                 </Form.Item>
-
                 <Form.Item>
                     <Button type="primary" htmlType="submit">
-                        Submit
+                        Join to room
                     </Button>
                 </Form.Item>
+                <div>{error}</div>
             </Form>
         </StyledForm>
     );

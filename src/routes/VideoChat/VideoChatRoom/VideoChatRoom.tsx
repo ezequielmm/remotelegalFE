@@ -10,27 +10,37 @@ import {
     StyledDeponentContainer,
     StyledInDepoContainer,
     StyledRoomFooter,
+    StyledParticipantLoading,
 } from "./styles";
 
-const VideoChatRoom = ({ room, handleLogout }: { room: Room; handleLogout: (ev: any) => any }) => {
+const VideoChatRoom = ({
+    room,
+    connected,
+    handleLogout,
+}: {
+    room: Room;
+    connected: boolean;
+    handleLogout: (ev: any) => any;
+}) => {
     return (
         <StyledInDepoContainer>
             <StyledInDepoLayout>
                 <StyledVideoConference>
                     <StyledDeponentContainer>
-                        <Participant participant={room.localParticipant} />
+                        {!connected && <StyledParticipantLoading>Loading...</StyledParticipantLoading>}
+                        {connected && <Participant participant={room.localParticipant} />}
                     </StyledDeponentContainer>
                     <StyledAttendeesContainer>
-                        {Array.from(room.participants.values()).map((participant: RemoteParticipant) => (
+                        {connected && (Array.from(room.participants.values()).map((participant: RemoteParticipant) => (
                             <StyledParticipantContainer>
                                 <Participant key={participant.sid} participant={participant} />
                             </StyledParticipantContainer>
-                        ))}
+                        )))}
                     </StyledAttendeesContainer>
                 </StyledVideoConference>
             </StyledInDepoLayout>
             <StyledRoomFooter>
-                <ControlsBar room={room} onEndCall={handleLogout} />
+                <ControlsBar connected={connected} room={room} onEndCall={handleLogout} />
             </StyledRoomFooter>
         </StyledInDepoContainer>
     );

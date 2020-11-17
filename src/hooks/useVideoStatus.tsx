@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { LocalParticipant } from "twilio-video";
 
-const useVideoStatus = (participant: LocalParticipant) => {
+const useVideoStatus = (participant: LocalParticipant, connected: boolean) => {
     const [audioTracks, setAudioTracks] = useState([]);
     const [videoTracks, setVideoTracks] = useState([]);
     const [isMuted, setIsMuted] = useState(false);
@@ -14,34 +14,40 @@ const useVideoStatus = (participant: LocalParticipant) => {
             .filter((track) => track !== null);
 
     useEffect(() => {
-        setVideoTracks(trackpubsToTracks(participant.videoTracks));
-        setAudioTracks(trackpubsToTracks(participant.audioTracks));
+        const configTracks = () => {
+            setVideoTracks(trackpubsToTracks(participant.videoTracks));
+            setAudioTracks(trackpubsToTracks(participant.audioTracks));
+    
+            const trackSubscribed = (track) => {
+                if (track.kind === "video") {
+                    setVideoTracks((videoTracks) => [...videoTracks, track]);
+                } else if (track.kind === "audio") {
+                    setAudioTracks((audioTracks) => [...audioTracks, track]);
+                }
+            };
+    
+            const trackUnsubscribed = (track) => {
+                if (track.kind === "video") {
+                    setVideoTracks((videoTracks) => videoTracks.filter((v) => v !== track));
+                } else if (track.kind === "audio") {
+                    setAudioTracks((audioTracks) => audioTracks.filter((a) => a !== track));
+                }
+            };
+    
+            participant.on("trackSubscribed", trackSubscribed);
+            participant.on("trackUnsubscribed", trackUnsubscribed);
+    
+            return () => {
+                setVideoTracks([]);
+                setAudioTracks([]);
+                participant.removeAllListeners();
+            };
 
-        const trackSubscribed = (track) => {
-            if (track.kind === "video") {
-                setVideoTracks((videoTracks) => [...videoTracks, track]);
-            } else if (track.kind === "audio") {
-                setAudioTracks((audioTracks) => [...audioTracks, track]);
-            }
-        };
-
-        const trackUnsubscribed = (track) => {
-            if (track.kind === "video") {
-                setVideoTracks((videoTracks) => videoTracks.filter((v) => v !== track));
-            } else if (track.kind === "audio") {
-                setAudioTracks((audioTracks) => audioTracks.filter((a) => a !== track));
-            }
-        };
-
-        participant.on("trackSubscribed", trackSubscribed);
-        participant.on("trackUnsubscribed", trackUnsubscribed);
-
-        return () => {
-            setVideoTracks([]);
-            setAudioTracks([]);
-            participant.removeAllListeners();
-        };
-    }, [participant]);
+        }
+        if (connected) {
+            configTracks()
+        }
+    }, [participant, connected]);
 
     useEffect(() => {
         audioTracks.forEach((audioTrack) => {

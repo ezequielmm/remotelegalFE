@@ -6,6 +6,7 @@ import actions from "../state/videoChat/videoChatAction";
 
 const useVideoChat = () => {
     const [error, setError] = useState(null);
+    const [connected, setConnected] = useState(false);
     const { state, dispatch } = useContext(GlobalStateContext);
 
     const generateToken = useCallback(
@@ -24,36 +25,38 @@ const useVideoChat = () => {
                     body: JSON.stringify({ name: roomName }),
                 };
                 const response = await fetch(`${process.env.REACT_APP_BASE_BE_URL}/api/rooms/token`, requestOptions);
+                if (!response.ok) throw new Error(response.statusText);
                 const tokenResult = await response.json();
 
                 dispatch(actions.setToken({ token: tokenResult.token, roomName }));
+                return tokenResult.token;
             } catch (error) {
+                setError(error.toString());
                 dispatch(actions.setTokenFail(JSON.stringify(error)));
             }
         },
         [dispatch]
     );
 
-    const createRoom = useCallback(
-        async (roomName) => {
+    const endRoom = useCallback(async (roomName: string) => {
+        try {
+            const session = await Auth.currentSession();
+            let idToken = session.getIdToken();
+            let jwt = idToken.getJwtToken();
+
             const requestOptions = {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    Authorization: "Bearer " + jwt,
+                    "Content-Type": "application/json",
+                },
                 body: JSON.stringify({ name: roomName }),
             };
-
-            try {
-                const response = await fetch(`${process.env.REACT_APP_BASE_BE_URL}/api/rooms/`, requestOptions);
-                const roomInfo = await response.json();
-                dispatch(actions.setRoomInfo(roomInfo));
-                return true;
-            } catch (error) {
-                setError(JSON.stringify(error));
-                return false;
-            }
-        },
-        [dispatch]
-    );
+            return await fetch(`${process.env.REACT_APP_BASE_BE_URL}/api/rooms/endRoom`, requestOptions);
+        } catch (error) {
+            setError(error);
+        }
+    }, []);
 
     const participantConnected = (participant: LocalParticipant | RemoteParticipant) => {
         if (participant.state === "connected") {
@@ -72,8 +75,10 @@ const useVideoChat = () => {
     };
 
     const joinToRoom = useCallback(
-        async (token: string, roomName: string) => {
+        async (roomName: string) => {
             try {
+                setConnected(false);
+                const token = await generateToken(roomName);
                 const room = await connect(token, {
                     name: roomName,
                 });
@@ -81,10 +86,11 @@ const useVideoChat = () => {
                 window.addEventListener("beforeunload", () => {
                     disconnect(room);
                 });
-
                 dispatch(actions.joinToRoom(room));
                 configParticipantsListeners(room);
+                setConnected(true);
             } catch (error) {
+                setConnected(false);
                 setError(JSON.stringify(error));
             }
         },
@@ -94,6 +100,8 @@ const useVideoChat = () => {
 
     const disconnect = (room) => {
         if (room && room.localParticipant.state === "connected") {
+            endRoom(room.name);
+
             room.localParticipant.tracks.forEach((trackPublication) => {
                 trackPublication.track.stop();
             });
@@ -104,13 +112,11 @@ const useVideoChat = () => {
             return room;
         }
     };
-
     return {
         room: state.room,
         token: state.room.token,
         joinToRoom,
-        generateToken,
-        createRoom,
+        connected,
         disconnect,
         error,
     };

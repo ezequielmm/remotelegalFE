@@ -30,13 +30,14 @@ import Logo from "../Logo";
 
 interface IControlsBar {
     room: Room;
+    connected: boolean;
     onEndCall: (ev) => void;
 }
 
-export default function ControlsBar({ room, onEndCall }: IControlsBar): ReactElement {
+export default function ControlsBar({ room, connected, onEndCall }: IControlsBar): ReactElement {
     const { localParticipant = null } = room || {};
 
-    const { isMuted, cameraEnabled, toggleAudio, toggleVideo } = useVideoStatus(localParticipant);
+    const { isMuted, cameraEnabled, toggleAudio, toggleVideo } = useVideoStatus(localParticipant, connected);
 
     const [isRecording, togglerRecording] = useState(false);
     // const [isMuted, togglerAudio] = useState(false);
@@ -72,6 +73,7 @@ export default function ControlsBar({ room, onEndCall }: IControlsBar): ReactEle
             </StyledLogo>
             <StyledVideoControls>
                 <Control
+                    disabled={!connected}
                     type="circle"
                     onClick={toggleAudio}
                     isToggled={isMuted}
@@ -84,6 +86,7 @@ export default function ControlsBar({ room, onEndCall }: IControlsBar): ReactEle
                     }
                 />
                 <Control
+                    disabled={!connected}
                     type="circle"
                     onClick={toggleVideo}
                     isToggled={cameraEnabled}
@@ -96,6 +99,7 @@ export default function ControlsBar({ room, onEndCall }: IControlsBar): ReactEle
                     }
                 />
                 <Control
+                    disabled={!connected}
                     isToggled={isRecording}
                     onClick={toggleRecord}
                     type="rounded"
@@ -109,6 +113,7 @@ export default function ControlsBar({ room, onEndCall }: IControlsBar): ReactEle
                     }
                 />
                 <Control
+                    disabled={!connected}
                     onClick={onEndCall}
                     type="rounded"
                     color="red"

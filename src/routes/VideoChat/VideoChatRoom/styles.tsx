@@ -75,3 +75,8 @@ export const StyledParticipantContainer = styled.div`
         margin-top: 0;
     }
 `;
+
+export const StyledParticipantLoading = styled.div`
+    color: #ffffff;
+`;
+
