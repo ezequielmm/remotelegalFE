@@ -4,7 +4,10 @@ import React from "react";
 import { IconComponentProps } from "@ant-design/icons/lib/components/Icon";
 
 interface CustomIconProps
-    extends Pick<IconComponentProps, "component" | "style" | "spin" | "rotate" | "className" | "height" | "width"> {
+    extends Pick<
+        IconComponentProps,
+        "component" | "style" | "spin" | "rotate" | "className" | "height" | "width" | "onClick"
+    > {
     icon: React.ComponentType;
 }
 const CustomIcon = ({ icon, ...props }: CustomIconProps) => <Icon component={icon} {...props} />;
