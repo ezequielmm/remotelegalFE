@@ -3,7 +3,6 @@ import React from "react";
 import { Story, Meta } from "@storybook/react/types-6-0";
 import { Card } from "antd";
 import Result from "../components/Result";
-import Button from "../components/Button";
 import Title from "../components/Typography/Title";
 import { ContainerMedium } from "./Decorators";
 
