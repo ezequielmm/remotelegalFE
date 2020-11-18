@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { Space, Row, Form, Alert } from "antd";
 import useInput from "../../../hooks/useInput";
 import isInputEmpty from "../../../helpers/isInputEmpty";
@@ -19,6 +19,7 @@ interface IModalProps {
 
 const CaseModal = ({ open, handleClose, fetchCases }: IModalProps) => {
     const [caseNumber, setCaseNumber] = React.useState("");
+    const elementRef = useRef(null);
     const { inputValue: caseNameValue, input: caseNameInput, invalid: caseNameInvalid, setValue } = useInput(
         isInputEmpty,
         {
@@ -31,6 +32,11 @@ const CaseModal = ({ open, handleClose, fetchCases }: IModalProps) => {
     const NETWORK_ERROR = "Something went wrong. Please try again.";
     const { error, data, loading, createCase, setData } = useCreateCase();
 
+    useEffect(() => {
+        if (data && elementRef.current) {
+            elementRef.current.focus();
+        }
+    }, [data]);
     const handleCloseAndRedirect = () => {
         if (loading) {
             return;
@@ -52,7 +58,7 @@ const CaseModal = ({ open, handleClose, fetchCases }: IModalProps) => {
     };
     return (
         <Modal destroyOnClose visible={open} centered onlyBody onCancel={handleCloseAndRedirect}>
-            <div tabIndex={-1} onKeyDown={handleKeyDownEvent}>
+            <div ref={elementRef} tabIndex={-1} onKeyDown={handleKeyDownEvent}>
                 {data ? (
                     <Result
                         title="Your case has been added successfully!"
