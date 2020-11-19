@@ -81,6 +81,9 @@ const useVideoChat = () => {
                 const token = await generateToken(roomName);
                 const room = await connect(token, {
                     name: roomName,
+                    video: {
+                        aspectRatio: 1.777777777777778,
+                    },
                 });
                 // Add a listener to disconnect from the room when a user closes their browser
                 window.addEventListener("beforeunload", () => {
