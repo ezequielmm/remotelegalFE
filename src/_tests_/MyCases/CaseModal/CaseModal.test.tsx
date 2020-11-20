@@ -53,6 +53,7 @@ test("fetch is called with the right parameters", async () => {
     fireEvent.change(caseNumberInput, { target: { value: "test1" } });
     fireEvent.click(button);
     await waitForDomChange();
+    expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith(`${process.env.REACT_APP_BASE_BE_URL}/api/Cases`, {
         body: '{"name":"test1","caseNumber":"test1"}',
         headers: { Accept: "application/json", "Content-Type": "application/json", Authorization: "Bearer test1" },

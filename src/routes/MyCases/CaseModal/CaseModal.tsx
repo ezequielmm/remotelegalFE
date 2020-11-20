@@ -115,7 +115,6 @@ const CaseModal = ({ open, handleClose, fetchCases }: IModalProps) => {
                                         <Button
                                             data-testid="Add case"
                                             htmlType="submit"
-                                            onClick={() => createCase(caseNameValue, caseNumber)}
                                             type="primary"
                                             disabled={!caseNameValue.length || loading}
                                         >
