@@ -29,7 +29,7 @@ const VideoChatRoom = ({
     ]);
 
     const tryAgain = () => {}; // TODO fetch again
-    console.log(connected);
+
     if (connected === null) {
         return (
             <Row justify="center" align="middle" style={{ height: "100vh" }}>
