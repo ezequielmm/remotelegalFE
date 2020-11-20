@@ -6,7 +6,7 @@ import actions from "../state/videoChat/videoChatAction";
 
 const useVideoChat = () => {
     const [error, setError] = useState(null);
-    const [connected, setConnected] = useState(false);
+    const [connected, setConnected] = useState(null);
     const { state, dispatch } = useContext(GlobalStateContext);
 
     const generateToken = useCallback(
@@ -77,7 +77,6 @@ const useVideoChat = () => {
     const joinToRoom = useCallback(
         async (roomName: string) => {
             try {
-                setConnected(false);
                 const token = await generateToken(roomName);
                 const room = await connect(token, {
                     name: roomName,

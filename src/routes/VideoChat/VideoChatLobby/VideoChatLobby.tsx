@@ -4,19 +4,18 @@ import Button from "../../../components/Button";
 import styled from "styled-components";
 import Title from "../../../components/Typography/Title";
 
+const StyledForm = styled.div`
+    border: solid 1px #eee;
+    padding: 30px;
+    margin: 20px auto;
+    width: 600px;
+    height: 350px;
+`;
 const VideoChatLobby = ({ roomName, handleSubmit, error }) => {
     const layout = {
         labelCol: { span: 4 },
         wrapperCol: { span: 14 },
     };
-
-    const StyledForm = styled.div`
-        border: solid 1px #eee;
-        padding: 30px;
-        margin: 20px auto;
-        width: 600px;
-        height: 350px;
-    `;
 
     return (
         <StyledForm>

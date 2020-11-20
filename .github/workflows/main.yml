@@ -1,107 +1,106 @@
 name: Build, Test & Deploy
 
 on:
-  push:
-    branches:
-      - develop
-      - qa
-  pull_request:
-    branches:
-      - '*'
+    push:
+        branches:
+            - develop
+            - qa
+    pull_request:
+        branches:
+            - "*"
 
 jobs:
-  build-test:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: Cache node modules
-      id: yarn-cache
-      uses: actions/cache@v2
-      env:
-        cache-name: cache-node-modules
-      with:
-        path: '**/node_modules'
-        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-build-${{ env.cache-name }}-
-          ${{ runner.os }}-build-
-          ${{ runner.os }}-
-    - name: Install Dependencies
-      if: steps.yarn-cache.outputs.cache-hit != 'true'
-      run: yarn install
+    build-test:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+            - name: Cache node modules
+              id: yarn-cache
+              uses: actions/cache@v2
+              env:
+                  cache-name: cache-node-modules
+              with:
+                  path: "**/node_modules"
+                  key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock') }}
+                  restore-keys: |
+                      ${{ runner.os }}-build-${{ env.cache-name }}-
+                      ${{ runner.os }}-build-
+                      ${{ runner.os }}-
+            - name: Install Dependencies
+              if: steps.yarn-cache.outputs.cache-hit != 'true'
+              run: yarn install
 
-    - name: Extract Branch Name for ENV file replacement
-      id: extract-branch-for-replacement
-      shell: bash
-      run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+            - name: Extract Branch Name for ENV file replacement
+              id: extract-branch-for-replacement
+              shell: bash
+              run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
 
-    - name: Getting appropriate ENV file
-      if: endsWith(github.ref, 'develop') || endsWith(github.ref, 'qa')
-      uses: canastro/copy-file-action@master
-      with:
-        source: ./env/.env.${{ steps.extract-branch-for-replacement.outputs.branch }}
-        target: .env
+            - name: Getting appropriate ENV file
+              if: endsWith(github.ref, 'develop') || endsWith(github.ref, 'qa')
+              uses: canastro/copy-file-action@master
+              with:
+                  source: ./env/.env.${{ steps.extract-branch-for-replacement.outputs.branch }}
+                  target: .env
 
-    - name: Build
-      run: yarn build
-    - name: Test
-      run: CI=true yarn test
-    - name: Upload publish to GitHub Store
-      uses: actions/upload-artifact@master
-      with:
-        name: publish-build
-        path: ./build
-    
-  pack-deploy:
-    runs-on: ubuntu-latest
-    needs: [build-test]
-    if:
-      contains('
-        refs/heads/develop
-        refs/heads/qa
-      ', github.ref)
-    steps:
-    - uses: actions/checkout@v2
-    - name: Extract Branch Name
-      id: extract-branch
-      shell: bash
-      run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+            - name: Build
+              run: yarn build
+            - name: Test
+              run: CI=true yarn test
+            - name: Upload publish to GitHub Store
+              uses: actions/upload-artifact@master
+              with:
+                  name: publish-build
+                  path: ./build
 
-    - name: Getting appropriate ENV file
-      uses: canastro/copy-file-action@master
-      with:
-        source: ./env/.env.${{ steps.extract-branch.outputs.branch }}
-        target: .env
+    pack-deploy:
+        runs-on: ubuntu-latest
+        needs: [build-test]
+        if: contains('
+            refs/heads/develop
+            refs/heads/qa
+            ', github.ref)
+        steps:
+            - uses: actions/checkout@v2
+            - name: Extract Branch Name
+              id: extract-branch
+              shell: bash
+              run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
 
-    - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-east-1
-    - name: Download publish from GitHub Store
-      uses: actions/download-artifact@master
-      with:
-        name: publish-build
-        path: ./build
-        
-    - name: Extract Bucket & CloudFront Distribution Id for Develop
-      if: ${{ steps.extract-branch.outputs.branch == 'develop' }}
-      shell: bash
-      env:
-        DIST: ${{ secrets.DISTRIBUTION_DEV }}
-      run: |
-        echo "DISTRIBUTION=$DIST" >> $GITHUB_ENV
-        echo "BUCKET=prp-fe-develop" >> $GITHUB_ENV
-    - name: Extract Bucket & CloudFront Distribution Id for QA
-      if: ${{ steps.extract-branch.outputs.branch == 'qa' }}
-      shell: bash
-      env:
-        DIST: ${{ secrets.DISTRIBUTION_QA }}
-      run: |
-        echo "DISTRIBUTION=$DIST" >> $GITHUB_ENV
-        echo "BUCKET=prp-fe-qa" >> $GITHUB_ENV
-    - name: Upload publish to S3
-      run: |
-        aws s3 sync ./build s3://$BUCKET --delete
-        aws cloudfront create-invalidation --distribution-id $DISTRIBUTION --paths "/"
+            - name: Getting appropriate ENV file
+              uses: canastro/copy-file-action@master
+              with:
+                  source: ./env/.env.${{ steps.extract-branch.outputs.branch }}
+                  target: .env
+
+            - name: Configure AWS Credentials
+              uses: aws-actions/configure-aws-credentials@v1
+              with:
+                  aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+                  aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+                  aws-region: us-east-1
+            - name: Download publish from GitHub Store
+              uses: actions/download-artifact@master
+              with:
+                  name: publish-build
+                  path: ./build
+
+            - name: Extract Bucket & CloudFront Distribution Id for Develop
+              if: ${{ steps.extract-branch.outputs.branch == 'develop' }}
+              shell: bash
+              env:
+                  DIST: ${{ secrets.DISTRIBUTION_DEV }}
+              run: |
+                  echo "DISTRIBUTION=$DIST" >> $GITHUB_ENV
+                  echo "BUCKET=prp-fe-develop" >> $GITHUB_ENV
+            - name: Extract Bucket & CloudFront Distribution Id for QA
+              if: ${{ steps.extract-branch.outputs.branch == 'qa' }}
+              shell: bash
+              env:
+                  DIST: ${{ secrets.DISTRIBUTION_QA }}
+              run: |
+                  echo "DISTRIBUTION=$DIST" >> $GITHUB_ENV
+                  echo "BUCKET=prp-fe-qa" >> $GITHUB_ENV
+            - name: Upload publish to S3
+              run: |
+                  aws s3 sync ./build s3://$BUCKET --delete
+                  aws cloudfront create-invalidation --distribution-id $DISTRIBUTION --paths "/"

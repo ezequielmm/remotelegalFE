@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { LocalParticipant, RemoteParticipant } from "twilio-video";
 import { StyledParticipantMask, StyledIdentityBox } from "./styles";
+import Text from "../../../components/Typography/Text";
 
 const Participant = ({ participant }: { participant: LocalParticipant | RemoteParticipant }) => {
     const [videoTracks, setVideoTracks] = useState([]);
@@ -70,9 +71,9 @@ const Participant = ({ participant }: { participant: LocalParticipant | RemotePa
             <video ref={videoRef} autoPlay />
             <audio ref={audioRef} autoPlay />
             <StyledIdentityBox>
-                <span>
-                    <b>{participant.identity}</b>
-                </span>
+                <Text size="small" weight="bold" state="white">
+                    {participant.identity}
+                </Text>
             </StyledIdentityBox>
         </StyledParticipantMask>
     );

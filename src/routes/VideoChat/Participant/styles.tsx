@@ -8,7 +8,8 @@ export const StyledParticipantMask = styled.div`
     height: 100%;
     background: ${({ theme }) => theme.colors.neutrals[0]};
     position: relative;
-    video {
+    video,
+    img {
         height: 100%;
         max-width: 100%;
     }
@@ -33,10 +34,10 @@ export const StyledParticipantMask = styled.div`
 
 export const StyledIdentityBox = styled.div`
     position: absolute;
-    bottom: 12px;
-    left: 15px;
-    font-size: ${({ theme }) => getREM(theme.default.fontSizes[8])};
-    color: ${({ theme }) => theme.colors.neutrals[5]};
+    bottom: 0;
+    left: 0;
+    padding: ${({ theme }) => `${getREM(theme.default.spaces[4] / 2)} ${getREM(theme.default.spaces[5] / 2)}`};
     display: flex;
     flex-direction: column;
+    max-width: 100%;
 `;

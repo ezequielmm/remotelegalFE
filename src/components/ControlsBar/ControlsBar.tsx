@@ -32,27 +32,31 @@ interface IControlsBar {
     room: Room;
     connected: boolean;
     onEndCall: (ev) => void;
+    exhibitsOpen: boolean;
+    togglerExhibits: React.Dispatch<React.SetStateAction<boolean>>;
+    realTimeOpen: boolean;
+    togglerRealTime: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export default function ControlsBar({ room, connected, onEndCall }: IControlsBar): ReactElement {
+export default function ControlsBar({
+    room,
+    onEndCall,
+    exhibitsOpen,
+    togglerExhibits,
+    realTimeOpen,
+    togglerRealTime,
+    connected,
+}: IControlsBar): ReactElement {
     const { localParticipant = null } = room || {};
 
     const { isMuted, cameraEnabled, toggleAudio, toggleVideo } = useVideoStatus(localParticipant, connected);
 
     const [isRecording, togglerRecording] = useState(false);
-    // const [isMuted, togglerAudio] = useState(false);
-    // const [cameraEnabled, togglerVideo] = useState(false);
-    const [exhibitsOpen, togglerExhibits] = useState(false);
-    const [realTimeOpen, togglerRealTime] = useState(false);
     const [breakroomsOpen, togglerBreakrooms] = useState(false);
     const [summaryOpen, togglerSummary] = useState(false);
     const [supportOpen, togglerSupport] = useState(false);
 
     const toggleRecord = () => togglerRecording(!isRecording);
-    // const toggleAudio = () => togglerAudio(!isMuted);
-    // const toggleVideo = () => togglerVideo(!cameraEnabled);
-    const toggleExhibits = () => togglerExhibits(!exhibitsOpen);
-    const toggleRealTime = () => togglerRealTime(!realTimeOpen);
     const toggleBreakrooms = () => togglerBreakrooms(!breakroomsOpen);
     const toggleSummary = () => togglerSummary(!summaryOpen);
     const toggleSupport = () => togglerSupport(!supportOpen);
@@ -69,11 +73,10 @@ export default function ControlsBar({ room, connected, onEndCall }: IControlsBar
     return (
         <StyledContainer>
             <StyledLogo>
-                <Logo version="light" />
+                <Logo version="light" height="100%" />
             </StyledLogo>
             <StyledVideoControls>
                 <Control
-                    disabled={!connected}
                     type="circle"
                     onClick={toggleAudio}
                     isToggled={isMuted}
@@ -86,7 +89,6 @@ export default function ControlsBar({ room, connected, onEndCall }: IControlsBar
                     }
                 />
                 <Control
-                    disabled={!connected}
                     type="circle"
                     onClick={toggleVideo}
                     isToggled={cameraEnabled}
@@ -99,7 +101,6 @@ export default function ControlsBar({ room, connected, onEndCall }: IControlsBar
                     }
                 />
                 <Control
-                    disabled={!connected}
                     isToggled={isRecording}
                     onClick={toggleRecord}
                     type="rounded"
@@ -113,11 +114,10 @@ export default function ControlsBar({ room, connected, onEndCall }: IControlsBar
                     }
                 />
                 <Control
-                    disabled={!connected}
-                    onClick={onEndCall}
                     type="rounded"
                     color="red"
                     label="End Deposition"
+                    onClick={onEndCall}
                     icon={<Icon icon={EndCallIcon} style={{ fontSize: "1.625rem" }} />}
                 />
             </StyledVideoControls>
@@ -125,14 +125,14 @@ export default function ControlsBar({ room, connected, onEndCall }: IControlsBar
                 <StyledPrimaryControls>
                     <Control
                         isToggled={exhibitsOpen}
-                        onClick={toggleExhibits}
+                        onClick={() => togglerExhibits(!exhibitsOpen)}
                         type="simple"
                         label="Exhibits"
                         icon={<Icon icon={ExhibitsIcon} style={{ fontSize: "1.625rem" }} />}
                     />
                     <Control
                         isToggled={realTimeOpen}
-                        onClick={toggleRealTime}
+                        onClick={() => togglerRealTime(!realTimeOpen)}
                         type="simple"
                         label="Real Time"
                         icon={<Icon icon={RealTimeIcon} style={{ fontSize: "1.625rem" }} />}

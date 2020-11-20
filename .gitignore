@@ -139,6 +139,7 @@ yarn-error.log*
 /build
 
 # misc
+/public/webviewer
 .DS_Store
 .env.local
 .env.development.local

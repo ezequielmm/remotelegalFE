@@ -36,6 +36,7 @@ export const StyledLogo = styled.div`
     & > * {
         height: ${({ theme }) => getREM(theme.default.spaces[8])}; // TODO refactor spacing
         width: auto;
+        display: flex;
     }
 `;
 

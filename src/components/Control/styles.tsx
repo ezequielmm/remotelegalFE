@@ -71,12 +71,6 @@ export const StyledRoundedControl = styled(roundButton)`
         margin-bottom: 0;
         margin-left: 0;
     }
-
-    &:hover,
-    :active,
-    :focus {
-        background: #0b649c;
-    }
 `;
 
 export const StyledRoundedButton = styled(StyledRoundedControl)`

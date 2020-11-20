@@ -12,7 +12,7 @@ import Dashboard from "../routes/dashboard/dashboard";
 import Login from "../routes/Login";
 import SignUp from "../routes/SignUp";
 import MyCases from "../routes/MyCases";
-import VideoChat from "../routes/VideoChat/VideoChat/VideoChat";
+import VideoChat from "../routes/VideoChat";
 import Authenticator from "./authenticator/authenticator";
 import RouteWithLayout from "./RouteWithLayout/RouteWithLayout";
 

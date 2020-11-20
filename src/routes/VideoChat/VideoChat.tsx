@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from "react";
-import Lobby from "../VideoChatLobby/VideoChatLobby";
-import VideoChatRoom from "../VideoChatRoom/VideoChatRoom";
-import useVideoChat from "../../../hooks/useVideoChat";
+import Lobby from "./VideoChatLobby";
+import VideoChatRoom from "./VideoChatRoom";
+import useVideoChat from "../../hooks/useVideoChat";
 
 const VideoChat = () => {
     const [roomName, setRoomName] = useState("");
