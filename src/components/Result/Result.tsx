@@ -15,7 +15,7 @@ enum CustomStatus {
 }
 
 function isResultStatusType(status: string | number): status is ResultStatusType {
-    return (status as ResultStatusType) !== undefined;
+    return ["403", "404", "500", "success", "error", "info", "warning"].includes(String(status as string));
 }
 
 export interface IResultProps extends Omit<ResultProps, "status"> {
