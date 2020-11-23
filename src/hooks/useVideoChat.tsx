@@ -80,6 +80,7 @@ const useVideoChat = () => {
                 const token = await generateToken(roomName);
                 const room = await connect(token, {
                     name: roomName,
+                    audio: true,
                     video: {
                         aspectRatio: 1.777777777777778,
                     },
