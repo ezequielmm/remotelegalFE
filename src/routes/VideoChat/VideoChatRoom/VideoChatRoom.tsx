@@ -12,11 +12,11 @@ import * as CONSTANTS from "../../../constants/inDepo";
 
 const VideoChatRoom = ({
     room,
-    connected,
+    loading,
     handleLogout,
 }: {
     room: Room;
-    connected: boolean;
+    loading: boolean;
     handleLogout: (ev: any) => any;
 }) => {
     const [realTimeOpen, togglerRealTime] = useState(false);
@@ -30,14 +30,14 @@ const VideoChatRoom = ({
 
     const tryAgain = () => {}; // TODO fetch again
 
-    if (connected === null) {
+    if (loading) {
         return (
             <Row justify="center" align="middle" style={{ height: "100vh" }}>
                 <Spin size="large" />
             </Row>
         );
     }
-    if (connected === false) {
+    if (!room) {
         return (
             <StyledInDepoContainer>
                 <Row justify="center" align="middle" style={{ height: "100%" }}>
@@ -66,7 +66,7 @@ const VideoChatRoom = ({
     }
 
     return (
-        connected && (
+        room && (
             <StyledInDepoContainer>
                 <StyledInDepoLayout>
                     <Exhibits onClick={() => togglerExhibits(false)} visible={exhibitsOpen} />
@@ -79,12 +79,11 @@ const VideoChatRoom = ({
                 </StyledInDepoLayout>
                 <StyledRoomFooter>
                     <ControlsBar
-                        connected={connected}
                         realTimeOpen={realTimeOpen}
                         togglerRealTime={togglerRealTime}
                         exhibitsOpen={exhibitsOpen}
                         togglerExhibits={togglerExhibits}
-                        room={room}
+                        localParticipant={room?.localParticipant}
                         onEndCall={handleLogout}
                     />
                 </StyledRoomFooter>

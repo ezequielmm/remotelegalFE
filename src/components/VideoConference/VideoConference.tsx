@@ -28,8 +28,8 @@ const VideoConference = ({ deponent, antendees, layoutSize }: IVideoConferencePr
             </StyledDeponentContainer>
             <StyledAttendeesContainer>
                 {Array.from(antendees.values()).map((participant: RemoteParticipant) => (
-                    <StyledParticipantContainer>
-                        <Participant key={participant.sid} participant={participant} />
+                    <StyledParticipantContainer key={participant.sid}>
+                        <Participant participant={participant} />
                     </StyledParticipantContainer>
                 ))}
             </StyledAttendeesContainer>

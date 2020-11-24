@@ -1,11 +1,13 @@
-import React, { useState, useCallback } from "react";
-import Lobby from "./VideoChatLobby";
-import VideoChatRoom from "./VideoChatRoom";
-import useVideoChat from "../../hooks/useVideoChat";
+import React, { useState, useCallback, useContext } from "react";
+import Lobby from "./VideoChatLobby/VideoChatLobby";
+import VideoChatRoom from "./VideoChatRoom/VideoChatRoom";
+import { useJoinToRoom, disconnect } from "../../hooks/VideoChat/hooks";
+import { GlobalStateContext } from "../../state/GlobalState";
 
 const VideoChat = () => {
     const [roomName, setRoomName] = useState("");
-    const { token, room, joinToRoom, connected, disconnect, error } = useVideoChat();
+    const { state, dispatch } = useContext(GlobalStateContext);
+    const [joinToRoom, loading, error] = useJoinToRoom();
 
     const handleSubmit = useCallback(
         async ({ roomName }) => {
@@ -15,12 +17,13 @@ const VideoChat = () => {
         [joinToRoom]
     );
 
-    if (!token) return <Lobby roomName={roomName} handleSubmit={handleSubmit} error={error} />;
+    if (!state.room.currentRoom && !loading)
+        return <Lobby roomName={roomName} handleSubmit={handleSubmit} error={error} />;        
     return (
         <VideoChatRoom
-            room={room.currentRoom}
-            connected={connected}
-            handleLogout={() => disconnect(room.currentRoom)}
+            room={state.room.currentRoom}
+            loading={loading}
+            handleLogout={() => disconnect(state.room.currentRoom, dispatch)}
         />
     );
 };

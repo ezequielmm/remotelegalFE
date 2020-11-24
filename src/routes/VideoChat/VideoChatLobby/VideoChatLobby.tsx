@@ -38,7 +38,7 @@ const VideoChatLobby = ({ roomName, handleSubmit, error }) => {
                         Join to room
                     </Button>
                 </Form.Item>
-                <div>{error}</div>
+                {/* <div>{error}</div> */}
             </Form>
         </StyledForm>
     );
