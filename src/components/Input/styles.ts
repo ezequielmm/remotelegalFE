@@ -16,9 +16,10 @@ export const StyledInput = styled(AntInput).attrs((props: IInputProps) => ({
                 max-height: ${maxHeight};
             `;
 
+        // TODO add color token to box shadow properties
         const invalidStyles = `
                 border-color: ${errorColor};
-                box-shadow: 0 0 0 2px rgba(${errorColor}, 0.2);
+                box-shadow: 0 0 0 2px rgba(189, 36, 20, 0.2);
             `;
 
         const styles = `
