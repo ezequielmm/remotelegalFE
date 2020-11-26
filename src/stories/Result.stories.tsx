@@ -1,7 +1,7 @@
 import React from "react";
 // also exported from '@storybook/react' if you can deal with breaking changes in 6.1
 import { Story, Meta } from "@storybook/react/types-6-0";
-import { Card } from "antd";
+import Card from "../components/Card";
 import Result from "../components/Result";
 import Title from "../components/Typography/Title";
 import { ContainerMedium } from "./Decorators";

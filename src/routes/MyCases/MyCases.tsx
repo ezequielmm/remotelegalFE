@@ -1,5 +1,6 @@
 import React from "react";
-import { Row, Col, Card, Space } from "antd";
+import { Row, Col, Space } from "antd";
+import Card from "../../components/Card";
 import Table from "../../components/Table";
 import Button from "../../components/Button";
 import Result from "../../components/Result";

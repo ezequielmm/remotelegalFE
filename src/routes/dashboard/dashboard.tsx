@@ -1,6 +1,7 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
-import { Card, Col, Row } from "antd";
+import { Col, Row } from "antd";
+import Card from "../../components/Card";
 import Result from "../../components/Result";
 import Button from "../../components/Button";
 

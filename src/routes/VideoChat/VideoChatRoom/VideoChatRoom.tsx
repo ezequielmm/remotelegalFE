@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Room } from "twilio-video";
-import { Row, Col, Card, Spin } from "antd";
+import { Row, Col, Spin } from "antd";
+import Card from "../../../components/Card";
 import Result from "../../../components/Result";
 import Button from "../../../components/Button";
 import Exhibits from "../../../components/Exhibits";
