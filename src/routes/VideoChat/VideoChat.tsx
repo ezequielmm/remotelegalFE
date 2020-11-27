@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useContext } from "react";
+import React, { useState, useCallback, useContext, useEffect } from "react";
 import Lobby from "./VideoChatLobby/VideoChatLobby";
 import VideoChatRoom from "./VideoChatRoom/VideoChatRoom";
 import { useJoinToRoom, disconnect } from "../../hooks/VideoChat/hooks";
@@ -8,6 +8,15 @@ const VideoChat = () => {
     const [roomName, setRoomName] = useState("");
     const { state, dispatch } = useContext(GlobalStateContext);
     const [joinToRoom, loading, error] = useJoinToRoom();
+    const { message, currentRoom } = state.room;
+
+    useEffect(() => {
+        if (message.module === "endDepo") {
+            disconnect(currentRoom, dispatch);
+        }
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [message]);
 
     const handleSubmit = useCallback(
         async ({ roomName }) => {
@@ -18,14 +27,8 @@ const VideoChat = () => {
     );
 
     if (!state.room.currentRoom && !loading)
-        return <Lobby roomName={roomName} handleSubmit={handleSubmit} error={error} />;        
-    return (
-        <VideoChatRoom
-            room={state.room.currentRoom}
-            loading={loading}
-            handleLogout={() => disconnect(state.room.currentRoom, dispatch)}
-        />
-    );
+        return <Lobby roomName={roomName} handleSubmit={handleSubmit} error={error} />;
+    return <VideoChatRoom room={state.room.currentRoom} loading={loading} />;
 };
 
 export default VideoChat;

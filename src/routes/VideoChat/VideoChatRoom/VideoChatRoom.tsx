@@ -11,15 +11,7 @@ import ControlsBar from "../../../components/ControlsBar/ControlsBar";
 import { StyledInDepoContainer, StyledInDepoLayout, StyledRoomFooter } from "./styles";
 import * as CONSTANTS from "../../../constants/inDepo";
 
-const VideoChatRoom = ({
-    room,
-    loading,
-    handleLogout,
-}: {
-    room: Room;
-    loading: boolean;
-    handleLogout: (ev: any) => any;
-}) => {
+const VideoChatRoom = ({ room, loading }: { room: Room; loading: boolean }) => {
     const [realTimeOpen, togglerRealTime] = useState(false);
     const [exhibitsOpen, togglerExhibits] = useState(false);
     const [videoLayoutSize, setVideoLayoutSize] = useState(0);
@@ -85,7 +77,6 @@ const VideoChatRoom = ({
                         exhibitsOpen={exhibitsOpen}
                         togglerExhibits={togglerExhibits}
                         localParticipant={room?.localParticipant}
-                        onEndCall={handleLogout}
                     />
                 </StyledRoomFooter>
             </StyledInDepoContainer>

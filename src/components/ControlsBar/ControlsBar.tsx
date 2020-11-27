@@ -1,7 +1,7 @@
 import React, { ReactElement, useState } from "react";
 import { Dropdown, Menu } from "antd";
 import { LocalParticipant } from "twilio-video";
-import { useVideoStatus } from "../../hooks/VideoChat/hooks";
+import { useVideoStatus, useEndDepo } from "../../hooks/VideoChat/hooks";
 import {
     StyledContainer,
     StyledLogo,
@@ -30,7 +30,6 @@ import Logo from "../Logo";
 
 interface IControlsBar {
     localParticipant: Pick<LocalParticipant, "audioTracks" | "videoTracks">;
-    onEndCall: (ev) => void;
     exhibitsOpen: boolean;
     togglerExhibits: React.Dispatch<React.SetStateAction<boolean>>;
     realTimeOpen: boolean;
@@ -39,18 +38,17 @@ interface IControlsBar {
 
 export default function ControlsBar({
     localParticipant,
-    onEndCall,
     exhibitsOpen,
     togglerExhibits,
     realTimeOpen,
     togglerRealTime,
 }: IControlsBar): ReactElement {
     const { isAudioEnabled, cameraEnabled, toggleAudio, toggleVideo } = useVideoStatus(localParticipant);
-
     const [isRecording, togglerRecording] = useState(false);
     const [breakroomsOpen, togglerBreakrooms] = useState(false);
     const [summaryOpen, togglerSummary] = useState(false);
     const [supportOpen, togglerSupport] = useState(false);
+    const { setEndDepo } = useEndDepo();
 
     const toggleRecord = () => togglerRecording(!isRecording);
     const toggleBreakrooms = () => togglerBreakrooms(!breakroomsOpen);
@@ -114,7 +112,7 @@ export default function ControlsBar({
                 />
                 <Control
                     data-testid="end"
-                    onClick={onEndCall}
+                    onClick={() => setEndDepo(true)}
                     type="rounded"
                     color="red"
                     label="End Deposition"

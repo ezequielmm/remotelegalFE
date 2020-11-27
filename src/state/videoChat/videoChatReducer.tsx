@@ -1,6 +1,6 @@
 import { Reducer } from "react";
-import { Room } from "twilio-video";
-import { IAction } from "../types";
+import { LocalDataTrack, Room } from "twilio-video";
+import { IAction, DataTrackMessage } from "../types";
 import { ACTION_TYPE } from "./videoChatAction";
 
 interface IRoom {
@@ -8,6 +8,8 @@ interface IRoom {
     info?: object;
     currentRoom?: Room;
     error?: string;
+    message?: DataTrackMessage;
+    dataTrack?: LocalDataTrack | null;
 }
 
 export const RoomReducerIntialState: IRoom = {
@@ -15,6 +17,8 @@ export const RoomReducerIntialState: IRoom = {
     info: null,
     currentRoom: null,
     error: "",
+    dataTrack: null,
+    message: { module: "", value: "" },
 };
 
 const RoomReducer: Reducer<IRoom, IAction> = (state: IRoom, action: IAction): IRoom => {
@@ -34,23 +38,33 @@ const RoomReducer: Reducer<IRoom, IAction> = (state: IRoom, action: IAction): IR
                 ...state,
                 error: action.payload,
             };
+        case ACTION_TYPE.VIDEO_CHAT_ADD_DATA_TRACK:
+            return {
+                ...state,
+                dataTrack: action.payload,
+            };
         case ACTION_TYPE.VIDEO_CHAT_JOIN_TO_ROOM:
             return {
                 ...state,
                 currentRoom: action.payload,
             };
+        case ACTION_TYPE.SEND_MESSAGE:
+            return {
+                ...state,
+                message: action.payload,
+            };
         case ACTION_TYPE.VIDEO_CHAT_DISCONNECT:
-            return {};
+            return { ...state, token: "", message: { module: "", value: "" }, currentRoom: null, dataTrack: null };
         case ACTION_TYPE.VIDEO_CHAT_ADD_PARTICIPANT:
             const currentRoomToAddParticipant = state.currentRoom;
-            currentRoomToAddParticipant.participants.set(action.payload.sid, action.payload);
+            currentRoomToAddParticipant?.participants?.set(action.payload.sid, action.payload);
             return {
                 ...state,
                 currentRoom: currentRoomToAddParticipant,
             };
         case ACTION_TYPE.VIDEO_CHAT_REMOVE_PARTICIPANT:
             const currentRoomToRemoveParticipant = state.currentRoom;
-            currentRoomToRemoveParticipant.participants.delete(action.payload.sid);
+            currentRoomToRemoveParticipant?.participants?.delete(action.payload.sid);
 
             return {
                 ...state,

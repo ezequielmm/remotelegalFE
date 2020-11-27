@@ -9,3 +9,5 @@ export interface IGlobalReducer {
     reducer: IReducer;
     initalState: any;
 }
+
+export type DataTrackMessage = { module: string; value: any } | null;

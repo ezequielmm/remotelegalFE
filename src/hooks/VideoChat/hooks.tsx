@@ -1,6 +1,13 @@
 import { Auth } from "aws-amplify";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
-import { connect, LocalParticipant, RemoteParticipant } from "twilio-video";
+import {
+    connect,
+    createLocalTracks,
+    LocalDataTrack,
+    LocalParticipant,
+    RemoteParticipant,
+    DataTrack,
+} from "twilio-video";
 import { GlobalStateContext } from "../../state/GlobalState";
 import useAsyncCallback from "../useAsyncCallback";
 import actions from "../../state/videoChat/videoChatAction";
@@ -9,16 +16,43 @@ enum VIDEO_CHAT_TRACK_TYPE {
     VIDEO_TRACK_KIND = "video",
     AUDIO_TRACK_KIND = "audio",
 }
+const dataTrack = new LocalDataTrack({ maxPacketLifeTime: null, maxRetransmits: null });
+
+export function useDataTrack(tracks: DataTrack[]): void {
+    const { dispatch } = useContext(GlobalStateContext);
+    useEffect(() => {
+        const parseMessage = (data: string) => {
+            try {
+                dispatch(actions.sendMessage(JSON.parse(data)));
+            } catch {
+                // TODO: Decide how to handle errors
+            }
+        };
+        const handleMessages = (on: boolean) => {
+            return tracks.forEach((track) =>
+                on ? track.on("message", parseMessage) : track.off("message", parseMessage)
+            );
+        };
+
+        handleMessages(true);
+
+        return () => {
+            handleMessages(false);
+        };
+    }, [tracks, dispatch]);
+}
 
 const configParticipantsListeners = (room, dispatch) => {
     const participantConnected = (participant: LocalParticipant | RemoteParticipant) => {
-        if (participant.state === "connected") {
+        if (participant.state === "connected" && room) {
             dispatch(actions.addRemoteParticipant(participant));
         }
     };
 
     const participantDisconnected = (participant: LocalParticipant | RemoteParticipant) => {
-        dispatch(actions.removeRemoteParticipant(participant));
+        if (room) {
+            dispatch(actions.removeRemoteParticipant(participant));
+        }
     };
     room.on("participantConnected", participantConnected);
     room.on("participantDisconnected", participantDisconnected);
@@ -63,38 +97,36 @@ export const useJoinToRoom = () => {
     const { dispatch } = useContext(GlobalStateContext);
     return useAsyncCallback(async (roomName) => {
         const { token } = await generateToken(roomName);
-        const room = await connect(token, {
-            name: roomName,
-            audio: true,
-            video: {
-                aspectRatio: 1.777777777777778,
-            },
-        });
+        const room = await createLocalTracks({ audio: true, video: { aspectRatio: 1.777777777777778 } }).then(
+            (localTracks) => {
+                return connect(token, { name: roomName, tracks: [...localTracks, dataTrack] });
+            }
+        );
         // Add a listener to disconnect from the room when a user closes their browser
         window.addEventListener("beforeunload", () => {
-            disconnect(room, disconnect);
+            disconnect(room, dispatch);
         });
+        dispatch(actions.addDataTrack(dataTrack));
         dispatch(actions.joinToRoom(room));
         configParticipantsListeners(room, dispatch);
     }, []);
 };
 
-export const disconnect = (room, dispatch) => {
+export const disconnect = (room, dispatch, killRoom?) => {
     if (room && room.localParticipant.state === "connected") {
-        endRoom(room.name);
-
         room.localParticipant.tracks.forEach((trackPublication) => {
-            trackPublication.track.stop();
+            return trackPublication.kind === "audio" || trackPublication.kind === "video"
+                ? trackPublication.track.stop()
+                : null;
         });
         room.disconnect();
         dispatch(actions.disconnect());
-        return null;
-    } else {
-        return room;
     }
+    return killRoom ? endRoom(room.name) : room;
 };
 
 export const useVideoChatRef = (participant: LocalParticipant | RemoteParticipant) => {
+    const [dataTracks, setDataTracks] = useState([]);
     const [videoTracks, setVideoTracks] = useState([]);
     const [audioTracks, setAudioTracks] = useState([]);
 
@@ -110,21 +142,28 @@ export const useVideoChatRef = (participant: LocalParticipant | RemoteParticipan
     useEffect(() => {
         setVideoTracks(trackpubsToTracks(participant.videoTracks));
         setAudioTracks(trackpubsToTracks(participant.audioTracks));
+        setDataTracks(trackpubsToTracks(participant.dataTracks));
 
         const trackSubscribed = (track) => {
             if (track.kind === VIDEO_CHAT_TRACK_TYPE.VIDEO_TRACK_KIND) {
-                setVideoTracks((videoTracks) => [...videoTracks, track]);
-            } else if (track.kind === VIDEO_CHAT_TRACK_TYPE.AUDIO_TRACK_KIND) {
-                setAudioTracks((audioTracks) => [...audioTracks, track]);
+                return setVideoTracks((videoTracks) => [...videoTracks, track]);
             }
+            if (track.kind === VIDEO_CHAT_TRACK_TYPE.AUDIO_TRACK_KIND) {
+                return setAudioTracks((audioTracks) => [...audioTracks, track]);
+            }
+
+            return setDataTracks((dataTracks) => [...dataTracks, track]);
         };
 
         const trackUnsubscribed = (track) => {
             if (track.kind === VIDEO_CHAT_TRACK_TYPE.VIDEO_TRACK_KIND) {
-                setVideoTracks((videoTracks) => videoTracks.filter((v) => v !== track));
-            } else if (track.kind === VIDEO_CHAT_TRACK_TYPE.AUDIO_TRACK_KIND) {
-                setAudioTracks((audioTracks) => audioTracks.filter((a) => a !== track));
+                return setVideoTracks((videoTracks) => videoTracks.filter((v) => v !== track));
             }
+            if (track.kind === VIDEO_CHAT_TRACK_TYPE.AUDIO_TRACK_KIND) {
+                return setAudioTracks((audioTracks) => audioTracks.filter((a) => a !== track));
+            }
+
+            setDataTracks((dataTracks) => dataTracks.filter((dt) => dt !== track));
         };
 
         participant.on("trackSubscribed", trackSubscribed);
@@ -133,6 +172,7 @@ export const useVideoChatRef = (participant: LocalParticipant | RemoteParticipan
         return () => {
             setVideoTracks([]);
             setAudioTracks([]);
+            setDataTracks([]);
             participant.removeAllListeners();
         };
     }, [participant]);
@@ -156,7 +196,7 @@ export const useVideoChatRef = (participant: LocalParticipant | RemoteParticipan
             };
         }
     }, [audioTracks]);
-    return { videoRef, audioRef };
+    return { videoRef, audioRef, dataTracks };
 };
 
 export const useVideoStatus = (participant: LocalParticipant | any) => {
@@ -198,4 +238,20 @@ export const useVideoStatus = (participant: LocalParticipant | any) => {
     const toggleAudio = useCallback(() => setIsAudioEnabled(!isAudioEnabled), [isAudioEnabled]);
     const toggleVideo = useCallback(() => setCameraEnabled(!cameraEnabled), [cameraEnabled]);
     return { isAudioEnabled, cameraEnabled, toggleAudio, toggleVideo };
+};
+
+export const useEndDepo = () => {
+    const [endDepo, setEndDepo] = useState(false);
+    const { state, dispatch } = useContext(GlobalStateContext);
+    const { dataTrack, currentRoom } = state.room;
+
+    useEffect(() => {
+        if (endDepo) {
+            dataTrack.send(JSON.stringify({ module: "endDepo", value: "" }));
+            disconnect(currentRoom, dispatch, true);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [endDepo]);
+
+    return { setEndDepo };
 };
