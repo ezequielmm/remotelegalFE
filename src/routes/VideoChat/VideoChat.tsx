@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useContext, useEffect } from "react";
 import Lobby from "./VideoChatLobby/VideoChatLobby";
 import VideoChatRoom from "./VideoChatRoom/VideoChatRoom";
-import { useJoinToRoom, disconnect } from "../../hooks/VideoChat/hooks";
+import { useJoinToRoom, disconnect } from "../../hooks/VideoChat/roomHooks";
 import { GlobalStateContext } from "../../state/GlobalState";
 
 const VideoChat = () => {

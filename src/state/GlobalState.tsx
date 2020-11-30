@@ -1,5 +1,5 @@
 import React, { memo, PropsWithChildren, useReducer } from "react";
-import { Deps, IGlobalContext, IGlobalReducer, IGlobalState } from "../models/general";
+import { Deps, IGlobalReducer, IGlobalState } from "../models/general";
 import combineReducers from "./utils/combineReducers";
 import RoomReducer, { RoomReducerIntialState } from "./videoChat/videoChatReducer";
 
@@ -18,6 +18,11 @@ export const rootReducer = {
 
 export const GlobalStateContext = React.createContext(null);
 
+// Having the provider as an independent function helps when testing the custom hooks
+export const defineProviderValues = (state, children) => {
+    return <GlobalStateContext.Provider value={state}>{children}</GlobalStateContext.Provider>;
+};
+
 export const GlobalState = memo(
     ({
         deps,
@@ -29,11 +34,8 @@ export const GlobalState = memo(
         }
         const { reducer, initialState: globalInitialState } = globalReducer;
         const [state, dispatch] = useReducer(reducer, globalInitialState);
-        return (
-            <GlobalStateContext.Provider value={{ state, dispatch, deps } as IGlobalContext}>
-                {children}
-            </GlobalStateContext.Provider>
-        );
+
+        return defineProviderValues({ state, deps, dispatch }, children);
     }
 );
 

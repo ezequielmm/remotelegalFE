@@ -1,11 +1,12 @@
 import React from "react";
 import { LocalParticipant, RemoteParticipant } from "twilio-video";
-import { useDataTrack, useVideoChatRef } from "../../../hooks/VideoChat/hooks";
+import useDataTrack from "../../../hooks/VideoChat/useDataTrack";
+import useParticipantTracks from "../../../hooks/VideoChat/useParticipantTracks";
 import { StyledParticipantMask, StyledIdentityBox } from "./styles";
 import Text from "../../../components/Typography/Text";
 
 const Participant = ({ participant }: { participant: LocalParticipant | RemoteParticipant }) => {
-    const { videoRef, audioRef, dataTracks } = useVideoChatRef(participant);
+    const { videoRef, audioRef, dataTracks } = useParticipantTracks(participant);
 
     useDataTrack(dataTracks);
 

@@ -1,7 +1,10 @@
 import React, { ReactElement, useState } from "react";
 import { Dropdown, Menu } from "antd";
-import { LocalParticipant } from "twilio-video";
-import { useVideoStatus, useEndDepo } from "../../hooks/VideoChat/hooks";
+import { LocalAudioTrack, LocalParticipant, LocalVideoTrack } from "twilio-video";
+import { disconnect } from "../../hooks/VideoChat/roomHooks";
+import useEndDepo from "../../hooks/VideoChat/useEndDepo";
+import useParticipantTracks from "../../hooks/VideoChat/useParticipantTracks";
+import useTracksStatus from "../../hooks/VideoChat/useTracksStatus";
 import {
     StyledContainer,
     StyledLogo,
@@ -29,7 +32,7 @@ import Control from "../Control/Control";
 import Logo from "../Logo";
 
 interface IControlsBar {
-    localParticipant: Pick<LocalParticipant, "audioTracks" | "videoTracks">;
+    localParticipant: LocalParticipant;
     exhibitsOpen: boolean;
     togglerExhibits: React.Dispatch<React.SetStateAction<boolean>>;
     realTimeOpen: boolean;
@@ -43,12 +46,16 @@ export default function ControlsBar({
     realTimeOpen,
     togglerRealTime,
 }: IControlsBar): ReactElement {
-    const { isAudioEnabled, cameraEnabled, toggleAudio, toggleVideo } = useVideoStatus(localParticipant);
+    const { videoTracks, audioTracks } = useParticipantTracks(localParticipant);
+    const { isAudioEnabled, cameraEnabled, setAudioEnabled, setCameraEnabled } = useTracksStatus(
+        audioTracks as LocalAudioTrack[],
+        videoTracks as LocalVideoTrack[]
+    );
     const [isRecording, togglerRecording] = useState(false);
     const [breakroomsOpen, togglerBreakrooms] = useState(false);
     const [summaryOpen, togglerSummary] = useState(false);
     const [supportOpen, togglerSupport] = useState(false);
-    const { setEndDepo } = useEndDepo();
+    const { setEndDepo } = useEndDepo(disconnect);
 
     const toggleRecord = () => togglerRecording(!isRecording);
     const toggleBreakrooms = () => togglerBreakrooms(!breakroomsOpen);
@@ -73,8 +80,7 @@ export default function ControlsBar({
                 <Control
                     data-testid="audio"
                     type="circle"
-                    onClick={toggleAudio}
-                    isToggled={isAudioEnabled}
+                    onClick={() => setAudioEnabled(!isAudioEnabled)}
                     icon={
                         isAudioEnabled ? (
                             <Icon icon={UnmuteIcon} style={{ fontSize: "1.625rem" }} />
@@ -86,7 +92,7 @@ export default function ControlsBar({
                 <Control
                     data-testid="camera"
                     type="circle"
-                    onClick={toggleVideo}
+                    onClick={() => setCameraEnabled(!cameraEnabled)}
                     isToggled={cameraEnabled}
                     icon={
                         cameraEnabled ? (

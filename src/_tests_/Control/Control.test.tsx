@@ -12,7 +12,7 @@ test("expect a control button with label Circle Button and Mute Icon", async () 
     const { getByText } = render(
         <ThemeProvider theme={theme}>
             <Control
-                isToggled={true}
+                isToggled
                 color="blue"
                 type="circle"
                 icon={<Icon icon={MuteIcon} style={{ fontSize: "1.625rem" }} />}
@@ -28,7 +28,7 @@ test("expect a control button with label Rounded Button and UnMute Icon", async 
     const { getByText } = render(
         <ThemeProvider theme={theme}>
             <Control
-                isToggled={true}
+                isToggled
                 color="blue"
                 type="rounded"
                 icon={<Icon icon={UnmuteIcon} style={{ fontSize: "1.625rem" }} />}

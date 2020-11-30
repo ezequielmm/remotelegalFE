@@ -23,21 +23,12 @@ export const RoomReducerIntialState: IRoom = {
 
 const RoomReducer: Reducer<IRoom, IAction> = (state: IRoom, action: IAction): IRoom => {
     switch (action.type) {
-        case ACTION_TYPE.VIDEO_CHAT_SET_ROOM_INFO:
-            return {
-                ...state,
-                info: action.payload,
-            };
         case ACTION_TYPE.VIDEO_CHAT_SET_TOKEN:
             return {
                 ...state,
                 token: action.payload.token,
             };
-        case ACTION_TYPE.VIDEO_CHAT_SET_TOKEN_FAIL:
-            return {
-                ...state,
-                error: action.payload,
-            };
+
         case ACTION_TYPE.VIDEO_CHAT_ADD_DATA_TRACK:
             return {
                 ...state,
@@ -54,21 +45,16 @@ const RoomReducer: Reducer<IRoom, IAction> = (state: IRoom, action: IAction): IR
                 message: action.payload,
             };
         case ACTION_TYPE.VIDEO_CHAT_DISCONNECT:
-            return { ...state, token: "", message: { module: "", value: "" }, currentRoom: null, dataTrack: null };
+            return { ...state, ...action.payload };
         case ACTION_TYPE.VIDEO_CHAT_ADD_PARTICIPANT:
-            const currentRoomToAddParticipant = state.currentRoom;
-            currentRoomToAddParticipant?.participants?.set(action.payload.sid, action.payload);
             return {
                 ...state,
-                currentRoom: currentRoomToAddParticipant,
+                currentRoom: action.payload,
             };
         case ACTION_TYPE.VIDEO_CHAT_REMOVE_PARTICIPANT:
-            const currentRoomToRemoveParticipant = state.currentRoom;
-            currentRoomToRemoveParticipant?.participants?.delete(action.payload.sid);
-
             return {
                 ...state,
-                currentRoom: currentRoomToRemoveParticipant,
+                currentRoom: action.payload,
             };
 
         default:

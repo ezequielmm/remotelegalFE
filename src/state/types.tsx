@@ -1,4 +1,5 @@
 import { IGlobalState } from "../models/general";
+import { LocalDataTrack, Room } from "twilio-video";
 
 export interface IAction<T = string, P = any> {
     type: T;
@@ -13,3 +14,12 @@ export interface IGlobalReducer {
 }
 
 export type DataTrackMessage = { module: string; value: any } | null;
+
+export type DisconnectRoomState = {
+    token?: string;
+    info?: object;
+    currentRoom?: Room;
+    error?: string;
+    message?: DataTrackMessage;
+    dataTrack?: LocalDataTrack | null;
+};
