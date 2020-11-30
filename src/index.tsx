@@ -2,16 +2,11 @@ import React from "react";
 import ReactDOM from "react-dom";
 import App from "./components/App";
 import * as serviceWorker from "./serviceWorker";
-import GlobalState from "./state/GlobalState";
-import { combineReducersWithInitialStates } from "./state/utils/combineReducers";
-import RoomReducer, { RoomReducerIntialState } from "./state/videoChat/videoChatReducer";
-
-const rootReducer = combineReducersWithInitialStates({
-    room: [RoomReducer, RoomReducerIntialState],
-});
+import { getDeps } from "./state/dependencies";
+import GlobalState, { rootReducer } from "./state/GlobalState";
 
 ReactDOM.render(
-    <GlobalState rootReducer={rootReducer}>
+    <GlobalState rootReducer={rootReducer} deps={getDeps()}>
         <App />
     </GlobalState>,
     document.getElementById("root")

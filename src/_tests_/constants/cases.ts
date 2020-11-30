@@ -13,23 +13,15 @@ export const NEW_CASE_COLLABORATORS_SUCCESFUL =
 
 export const NEW_CASE_BUTTON = /Go to my cases/;
 
-const buildResponse = (data) => ({
-    ok: true,
-    json: () => data,
-    headers: { get: () => "application/json" },
-});
-
-export const RESPONSE_WITH_NO_CASE = buildResponse([]);
-
 export const CASE_NAME = "Case Name";
 export const CASE_NUMBER = "123456";
 export const CASE_ADDED_BY = "Case Added By";
 
-export const RESPONSE_WITH_ONE_CASE = buildResponse([
-    { id: "646661736466", caseNumber: "123456", name: CASE_NAME, addedBy: "name" },
-]);
+export const getNoCases = () => [];
 
-export const RESPONSE_ASC = buildResponse([
+export const getOneCase = () => [{ id: "646661736466", caseNumber: "123456", name: CASE_NAME, addedBy: "name" }];
+
+export const getCaseAsc = () => [
     { id: "646661736466", caseNumber: `0${CASE_NUMBER}`, name: `0${CASE_NAME}`, addedBy: `0${CASE_ADDED_BY}` },
     { id: "646661736467", caseNumber: `1${CASE_NUMBER}`, name: `1${CASE_NAME}`, addedBy: `1${CASE_ADDED_BY}` },
     { id: "646661736468", caseNumber: `2${CASE_NUMBER}`, name: `2${CASE_NAME}`, addedBy: `2${CASE_ADDED_BY}` },
@@ -40,9 +32,9 @@ export const RESPONSE_ASC = buildResponse([
     { id: "646661736473", caseNumber: `7${CASE_NUMBER}`, name: `7${CASE_NAME}`, addedBy: `7${CASE_ADDED_BY}` },
     { id: "646661736474", caseNumber: `8${CASE_NUMBER}`, name: `8${CASE_NAME}`, addedBy: `8${CASE_ADDED_BY}` },
     { id: "646661736475", caseNumber: `9${CASE_NUMBER}`, name: `9${CASE_NAME}`, addedBy: `9${CASE_ADDED_BY}` },
-]);
+];
 
-export const RESPONSE_DESC = buildResponse([
+export const getCaseDesc = () => [
     { id: "646661736475", caseNumber: `9${CASE_NUMBER}`, name: `9${CASE_NAME}`, addedBy: `9${CASE_ADDED_BY}` },
     { id: "646661736474", caseNumber: `8${CASE_NUMBER}`, name: `8${CASE_NAME}`, addedBy: `8${CASE_ADDED_BY}` },
     { id: "646661736473", caseNumber: `7${CASE_NUMBER}`, name: `7${CASE_NAME}`, addedBy: `7${CASE_ADDED_BY}` },
@@ -53,4 +45,4 @@ export const RESPONSE_DESC = buildResponse([
     { id: "646661736468", caseNumber: `2${CASE_NUMBER}`, name: `2${CASE_NAME}`, addedBy: `2${CASE_ADDED_BY}` },
     { id: "646661736467", caseNumber: `1${CASE_NUMBER}`, name: `1${CASE_NAME}`, addedBy: `1${CASE_ADDED_BY}` },
     { id: "646661736466", caseNumber: `0${CASE_NUMBER}`, name: `0${CASE_NAME}`, addedBy: `0${CASE_ADDED_BY}` },
-]);
+];

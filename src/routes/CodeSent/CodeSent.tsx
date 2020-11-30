@@ -11,13 +11,13 @@ interface CodeSentProps {
     email: string;
 }
 const CodeSent = ({ email }: CodeSentProps) => {
-    const { error, loading, fetchAPI } = useVerifyEmail(email);
+    const { error, loading, verifyEmail } = useVerifyEmail(email);
 
     const handleLinkFetch = () => {
         if (loading) {
             return;
         }
-        fetchAPI();
+        verifyEmail();
     };
     return (
         <>

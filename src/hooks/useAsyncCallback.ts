@@ -6,7 +6,7 @@ export type isLoading = boolean;
 export type error<E> = E;
 export type response<T> = T;
 
-const useAsyncCallback = <E, T = any, F = (...args: any[]) => Promise<void>>(
+const useAsyncCallback = <E = any, T = any, F = (...args: any[]) => Promise<void>>(
     fn: (...args: any[]) => Promise<any>,
     deps: DependencyList
 ): [callback<F>, isLoading, error<E>, response<T>] => {

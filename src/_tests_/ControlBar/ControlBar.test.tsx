@@ -1,18 +1,28 @@
-import React from "react";
-import { render } from "@testing-library/react";
-import { ThemeProvider } from "styled-components";
-import { theme } from "../../constants/styles/theme";
-import ControlsBar from "../../components/ControlsBar/ControlsBar";
-import { EventEmitter } from "events";
 import "@testing-library/jest-dom";
+import { render } from "@testing-library/react";
+import { EventEmitter } from "events";
+import React from "react";
+import { ThemeProvider } from "styled-components";
+import ControlsBar from "../../components/ControlsBar/ControlsBar";
+import { theme } from "../../constants/styles/theme";
 import { noop } from "../../helpers/noop";
+import { IGlobalState } from "../../models/general";
 import GlobalState from "../../state/GlobalState";
-import { combineReducersWithInitialStates } from "../../state/utils/combineReducers";
+import combineReducers from "../../state/utils/combineReducers";
 import RoomReducer, { RoomReducerIntialState } from "../../state/videoChat/videoChatReducer";
 
-const rootReducer = combineReducersWithInitialStates({
-    room: [RoomReducer, RoomReducerIntialState],
+export const combinedReducer = combineReducers<IGlobalState>({
+    room: RoomReducer,
 });
+
+export const initialState: IGlobalState = {
+    room: RoomReducerIntialState,
+};
+
+export const rootReducer = {
+    reducer: combinedReducer,
+    initialState,
+};
 
 const videoTracksMocks = new Map();
 videoTracksMocks.set("item1", { track: { kind: "video", enable: jest.fn() } });

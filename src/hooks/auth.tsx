@@ -1,9 +1,10 @@
-import { useState, useEffect, useRef } from "react";
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Auth } from "aws-amplify";
-import { useLocation, useHistory } from "react-router-dom";
+import { useContext, useEffect, useRef, useState } from "react";
+import { useHistory, useLocation } from "react-router-dom";
 import * as ERRORS from "../constants/login";
-import buildRequestOptions from "../helpers/buildRequestOptions";
-import useFetch from "./useFetch";
+import { GlobalStateContext } from "../state/GlobalState";
+import useAsyncCallback from "./useAsyncCallback";
 
 export const useAuthentication = () => {
     const [isAuthenticated, setUserIsAuthenticated] = useState(null);
@@ -49,23 +50,21 @@ export const useVerifyToken = () => {
     const { isAuthenticated } = useAuthentication();
     const queryParams = window.location.search;
     const verificationHash = new URLSearchParams(queryParams).get("verificationHash");
-    const requestObj = buildRequestOptions("POST", {
-        verificationHash,
-    });
-    const { error, data, fetchAPI } = useFetch(
-        `${process.env.REACT_APP_BASE_BE_URL}/api/Users/verifyUser`,
-        requestObj,
-        false
-    );
-    const fetchAPIRef = useRef(fetchAPI);
+    const { deps } = useContext(GlobalStateContext);
+    const [verifyToken, , error, data] = useAsyncCallback(async (hash) => {
+        const response = await deps.apiService.verifyUser({ verificationHash: hash });
+        return response;
+    }, []);
+
+    const verifyTokenRef = useRef(verifyToken);
     useEffect(() => {
         const handleVerifyToken = async () => {
             if (verificationHash && isAuthenticated) {
                 await Auth.signOut();
-                return fetchAPIRef.current();
+                return verifyTokenRef.current(verificationHash);
             }
             if (verificationHash && isAuthenticated === false) {
-                fetchAPIRef.current();
+                verifyTokenRef.current(verificationHash);
             }
             return null;
         };
@@ -75,23 +74,21 @@ export const useVerifyToken = () => {
 };
 
 export const useSignUp = (requestBody) => {
-    const requestObj = buildRequestOptions("POST", requestBody);
-    const { error, data, loading, fetchAPI } = useFetch(
-        `${process.env.REACT_APP_BASE_BE_URL}/api/Users`,
-        requestObj,
-        false
-    );
-    return { error, data, loading, fetchAPI };
+    const { deps } = useContext(GlobalStateContext);
+    const [signUp, loading, error, data] = useAsyncCallback(async () => {
+        const response = await deps.apiService.signUp(requestBody);
+        return response;
+    }, [requestBody]);
+
+    return { error, data, loading, signUp };
 };
 
 export const useVerifyEmail = (email) => {
-    const requestObj = buildRequestOptions("POST", {
-        emailAddress: email,
-    });
-    const { error, loading, fetchAPI } = useFetch(
-        `${process.env.REACT_APP_BASE_BE_URL}/api/Users/resendVerificationEmail`,
-        requestObj,
-        false
-    );
-    return { error, loading, fetchAPI };
+    const { deps } = useContext(GlobalStateContext);
+    const [verifyEmail, loading, error] = useAsyncCallback(async () => {
+        const response = await deps.apiService.verifyEmail({ emailAddress: email });
+        return response;
+    }, []);
+
+    return { error, loading, verifyEmail };
 };

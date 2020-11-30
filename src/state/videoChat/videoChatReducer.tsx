@@ -3,7 +3,7 @@ import { LocalDataTrack, Room } from "twilio-video";
 import { IAction, DataTrackMessage } from "../types";
 import { ACTION_TYPE } from "./videoChatAction";
 
-interface IRoom {
+export interface IRoom {
     token?: string;
     info?: object;
     currentRoom?: Room;

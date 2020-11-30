@@ -1,35 +1,25 @@
 import React from "react";
-import buildRequestOptions from "../../helpers/buildRequestOptions";
-import useFetch from "../useFetch";
+import { GlobalStateContext } from "../../state/GlobalState";
+import useAsyncCallback from "../useAsyncCallback";
 
 export const useCreateCase = () => {
-    const requestObj = buildRequestOptions("POST");
-    const { error, data, loading, fetchAPI, setData } = useFetch(
-        `${process.env.REACT_APP_BASE_BE_URL}/api/Cases`,
-        requestObj
-    );
+    const { deps } = React.useContext(GlobalStateContext);
 
-    const createCase = (caseNameValue, caseNumber) => {
-        const body = JSON.stringify({
-            name: caseNameValue,
-            caseNumber,
-        });
-        fetchAPI({ extraOptions: { body } });
-    };
-
-    return { createCase, error, data, loading, setData };
+    return useAsyncCallback(async (name, caseNumber) => {
+        const newCase = await deps.apiService.createCase({ name, caseNumber });
+        return newCase;
+    }, []);
 };
 
-export const useFetchCase = () => {
-    const requestObj = buildRequestOptions("GET");
+export const useFetchCases = () => {
     const [sortedField, setSortedField] = React.useState(undefined);
     const [sortDirection, setSortDirection] = React.useState(undefined);
 
-    const { error, data, loading, fetchAPI } = useFetch(
-        `${process.env.REACT_APP_BASE_BE_URL}/api/Cases`,
-        requestObj,
-        true
-    );
+    const { deps } = React.useContext(GlobalStateContext);
+    const [fetchCases, loading, error, data] = useAsyncCallback(async (payload) => {
+        const response = await deps.apiService.fetchCases(payload);
+        return response;
+    }, []);
 
     const handleListChange = React.useCallback(
         (pag, filter, sorter) => {
@@ -39,9 +29,9 @@ export const useFetchCase = () => {
             setSortDirection(newSortDirection);
             const urlParams =
                 newSortDirection === undefined ? {} : { sortedField: newSortedField, sortDirection: newSortDirection };
-            fetchAPI({ urlParams });
+            fetchCases(urlParams);
         },
-        [fetchAPI]
+        [fetchCases]
     );
 
     const refreshList = React.useCallback(() => {
@@ -49,7 +39,7 @@ export const useFetchCase = () => {
     }, [handleListChange]);
 
     React.useEffect(() => {
-        fetchAPI();
+        fetchCases({});
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 

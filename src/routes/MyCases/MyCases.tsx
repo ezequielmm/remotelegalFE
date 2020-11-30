@@ -6,12 +6,12 @@ import Button from "../../components/Button";
 import Result from "../../components/Result";
 import CaseModal from "./CaseModal";
 import Title from "../../components/Typography/Title";
-import { useFetchCase } from "../../hooks/cases/hooks";
+import { useFetchCases } from "../../hooks/cases/hooks";
 import * as CONSTANTS from "../../constants/cases";
 
 const MyCases = () => {
     const [openCaseModal, setOpenCaseModal] = React.useState(false);
-    const { handleListChange, sortedField, sortDirection, error, data, loading, refreshList } = useFetchCase();
+    const { handleListChange, sortedField, sortDirection, error, data, loading, refreshList } = useFetchCases();
 
     const getCaseColumns = React.useCallback(
         () => [

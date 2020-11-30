@@ -19,6 +19,8 @@ interface IModalProps {
 
 const CaseModal = ({ open, handleClose, fetchCases }: IModalProps) => {
     const [caseNumber, setCaseNumber] = React.useState("");
+    const [displaySuccess, setDisplaySuccess] = React.useState(false);
+
     const elementRef = useRef(null);
     const { inputValue: caseNameValue, input: caseNameInput, invalid: caseNameInvalid, setValue } = useInput(
         isInputEmpty,
@@ -30,13 +32,15 @@ const CaseModal = ({ open, handleClose, fetchCases }: IModalProps) => {
     );
     const caseNameErrorMessage = caseNameInvalid && "Please enter case name";
     const NETWORK_ERROR = "Something went wrong. Please try again.";
-    const { error, data, loading, createCase, setData } = useCreateCase();
+    const [createCase, loading, error, data] = useCreateCase();
 
     useEffect(() => {
-        if (data && elementRef.current) {
-            elementRef.current.focus();
+        if (data) {
+            setDisplaySuccess(true);
+            if (elementRef.current) elementRef.current.focus();
         }
     }, [data]);
+
     const handleCloseAndRedirect = () => {
         if (loading) {
             return;
@@ -46,7 +50,7 @@ const CaseModal = ({ open, handleClose, fetchCases }: IModalProps) => {
                 setCaseNumber("");
             }
             fetchCases();
-            setData(null);
+            setDisplaySuccess(false);
             setValue("");
         }
         handleClose();
@@ -59,7 +63,7 @@ const CaseModal = ({ open, handleClose, fetchCases }: IModalProps) => {
     return (
         <Modal destroyOnClose visible={open} centered onlyBody onCancel={handleCloseAndRedirect}>
             <div ref={elementRef} tabIndex={-1} onKeyDown={handleKeyDownEvent}>
-                {data ? (
+                {displaySuccess ? (
                     <Result
                         title="Your case has been added successfully!"
                         subTitle="You can now start adding files, collaborators and depositions to this case"

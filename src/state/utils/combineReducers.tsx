@@ -1,4 +1,4 @@
-import { IGlobalReducer, IReducer } from "../types";
+import { IReducer } from "../../models/general";
 
 function combineReducers<GS>(reducerMap: Record<string, (state: any, action: any) => any>): IReducer<GS> {
     return (gState: GS, gAction: any) => {
@@ -14,19 +14,4 @@ function combineReducers<GS>(reducerMap: Record<string, (state: any, action: any
     };
 }
 
-const combineReducersWithInitialStates = (
-    reducersMap: Record<string, [(state: any, action: any) => any, any | {}]>
-): IGlobalReducer => {
-    const globalReducers = Object.entries(reducersMap).reduce(
-        (acc, [key, item]) => Object.assign(acc, { [key]: item[0] }),
-        {}
-    );
-    const globalInitialStates = Object.entries(reducersMap).reduce(
-        (acc, [key, item]) => Object.assign(acc, { [key]: item[1] }),
-        {}
-    );
-    const combinedGlobalReducers = combineReducers(globalReducers);
-    return { reducer: combinedGlobalReducers, initalState: globalInitialStates };
-};
-
-export { combineReducers, combineReducersWithInitialStates };
+export default combineReducers;

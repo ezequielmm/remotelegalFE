@@ -65,7 +65,7 @@ const SignUp = () => {
         }
     }, [confirmPasswordTouched, passwordValue, confirmPasswordValue, setConfirmPasswordInvalid]);
 
-    const { error, data, loading, fetchAPI } = useSignUp({
+    const { error, data, loading, signUp } = useSignUp({
         firstName: nameValue,
         lastName: lastNameValue,
         phoneNumber: phoneValue,
@@ -197,7 +197,7 @@ const SignUp = () => {
                                         type="primary"
                                         block
                                         disabled={disabledButton}
-                                        onClick={() => fetchAPI()}
+                                        onClick={() => signUp()}
                                         htmlType="submit"
                                     >
                                         Create account
