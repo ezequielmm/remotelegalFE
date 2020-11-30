@@ -15,4 +15,10 @@ export const LAST_NAME_ERROR = "Please enter your last name";
 
 export const PHONE_ERROR = "Please enter a valid phone number";
 
+export const EMPTY_PHONE_ERROR = "Please enter your company phone number";
+
 export const CONFIRM_PASSWORD_ERROR = "Your passwords do not match";
+
+export const COMPANY_NAME_ERROR = "Please enter your company name";
+
+export const COMPANY_ADDRESS_ERROR = "Please enter your company address";

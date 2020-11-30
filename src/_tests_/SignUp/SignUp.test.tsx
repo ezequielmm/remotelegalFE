@@ -146,6 +146,8 @@ describe("SignUp", () => {
         const confirmPasswordInput = getByPlaceholderText(CONSTANTS.CONFIRM_PASSWORD_PLACEHOLDER);
         const phoneInput = getByPlaceholderText(CONSTANTS.PHONE_PLACEHOLDER);
         const checkBoxInput = container.getElementsByClassName("ant-checkbox-wrapper")[0];
+        const companyNameInput = getByPlaceholderText(CONSTANTS.COMPANY_NAME_PLACEHOLDER);
+        const companyAddressInput = getByPlaceholderText(CONSTANTS.COMPANY_ADDRESS_PLACEHOLDER);
         fireEvent.focus(phoneInput);
         fireEvent.change(phoneInput, { target: { value: "4444444444" } });
         fireEvent.blur(phoneInput);
@@ -163,6 +165,12 @@ describe("SignUp", () => {
         fireEvent.blur(confirmPasswordInput);
         fireEvent.change(passwordInput, { target: { value: "Asdfgh1!" } });
         fireEvent.blur(passwordInput);
+        fireEvent.focus(companyNameInput);
+        fireEvent.change(companyNameInput, { target: { value: "test" } });
+        fireEvent.blur(companyNameInput);
+        fireEvent.focus(companyAddressInput);
+        fireEvent.change(companyAddressInput, { target: { value: "test" } });
+        fireEvent.blur(companyAddressInput);
         fireEvent.click(checkBoxInput);
         expect(button).toBeEnabled();
         fireEvent.click(button);
@@ -172,6 +180,8 @@ describe("SignUp", () => {
             phoneNumber: "4444444444",
             password: "Asdfgh1!",
             emailAddress: "test@test1.com",
+            companyName: "test",
+            companyAddress: "test",
         });
         await waitForElement(() => getByText("Check your mailbox"));
         expect(getByText("test@test1.com")).toBeInTheDocument();
@@ -191,6 +201,8 @@ describe("SignUp", () => {
         const confirmPasswordInput = getByPlaceholderText(CONSTANTS.CONFIRM_PASSWORD_PLACEHOLDER);
         const phoneInput = getByPlaceholderText(CONSTANTS.PHONE_PLACEHOLDER);
         const checkBoxInput = getByText(CONSTANTS.CHECKBOX_INPUT);
+        const companyNameInput = getByPlaceholderText(CONSTANTS.COMPANY_NAME_PLACEHOLDER);
+        const companyAddressInput = getByPlaceholderText(CONSTANTS.COMPANY_ADDRESS_PLACEHOLDER);
         fireEvent.focus(phoneInput);
         fireEvent.change(phoneInput, { target: { value: "4444444444" } });
         fireEvent.blur(phoneInput);
@@ -208,6 +220,12 @@ describe("SignUp", () => {
         fireEvent.blur(confirmPasswordInput);
         fireEvent.change(passwordInput, { target: { value: "Asdfgh1!" } });
         fireEvent.blur(passwordInput);
+        fireEvent.focus(companyNameInput);
+        fireEvent.change(companyNameInput, { target: { value: "test" } });
+        fireEvent.blur(companyNameInput);
+        fireEvent.focus(companyAddressInput);
+        fireEvent.change(companyAddressInput, { target: { value: "test" } });
+        fireEvent.blur(companyAddressInput);
         userEvent.click(checkBoxInput);
         expect(button).toBeEnabled();
         fireEvent.click(button);
@@ -217,13 +235,14 @@ describe("SignUp", () => {
             phoneNumber: "4444444444",
             password: "Asdfgh1!",
             emailAddress: "test@test1.com",
+            companyName: "test",
+            companyAddress: "test",
         });
         await waitForElement(() => getByText(ERRORS.NETWORK_ERROR));
     });
 
     it("it should display Code error when fetch fails", async () => {
         customDeps.apiService.signUp = jest.fn().mockRejectedValue(409);
-
         const { getByPlaceholderText, getByText } = renderWithGlobalContext(<SignUp />, customDeps);
         const button = getByText("Create account");
         const emailInput = getByPlaceholderText(CONSTANTS.EMAIL_PLACEHOLDER);
@@ -233,6 +252,8 @@ describe("SignUp", () => {
         const confirmPasswordInput = getByPlaceholderText(CONSTANTS.CONFIRM_PASSWORD_PLACEHOLDER);
         const phoneInput = getByPlaceholderText(CONSTANTS.PHONE_PLACEHOLDER);
         const checkBoxInput = getByText(CONSTANTS.CHECKBOX_INPUT);
+        const companyNameInput = getByPlaceholderText(CONSTANTS.COMPANY_NAME_PLACEHOLDER);
+        const companyAddressInput = getByPlaceholderText(CONSTANTS.COMPANY_ADDRESS_PLACEHOLDER);
         fireEvent.focus(phoneInput);
         fireEvent.change(phoneInput, { target: { value: "4444444444" } });
         fireEvent.blur(phoneInput);
@@ -250,6 +271,12 @@ describe("SignUp", () => {
         fireEvent.blur(confirmPasswordInput);
         fireEvent.change(passwordInput, { target: { value: "Asdfgh1!" } });
         fireEvent.blur(passwordInput);
+        fireEvent.focus(companyNameInput);
+        fireEvent.change(companyNameInput, { target: { value: "test" } });
+        fireEvent.blur(companyNameInput);
+        fireEvent.focus(companyAddressInput);
+        fireEvent.change(companyAddressInput, { target: { value: "test" } });
+        fireEvent.blur(companyAddressInput);
         userEvent.click(checkBoxInput);
         expect(button).toBeEnabled();
         fireEvent.click(button);
@@ -259,6 +286,8 @@ describe("SignUp", () => {
             phoneNumber: "4444444444",
             password: "Asdfgh1!",
             emailAddress: "test@test1.com",
+            companyName: "test",
+            companyAddress: "test",
         });
         await waitForElement(() => getByText(ERRORS.WAITING_FOR_CODE));
     });

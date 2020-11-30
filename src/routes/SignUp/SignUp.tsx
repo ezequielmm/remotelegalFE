@@ -32,9 +32,25 @@ const SignUp = () => {
         name: "email",
         placeholder: "Enter your email",
     });
+    const { input: companyNameInput, invalid: companyNameInvalid, inputValue: companyNameValue } = useInput(
+        isInputEmpty,
+        {
+            name: "companyname",
+            placeholder: "Enter your company name",
+            maxLength: 50,
+        }
+    );
+    const { input: companyAddressInput, invalid: companyAddressInvalid, inputValue: companyAddressValue } = useInput(
+        isInputEmpty,
+        {
+            name: "companyaddress",
+            placeholder: "Enter your company address",
+            maxLength: 150,
+        }
+    );
     const { input: phoneInput, invalid: phoneInvalid, inputValue: phoneValue } = useInput(isPhoneInvalid, {
         name: "phone",
-        placeholder: "Enter your mobile phone number",
+        placeholder: "Enter your company phone number",
         type: "tel",
     });
 
@@ -71,6 +87,8 @@ const SignUp = () => {
         phoneNumber: phoneValue,
         password: passwordValue,
         emailAddress: emailValue.trim(),
+        companyName: companyNameValue,
+        companyAddress: companyAddressValue,
     });
 
     const emailErrorMessage =
@@ -78,10 +96,13 @@ const SignUp = () => {
     const passwordErrorMessage = passwordInvalid && ERRORS.PASSWORD_ERROR;
     const nameErrorMessage = nameInvalid && ERRORS.FIRST_NAME_ERROR;
     const lastNameErrorMessage = lastNameInvalid && ERRORS.LAST_NAME_ERROR;
-    const phoneErrorMessage = phoneInvalid && ERRORS.PHONE_ERROR;
+    const phoneErrorMessage =
+        phoneInvalid && !phoneValue.length ? ERRORS.EMPTY_PHONE_ERROR : phoneInvalid && ERRORS.PHONE_ERROR;
     const confirmPasswordErrorMessage = confirmPasswordInvalid && ERRORS.CONFIRM_PASSWORD_ERROR;
     const networkError = error && error !== 409 && ERRORS.NETWORK_ERROR;
     const SignUpErrorMessage = error === 409 && ERRORS.WAITING_FOR_CODE;
+    const companyNameErrorMessage = companyNameInvalid && ERRORS.COMPANY_NAME_ERROR;
+    const companyAddressErrorMessage = companyAddressInvalid && ERRORS.COMPANY_ADDRESS_ERROR;
 
     const disabledButton =
         loading ||
@@ -89,6 +110,8 @@ const SignUp = () => {
         isPasswordInvalid(passwordValue) ||
         isInputEmpty(nameValue) ||
         isInputEmpty(lastNameValue) ||
+        isInputEmpty(companyNameValue) ||
+        isInputEmpty(companyAddressValue) ||
         isPhoneInvalid(phoneValue) ||
         confirmPasswordValue !== passwordValue ||
         !checked;
@@ -151,7 +174,27 @@ const SignUp = () => {
                                                 )}
                                             </InputWrapper>
                                         </Form.Item>
-                                        <Form.Item label="Mobile phone number (optional)" htmlFor="phone">
+                                        <Form.Item label="Company name" htmlFor="companyname">
+                                            <InputWrapper>
+                                                {companyNameInput}
+                                                {companyNameErrorMessage && (
+                                                    <Text size="small" state="error">
+                                                        {companyNameErrorMessage}
+                                                    </Text>
+                                                )}
+                                            </InputWrapper>
+                                        </Form.Item>
+                                        <Form.Item label="Company address" htmlFor="companyaddress">
+                                            <InputWrapper>
+                                                {companyAddressInput}
+                                                {companyAddressErrorMessage && (
+                                                    <Text size="small" state="error">
+                                                        {companyAddressErrorMessage}
+                                                    </Text>
+                                                )}
+                                            </InputWrapper>
+                                        </Form.Item>
+                                        <Form.Item label="Company phone number" htmlFor="phone">
                                             <InputWrapper>
                                                 {phoneInput}
                                                 {phoneErrorMessage && (
