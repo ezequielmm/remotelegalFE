@@ -2,17 +2,17 @@ import React from "react";
 // also exported from '@storybook/react' if you can deal with breaking changes in 6.1
 import { Story, Meta } from "@storybook/react/types-6-0";
 
-import TimePicker from "../components/TimePicker";
-import { ITimePickerProps } from "../components/TimePicker/TimePicker";
+import { Select, Option } from "../components/Select";
+import { ISelectProps } from "../components/Select/Select";
 import { ContainerSmall } from "./Decorators";
 
 export default {
-    title: "TimePicker",
+    title: "Select",
     argTypes: {
         placeholder: { control: "text" },
         invalid: { control: "boolean" },
         disabled: { control: "boolean" },
-        showNow: { control: "boolean" },
+        allowClear: { control: "boolean" },
     },
     decorators: [
         (Template) => (
@@ -23,15 +23,19 @@ export default {
     ],
 } as Meta;
 
-const Template: Story = (args: ITimePickerProps) => {
+const Template: Story = (args: ISelectProps) => (
     // eslint-disable-next-line react/jsx-props-no-spreading
-    return <TimePicker {...args} />;
-};
+    <Select {...args}>
+        <Option value="1">Anderson v. Geller | #000454</Option>
+        <Option value="2">Gideon v. Wainwright | #000455</Option>
+        <Option value="3">Korematsu v. United States | #000456</Option>
+    </Select>
+);
 
-export const PRTimePicker = Template.bind({});
-PRTimePicker.args = {
-    placeholder: "hh:mm A",
+export const PRSelect = Template.bind({});
+PRSelect.args = {
+    placeholder: "Select an option",
     invalid: false,
-    showNow: true,
+    allowClear: false,
     disabled: false,
 };

@@ -66,7 +66,6 @@ const StyledPopupContainer = styled(PopupContainer)<IPopupContainer>`
                     padding-top: 9px;
 
                     .ant-picker-time-panel-column {
-                        margin-right: 2px;
                         scrollbar-color: ${theme.colors.inDepoBlue[6]} ${theme.default.whiteColor};
 
                         &::-webkit-scrollbar {
@@ -81,9 +80,13 @@ const StyledPopupContainer = styled(PopupContainer)<IPopupContainer>`
 
                             background: ${theme.colors.inDepoBlue[6]};
                         }
+                        .ant-picker-time-panel-cell-inner {
+                            &:hover {
+                                background: ${theme.colors.neutrals[3]};
+                            }
+                        }
                         & > li.ant-picker-time-panel-cell-selected {
                             .ant-picker-time-panel-cell-inner {
-                                background: ${theme.default.primaryColor};
                                 color: ${theme.default.whiteColor};
                                 &:hover {
                                     background: ${theme.colors.primary[4]};
@@ -118,12 +121,12 @@ const StyledPopupContainer = styled(PopupContainer)<IPopupContainer>`
     }}
 `;
 
-// eslint-disable-next-line react/jsx-props-no-spreading
 const TimePicker = (props: ITimePickerProps) => (
     <StyledPopupContainer>
         <StyledTimePicker
             getPopupContainer={(trigger) => trigger.parentElement}
             suffixIcon={<Icon icon={TimeIcon} style={{ fontSize: "24px" }} />}
+            // eslint-disable-next-line react/jsx-props-no-spreading
             {...props}
         />
     </StyledPopupContainer>

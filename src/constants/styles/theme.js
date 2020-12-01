@@ -117,6 +117,12 @@ const modifiedVariables = {
     "@table-bg": "transparent",
     "@table-header-bg": "transparent",
     "@table-header-color": theme.colors.disabled[7],
+    "@calendar-item-active-bg": theme.default.primaryColor,
+    "@picker-basic-cell-hover-color": theme.colors.neutrals[3],
+    "@select-item-active-bg": theme.colors.neutrals[3],
+    "@select-item-selected-bg": theme.default.primaryColor,
+    "@select-item-selected-color": theme.default.whiteColor,
+    "@select-item-selected-font-weight": "500",
 };
 
 module.exports = { theme, modifiedVariables };
