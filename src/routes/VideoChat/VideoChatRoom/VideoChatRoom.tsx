@@ -16,10 +16,9 @@ const VideoChatRoom = ({ room, loading }: { room: Room; loading: boolean }) => {
     const [exhibitsOpen, togglerExhibits] = useState(false);
     const [videoLayoutSize, setVideoLayoutSize] = useState(0);
 
-    useEffect(() => setVideoLayoutSize([realTimeOpen, exhibitsOpen].filter(Boolean).length), [
-        realTimeOpen,
-        exhibitsOpen,
-    ]);
+    useEffect(() => {
+        setVideoLayoutSize([exhibitsOpen, realTimeOpen].filter(Boolean).length);
+    }, [exhibitsOpen, realTimeOpen]);
 
     const tryAgain = () => {}; // TODO fetch again
 
@@ -59,28 +58,26 @@ const VideoChatRoom = ({ room, loading }: { room: Room; loading: boolean }) => {
     }
 
     return (
-        room && (
-            <StyledInDepoContainer>
-                <StyledInDepoLayout>
-                    <Exhibits onClick={() => togglerExhibits(false)} visible={exhibitsOpen} />
-                    <RealTime onClick={() => togglerRealTime(false)} visible={realTimeOpen} />
-                    <VideoConference
-                        deponent={room?.localParticipant}
-                        antendees={room?.participants}
-                        layoutSize={videoLayoutSize}
-                    />
-                </StyledInDepoLayout>
-                <StyledRoomFooter>
-                    <ControlsBar
-                        realTimeOpen={realTimeOpen}
-                        togglerRealTime={togglerRealTime}
-                        exhibitsOpen={exhibitsOpen}
-                        togglerExhibits={togglerExhibits}
-                        localParticipant={room?.localParticipant}
-                    />
-                </StyledRoomFooter>
-            </StyledInDepoContainer>
-        )
+        <StyledInDepoContainer>
+            <StyledInDepoLayout>
+                <Exhibits onClick={() => togglerExhibits(false)} visible={exhibitsOpen} />
+                <RealTime onClick={() => togglerRealTime(false)} visible={realTimeOpen} />
+                <VideoConference
+                    deponent={room?.localParticipant}
+                    antendees={room?.participants}
+                    layoutSize={videoLayoutSize}
+                />
+            </StyledInDepoLayout>
+            <StyledRoomFooter>
+                <ControlsBar
+                    realTimeOpen={realTimeOpen}
+                    togglerRealTime={togglerRealTime}
+                    exhibitsOpen={exhibitsOpen}
+                    togglerExhibits={togglerExhibits}
+                    localParticipant={room?.localParticipant}
+                />
+            </StyledRoomFooter>
+        </StyledInDepoContainer>
     );
 };
 

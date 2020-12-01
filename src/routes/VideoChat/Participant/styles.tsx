@@ -5,14 +5,26 @@ import { getPX, getREM } from "../../../constants/styles/utils";
 export const StyledParticipantMask = styled.div`
     border-radius: ${({ theme }) => getPX(theme.default.borderRadiusBase, spacing.baseUnit)};
     overflow: hidden;
+    transform: translateZ(0); // Fix Safari stacking context problem
+    width: 100%;
     height: 100%;
     background: ${({ theme }) => theme.colors.neutrals[0]};
     position: relative;
-    video,
+
     img {
         height: 100%;
         max-width: 100%;
     }
+
+    video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 115%;
+        height: 115%;
+        margin: -5%;
+    }
+
     &:before {
         width: 100%;
         content: "";

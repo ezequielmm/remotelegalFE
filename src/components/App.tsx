@@ -15,6 +15,7 @@ import MyCases from "../routes/MyCases";
 import VideoChat from "../routes/VideoChat";
 import Authenticator from "./authenticator/authenticator";
 import RouteWithLayout from "./RouteWithLayout/RouteWithLayout";
+import Viewer from "./PDFTronViewer";
 
 function App() {
     const tagManagerId = {
@@ -46,6 +47,7 @@ function App() {
                     <Route exact path="/" component={Login} />
                     <Route path="/verifyUser" component={Login} />
                     <Route exact path="/sign-up" component={SignUp} />
+                    <Route exact path="/viewer" component={Viewer} />
                     <Authenticator>
                         <RouteWithLayout exact path="/dashboard" component={Dashboard} />
                         <RouteWithLayout exact path="/my-cases" component={MyCases} />

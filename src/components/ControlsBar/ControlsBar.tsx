@@ -34,9 +34,9 @@ import Logo from "../Logo";
 interface IControlsBar {
     localParticipant: LocalParticipant;
     exhibitsOpen: boolean;
-    togglerExhibits: React.Dispatch<React.SetStateAction<boolean>>;
+    togglerExhibits: React.Dispatch<React.SetStateAction<boolean>> | ((value: React.SetStateAction<boolean>) => void);
     realTimeOpen: boolean;
-    togglerRealTime: React.Dispatch<React.SetStateAction<boolean>>;
+    togglerRealTime: React.Dispatch<React.SetStateAction<boolean>> | ((value: React.SetStateAction<boolean>) => void);
 }
 
 export default function ControlsBar({
@@ -57,10 +57,12 @@ export default function ControlsBar({
     const [supportOpen, togglerSupport] = useState(false);
     const { setEndDepo } = useEndDepo(disconnect);
 
-    const toggleRecord = () => togglerRecording(!isRecording);
-    const toggleBreakrooms = () => togglerBreakrooms(!breakroomsOpen);
-    const toggleSummary = () => togglerSummary(!summaryOpen);
-    const toggleSupport = () => togglerSupport(!supportOpen);
+    const toggleRecord = () => togglerRecording((prevState) => !prevState);
+    const toggleBreakrooms = () => togglerBreakrooms((prevState) => !prevState);
+    const toggleSummary = () => togglerSummary((prevState) => !prevState);
+    const toggleSupport = () => togglerSupport((prevState) => !prevState);
+    const toggleExhibits = () => togglerExhibits((prevState) => !prevState);
+    const toggleRealTime = () => togglerRealTime((prevState) => !prevState);
 
     const Panel = <Menu>Panel</Menu>;
 
@@ -130,7 +132,7 @@ export default function ControlsBar({
                     <Control
                         data-testid="exhibits"
                         isToggled={exhibitsOpen}
-                        onClick={() => togglerExhibits(!exhibitsOpen)}
+                        onClick={toggleExhibits}
                         type="simple"
                         label="Exhibits"
                         icon={<Icon icon={ExhibitsIcon} style={{ fontSize: "1.625rem" }} />}
@@ -138,7 +140,7 @@ export default function ControlsBar({
                     <Control
                         data-testid="realtime"
                         isToggled={realTimeOpen}
-                        onClick={() => togglerRealTime(!realTimeOpen)}
+                        onClick={toggleRealTime}
                         type="simple"
                         label="Real Time"
                         icon={<Icon icon={RealTimeIcon} style={{ fontSize: "1.625rem" }} />}

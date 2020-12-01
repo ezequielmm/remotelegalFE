@@ -5,6 +5,8 @@ import useParticipantTracks from "../../../hooks/VideoChat/useParticipantTracks"
 import { StyledParticipantMask, StyledIdentityBox } from "./styles";
 import Text from "../../../components/Typography/Text";
 
+const AspectRatio = require("../../../assets/in-depo/aspect-ratio-16-9.svg");
+
 const Participant = ({ participant }: { participant: LocalParticipant | RemoteParticipant }) => {
     const { videoRef, audioRef, dataTracks } = useParticipantTracks(participant);
 
@@ -14,6 +16,7 @@ const Participant = ({ participant }: { participant: LocalParticipant | RemotePa
         <StyledParticipantMask>
             <video ref={videoRef} autoPlay />
             <audio ref={audioRef} autoPlay />
+            <img src={AspectRatio} alt="16/9" />
             <StyledIdentityBox>
                 <Text size="small" weight="bold" state="white">
                     {participant.identity}

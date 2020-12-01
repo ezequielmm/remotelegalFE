@@ -1,7 +1,7 @@
 import React from "react";
 import { Form, Input } from "antd";
-import Button from "../../../components/Button";
 import styled from "styled-components";
+import Button from "../../../components/Button";
 import Title from "../../../components/Typography/Title";
 
 const StyledForm = styled.div`
