@@ -1,0 +1,8 @@
+export const END_DEPO_DATATRACK_MESSAGE = JSON.stringify({ module: "endDepo", value: "" });
+export const JOIN_DEPOSITION_MOCK = {
+    token: "1234",
+    witnessEmail: "test@test.com",
+};
+export const WAITING_FOR_WITNESS = "waiting for witness";
+export const ROUTE = "/deposition/:depositionID";
+export const TEST_ROUTE = "/deposition/test1234";

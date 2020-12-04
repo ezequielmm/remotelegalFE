@@ -1,6 +1,6 @@
 import { Dispatch } from "react";
 import { ApiService } from "../services/ApiService";
-import { IRoom } from "../state/videoChat/videoChatReducer";
+import { IRoom } from "../state/InDepo/InDepoReducer";
 
 export interface IAction<T = string, P = any> {
     type: T;

@@ -1,10 +1,8 @@
 import React, { ReactElement, useState } from "react";
 import { Dropdown, Menu } from "antd";
 import { LocalAudioTrack, LocalParticipant, LocalVideoTrack } from "twilio-video";
-import { disconnect } from "../../hooks/VideoChat/roomHooks";
-import useEndDepo from "../../hooks/VideoChat/useEndDepo";
-import useParticipantTracks from "../../hooks/VideoChat/useParticipantTracks";
-import useTracksStatus from "../../hooks/VideoChat/useTracksStatus";
+import useParticipantTracks from "../../hooks/InDepo/useParticipantTracks";
+import useTracksStatus from "../../hooks/InDepo/useTracksStatus";
 import {
     StyledContainer,
     StyledLogo,
@@ -55,7 +53,8 @@ export default function ControlsBar({
     const [breakroomsOpen, togglerBreakrooms] = useState(false);
     const [summaryOpen, togglerSummary] = useState(false);
     const [supportOpen, togglerSupport] = useState(false);
-    const { setEndDepo } = useEndDepo(disconnect);
+    // TODO: Add EndDepo functionality
+    // const { setEndDepo } = useEndDepo();
 
     const toggleRecord = () => togglerRecording((prevState) => !prevState);
     const toggleBreakrooms = () => togglerBreakrooms((prevState) => !prevState);
@@ -85,9 +84,9 @@ export default function ControlsBar({
                     onClick={() => setAudioEnabled(!isAudioEnabled)}
                     icon={
                         isAudioEnabled ? (
-                            <Icon icon={UnmuteIcon} style={{ fontSize: "1.625rem" }} />
+                            <Icon data-testid="unmuted" icon={UnmuteIcon} style={{ fontSize: "1.625rem" }} />
                         ) : (
-                            <Icon icon={MuteIcon} style={{ fontSize: "1.625rem" }} />
+                            <Icon data-testid="muted" icon={MuteIcon} style={{ fontSize: "1.625rem" }} />
                         )
                     }
                 />
@@ -98,9 +97,9 @@ export default function ControlsBar({
                     isToggled={cameraEnabled}
                     icon={
                         cameraEnabled ? (
-                            <Icon icon={CameraOnIcon} style={{ fontSize: "1.625rem" }} />
+                            <Icon data-testid="camerashown" icon={CameraOnIcon} style={{ fontSize: "1.625rem" }} />
                         ) : (
-                            <Icon icon={CameraOffIcon} style={{ fontSize: "1.625rem" }} />
+                            <Icon data-testid="camerahidden" icon={CameraOffIcon} style={{ fontSize: "1.625rem" }} />
                         )
                     }
                 />
@@ -120,7 +119,9 @@ export default function ControlsBar({
                 />
                 <Control
                     data-testid="end"
-                    onClick={() => setEndDepo(true)}
+                    onClick={() => {
+                        // setEndDepo(true)
+                    }}
                     type="rounded"
                     color="red"
                     label="End Deposition"

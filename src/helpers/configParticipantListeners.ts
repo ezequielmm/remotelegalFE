@@ -1,5 +1,5 @@
 import { LocalParticipant, RemoteParticipant } from "twilio-video";
-import actions from "../state/videoChat/videoChatAction";
+import actions from "../state/InDepo/InDepoActions";
 
 const configParticipantsListeners = (room, dispatchFunc) => {
     const participantConnected = (participant: LocalParticipant | RemoteParticipant) => {

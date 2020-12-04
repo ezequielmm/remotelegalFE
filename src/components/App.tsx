@@ -12,7 +12,7 @@ import Dashboard from "../routes/dashboard/dashboard";
 import Login from "../routes/Login";
 import SignUp from "../routes/SignUp";
 import MyCases from "../routes/MyCases";
-import VideoChat from "../routes/VideoChat";
+import InDepo from "../routes/InDepo";
 import Authenticator from "./authenticator/authenticator";
 import RouteWithLayout from "./RouteWithLayout/RouteWithLayout";
 import Viewer from "./PDFTronViewer";
@@ -51,7 +51,7 @@ function App() {
                     <Authenticator>
                         <RouteWithLayout exact path="/dashboard" component={Dashboard} />
                         <RouteWithLayout exact path="/my-cases" component={MyCases} />
-                        <Route exact path="/videochat" component={VideoChat} />
+                        <Route exact path="/deposition/:depositionID" component={InDepo} />
                     </Authenticator>
                 </Switch>
             </Router>

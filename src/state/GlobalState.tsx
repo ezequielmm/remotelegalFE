@@ -1,10 +1,10 @@
 import React, { memo, PropsWithChildren, useReducer } from "react";
-import { Deps, IGlobalReducer, IGlobalState } from "../models/general";
+import { Deps, IGlobalContext, IGlobalReducer, IGlobalState } from "../models/general";
 import combineReducers from "./utils/combineReducers";
-import RoomReducer, { RoomReducerIntialState } from "./videoChat/videoChatReducer";
+import RoomReducer, { RoomReducerInitialState } from "./InDepo/InDepoReducer";
 
 export const initialState: IGlobalState = {
-    room: RoomReducerIntialState,
+    room: RoomReducerInitialState,
 };
 
 export const combinedReducer = combineReducers<IGlobalState>({
@@ -19,10 +19,9 @@ export const rootReducer = {
 export const GlobalStateContext = React.createContext(null);
 
 // Having the provider as an independent function helps when testing the custom hooks
-export const defineProviderValues = (state, children) => {
-    return <GlobalStateContext.Provider value={state}>{children}</GlobalStateContext.Provider>;
+export const defineProviderValues = (state, dispatch, deps, children) => {
+    return <GlobalStateContext.Provider value={{ state, dispatch, deps }}>{children}</GlobalStateContext.Provider>;
 };
-
 export const GlobalState = memo(
     ({
         deps,
@@ -35,7 +34,11 @@ export const GlobalState = memo(
         const { reducer, initialState: globalInitialState } = globalReducer;
         const [state, dispatch] = useReducer(reducer, globalInitialState);
 
-        return defineProviderValues({ state, deps, dispatch }, children);
+        return (
+            <GlobalStateContext.Provider value={{ state, dispatch, deps } as IGlobalContext}>
+                {children}
+            </GlobalStateContext.Provider>
+        );
     }
 );
 

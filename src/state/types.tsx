@@ -1,5 +1,5 @@
-import { IGlobalState } from "../models/general";
 import { LocalDataTrack, Room } from "twilio-video";
+import { IGlobalState } from "../models/general";
 
 export interface IAction<T = string, P = any> {
     type: T;

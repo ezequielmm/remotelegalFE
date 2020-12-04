@@ -10,7 +10,7 @@
 import { Auth } from "aws-amplify";
 import ENV from "../constants/env";
 import { wait } from "../helpers/wait";
-import { CaseModel, UserModel } from "../models";
+import { CaseModel, Deposition, UserModel } from "../models";
 import { HTTP_METHOD, ITokenSet } from "../models/general";
 
 interface RequestParams {
@@ -50,6 +50,21 @@ export class ApiService {
         return this.request<CaseModel.ICase>({
             path: "/api/Cases",
             payload: caseData,
+            method: HTTP_METHOD.POST,
+        });
+    };
+
+    joinDeposition = async (depositionID: string): Promise<Deposition.IDeposition> => {
+        return this.request<Deposition.IDeposition>({
+            path: `/api/depositions/${depositionID}/join`,
+            method: HTTP_METHOD.POST,
+        });
+    };
+
+    endDeposition = async (depositionID: string): Promise<Deposition.IDeposition> => {
+        // TODO: Add real End Depo endpoint
+        return this.request<Deposition.IDeposition>({
+            path: `/api/depositions/${depositionID}/end`,
             method: HTTP_METHOD.POST,
         });
     };

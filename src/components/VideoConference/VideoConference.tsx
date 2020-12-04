@@ -1,7 +1,7 @@
-import React, { useEffect, useState, useRef } from "react";
-import { RemoteParticipant, Room } from "twilio-video";
+import React, { useEffect, useRef, useState } from "react";
+import { LocalParticipant, RemoteParticipant, Room } from "twilio-video";
 import { theme } from "../../constants/styles/theme";
-import Participant from "../../routes/VideoChat/Participant";
+import Participant from "../Participant";
 import {
     StyledVideoConference,
     StyledDeponentContainer,
@@ -18,19 +18,22 @@ enum LayoutSize {
 type TLayoutClass = keyof typeof LayoutSize;
 
 interface IVideoConferenceProps {
-    deponent: Room["localParticipant"];
-    antendees: Room["participants"];
+    attendees: Room["participants"];
     layoutSize: LayoutSize;
+    witnessID: string;
+    localParticipant: LocalParticipant;
 }
 
-const VideoConference = ({ deponent, antendees, layoutSize }: IVideoConferenceProps) => {
+const VideoConference = ({ attendees, layoutSize, witnessID, localParticipant }: IVideoConferenceProps) => {
     const [layoutClass, setLayoutClass] = useState<TLayoutClass>(null);
-    const [antendeesHeight, setAntendeesHeight] = useState<string>("");
-    const [deponentHeight, setDeponentHeight] = useState<string>("");
+    const [attendeesHeight, setAttendeesHeight] = useState<string>("");
+    const [witnessHeight, setWitnessHeight] = useState<string>("");
     const participantContainer = useRef<HTMLDivElement>(null);
     const videoConferenceContainer = useRef<HTMLDivElement>(null);
+    const participants = [localParticipant, ...Array.from(attendees.values())];
+    const witness = participants.find((participant) => participant.identity === witnessID);
 
-    const calculateAntendeesHeight = (participantRef: React.MutableRefObject<HTMLDivElement>): string => {
+    const calculateAttendeesHeight = (participantRef: React.MutableRefObject<HTMLDivElement>): string => {
         if (!participantRef.current) return "";
 
         let { height } = window.getComputedStyle(participantRef.current);
@@ -39,7 +42,7 @@ const VideoConference = ({ deponent, antendees, layoutSize }: IVideoConferencePr
         return `${Number(height) * 2 + theme.default.baseUnit}px`;
     };
 
-    const calculateDeponentHeight = (
+    const calculateWitnessHeight = (
         participantRef: React.MutableRefObject<HTMLDivElement>,
         videoConferenceRef: React.MutableRefObject<HTMLDivElement>
     ): string => {
@@ -47,9 +50,9 @@ const VideoConference = ({ deponent, antendees, layoutSize }: IVideoConferencePr
 
         const { height } = window.getComputedStyle(videoConferenceRef.current);
         const videoConferenceHeight = Number(height.replace("px", ""));
-        const antendeesContainerHeight = Number(calculateAntendeesHeight(participantRef).replace("px", ""));
+        const attendeesContainerHeight = Number(calculateAttendeesHeight(participantRef).replace("px", ""));
 
-        return `${videoConferenceHeight - antendeesContainerHeight - theme.default.baseUnit}px`;
+        return `${videoConferenceHeight - attendeesContainerHeight - theme.default.baseUnit}px`;
     };
 
     useEffect(() => {
@@ -66,29 +69,31 @@ const VideoConference = ({ deponent, antendees, layoutSize }: IVideoConferencePr
         }
 
         // Reset grid height
-        setAntendeesHeight("");
-        setDeponentHeight("");
+        setAttendeesHeight("");
+        setWitnessHeight("");
     }, [layoutSize]);
 
     useEffect(() => {
         if (layoutClass === "grid") {
-            setAntendeesHeight(calculateAntendeesHeight(participantContainer));
-            setDeponentHeight(calculateDeponentHeight(participantContainer, videoConferenceContainer));
+            setAttendeesHeight(calculateAttendeesHeight(participantContainer));
+            setWitnessHeight(calculateWitnessHeight(participantContainer, videoConferenceContainer));
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [layoutClass]);
 
     return (
         <StyledVideoConference className={layoutClass} ref={videoConferenceContainer}>
-            <StyledDeponentContainer height={deponentHeight}>
-                <Participant participant={deponent} />
+            <StyledDeponentContainer height={witnessHeight}>
+                <Participant participant={witness} />
             </StyledDeponentContainer>
-            <StyledAttendeesContainer height={antendeesHeight}>
-                {Array.from(antendees.values()).map((participant: RemoteParticipant, i) => (
-                    <StyledParticipantContainer key={participant.sid} ref={i === 0 ? participantContainer : null}>
-                        <Participant participant={participant} />
-                    </StyledParticipantContainer>
-                ))}
+            <StyledAttendeesContainer height={attendeesHeight}>
+                {participants
+                    .filter((participant) => participant.identity !== witnessID)
+                    .map((participant: RemoteParticipant, i) => (
+                        <StyledParticipantContainer key={participant.sid} ref={i === 0 ? participantContainer : null}>
+                            <Participant participant={participant} />
+                        </StyledParticipantContainer>
+                    ))}
             </StyledAttendeesContainer>
         </StyledVideoConference>
     );
