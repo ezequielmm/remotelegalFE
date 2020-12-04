@@ -91,9 +91,9 @@ export const StyledSelect = styled(ANTSelect).attrs((props: ISelectProps) => ({
     }}
 `;
 
-export const { Option } = ANTSelect;
+const { Option } = ANTSelect;
 
-export const Select = ({ children, ...props }: ISelectProps) => (
+const Select = ({ children, ...props }: ISelectProps) => (
     <StyledSelect
         // eslint-disable-next-line react/jsx-props-no-spreading
         {...props}
@@ -103,3 +103,7 @@ export const Select = ({ children, ...props }: ISelectProps) => (
         {children}
     </StyledSelect>
 );
+
+Select.Option = Option;
+
+export default Select;

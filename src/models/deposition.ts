@@ -1,3 +1,1 @@
-export interface IDeposition {
-    token: string;
-}
+export type IDeposition = any;

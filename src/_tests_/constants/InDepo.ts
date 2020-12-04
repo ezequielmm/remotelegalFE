@@ -4,5 +4,5 @@ export const JOIN_DEPOSITION_MOCK = {
     witnessEmail: "test@test.com",
 };
 export const WAITING_FOR_WITNESS = "waiting for witness";
-export const ROUTE = "/deposition/:depositionID";
-export const TEST_ROUTE = "/deposition/test1234";
+export const ROUTE = "/deposition/join/:depositionID";
+export const TEST_ROUTE = "/deposition/join/test1234";

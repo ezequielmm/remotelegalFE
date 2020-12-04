@@ -9,8 +9,9 @@ export default (): Deps => ({
         joinDeposition: jest.fn().mockResolvedValue(JOIN_DEPOSITION_MOCK),
         fetchCases: jest.fn().mockResolvedValue(getCaseAsc()),
         createCase: jest.fn().mockResolvedValue(getOneCase()[0]),
-        verifyUser: jest.fn().mockResolvedValue(true),
+        createDepositions: jest.fn().mockResolvedValue(true),
         signUp: jest.fn().mockResolvedValue(getUser_1()),
+        verifyUser: jest.fn().mockResolvedValue(true),
         verifyEmail: jest.fn().mockResolvedValue(true),
     } as any,
 });

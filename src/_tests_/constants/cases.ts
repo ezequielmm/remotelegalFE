@@ -13,7 +13,7 @@ export const NEW_CASE_COLLABORATORS_SUCCESFUL =
 
 export const NEW_CASE_BUTTON = /Go to my cases/;
 
-export const CASE_NAME = "Case Name";
+export const CASE_NAME = "CaseName";
 export const CASE_NUMBER = "123456";
 export const CASE_ADDED_BY = "Case Added By";
 

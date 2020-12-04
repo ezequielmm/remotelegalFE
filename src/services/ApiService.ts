@@ -10,15 +10,16 @@
 import { Auth } from "aws-amplify";
 import ENV from "../constants/env";
 import { wait } from "../helpers/wait";
-import { CaseModel, Deposition, UserModel } from "../models";
+import { CaseModel, DepositionModel, UserModel } from "../models";
 import { HTTP_METHOD, ITokenSet } from "../models/general";
 
 interface RequestParams {
     path: string;
     payload?: Record<string, any>;
-    addToken?: boolean;
+    withToken?: boolean;
     method?: HTTP_METHOD;
-    setContentType?: boolean;
+    withContentType?: boolean;
+    formData?: FormData;
 }
 
 export class ApiService {
@@ -54,18 +55,32 @@ export class ApiService {
         });
     };
 
-    joinDeposition = async (depositionID: string): Promise<Deposition.IDeposition> => {
-        return this.request<Deposition.IDeposition>({
+    joinDeposition = async (depositionID: string): Promise<DepositionModel.IDeposition> => {
+        return this.request<DepositionModel.IDeposition>({
             path: `/api/depositions/${depositionID}/join`,
             method: HTTP_METHOD.POST,
         });
     };
 
-    endDeposition = async (depositionID: string): Promise<Deposition.IDeposition> => {
+    endDeposition = async (depositionID: string): Promise<DepositionModel.IDeposition> => {
         // TODO: Add real End Depo endpoint
-        return this.request<Deposition.IDeposition>({
+        return this.request<DepositionModel.IDeposition>({
             path: `/api/depositions/${depositionID}/end`,
             method: HTTP_METHOD.POST,
+        });
+    };
+
+    createDepositions = async ({ depositionList, files, caseId }) => {
+        const formData = new FormData();
+        files.forEach((file) => {
+            formData.append(file.uid, file);
+        });
+        formData.set("json", JSON.stringify({ depositions: depositionList }));
+        return this.request<boolean>({
+            path: `/api/Cases/${caseId}`,
+            formData,
+            withContentType: false,
+            method: HTTP_METHOD.PATCH,
         });
     };
 
@@ -73,7 +88,7 @@ export class ApiService {
         return this.request<boolean>({
             path: "/api/Users/verifyUser",
             payload,
-            addToken: false,
+            withToken: false,
             method: HTTP_METHOD.POST,
         });
     };
@@ -82,7 +97,7 @@ export class ApiService {
         return this.request<UserModel.IUser>({
             path: "/api/Users",
             payload,
-            addToken: false,
+            withToken: false,
             method: HTTP_METHOD.POST,
         });
     };
@@ -91,7 +106,7 @@ export class ApiService {
         return this.request<boolean>({
             path: "/api/Users/resendVerificationEmail",
             payload,
-            addToken: false,
+            withToken: false,
             method: HTTP_METHOD.POST,
         });
     };
@@ -99,12 +114,13 @@ export class ApiService {
     private request = async <T>({
         path,
         payload = {},
-        addToken = true,
+        withToken = true,
         method = HTTP_METHOD.GET,
-        setContentType = true,
+        withContentType = true,
+        formData = undefined,
     }: RequestParams): Promise<T> => {
-        if (addToken && !this.tokenSet) await this.getTokenSet();
-        const jwt = addToken ? `Bearer ${this.tokenSet.accessToken}` : undefined;
+        if (withToken && !this.tokenSet) await this.getTokenSet();
+        const jwt = withToken ? `Bearer ${this.tokenSet.accessToken}` : undefined;
 
         const queryParams =
             method === HTTP_METHOD.GET &&
@@ -112,9 +128,12 @@ export class ApiService {
                 .filter(([, value]) => value !== undefined)
                 .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
                 .join("&")}`;
-        const body = [HTTP_METHOD.POST, HTTP_METHOD.PUT, HTTP_METHOD.PATCH].includes(method)
-            ? JSON.stringify(payload)
-            : undefined;
+        const body =
+            [HTTP_METHOD.POST, HTTP_METHOD.PUT, HTTP_METHOD.PATCH].includes(method) && !formData
+                ? JSON.stringify(payload)
+                : formData;
+
+        const contentType = withContentType ? { Accept: "application/json", "Content-Type": "application/json" } : {};
         return this.retryRequest(
             `${this.apiUrl}${path}${queryParams || ""}`,
             {
@@ -122,8 +141,7 @@ export class ApiService {
                 body,
                 headers: {
                     Authorization: jwt,
-                    Accept: setContentType ? "application/json" : undefined,
-                    "Content-Type": setContentType ? "application/json" : undefined,
+                    ...contentType,
                 },
             },
             ENV.API.API_RETRY_REQUEST_ATTEMPTS + 1 // One attempt and the others are the retries
@@ -135,7 +153,7 @@ export class ApiService {
      */
     private retryRequest = async <T>(
         path: string,
-        options: { method: HTTP_METHOD; body?: string; headers: any },
+        options: { method: HTTP_METHOD; body?: string | FormData; headers: any },
         attemptsLeft: number
     ): Promise<T> => {
         try {

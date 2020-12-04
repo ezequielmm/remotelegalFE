@@ -20,29 +20,27 @@ const CodeSent = ({ email }: CodeSentProps) => {
         verifyEmail();
     };
     return (
-        <>
-            <Row justify="center">
-                <Space direction="vertical" size={theme.default.spaces[11] * theme.default.baseUnit}>
-                    {error && <Alert message={NETWORK_ERROR} type="error" showIcon />}
-                    <Col style={{ textAlign: "center" }}>
-                        <Title level={3} weight="light" noMargin>
-                            Check your mailbox
-                        </Title>
-                        <Title level={4} weight="light">
-                            {email}
-                        </Title>
-                    </Col>
-                    <Space size="small" align="start">
-                        <Text size="extralarge" state="disabled">
-                            Didn’t get the email?
-                        </Text>
-                        <StyledButtonLink type="link" onClick={handleLinkFetch}>
-                            Click here to resend it
-                        </StyledButtonLink>
-                    </Space>
+        <Row justify="center">
+            <Space direction="vertical" size={theme.default.spaces[11] * theme.default.baseUnit}>
+                {error && <Alert message={NETWORK_ERROR} type="error" showIcon />}
+                <Col style={{ textAlign: "center" }}>
+                    <Title level={3} weight="light" noMargin>
+                        Check your mailbox
+                    </Title>
+                    <Title level={4} weight="light">
+                        {email}
+                    </Title>
+                </Col>
+                <Space size="small" align="start">
+                    <Text size="extralarge" state="disabled">
+                        Didn’t get the email?
+                    </Text>
+                    <StyledButtonLink type="link" onClick={handleLinkFetch}>
+                        Click here to resend it
+                    </StyledButtonLink>
                 </Space>
-            </Row>
-        </>
+            </Space>
+        </Row>
     );
 };
 export default CodeSent;

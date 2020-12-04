@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { getREM, getWeightNumber } from "../../../constants/styles/utils";
 
 export interface ITextProps {
+    height?: number;
     size?: "small" | "default" | "large" | "extralarge";
     weight?: "light" | "regular" | "bold";
     uppercase?: boolean;
@@ -14,7 +15,7 @@ export interface ITextProps {
 }
 
 const StyledText = styled.span<ITextProps>`
-    ${({ size, weight, state, uppercase, ellipsis, block, theme }) => {
+    ${({ height, size, weight, state, uppercase, ellipsis, block, theme }) => {
         const { textColor, fontSizes } = theme.default;
 
         const fontSize = (textSize, sizes) => {
@@ -55,6 +56,7 @@ const StyledText = styled.span<ITextProps>`
             : "";
 
         const displayStyle = block ? `display: block;` : `display: inline-block;`;
+        const fixedHeight = height ? `height: ${getREM(height)}` : "";
 
         const styles = `
             color: ${textColor};
@@ -65,15 +67,33 @@ const StyledText = styled.span<ITextProps>`
             ${uppercaseStyle}
             ${ellipsisStyle}
             ${displayStyle}
+            ${fixedHeight}
         `;
 
         return styles;
     }}
 `;
 
-const text = ({ size, weight, state, uppercase = false, ellipsis = true, block = false, children }: ITextProps) => {
+const text = ({
+    height,
+    size,
+    weight,
+    state,
+    uppercase = false,
+    ellipsis = true,
+    block = false,
+    children,
+}: ITextProps) => {
     return (
-        <StyledText size={size} weight={weight} state={state} uppercase={uppercase} ellipsis={ellipsis} block={block}>
+        <StyledText
+            height={height}
+            size={size}
+            weight={weight}
+            state={state}
+            uppercase={uppercase}
+            ellipsis={ellipsis}
+            block={block}
+        >
             {children}
         </StyledText>
     );

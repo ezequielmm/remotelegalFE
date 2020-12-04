@@ -38,7 +38,7 @@ test("click on schedule deposition takes me to deposition", async () => {
         <ThemeProvider theme={theme}>
             <BrowserRouter>
                 <Switch>
-                    <Route exact path="/deposition" component={Deposition} />
+                    <Route exact path="/deposition/new" component={Deposition} />
                     <Layout menuRoutes={menuRoutes}>
                         <Route exact path="/dashboard" component={Dashboard} />
                     </Layout>

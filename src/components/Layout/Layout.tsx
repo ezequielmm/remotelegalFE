@@ -58,7 +58,12 @@ const AppLayout = ({ children }: DashboardProps) => {
             <Layout>
                 <Sider width="16%">
                     <div>
-                        <Button type="primary" block onClick={() => history.push("/deposition")}>
+                        <Button
+                            disabled={pathname.includes("deposition/new")}
+                            type="primary"
+                            block
+                            onClick={() => history.push("/deposition/new")}
+                        >
                             Schedule deposition
                         </Button>
                         <Menu

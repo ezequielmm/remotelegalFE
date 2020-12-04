@@ -18,7 +18,7 @@ describe("ApiService", () => {
     });
 
     it("should make a GET request", async () => {
-        (apiService as any).request({ path: url, addToken: false, payload });
+        (apiService as any).request({ path: url, withToken: false, payload });
         await wait(0);
         expect(fetch).toBeCalledWith(`${ENV.API.URL}${url}?a=1&b=2`, {
             method: HTTP_METHOD.GET,
@@ -28,7 +28,7 @@ describe("ApiService", () => {
     });
 
     it("should make a POST request", async () => {
-        (apiService as any).request({ path: url, addToken: false, payload, method: HTTP_METHOD.POST });
+        (apiService as any).request({ path: url, withToken: false, payload, method: HTTP_METHOD.POST });
         await wait(0);
         expect(fetch).toBeCalledWith(`${ENV.API.URL}${url}`, {
             method: HTTP_METHOD.POST,
@@ -38,7 +38,7 @@ describe("ApiService", () => {
     });
 
     it("should make a PUT request", async () => {
-        (apiService as any).request({ path: url, addToken: false, payload, method: HTTP_METHOD.PUT });
+        (apiService as any).request({ path: url, withToken: false, payload, method: HTTP_METHOD.PUT });
         await wait(0);
         expect(fetch).toBeCalledWith(`${ENV.API.URL}${url}`, {
             method: HTTP_METHOD.PUT,
@@ -48,7 +48,7 @@ describe("ApiService", () => {
     });
 
     it("should make a PATCH request", async () => {
-        (apiService as any).request({ path: url, addToken: false, payload, method: HTTP_METHOD.PATCH });
+        (apiService as any).request({ path: url, withToken: false, payload, method: HTTP_METHOD.PATCH });
         await wait(0);
         expect(fetch).toBeCalledWith(`${ENV.API.URL}${url}`, {
             method: HTTP_METHOD.PATCH,
@@ -58,7 +58,7 @@ describe("ApiService", () => {
     });
 
     it("should make a DELETE request", async () => {
-        (apiService as any).request({ path: url, addToken: false, payload, method: HTTP_METHOD.DELETE });
+        (apiService as any).request({ path: url, withToken: false, payload, method: HTTP_METHOD.DELETE });
         await wait(0);
         expect(fetch).toBeCalledWith(`${ENV.API.URL}${url}`, {
             method: HTTP_METHOD.DELETE,
@@ -77,14 +77,14 @@ describe("ApiService", () => {
         it("should NOT retry if the server responds with a status code that does NOT exist in the range of status codes that need retry", async () => {
             fetch = jest.fn().mockResolvedValue({ status: 200, json: () => Promise.resolve({ value: { a: 1 } }) });
             apiService = new ApiService(fetch);
-            await (apiService as any).request({ path: url, payload, addToken: false });
+            await (apiService as any).request({ path: url, payload, withToken: false });
             expect(fetch).toBeCalledTimes(1);
         });
         it(`should retry ${ENV.API.API_RETRY_REQUEST_ATTEMPTS} times if the server responds a status code that exists in the range of status codes that need retry`, async () => {
             fetch = jest.fn().mockRejectedValue({ status: 503, json: () => Promise.resolve({ value: { a: 1 } }) });
             apiService = new ApiService(fetch);
             try {
-                await (apiService as any).request({ path: url, payload, addToken: false });
+                await (apiService as any).request({ path: url, payload, withToken: false });
             } catch {
                 expect(fetch).toBeCalledTimes(ENV.API.API_RETRY_REQUEST_ATTEMPTS + 1); // add 1 for the first attempt
             }

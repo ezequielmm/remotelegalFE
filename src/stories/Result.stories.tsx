@@ -34,11 +34,9 @@ const Template: Story = (args) => {
             <Result
                 {...args}
                 extra={
-                    <>
-                        <Title level={6} weight="light">
-                            Extra: You can add whatever you want here
-                        </Title>
-                    </>
+                    <Title level={6} weight="light">
+                        Extra: You can add whatever you want here
+                    </Title>
                 }
             />
         </Card>
