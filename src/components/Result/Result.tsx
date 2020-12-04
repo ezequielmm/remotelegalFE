@@ -53,12 +53,20 @@ const resultDefault = ({ icon, status, ...rest }: IResultProps) => {
 
 const StyledResult = styled(resultDefault)<IResultProps>`
     ${({ theme }) => {
+        const inDepoTheme =
+            theme.mode === "inDepo"
+                ? `
+            color: ${theme.default.primaryColor};
+        `
+                : "";
+
         const styles = `
             .ant-result-title {
                 font-family: ${theme.default.headerFontFamily};
                 font-weight: 300;
                 line-height: ${theme.default.lineHeightBase};
                 margin-bottom: ${getREM(theme.default.spaces[1])};
+                ${inDepoTheme}
             }
         `;
         return styles;

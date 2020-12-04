@@ -55,6 +55,7 @@ const theme = {
         spaces: spacing.spaces,
         heightBase: spacing.heightBase,
     },
+    mode: "default",
 };
 
 /** Override Ant Design variables */

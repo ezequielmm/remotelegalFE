@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
+import { ThemeProvider } from "styled-components";
 import Spinner from "../../components/Spinner";
 import Exhibits from "../../components/Exhibits";
 import RealTime from "../../components/RealTime";
@@ -11,11 +12,13 @@ import { GlobalStateContext } from "../../state/GlobalState";
 import disconnectFromDepo from "../../helpers/disconnectFromDepo";
 import ErrorScreen from "../../components/ErrorScreen";
 import * as CONSTANTS from "../../constants/inDepo";
+import { theme } from "../../constants/styles/theme";
 
 const InDepo = () => {
     type DepositionID = {
         depositionID: string;
     };
+    const inDepoTheme = { ...theme, mode: "inDepo" };
     const { state, dispatch } = useContext(GlobalStateContext);
     const [joinDeposition, loading, error] = useJoinDeposition();
     const { message, currentRoom, witness } = state.room;
@@ -58,27 +61,29 @@ const InDepo = () => {
     }
 
     return currentRoom ? (
-        <StyledInDepoContainer data-testid="videoconference">
-            <StyledInDepoLayout>
-                <Exhibits onClick={() => togglerExhibits(false)} visible={exhibitsOpen} />
-                <RealTime onClick={() => togglerRealTime(false)} visible={realTimeOpen} />
-                <VideoConference
-                    localParticipant={currentRoom.localParticipant}
-                    witnessID={witness}
-                    attendees={currentRoom.participants}
-                    layoutSize={videoLayoutSize}
-                />
-            </StyledInDepoLayout>
-            <StyledRoomFooter>
-                <ControlsBar
-                    realTimeOpen={realTimeOpen}
-                    togglerRealTime={togglerRealTime}
-                    exhibitsOpen={exhibitsOpen}
-                    togglerExhibits={togglerExhibits}
-                    localParticipant={currentRoom.localParticipant}
-                />
-            </StyledRoomFooter>
-        </StyledInDepoContainer>
+        <ThemeProvider theme={inDepoTheme}>
+            <StyledInDepoContainer data-testid="videoconference">
+                <StyledInDepoLayout>
+                    <Exhibits onClick={() => togglerExhibits(false)} visible={exhibitsOpen} />
+                    <RealTime onClick={() => togglerRealTime(false)} visible={realTimeOpen} />
+                    <VideoConference
+                        localParticipant={currentRoom.localParticipant}
+                        witnessID={witness}
+                        attendees={currentRoom.participants}
+                        layoutSize={videoLayoutSize}
+                    />
+                </StyledInDepoLayout>
+                <StyledRoomFooter>
+                    <ControlsBar
+                        realTimeOpen={realTimeOpen}
+                        togglerRealTime={togglerRealTime}
+                        exhibitsOpen={exhibitsOpen}
+                        togglerExhibits={togglerExhibits}
+                        localParticipant={currentRoom.localParticipant}
+                    />
+                </StyledRoomFooter>
+            </StyledInDepoContainer>
+        </ThemeProvider>
     ) : (
         <p>Thanks for joining the deposition</p>
     );
