@@ -7,66 +7,81 @@ import { getREM } from "../../constants/styles/utils";
 
 const StyledTable = styled(Table)`
     ${({ theme }) => {
+        const { fontSizes, spaces } = theme.default;
+        const { neutrals } = theme.colors;
         const styles = `
-            table {
-                border-radius: 0;
-                border-spacing: 0 ${getREM(theme.default.spaces[1])};
+            &.ant-table-wrapper {
+                table {
+                    border-radius: 0;
+                    border-spacing: 0 ${getREM(spaces[1])};
 
-                thead.ant-table-thead {
-                    > tr {
-                        > th {
-                            border-radius: 0;
-                            background-color: transparent;
-                            font-size: ${getREM(theme.default.fontSizes[8])};
-                            text-transform: uppercase;
-                            font-weight: bold;
-                            border-bottom-color: ${theme.colors.neutrals[3]};
+                    thead.ant-table-thead {
+                        > tr {
+                            > th {
+                                border-radius: 0;
+                                background-color: transparent;
+                                font-size: ${getREM(fontSizes[8])};
+                                text-transform: uppercase;
+                                font-weight: bold;
+                                border-bottom-color: ${neutrals[3]};
 
-                            .ant-table-column-sorters {
-                                padding: 0 0 ${getREM(theme.default.spaces[1])} ${getREM(theme.default.spaces[5])};
+                                .ant-table-column-sorters {
+                                    padding: 0 0 ${getREM(spaces[1])} ${getREM(spaces[5])};
 
-                                .ant-table-column-sorter {
-                                    color: ${theme.colors.neutrals[1]};
-                                    margin-top: -0.4em;
-                                    .ant-table-column-sorter-up,
-                                    .ant-table-column-sorter-down {
-                                        font-size: ${getREM(theme.default.fontSizes[9])};
+                                    .ant-table-column-sorter {
+                                        color: ${neutrals[1]};
+                                        margin-top: -0.4em;
+                                        .ant-table-column-sorter-up,
+                                        .ant-table-column-sorter-down {
+                                            font-size: ${getREM(fontSizes[9])};
+                                        }
                                     }
                                 }
                             }
                         }
                     }
-                }
 
-                tbody.ant-table-tbody {
-                    > tr {
-                        background-color: ${theme.colors.neutrals[6]};
+                    tbody.ant-table-tbody {
+                        > tr {
+                            background-color: ${neutrals[6]};
 
-                        > td {
-                            box-shadow: 0 ${getREM(theme.default.spaces[2])} ${getREM(
-            theme.default.spaces[5]
-        )} 0 rgba(162, 195, 216, 0.08);
-                            padding-left: ${getREM(theme.default.spaces[5])};
-                            &:first-child {
-                                border-radius: ${getREM(theme.default.spaces[2])} 0 0 ${getREM(
-            theme.default.spaces[2]
-        )};
-                            }
-                            &:last-child {
-                                border-radius: 0 ${getREM(theme.default.spaces[2])} ${getREM(
-            theme.default.spaces[2]
-        )} 0;
+                            > td.ant-table-cell {
+                                box-shadow: 0 ${getREM(spaces[2])} ${getREM(spaces[5])} 0 rgba(162, 195, 216, 0.08);
+                                padding: ${getREM(spaces[4])} ${getREM(spaces[5] / 2)};
+                                &:first-child {
+                                    padding-left: ${getREM(spaces[5])};
+                                    border-radius: ${getREM(spaces[2])} 0 0 ${getREM(spaces[2])};
+                                }
+                                &:last-child {
+                                    border-radius: 0 ${getREM(spaces[2])} ${getREM(spaces[2])} 0;
+                                }
+
+                                small {
+                                    font-size: ${getREM(fontSizes[8])};
+                                    display: block;
+                                }
+
+                                &.ant-table-cell-ellipsis {
+                                    overflow: initial;
+                                    white-space: initial;
+                                    text-overflow: initial;
+                                    word-break: initial;
+
+                                    small {
+                                        display: -webkit-box;
+                                        -webkit-line-clamp: 2;
+                                        -webkit-box-orient: vertical;  
+                                        overflow: hidden;
+                                    }
+                                }
                             }
                         }
-                    }
 
-                    &.ant-table-placeholder {
-                        > td {
-                            box-shadow: 0 ${getREM(theme.default.spaces[2])} ${getREM(
-            theme.default.spaces[5]
-        )} 0 rgba(162, 195, 216, 0.08);
-                            padding-left: ${getREM(theme.default.spaces[5])};
-                            border-radius: ${getREM(theme.default.spaces[2])};
+                        &.ant-table-placeholder {
+                            > td {
+                                box-shadow: 0 ${getREM(spaces[2])} ${getREM(spaces[5])} 0 rgba(162, 195, 216, 0.08);
+                                padding-left: ${getREM(spaces[5])};
+                                border-radius: ${getREM(spaces[2])};
                             }
                         }
                     }
