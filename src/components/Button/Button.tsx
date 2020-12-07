@@ -22,7 +22,7 @@ const buttonDefault = ({ children, type, ...rest }: IButtonProps) => {
 };
 
 const StyledButton = styled(buttonDefault)<IButtonProps>`
-    ${({ type, size, theme }) => {
+    ${({ type, size, theme, disabled }) => {
         const { textColorInverse, fontSizes, spaces } = theme.default;
         const { primary, secondary } = theme.colors;
 
@@ -57,6 +57,21 @@ const StyledButton = styled(buttonDefault)<IButtonProps>`
                     border-color: ${secondary[6]};
                     color: ${textColorInverse}; // TODO get contrast and return white or black text
                 }
+                `
+                : "";
+
+        const typeGhostStyle =
+            type === "ghost"
+                ? `
+                    color: ${primary[5]};
+                    border-color: ${primary[5]};
+
+                    &[disabled],
+                    &[disabled]:hover {
+                        color: ${primary[2]};
+                        border-color: ${primary[2]};
+                        background-color: transparent;
+                    }
                 `
                 : "";
 
@@ -111,6 +126,7 @@ const StyledButton = styled(buttonDefault)<IButtonProps>`
             ${typeSecondaryStyle}
             ${typeTextStyle}
             ${smallButtonStyle}
+            ${typeGhostStyle}
             `;
 
         return styles;

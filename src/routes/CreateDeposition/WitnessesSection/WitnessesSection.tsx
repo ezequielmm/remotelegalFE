@@ -4,6 +4,7 @@ import { useFieldArray, useFormContext } from "react-hook-form";
 import Button from "../../../components/Button";
 import Card from "../../../components/Card";
 import WitnessItem from "./WitnessItem";
+import { PlusOutlined } from "@ant-design/icons";
 
 const WitnessesSection = () => {
     const { control } = useFormContext();
@@ -14,7 +15,7 @@ const WitnessesSection = () => {
                 <WitnessItem key={field.id} deposition={field} witnessNumber={index} />
             ))}
             <Col xs={24}>
-                <Button disabled htmlType="submit" onClick={() => append({})} type="primary">
+                <Button htmlType="submit" onClick={() => append({})} type="ghost" icon={<PlusOutlined />}>
                     Add Witness
                 </Button>
             </Col>
