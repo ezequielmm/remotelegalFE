@@ -19,8 +19,8 @@ const mapDepositions = ({
     const mappedDepositions = depositions.map(
         ({ witness, isVideoRecordingNeeded, date, startTime, endTime, file, ...deposition }) => {
             if (file) files.push(file);
-            const formattedStart = moment(startTime).format("hh:mm:ss");
-            const formattedEnd = endTime && moment(endTime).format("hh:mm:ss");
+            const formattedStart = moment(startTime).format("HH:mm:ss");
+            const formattedEnd = endTime && moment(endTime).format("HH:mm:ss");
             const mapWitness =
                 witness.email || witness.name || witness.phone
                     ? {

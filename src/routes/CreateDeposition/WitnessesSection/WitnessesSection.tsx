@@ -15,7 +15,7 @@ const WitnessesSection = () => {
                 <WitnessItem key={field.id} deposition={field} witnessNumber={index} />
             ))}
             <Col xs={24}>
-                <Button htmlType="submit" onClick={() => append({})} type="ghost" icon={<PlusOutlined />}>
+                <Button disabled onClick={() => append({})} type="ghost" icon={<PlusOutlined />}>
                     Add Witness
                 </Button>
             </Col>
