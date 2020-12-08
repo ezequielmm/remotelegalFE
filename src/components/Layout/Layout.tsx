@@ -24,8 +24,15 @@ const AppLayout = ({ children }: DashboardProps) => {
     const { pathname } = useLocation();
 
     const signOut = async () => {
-        await Auth.signOut({ global: true });
-        history.push("/");
+        try {
+            await Auth.signOut({ global: true });
+        } catch (error) {
+            await Auth.signOut();
+        } finally {
+            localStorage.clear();
+            sessionStorage.clear();
+            window.location.href = "/";
+        }
     };
     const menu = (
         <Menu>
