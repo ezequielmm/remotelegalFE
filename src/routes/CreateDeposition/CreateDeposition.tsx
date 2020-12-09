@@ -5,7 +5,6 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { FormProvider, useForm } from "react-hook-form";
 import Button from "../../components/Button";
 import Title from "../../components/Typography/Title";
-import SuccessCard from "./SuccessCard";
 import CaseSection from "./CaseSection";
 import WitnessesSection from "./WitnessesSection";
 import DetailsSection from "./DetailsSection";
@@ -14,10 +13,11 @@ import * as CONSTANTS from "../../constants/createDeposition";
 import DepositionSchema from "../../schemas/DepositionSchema";
 import { useFetchCases } from "../../hooks/cases/hooks";
 import { useScheduleDepositions } from "../../hooks/depositions/hooks";
+import CreateDepositionResultCard from "./CreateDepositionResultCard";
 import mapDepositions from "../../helpers/mapDepositions";
 
 const CreateDeposition = () => {
-    const [displaySuccess, setDisplaySuccess] = React.useState(false);
+    const [createdDepositions, setCreatedDepositions] = React.useState(0);
 
     const { error: fetchingCasesError, data, loading: loadingCases, refreshList } = useFetchCases();
     const [scheduleDepositions, loading, error, response] = useScheduleDepositions();
@@ -25,19 +25,20 @@ const CreateDeposition = () => {
     const cases = React.useMemo(() => (Array.isArray(data) ? data : []), [data]);
     const history = useHistory();
 
-    React.useEffect(() => {
-        if (response) setDisplaySuccess(true);
-    }, [response]);
-
     const methods = useForm({
         mode: "onTouched",
         resolver: yupResolver(DepositionSchema),
-        defaultValues: CONSTANTS.DEPOSITION_DEFAULT_VALUES,
+        defaultValues: CONSTANTS.CREATE_DEPOSITION_DEFAULT_VALUES,
     });
 
+    React.useEffect(() => {
+        if (response) setCreatedDepositions(methods.watch("depositions").length);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [response]);
+
     const handleResetForm = () => {
-        setDisplaySuccess(false);
-        methods.reset(CONSTANTS.DEPOSITION_DEFAULT_VALUES);
+        setCreatedDepositions(0);
+        methods.reset(CONSTANTS.CREATE_DEPOSITION_DEFAULT_VALUES);
     };
 
     const submitDepositions = (values) => {
@@ -54,9 +55,10 @@ const CreateDeposition = () => {
         scheduleDepositions({ depositionList: mappedDepositions, files, caseId });
     };
 
-    return fetchingCasesError || displaySuccess ? (
-        <SuccessCard
+    return createdDepositions || fetchingCasesError ? (
+        <CreateDepositionResultCard
             addNewCase={handleResetForm}
+            createdDepositions={createdDepositions}
             goToDepositions={() => {
                 history.push("/depositions");
             }}

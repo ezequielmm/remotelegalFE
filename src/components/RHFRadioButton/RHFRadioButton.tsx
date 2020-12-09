@@ -7,18 +7,25 @@ import RadioGroup from "../RadioGroup";
 interface RHFRadioButtonProps extends RHFWrapperProps {
     disabled?: boolean;
     options: Array<CheckboxOptionType | string>;
+    setValue: <TFieldName extends string>(
+        name: TFieldName,
+        value: any,
+        options?: Partial<{
+            shouldValidate: boolean;
+            shouldDirty: boolean;
+        }>
+    ) => void;
 }
 
-export default function RHFRadioButton({ disabled, options, ...wrapperProps }: RHFRadioButtonProps) {
+export default function RHFRadioButton({ disabled, options, setValue, ...wrapperProps }: RHFRadioButtonProps) {
     return (
         <RHFWrapper
-            component={({ onChange, value }) => (
+            component={({ name, value }) => (
                 <RadioGroup
-                    fullWidth
                     defaultValue={wrapperProps.defaultValue}
                     disabled={disabled}
                     options={options}
-                    onChange={(ev) => onChange(ev?.target?.value)}
+                    onChange={async (ev) => setValue(name, ev?.target?.value, { shouldValidate: true })}
                     value={value}
                 />
             )}

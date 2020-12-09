@@ -1,3 +1,4 @@
+/* eslint-disable no-await-in-loop */
 import { fireEvent, waitForElement } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import moment from "moment-timezone";
@@ -188,7 +189,6 @@ describe("CreateDeposition", () => {
             getAllByText,
             getByLabelText,
             getAllByRole,
-            getByRole,
             getByPlaceholderText,
             getAllByPlaceholderText,
             getByText,
@@ -269,12 +269,12 @@ describe("CreateDeposition", () => {
             files: [],
             caseId,
         });
-        expect(queryByText(CONSTANTS.SUCCESS_DEPOSITION_TITLE)).toBeTruthy();
+        expect(queryByText(CONSTANTS.getSuccessDepositionTitle(1))).toBeTruthy();
         await act(async () => {
-            const newDepositionButton = getByRole("button", { name: CONSTANTS.SCHEDULE_NEW_DEPOSITION });
+            const newDepositionButton = getByTestId("schedule_new_deposition_button");
             await userEvent.click(newDepositionButton);
         });
-        expect(queryByText(CONSTANTS.SUCCESS_DEPOSITION_TITLE)).toBeFalsy();
+        expect(queryByText(CONSTANTS.getSuccessDepositionTitle(1))).toBeFalsy();
     });
     it("create a deposition when click on submit button with all required fields filled and select GO TO MY DEPOSITIONS option", async () => {
         const {
@@ -371,14 +371,172 @@ describe("CreateDeposition", () => {
     it("shows error and try again button when get an error on fetch", async () => {
         customDeps.apiService.fetchCases = jest.fn().mockImplementation(() => Promise.reject(Error("")));
 
-        const { getByText, getByRole } = renderWithGlobalContext(<CreateDeposition />, customDeps);
+        const { getByText, getByTestId } = renderWithGlobalContext(<CreateDeposition />, customDeps);
 
         await waitForElement(() => getByText(ERRORS_CONSTANTS.FETCH_ERROR_MODAL_TITLE));
-        const refreshButton = getByRole("button", { name: new RegExp(ERRORS_CONSTANTS.FETCH_ERROR_MODAL_BUTTON, "i") });
+        const refreshButton = getByTestId("error_modal_button");
         expect(customDeps.apiService.fetchCases).toHaveBeenCalledTimes(1);
         await act(async () => {
             await fireEvent.click(refreshButton);
         });
         expect(customDeps.apiService.fetchCases).toHaveBeenCalledTimes(2);
+    });
+
+    it("shows validations when click on add witness button", async () => {
+        const { getByText, getByTestId } = renderWithGlobalContext(<CreateDeposition />);
+
+        const addWitnessButton = await waitForElement(() => getByTestId("add_witness_button"));
+        await act(async () => userEvent.click(addWitnessButton));
+        expect(getByText(CONSTANTS.DATE_ERROR)).toBeTruthy();
+        expect(getByText(CONSTANTS.OPTION_ERROR)).toBeTruthy();
+        expect(getByText(CONSTANTS.REQUIRED_TIME_ERROR)).toBeTruthy();
+    });
+
+    it("add a witness when click on add witness button and the required fields are filled", async () => {
+        const {
+            getByLabelText,
+            getAllByRole,
+            getByPlaceholderText,
+            getAllByPlaceholderText,
+            getByTestId,
+            getAllByTestId,
+        } = renderWithGlobalContext(<CreateDeposition />);
+        const { depositions } = TEST_CONSTANTS.getDepositions1();
+
+        // DATE FILL
+        const dateInput = getByPlaceholderText(CONSTANTS.DATE_PLACEHOLDER);
+        await act(async () => {
+            await userEvent.click(dateInput);
+        });
+        await act(async () => {
+            await userEvent.click(dateInput);
+            await fireEvent.change(dateInput, {
+                target: { value: moment(depositions[0].date).format(CONSTANTS.DATE_FORMAT) },
+            });
+            await fireEvent.keyDown(dateInput, { key: "enter", keyCode: 13 });
+        });
+        // TIMES FILL
+        const [startInput] = getAllByPlaceholderText(CONSTANTS.START_PLACEHOLDER);
+        await act(async () => {
+            await userEvent.click(startInput);
+            await fireEvent.change(startInput, {
+                target: { value: moment(depositions[0].startTime).format(CONSTANTS.TIME_FORMAT) },
+            });
+        });
+        await act(async () => {
+            const okButton = getAllByRole("button", { name: /ok/i })[0];
+            await userEvent.click(okButton);
+        });
+        // RADIO BUTTON FILL
+        const radioButtonOption = getByLabelText("NO");
+        await act(async () => {
+            await userEvent.click(radioButtonOption);
+        });
+
+        const addWitnessButton = await waitForElement(() => getByTestId("add_witness_button"));
+        await act(async () => userEvent.click(addWitnessButton));
+
+        expect(await waitForElement(() => getAllByTestId("witness_title").length)).toBe(2);
+    });
+
+    it("deletes a witness when click on Delete Witness button", async () => {
+        const {
+            queryByDisplayValue,
+            getByLabelText,
+            getAllByRole,
+            getByPlaceholderText,
+            getAllByPlaceholderText,
+            getByTestId,
+            queryByTestId,
+        } = renderWithGlobalContext(<CreateDeposition />);
+        const { depositions } = TEST_CONSTANTS.getDepositions1();
+
+        // DATE FILL
+        const dateInput = getByPlaceholderText(CONSTANTS.DATE_PLACEHOLDER);
+        await act(async () => {
+            await userEvent.click(dateInput);
+        });
+        await act(async () => {
+            await userEvent.click(dateInput);
+            await fireEvent.change(dateInput, {
+                target: { value: moment(depositions[0].date).format(CONSTANTS.DATE_FORMAT) },
+            });
+            await fireEvent.keyDown(dateInput, { key: "enter", keyCode: 13 });
+        });
+        // TIMES FILL
+        const [startInput] = getAllByPlaceholderText(CONSTANTS.START_PLACEHOLDER);
+        await act(async () => {
+            await userEvent.click(startInput);
+            await fireEvent.change(startInput, {
+                target: { value: moment(depositions[0].startTime).format(CONSTANTS.TIME_FORMAT) },
+            });
+        });
+        await act(async () => {
+            const okButton = getAllByRole("button", { name: /ok/i })[0];
+            await userEvent.click(okButton);
+        });
+        // RADIO BUTTON FILL
+        const radioButtonOption = getByLabelText("NO");
+        await act(async () => {
+            await userEvent.click(radioButtonOption);
+        });
+
+        expect(queryByTestId("witness_delete_button")).toBeFalsy();
+
+        const addWitnessButton = await waitForElement(() => getByTestId("add_witness_button"));
+        await act(async () => userEvent.click(addWitnessButton));
+
+        // DELETE FIRST WITNESS
+        const deleteButton = await waitForElement(() => getByTestId("witness_delete_button"));
+        await act(async () => userEvent.click(deleteButton));
+        // CHECK IF FIRST WITNESS STILL EXISTS
+        expect(queryByDisplayValue(moment(depositions[0].date).format(CONSTANTS.DATE_FORMAT))).toBeTruthy();
+
+        expect(queryByTestId("witness_delete_button")).toBeFalsy();
+    });
+
+    jest.setTimeout(20000);
+
+    it(`add up to ${CONSTANTS.WITNESSES_LIMIT} witnesses and try to add another without success`, async () => {
+        const { getAllByLabelText, getAllByRole, getAllByPlaceholderText, getByTestId } = renderWithGlobalContext(
+            <CreateDeposition />
+        );
+        const { depositions } = TEST_CONSTANTS.getDepositions1();
+
+        const addWitnessButton = await waitForElement(() => getByTestId("add_witness_button"));
+        for (let index = 0; index < CONSTANTS.WITNESSES_LIMIT - 1; index++) {
+            // DATE FILL
+            const dateInput = getAllByPlaceholderText(CONSTANTS.DATE_PLACEHOLDER).pop();
+            await act(async () => {
+                await userEvent.click(dateInput);
+            });
+            await act(async () => {
+                await userEvent.click(dateInput);
+                await fireEvent.change(dateInput, {
+                    target: { value: moment(depositions[0].date).format(CONSTANTS.DATE_FORMAT) },
+                });
+                await fireEvent.keyDown(dateInput, { key: "enter", keyCode: 13 });
+            });
+            // TIMES FILL
+            const timeInputs = getAllByPlaceholderText(CONSTANTS.START_PLACEHOLDER);
+            const startInput = timeInputs[timeInputs.length - 2];
+            await act(async () => {
+                await userEvent.click(startInput);
+                await fireEvent.change(startInput, {
+                    target: { value: moment(depositions[0].startTime).format(CONSTANTS.TIME_FORMAT) },
+                });
+            });
+            await act(async () => {
+                const okButton = getAllByRole("button", { name: /ok/i }).pop();
+                await userEvent.click(okButton);
+            });
+            // RADIO BUTTON FILL
+            const radioButtonOption = getAllByLabelText("NO").pop();
+            await act(async () => {
+                await userEvent.click(radioButtonOption);
+            });
+            await act(async () => userEvent.click(addWitnessButton));
+        }
+        expect(addWitnessButton).toBeDisabled();
     });
 });

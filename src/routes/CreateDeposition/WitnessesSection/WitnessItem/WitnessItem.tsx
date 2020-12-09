@@ -2,26 +2,29 @@ import React from "react";
 import moment from "moment-timezone";
 import { Row, Col, Space } from "antd";
 import { ArrayField, useFormContext } from "react-hook-form";
+import ButtonUpload from "../../../../components/ButtonUpload";
+import Icon from "../../../../components/Icon";
 import RHFDatePicker from "../../../../components/RHFDatePicker";
 import RHFInput from "../../../../components/RHFInput";
 import RHFRadioButton from "../../../../components/RHFRadioButton/RHFRadioButton";
 import RHFSelect from "../../../../components/RHFSelect";
 import RHFTimePicker from "../../../../components/RHFTimePicker";
 import RHFUploadFile from "../../../../components/RHFUploadFile";
-import Title from "../../../../components/Typography/Title";
 import Text from "../../../../components/Typography/Text";
-import ButtonUpload from "../../../../components/ButtonUpload";
+import Title from "../../../../components/Typography/Title";
 import * as CONSTANTS from "../../../../constants/createDeposition";
-import { SectionRow } from "../../styles";
 import { theme } from "../../../../constants/styles/theme";
+import { DeleteWitnessButton, SectionRow, WitnessTitleContainer } from "../../styles";
+import { ReactComponent as DeleteIcon } from "../../../../assets/general/Delete.svg";
 
 interface WitnessItemProps {
     deposition: Partial<ArrayField<Record<string, any>>>;
+    removeWitness: () => void;
     witnessNumber?: number;
 }
 
-const WitnessItem = ({ deposition, witnessNumber }: WitnessItemProps) => {
-    const { control, errors, trigger, watch } = useFormContext();
+const WitnessItem = ({ deposition, removeWitness, witnessNumber }: WitnessItemProps) => {
+    const { control, errors, setValue, trigger, watch } = useFormContext();
     const depositionErrors = errors.depositions ? errors.depositions[witnessNumber] : {};
 
     const date = watch(`depositions[${witnessNumber}].date`);
@@ -49,9 +52,21 @@ const WitnessItem = ({ deposition, witnessNumber }: WitnessItemProps) => {
         <SectionRow separator>
             <Space direction="vertical" size="large" style={{ width: "100%" }}>
                 <Col xs={24}>
-                    <Title level={5} weight="regular">
-                        {`${CONSTANTS.WITNESS_TITLE} ${witnessNumber + 1}`}
-                    </Title>
+                    <WitnessTitleContainer data-testid="witness_title">
+                        <Title level={5} weight="regular">
+                            {`${CONSTANTS.WITNESS_TITLE} ${witnessNumber + 1}`}
+                        </Title>
+                        {witnessNumber > 0 && (
+                            <DeleteWitnessButton
+                                type="link"
+                                onClick={removeWitness}
+                                data-testid="witness_delete_button"
+                            >
+                                <Icon icon={DeleteIcon} style={{ fontSize: "1.225rem" }} />
+                                Delete witness
+                            </DeleteWitnessButton>
+                        )}
+                    </WitnessTitleContainer>
                     <Text state="disabled" ellipsis={false}>
                         {CONSTANTS.WITNESS_SUBTITLE}
                     </Text>
@@ -165,6 +180,7 @@ const WitnessItem = ({ deposition, witnessNumber }: WitnessItemProps) => {
                                 label={CONSTANTS.RESCORD_LABEL}
                                 options={["YES", "NO"]}
                                 infoToolTip={CONSTANTS.RESCORD_TOOLTIP}
+                                setValue={setValue}
                             />
                         </Col>
                     </Row>

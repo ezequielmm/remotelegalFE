@@ -63,28 +63,29 @@ export const DETAILS_TITLE = "Details";
 
 export const REQUESTER_TITLE = "Requester";
 
-export const SUCCESS_DEPOSITION_TITLE = "Deposition successfully scheduled";
+export const getSuccessDepositionTitle = (createdDepositions) =>
+    `${createdDepositions} depositions successfully scheduled`;
 export const SUCCESS_DEPOSITION_SUBTITLE = "You can schedule a new deposition or go to your depositions.";
 export const SCHEDULE_NEW_DEPOSITION = "SCHEDULE NEW DEPOSITION";
 export const GO_TO_DEPOSITIONS = "GO TO MY DEPOSITIONS";
 
-export const DEPOSITION_DEFAULT_VALUES = {
+export const DEPOSITION_DEFAULT_VALUE = {
+    witness: {
+        name: "",
+        email: "",
+        phone: null,
+    },
+    file: null,
+    date: null,
+    startTime: "",
+    endTime: "",
+    timeZone: "EST",
+    isVideoRecordingNeeded: null,
+};
+
+export const CREATE_DEPOSITION_DEFAULT_VALUES = {
     caseId: null,
-    depositions: [
-        {
-            witness: {
-                name: "",
-                email: "",
-                phone: null,
-            },
-            file: null,
-            date: null,
-            startTime: "",
-            endTime: "",
-            timeZone: "EST",
-            isVideoRecordingNeeded: null,
-        },
-    ],
+    depositions: [DEPOSITION_DEFAULT_VALUE],
     details: "",
     requesterEmail: "",
     requesterPhone: null,
@@ -99,3 +100,5 @@ export const TIME_PICKER_PROPS = {
     format: "hh:mm A",
     showNow: false,
 };
+
+export const WITNESSES_LIMIT = 10;

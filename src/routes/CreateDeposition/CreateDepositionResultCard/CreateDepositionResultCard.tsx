@@ -6,31 +6,48 @@ import CardFetchError from "../../../components/CardFetchError";
 import { CustomStatus } from "../../../components/Result/Result";
 import CardResult from "../../../components/CardResult";
 
-interface SuccesCardProps {
+interface CreateDepositionResultCardProps {
     addNewCase: () => void;
+    createdDepositions: number;
     goToDepositions: () => void;
     refreshCasesList: () => void;
     type: "success" | "error";
 }
 
-export default function SuccesCard({ addNewCase, goToDepositions, refreshCasesList, type }: SuccesCardProps) {
+export default function CreateDepositionResultCard({
+    addNewCase,
+    createdDepositions,
+    goToDepositions,
+    refreshCasesList,
+    type,
+}: CreateDepositionResultCardProps) {
     return type === "error" ? (
         <CardFetchError onClick={refreshCasesList} />
     ) : (
         <CardResult
-            title={CONSTANTS.SUCCESS_DEPOSITION_TITLE}
+            title={CONSTANTS.getSuccessDepositionTitle(createdDepositions)}
             subTitle={CONSTANTS.SUCCESS_DEPOSITION_SUBTITLE}
             status={CustomStatus.successCreate}
             extra={
                 <Row>
                     <Space direction="vertical" size="small" style={{ width: "100%" }}>
                         <Col sm={24}>
-                            <Button type="primary" onClick={addNewCase} key="success_card_new_case_button">
+                            <Button
+                                data-testid="schedule_new_deposition_button"
+                                type="primary"
+                                onClick={addNewCase}
+                                key="success_card_new_case_button"
+                            >
                                 {CONSTANTS.SCHEDULE_NEW_DEPOSITION}
                             </Button>
                         </Col>
                         <Col sm={24}>
-                            <Button type="primary" onClick={goToDepositions} key="success_card_new_case_button">
+                            <Button
+                                data-testid="go_to_deposition_button"
+                                type="text"
+                                onClick={goToDepositions}
+                                key="success_card_new_case_button"
+                            >
                                 {CONSTANTS.GO_TO_DEPOSITIONS}
                             </Button>
                         </Col>

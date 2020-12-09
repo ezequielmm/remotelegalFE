@@ -29,8 +29,9 @@ export default function RHFUploadFile({
         onBlur();
     };
 
-    const removeFile = (ev) => {
+    const removeFile = (ev: React.MouseEvent, onChange: (file?: File) => void) => {
         if (ev) ev.stopPropagation();
+        onChange(undefined);
         setFileList([]);
     };
 
@@ -53,13 +54,13 @@ export default function RHFUploadFile({
                         <UploadComponent
                             label={wrapperProps.buttonLabel}
                             fileName={fileList[0]?.name}
-                            removeFile={removeFile}
+                            removeFile={(ev) => removeFile(ev, onChange)}
                         />
                     ) : (
                         <Row>
                             <Button icon={fileList[0] ? <PaperClipOutlined /> : <UploadOutlined />}>
                                 {fileList[0] ? fileList[0].name : placeholder || wrapperProps.label}
-                                {fileList[0] && <CloseOutlined onClick={(ev) => removeFile(ev)} />}
+                                {fileList[0] && <CloseOutlined onClick={(ev) => removeFile(ev, onChange)} />}
                             </Button>
                         </Row>
                     )}
