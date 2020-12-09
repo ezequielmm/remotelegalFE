@@ -1,6 +1,6 @@
 import React from "react";
 import { InfoCircleOutlined } from "@ant-design/icons";
-import { Form, Row, Tooltip } from "antd";
+import { Form, Space, Tooltip } from "antd";
 import { Control, Controller } from "react-hook-form";
 import Text from "../Typography/Text";
 import { InputSpacing } from "./styles";
@@ -43,14 +43,14 @@ export default function RHFWrapper({
         <Form.Item
             style={noMargin && { marginBottom: 0 }}
             label={
-                <Row>
+                <Space>
                     {label}
                     {!!infoToolTip && (
                         <Tooltip title={infoToolTip}>
                             <InfoCircleOutlined />
                         </Tooltip>
                     )}
-                </Row>
+                </Space>
             }
             htmlFor={name}
         >

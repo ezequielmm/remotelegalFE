@@ -6,6 +6,7 @@ import RHFWrapper from "../RHFWrapper";
 import { RHFWrapperProps } from "../RHFWrapper/RHFWrapper";
 import { IUploadButton } from "../ButtonUpload/ButtonUpload";
 import Button from "../Button";
+import Icon from "../Icon";
 import Upload from "../Upload";
 
 interface RHFUploadFileProps extends RHFWrapperProps {
@@ -48,7 +49,6 @@ export default function RHFUploadFile({
                     onChange={(file) => handleChange(file, onChange, onBlur)}
                     showUploadList={false}
                     {...uploadProps}
-                    style={{ width: "100%", background: "red" }}
                 >
                     {UploadComponent ? (
                         <UploadComponent
@@ -58,7 +58,14 @@ export default function RHFUploadFile({
                         />
                     ) : (
                         <Row>
-                            <Button icon={fileList[0] ? <PaperClipOutlined /> : <UploadOutlined />}>
+                            <Button
+                                icon={
+                                    <Icon
+                                        icon={fileList[0] ? PaperClipOutlined : UploadOutlined}
+                                        style={{ fontSize: "1.225rem" }}
+                                    />
+                                }
+                            >
                                 {fileList[0] ? fileList[0].name : placeholder || wrapperProps.label}
                                 {fileList[0] && <CloseOutlined onClick={(ev) => removeFile(ev, onChange)} />}
                             </Button>

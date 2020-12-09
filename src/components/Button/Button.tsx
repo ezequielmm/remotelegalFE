@@ -23,7 +23,7 @@ const buttonDefault = ({ children, type, ...rest }: IButtonProps) => {
 };
 
 const StyledButton = styled(buttonDefault)<IButtonProps>`
-    ${({ size, type, width, theme }) => {
+    ${({ size, type, width, icon, theme }) => {
         const { textColorInverse, fontSizes, spaces } = theme.default;
         const { primary, secondary } = theme.colors;
 
@@ -117,6 +117,13 @@ const StyledButton = styled(buttonDefault)<IButtonProps>`
                 `
                 : "";
 
+        const iconStyle = icon
+            ? `
+                display: flex;
+                align-items: center;
+            `
+            : "";
+
         const styles = `
             min-width: ${String(width) || getREM(9.375)};
             font-size: ${getREM(fontSizes[7])};
@@ -128,6 +135,7 @@ const StyledButton = styled(buttonDefault)<IButtonProps>`
             ${typeTextStyle}
             ${smallButtonStyle}
             ${typeGhostStyle}
+            ${iconStyle}
             `;
 
         return styles;

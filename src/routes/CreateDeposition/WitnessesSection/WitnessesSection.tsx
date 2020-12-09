@@ -1,9 +1,10 @@
-import { PlusOutlined } from "@ant-design/icons";
-import { Col } from "antd";
 import React from "react";
+import { Col } from "antd";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import Button from "../../../components/Button";
+import Icon from "../../../components/Icon";
 import Card from "../../../components/Card";
+import { ReactComponent as AddIcon } from "../../../assets/general/Add.svg";
 import * as CONSTANTS from "../../../constants/createDeposition";
 import WitnessItem from "./WitnessItem";
 
@@ -33,7 +34,7 @@ const WitnessesSection = () => {
                     disabled={fields.length === CONSTANTS.WITNESSES_LIMIT}
                     onClick={handleAddDeposition}
                     type="ghost"
-                    icon={<PlusOutlined />}
+                    icon={<Icon icon={AddIcon} style={{ fontSize: "1.225rem" }} />}
                 >
                     Add Witness
                 </Button>

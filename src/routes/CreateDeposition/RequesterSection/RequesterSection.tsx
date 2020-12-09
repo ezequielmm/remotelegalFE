@@ -22,7 +22,7 @@ const RequesterSection = ({ invalidRequester }: RequesterSectionProps) => {
                     </Title>
                 </Col>
                 <Row gutter={theme.default.baseUnit * theme.default.spaces[5]} style={{ width: "100%" }}>
-                    <Col xs={6}>
+                    <Col xs={8}>
                         <RHFInput
                             control={control}
                             errorMessage={invalidRequester || errors?.requesterEmail?.message}
@@ -32,7 +32,7 @@ const RequesterSection = ({ invalidRequester }: RequesterSectionProps) => {
                             noMargin
                         />
                     </Col>
-                    <Col xs={6}>
+                    <Col xs={8}>
                         <RHFInput
                             control={control}
                             errorMessage={errors?.requesterName?.message}
@@ -42,7 +42,7 @@ const RequesterSection = ({ invalidRequester }: RequesterSectionProps) => {
                             noMargin
                         />
                     </Col>
-                    <Col xs={6}>
+                    <Col xs={8}>
                         <RHFInput
                             control={control}
                             errorMessage={errors?.requesterPhone?.message}
