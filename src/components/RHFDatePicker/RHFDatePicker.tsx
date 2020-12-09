@@ -1,5 +1,5 @@
 import { DatePickerProps } from "antd/lib/date-picker";
-import moment from "moment";
+import moment from "moment-timezone";
 import React from "react";
 import { Control } from "react-hook-form";
 import { DATE_FORMAT } from "../../constants/createDeposition";

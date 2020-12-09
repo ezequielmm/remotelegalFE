@@ -8,7 +8,7 @@ export const CHECKBOX_INPUT = "I agree to Remote Legal Terms of Use";
 export const COMPANY_NAME_PLACEHOLDER = "Enter your company name";
 export const COMPANY_ADDRESS_PLACEHOLDER = "Enter your company address";
 
-export const getUser_1 = () => ({
+export const getUser1 = () => ({
     id: "adfe3315-c9d6-4691-9a61-08d886951bc0",
     creationDate: "2020-11-12T12:36:31",
     emailAddress: "email@address.com",

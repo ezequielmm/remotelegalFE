@@ -9,6 +9,7 @@ export type ButtonTypeExtended = ButtonType | "secondary";
 
 export interface IButtonProps extends Omit<ButtonProps, "type"> {
     type?: ButtonTypeExtended;
+    width?: string;
 }
 
 const buttonDefault = ({ children, type, ...rest }: IButtonProps) => {
@@ -22,7 +23,7 @@ const buttonDefault = ({ children, type, ...rest }: IButtonProps) => {
 };
 
 const StyledButton = styled(buttonDefault)<IButtonProps>`
-    ${({ type, size, theme, disabled }) => {
+    ${({ size, type, width, theme }) => {
         const { textColorInverse, fontSizes, spaces } = theme.default;
         const { primary, secondary } = theme.colors;
 
@@ -117,7 +118,7 @@ const StyledButton = styled(buttonDefault)<IButtonProps>`
                 : "";
 
         const styles = `
-            min-width: ${getREM(9.375)};
+            min-width: ${String(width) || getREM(9.375)};
             font-size: ${getREM(fontSizes[7])};
             line-height: 2;
             text-transform: uppercase;

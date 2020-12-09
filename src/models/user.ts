@@ -1,9 +1,12 @@
+import { DateLike } from "./general";
+
 export interface IUser {
-    id: string;
+    id?: string;
     emailAddress: string;
     firstName: string;
     lastName: string;
-    password: string;
-    phoneNumber: string;
-    creationDate: Date | string | number;
+    password?: string;
+    companyName?: string;
+    phoneNumber?: string;
+    creationDate?: DateLike;
 }

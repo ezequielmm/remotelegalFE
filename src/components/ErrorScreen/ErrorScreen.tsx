@@ -4,6 +4,7 @@ import { StyledInDepoContainer } from "../../routes/InDepo/styles";
 import Card from "../Card";
 import Result from "../Result";
 import Button from "../Button";
+import { CustomStatus } from "../Result/Result";
 
 const ErrorScreen = ({
     onClick,
@@ -23,7 +24,7 @@ const ErrorScreen = ({
                     <Result
                         title={texts.title}
                         subTitle={texts.subtitle}
-                        status="error-fetch"
+                        status={CustomStatus.errorFetch}
                         extra={[
                             <Button type="primary" onClick={onClick} key="console" data-testid="new_case_button">
                                 {texts.button}

@@ -25,9 +25,9 @@ const StyledTable = styled(Table)`
                                 font-weight: bold;
                                 border-bottom-color: ${neutrals[3]};
 
+                                padding: 0 0 ${getREM(spaces[1])} ${getREM(spaces[5])};
                                 .ant-table-column-sorters {
-                                    padding: 0 0 ${getREM(spaces[1])} ${getREM(spaces[5])};
-
+                                    padding: 0;
                                     .ant-table-column-sorter {
                                         color: ${neutrals[1]};
                                         margin-top: -0.4em;
@@ -75,13 +75,13 @@ const StyledTable = styled(Table)`
                                     }
                                 }
                             }
-                        }
 
-                        &.ant-table-placeholder {
-                            > td {
-                                box-shadow: 0 ${getREM(spaces[2])} ${getREM(spaces[5])} 0 rgba(162, 195, 216, 0.08);
-                                padding-left: ${getREM(spaces[5])};
-                                border-radius: ${getREM(spaces[2])};
+                            &.ant-table-placeholder {
+                                > td.ant-table-cell {
+                                    box-shadow: 0 ${getREM(spaces[2])} ${getREM(spaces[5])} 0 rgba(162, 195, 216, 0.08);
+                                    padding-left: ${getREM(spaces[5])};
+                                    border-radius: ${getREM(spaces[2])};
+                                }
                             }
                         }
                     }

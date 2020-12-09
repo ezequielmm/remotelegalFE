@@ -4,6 +4,7 @@ import { Col, Row } from "antd";
 import Card from "../../components/Card";
 import Result from "../../components/Result";
 import Button from "../../components/Button";
+import { CustomStatus } from "../../components/Result/Result";
 
 const Dashboard = () => {
     const history = useHistory();
@@ -14,7 +15,7 @@ const Dashboard = () => {
                     <Result
                         title="Welcome to Remote Legal"
                         subTitle="Want to schedule a deposition? Click the button below"
-                        status="empty"
+                        status={CustomStatus.empty}
                         extra={
                             <Button type="primary" onClick={() => history.push("/deposition/new")}>
                                 Schedule deposition

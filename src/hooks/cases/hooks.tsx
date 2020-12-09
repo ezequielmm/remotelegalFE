@@ -12,8 +12,8 @@ export const useCreateCase = () => {
 };
 
 export const useFetchCases = () => {
-    const [sortedField, setSortedField] = React.useState(undefined);
-    const [sortDirection, setSortDirection] = React.useState(undefined);
+    const [sortedField, setSortedField] = React.useState();
+    const [sortDirection, setSortDirection] = React.useState();
 
     const { deps } = React.useContext(GlobalStateContext);
     const [fetchCases, loading, error, data] = useAsyncCallback(async (payload) => {

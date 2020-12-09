@@ -1,6 +1,6 @@
 import { fireEvent, waitForElement } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import moment from "moment";
+import moment from "moment-timezone";
 import "mutationobserver-shim";
 import React from "react";
 import { act } from "react-dom/test-utils";
@@ -8,7 +8,7 @@ import * as TEST_CONSTANTS from "../constants/createDepositions";
 import * as CONSTANTS from "../../constants/createDeposition";
 import CreateDeposition from "../../routes/CreateDeposition";
 import * as CASE_TEST_CONSTANTS from "../constants/cases";
-import * as CASE_CONSTANTS from "../../constants/cases";
+import * as ERRORS_CONSTANTS from "../../constants/errors";
 import renderWithGlobalContext from "../utils/renderWithGlobalContext";
 import getMockDeps from "../utils/getMockDeps";
 
@@ -373,8 +373,8 @@ describe("CreateDeposition", () => {
 
         const { getByText, getByRole } = renderWithGlobalContext(<CreateDeposition />, customDeps);
 
-        await waitForElement(() => getByText(CASE_CONSTANTS.FETCH_ERROR_MODAL_TITLE));
-        const refreshButton = getByRole("button", { name: new RegExp(CASE_CONSTANTS.FETCH_ERROR_MODAL_BUTTON, "i") });
+        await waitForElement(() => getByText(ERRORS_CONSTANTS.FETCH_ERROR_MODAL_TITLE));
+        const refreshButton = getByRole("button", { name: new RegExp(ERRORS_CONSTANTS.FETCH_ERROR_MODAL_BUTTON, "i") });
         expect(customDeps.apiService.fetchCases).toHaveBeenCalledTimes(1);
         await act(async () => {
             await fireEvent.click(refreshButton);

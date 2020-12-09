@@ -10,6 +10,7 @@ import { useCreateCase } from "../../../hooks/cases/hooks";
 import Modal from "../../../components/Modal";
 import Button from "../../../components/Button";
 import Result from "../../../components/Result";
+import { CustomStatus } from "../../../components/Result/Result";
 
 interface IModalProps {
     open: boolean;
@@ -67,7 +68,7 @@ const CaseModal = ({ open, handleClose, fetchCases }: IModalProps) => {
                     <Result
                         title="Your case has been added successfully!"
                         subTitle="You can now start adding files, collaborators and depositions to this case"
-                        status="success-create"
+                        status={CustomStatus.successCreate}
                         extra={[
                             <Button
                                 type="primary"

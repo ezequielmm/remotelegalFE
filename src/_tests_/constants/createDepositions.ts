@@ -1,4 +1,4 @@
-import moment from "moment";
+import moment from "moment-timezone";
 import * as CONSTANTS from "../../constants/createDeposition";
 import mapDepositions from "../../helpers/mapDepositions";
 import { getCaseAsc } from "./cases";

@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import React from "react";
 import MyCases from "../../routes/MyCases";
 import * as CONSTANTS from "../constants/cases";
+import * as ERRORS_CONSTANTS from "../../constants/errors";
 import * as COMPONENTS_CONSTANTS from "../../constants/cases";
 import * as AUTH from "../mocks/Auth";
 import renderWithGlobalContext from "../utils/renderWithGlobalContext";
@@ -146,12 +147,10 @@ describe("MyCases", () => {
     it("shows error and try again button when get an error on fetch", async () => {
         deps.apiService.fetchCases = jest.fn().mockRejectedValue("Error");
 
-        const { getByText, getByRole } = renderWithGlobalContext(<MyCases />, deps);
+        const { getByText, getByTestId } = renderWithGlobalContext(<MyCases />, deps);
 
-        await waitForElement(() => getByText(COMPONENTS_CONSTANTS.FETCH_ERROR_MODAL_TITLE));
-        const refreshButton = getByRole("button", {
-            name: new RegExp(COMPONENTS_CONSTANTS.FETCH_ERROR_MODAL_BUTTON, "i"),
-        });
+        await waitForElement(() => getByText(ERRORS_CONSTANTS.FETCH_ERROR_MODAL_TITLE));
+        const refreshButton = getByTestId("error_modal_button");
         expect(deps.apiService.fetchCases).toHaveBeenCalledWith({});
         fireEvent.click(refreshButton);
         await waitForDomChange();

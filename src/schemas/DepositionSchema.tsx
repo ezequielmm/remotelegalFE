@@ -1,4 +1,4 @@
-import moment from "moment";
+import moment from "moment-timezone";
 import * as yup from "yup";
 import * as CONSTANTS from "../constants/createDeposition";
 

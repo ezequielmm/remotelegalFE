@@ -1,5 +1,5 @@
 import React from "react";
-import moment from "moment";
+import moment from "moment-timezone";
 import { Row, Col, Space } from "antd";
 import { ArrayField, useFormContext } from "react-hook-form";
 import RHFDatePicker from "../../../../components/RHFDatePicker";

@@ -1,13 +1,14 @@
 import React from "react";
-import { Row, Col, Space } from "antd";
-import Card from "../../components/Card";
+import { Row, Space } from "antd";
 import Table from "../../components/Table";
 import Button from "../../components/Button";
-import Result from "../../components/Result";
 import CaseModal from "./CaseModal";
 import Title from "../../components/Typography/Title";
 import { useFetchCases } from "../../hooks/cases/hooks";
 import * as CONSTANTS from "../../constants/cases";
+import CardFetchError from "../../components/CardFetchError";
+import CardResult from "../../components/CardResult/CardResult";
+import { CustomStatus } from "../../components/Result/Result";
 
 const MyCases = () => {
     const [openCaseModal, setOpenCaseModal] = React.useState(false);
@@ -47,7 +48,7 @@ const MyCases = () => {
                 fetchCases={refreshList}
                 open={openCaseModal}
             />
-            {!error && (data === null || data?.length > 0) && (
+            {!error && (data === undefined || data?.length > 0) && (
                 <Space direction="vertical" size="large" style={{ width: "100%" }}>
                     <Row justify="space-between">
                         <Title level={4} noMargin weight="light">
@@ -73,46 +74,18 @@ const MyCases = () => {
                     />
                 </Space>
             )}
-            {error && (
-                <Row justify="center" align="middle" style={{ height: "100%" }}>
-                    <Col sm={24} lg={18} xl={13} xxl={10}>
-                        <Card>
-                            <Result
-                                title={CONSTANTS.FETCH_ERROR_MODAL_TITLE}
-                                subTitle={CONSTANTS.FETCH_ERROR_MODAL_BODY}
-                                status="error-fetch"
-                                extra={[
-                                    <Button
-                                        type="primary"
-                                        onClick={() => refreshList()}
-                                        key="console"
-                                        data-testid="new_case_button"
-                                    >
-                                        {CONSTANTS.FETCH_ERROR_MODAL_BUTTON}
-                                    </Button>,
-                                ]}
-                            />
-                        </Card>
-                    </Col>
-                </Row>
-            )}
+            {error && <CardFetchError onClick={refreshList} />}
             {!error && data?.length === 0 && (
-                <Row justify="center" align="middle" style={{ height: "100%" }}>
-                    <Col sm={24} lg={18} xl={13} xxl={10}>
-                        <Card>
-                            <Result
-                                title="No cases added yet"
-                                subTitle="Currently, you don’t have any case added yet. Do you want to add a case?"
-                                status="empty"
-                                extra={
-                                    <Button onClick={() => setOpenCaseModal(true)} type="primary">
-                                        ADD CASE
-                                    </Button>
-                                }
-                            />
-                        </Card>
-                    </Col>
-                </Row>
+                <CardResult
+                    title={CONSTANTS.EMPTY_STATE_TITLE}
+                    subTitle={CONSTANTS.EMPTY_STATE_TEXT}
+                    status={CustomStatus.empty}
+                    extra={
+                        <Button onClick={() => setOpenCaseModal(true)} type="primary">
+                            {CONSTANTS.EMPTY_STATE_BUTTON}
+                        </Button>
+                    }
+                />
             )}
         </>
     );

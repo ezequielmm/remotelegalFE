@@ -1,4 +1,4 @@
-import moment from "moment";
+import moment from "moment-timezone";
 import { DepositionModel } from "../models";
 import formatToDateOffset from "./formatToDateOffset";
 
@@ -13,7 +13,7 @@ const mapDepositions = ({
     requesterName: string;
     requesterEmail: string;
     details?: string;
-    depositions: Record<string, DepositionModel.IDeposition>;
+    depositions: DepositionModel.ICreateDeposition[];
 }) => {
     const files = [];
     const mappedDepositions = depositions.map(
@@ -32,8 +32,8 @@ const mapDepositions = ({
                     : undefined;
             return {
                 ...deposition,
-                startDate: formatToDateOffset(date, formattedStart),
-                endDate: formattedEnd === "" ? null : formatToDateOffset(date, formattedEnd),
+                startDate: formatToDateOffset(String(date), formattedStart),
+                endDate: formattedEnd === "" ? null : formatToDateOffset(String(date), formattedEnd),
                 caption: file?.uid,
                 witness: mapWitness,
                 isVideoRecordingNeeded: isVideoRecordingNeeded === "YES",

@@ -41,3 +41,5 @@ export interface ITokenSet {
     refreshToken: string;
     accessTokenExpiryTime: number;
 }
+
+export type DateLike = Date | string | number;

@@ -17,6 +17,7 @@ import Authenticator from "./authenticator/authenticator";
 import RouteWithLayout from "./RouteWithLayout/RouteWithLayout";
 import Viewer from "./PDFTronViewer";
 import CreateDeposition from "../routes/CreateDeposition";
+import MyDepositions from "../routes/MyDepositions";
 
 function App() {
     const tagManagerId = {
@@ -54,6 +55,8 @@ function App() {
                         <RouteWithLayout exact path="/my-cases" component={MyCases} />
                         <RouteWithLayout exact path="/deposition/new" component={CreateDeposition} />
                         <Route exact path="/deposition/join/:depositionID" component={InDepo} />
+                        <RouteWithLayout exact path="/my-depositions" component={MyDepositions} />
+                        <RouteWithLayout exact path="/depositions" component={MyDepositions} />
                     </Authenticator>
                 </Switch>
             </Router>

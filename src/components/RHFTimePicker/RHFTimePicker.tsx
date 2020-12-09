@@ -4,7 +4,7 @@ import RHFWrapper from "../RHFWrapper";
 import TimePicker from "../TimePicker";
 import Button from "../Button";
 import { RHFWrapperProps } from "../RHFWrapper/RHFWrapper";
-import moment from "moment";
+import moment from "moment-timezone";
 import styled from "styled-components";
 
 interface RHFTimePickerProps extends RHFWrapperProps {

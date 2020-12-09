@@ -8,10 +8,10 @@ import { ReactComponent as SuccessCreateIcon } from "../../assets/icons/success-
 import { ReactComponent as ErrorFetchIcon } from "../../assets/icons/error-fetch.svg";
 import { getREM } from "../../constants/styles/utils";
 
-enum CustomStatus {
-    "empty",
-    "success-create",
-    "error-fetch",
+export enum CustomStatus {
+    empty = "empty",
+    successCreate = "success-create",
+    errorFetch = "error-fetch",
 }
 
 function isResultStatusType(status: string | number): status is ResultStatusType {
@@ -19,7 +19,7 @@ function isResultStatusType(status: string | number): status is ResultStatusType
 }
 
 export interface IResultProps extends Omit<ResultProps, "status"> {
-    status?: ResultStatusType | keyof typeof CustomStatus;
+    status?: ResultStatusType | CustomStatus;
 }
 
 const emptyIcon = <Icon icon={EmptyFolderIcon} />;
