@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { Card as ANTDCard } from "antd";
 import { CardProps } from "antd/lib/card";
-import { getREM } from "../../constants/styles/utils";
+import { getREM, hexToRGBA } from "../../constants/styles/utils";
 
 export interface ICardProps extends CardProps {
     bordered?: boolean;
@@ -10,23 +10,23 @@ export interface ICardProps extends CardProps {
 
 const StyledCard = styled(ANTDCard)`
     ${({ theme }) => {
+        const { neutrals } = theme.colors;
+        const { spaces, fontSizes, headerFontFamily } = theme.default;
         const styles = `
             &.ant-card {
-                padding: ${getREM(theme.default.spaces[7])};
-                box-shadow: 0 ${getREM(theme.default.spaces[2])} ${getREM(
-            theme.default.spaces[5]
-        )} 0 rgba(162,195,216,0.08); // TODO hex to rgba
+                padding: ${getREM(spaces[7])};
+                box-shadow: 0 ${getREM(spaces[2])} ${getREM(spaces[5])} 0 ${hexToRGBA(neutrals[2], 0.08)}
                 
                 .ant-card-head {
-                    font-family: ${theme.default.headerFontFamily};
+                    font-family: ${headerFontFamily};
                     padding: 0;
-                    margin: 0 0 ${getREM(theme.default.spaces[3])};
+                    margin: 0 0 ${getREM(spaces[3])};
                     border: 0;
                     min-height: auto;
 
                     .ant-card-head-title {
                         padding: 0;
-                        font-size: ${getREM(theme.default.fontSizes[4])};
+                        font-size: ${getREM(fontSizes[4])};
                     }
                 }
                 

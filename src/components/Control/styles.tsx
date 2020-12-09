@@ -1,7 +1,7 @@
 import React from "react";
 import { Button } from "antd";
 import styled from "styled-components";
-import { getREM } from "../../constants/styles/utils";
+import { getREM, hexToRGBA } from "../../constants/styles/utils";
 
 const circleButton = ({ isToggled, ...props }) => <Button shape="circle" type="default" {...props} />;
 const roundButton = ({ isToggled, ...props }) => <Button type="default" {...props} />;
@@ -10,7 +10,7 @@ export const StyledCircleControl = styled(circleButton)`
     display: flex;
     justify-content: center;
     align-items: center;
-    box-shadow: 2px 0 6px 0 rgba(13, 30, 44, 0.57); // TODO hex to rgba inDepoNeutrals[5]
+    box-shadow: 2px 0 6px 0 ${({ theme }) => hexToRGBA(theme.colors.inDepoNeutrals[0], 0.57)};
     border: 0;
     transition: all 300ms ease-in-out;
 

@@ -2,7 +2,7 @@ import React from "react";
 import { DatePicker } from "antd";
 import { DatePickerProps } from "antd/lib/date-picker";
 import styled from "styled-components";
-import { getREM } from "../../constants/styles/utils";
+import { getREM, hexToRGBA } from "../../constants/styles/utils";
 import Icon from "../Icon";
 import { ReactComponent as CalendarIcon } from "../../assets/icons/calendar.svg";
 import PopupContainer from "../PopupContainer";
@@ -25,10 +25,9 @@ const StyledDatePicker = styled(DatePicker).attrs((props: IDatePickerProps) => (
                 max-height: ${maxHeight};
             `;
 
-        // TODO add color token to box shadow properties
         const invalidStyles = `
                 border-color: ${errorColor};
-                box-shadow: 0 0 0 2px rgba(189, 36, 20, 0.2);
+                box-shadow: 0 0 0 2px ${hexToRGBA(errorColor, 0.2)};
             `;
 
         const styles = `
@@ -57,23 +56,28 @@ const StyledDatePicker = styled(DatePicker).attrs((props: IDatePickerProps) => (
 
 const StyledPopupContainer = styled(PopupContainer)<IPopupContainer>`
     width: 100%;
-    // TODO add color token to box shadow properties
-    .ant-picker-panel-container {
-        box-shadow: 0 12px 24px 0 rgba(162, 195, 216, 0.08);
-        .ant-picker-body {
-            .ant-picker-content {
-                thead th {
-                    font-weight: bold;
-                }
-                .ant-picker-cell .ant-picker-cell-inner {
-                    border-radius: 2px;
-                }
-                .ant-picker-cell-in-view.ant-picker-cell-today .ant-picker-cell-inner::before {
-                    border-radius: 2px;
+    ${({ theme }) => {
+        const { neutrals } = theme.colors;
+        const styles = `
+            .ant-picker-panel-container {
+                box-shadow: 0 12px 24px 0 ${hexToRGBA(neutrals[2], 0.08)};
+                .ant-picker-body {
+                    .ant-picker-content {
+                        thead th {
+                            font-weight: bold;
+                        }
+                        .ant-picker-cell .ant-picker-cell-inner {
+                            border-radius: 2px;
+                        }
+                        .ant-picker-cell-in-view.ant-picker-cell-today .ant-picker-cell-inner::before {
+                            border-radius: 2px;
+                        }
+                    }
                 }
             }
-        }
-    }
+        `;
+        return styles;
+    }}
 `;
 
 const datepicker = ({ ...props }: IDatePickerProps) => (

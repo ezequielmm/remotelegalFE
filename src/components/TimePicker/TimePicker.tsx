@@ -2,7 +2,7 @@ import React from "react";
 import { TimePicker as ANTTimePicker } from "antd";
 import { TimePickerProps } from "antd/lib/time-picker";
 import styled from "styled-components";
-import { getPX, getREM } from "../../constants/styles/utils";
+import { getPX, getREM, hexToRGBA } from "../../constants/styles/utils";
 import Icon from "../Icon";
 import { ReactComponent as TimeIcon } from "../../assets/icons/time.svg";
 import PopupContainer from "../PopupContainer";
@@ -25,10 +25,9 @@ export const StyledTimePicker = styled(ANTTimePicker).attrs((props: ITimePickerP
                 max-height: ${maxHeight};
             `;
 
-        // TODO add color token to box shadow properties
         const invalidStyles = `
                 border-color: ${errorColor};
-                box-shadow: 0 0 0 2px rgba(189, 36, 20, 0.2);
+                box-shadow: 0 0 0 2px ${hexToRGBA(errorColor, 0.2)};
             `;
 
         const styles = `
@@ -57,7 +56,6 @@ export const StyledTimePicker = styled(ANTTimePicker).attrs((props: ITimePickerP
 
 const StyledPopupContainer = styled(PopupContainer)<IPopupContainer>`
     ${({ theme }) => {
-        // TODO add color token to box shadow properties
         return `
         width: 100%;
         .ant-picker-dropdown {

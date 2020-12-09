@@ -1,6 +1,6 @@
 import { Input as AntInput } from "antd";
 import styled from "styled-components";
-import { getREM } from "../../constants/styles/utils";
+import { getREM, hexToRGBA } from "../../constants/styles/utils";
 import { IInputProps } from "./Input";
 
 export const StyledInput = styled(AntInput).attrs((props: IInputProps) => ({
@@ -16,10 +16,9 @@ export const StyledInput = styled(AntInput).attrs((props: IInputProps) => ({
                 max-height: ${maxHeight};
             `;
 
-        // TODO add color token to box shadow properties
         const invalidStyles = `
                 border-color: ${errorColor};
-                box-shadow: 0 0 0 2px rgba(189, 36, 20, 0.2);
+                box-shadow: 0 0 0 2px ${hexToRGBA(errorColor, 0.2)};
             `;
 
         const styles = `

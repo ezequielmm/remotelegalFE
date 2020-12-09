@@ -3,7 +3,7 @@ import { Table } from "antd";
 import { DefaultRecordType } from "rc-table/lib/interface";
 import { TableProps } from "antd/lib/table/Table";
 import styled from "styled-components";
-import { getREM } from "../../constants/styles/utils";
+import { getREM, hexToRGBA } from "../../constants/styles/utils";
 
 const StyledTable = styled(Table)`
     ${({ theme }) => {
@@ -46,7 +46,10 @@ const StyledTable = styled(Table)`
                             background-color: ${neutrals[6]};
 
                             > td.ant-table-cell {
-                                box-shadow: 0 ${getREM(spaces[2])} ${getREM(spaces[5])} 0 rgba(162, 195, 216, 0.08);
+                                box-shadow: 0 ${getREM(spaces[2])} ${getREM(spaces[5])} 0 ${hexToRGBA(
+            neutrals[2],
+            0.08
+        )};
                                 padding: ${getREM(spaces[4])} ${getREM(spaces[5] / 2)};
                                 &:first-child {
                                     padding-left: ${getREM(spaces[5])};
@@ -76,12 +79,14 @@ const StyledTable = styled(Table)`
                                 }
                             }
 
-                            &.ant-table-placeholder {
-                                > td.ant-table-cell {
-                                    box-shadow: 0 ${getREM(spaces[2])} ${getREM(spaces[5])} 0 rgba(162, 195, 216, 0.08);
-                                    padding-left: ${getREM(spaces[5])};
-                                    border-radius: ${getREM(spaces[2])};
-                                }
+                        &.ant-table-placeholder {
+                            > td {
+                                box-shadow: 0 ${getREM(spaces[2])} ${getREM(spaces[5])} 0 ${hexToRGBA(
+            neutrals[2],
+            0.08
+        )};
+                                padding-left: ${getREM(spaces[5])};
+                                border-radius: ${getREM(spaces[2])};
                             }
                         }
                     }

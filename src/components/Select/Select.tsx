@@ -2,7 +2,7 @@ import React from "react";
 import { Select as ANTSelect } from "antd";
 import { SelectProps } from "antd/lib/select";
 import styled from "styled-components";
-import { getPX, getREM } from "../../constants/styles/utils";
+import { getPX, getREM, hexToRGBA } from "../../constants/styles/utils";
 import { ReactComponent as DropdownArrowIcon } from "../../assets/icons/dropdown-arrow.svg";
 import Icon from "../Icon";
 
@@ -25,7 +25,7 @@ export const StyledSelect = styled(ANTSelect).attrs((props: ISelectProps) => ({
 
         const invalidStyles = `
                 border-color: ${errorColor};
-                box-shadow: 0 0 0 2px rgba(189, 36, 20, 0.2);
+                box-shadow: 0 0 0 2px ${hexToRGBA(errorColor, 0.2)};
             `;
 
         // TODO add missing spaces token
