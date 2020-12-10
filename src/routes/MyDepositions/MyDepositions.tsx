@@ -26,10 +26,10 @@ export interface MappedDeposition {
 }
 
 const parseDate = ({ startDate, endDate }): { date: string; time: string } => {
-    const date = moment(startDate).utc(true).local();
+    const date = moment(startDate).local();
     const dateFormat = date.format("ddd MMM DD, yyyy");
     const startTime = date.format("hh:mm A");
-    const endTime = endDate ? ` to ${moment(endDate).utc(true).local().format("hh:mm A")}` : "";
+    const endTime = endDate ? ` to ${moment(endDate).local().format("hh:mm A")}` : "";
     return { date: dateFormat, time: `${startTime}${endTime}` };
 };
 
