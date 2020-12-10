@@ -125,7 +125,7 @@ const depositionsColumns = [
                 Join
             </Button>
         ),
-        width: 80,
+        width: 90,
     },
 ];
 

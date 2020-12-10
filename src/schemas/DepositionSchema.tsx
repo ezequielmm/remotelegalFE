@@ -43,6 +43,18 @@ const DepositionSchema = yup.object().shape({
             isVideoRecordingNeeded: yup.string().nullable().required(CONSTANTS.OPTION_ERROR),
         })
     ),
+    otherParticipants: yup.array().of(
+        yup.object().shape({
+            email: yup.string().nullable().label("Email Address"),
+            name: yup.string().nullable().label("Name"),
+            phone: yup
+                .string()
+                .matches(/^\(?([2-9][0-8][0-9])\)?[-. ]?([2-9][0-9]{2})[-. ]?([0-9]{4})$|^$/, CONSTANTS.PHONE_ERROR)
+                .nullable()
+                .label("Phone Number"),
+            role: yup.string().nullable().label("Role"),
+        })
+    ),
     requesterEmail: yup.string().email(CONSTANTS.EMAIL_ERROR).required(CONSTANTS.EMAIL_REQUIRED_ERROR),
     requesterName: yup.string().required(CONSTANTS.NAME_REQUIRED_ERROR),
     requesterPhone: yup

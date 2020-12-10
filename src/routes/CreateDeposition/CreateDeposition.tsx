@@ -9,6 +9,7 @@ import CaseSection from "./CaseSection";
 import WitnessesSection from "./WitnessesSection";
 import DetailsSection from "./DetailsSection";
 import RequesterSection from "./RequesterSection";
+import OtherParticipantsSection from "./OtherParticipantsSection";
 import * as CONSTANTS from "../../constants/createDeposition";
 import DepositionSchema from "../../schemas/DepositionSchema";
 import { useFetchCases } from "../../hooks/cases/hooks";
@@ -42,7 +43,15 @@ const CreateDeposition = () => {
     };
 
     const submitDepositions = (values) => {
-        const { depositions, requesterPhone, requesterName, requesterEmail, caseId, details } = values;
+        const {
+            depositions,
+            requesterPhone,
+            requesterName,
+            requesterEmail,
+            caseId,
+            details,
+            otherParticipants,
+        } = values;
 
         const { files, mappedDepositions } = mapDepositions({
             depositions,
@@ -50,6 +59,7 @@ const CreateDeposition = () => {
             requesterName,
             requesterEmail,
             details,
+            otherParticipants,
         });
 
         scheduleDepositions({ depositionList: mappedDepositions, files, caseId });
@@ -74,6 +84,7 @@ const CreateDeposition = () => {
                     </Title>
                     <CaseSection cases={cases} loadingCases={loadingCases} fetchingError={fetchingCasesError} />
                     <WitnessesSection />
+                    <OtherParticipantsSection />
                     <DetailsSection />
                     <RequesterSection invalidRequester={error === 404 && "Invalid email"} />
                     <Row justify="end">

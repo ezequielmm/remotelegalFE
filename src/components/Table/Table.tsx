@@ -11,6 +11,19 @@ const StyledTable = styled(Table)`
         const { neutrals } = theme.colors;
         const styles = `
             &.ant-table-wrapper {
+                .ant-table-empty {
+                    table {
+                        tbody.ant-table-tbody {
+                            > tr {
+                                > td.ant-table-cell:first-child {
+                                    border-radius: ${getREM(spaces[2])};
+                                    background-color: ${neutrals[4]};
+                                    padding: ${getREM(spaces[5])} ${getREM(spaces[5] / 2)};
+                                }
+                            }
+                        }
+                    }
+                }
                 table {
                     border-radius: 0;
                     border-spacing: 0 ${getREM(spaces[1])};
@@ -24,10 +37,18 @@ const StyledTable = styled(Table)`
                                 text-transform: uppercase;
                                 font-weight: bold;
                                 border-bottom-color: ${neutrals[3]};
-
-                                padding: 0 0 ${getREM(spaces[1])} ${getREM(spaces[5])};
+                                &:first-child {
+                                    .ant-table-column-sorters {
+                                        padding-left: ${getREM(spaces[5])};
+                                    } 
+                                }
+                                &:last-child {
+                                    .ant-table-column-sorters {
+                                        padding-right: ${getREM(spaces[5])};
+                                    } 
+                                }
                                 .ant-table-column-sorters {
-                                    padding: 0;
+                                    padding: 0 0 ${getREM(spaces[1])} ${getREM(spaces[0] + spaces[1])};
                                     .ant-table-column-sorter {
                                         color: ${neutrals[1]};
                                         margin-top: -0.4em;
@@ -56,6 +77,7 @@ const StyledTable = styled(Table)`
                                     border-radius: ${getREM(spaces[2])} 0 0 ${getREM(spaces[2])};
                                 }
                                 &:last-child {
+                                    padding-right: ${getREM(spaces[5])};
                                     border-radius: 0 ${getREM(spaces[2])} ${getREM(spaces[2])} 0;
                                 }
 

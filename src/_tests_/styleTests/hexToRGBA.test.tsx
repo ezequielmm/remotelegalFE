@@ -13,7 +13,7 @@ describe("hexToRGBA", () => {
         expect(hexToRGBA("#0066CC", 0.45)).toEqual("rgba(0, 102, 204, 0.45)");
     });
 
-    it("should get null if not a valid HEX ", () => {
+    it("should get 'Invalid HEX' if not a valid HEX ", () => {
         expect(hexToRGBA("13")).toEqual("Invalid HEX");
     });
 });

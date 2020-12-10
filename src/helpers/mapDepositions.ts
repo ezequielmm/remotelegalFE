@@ -1,5 +1,5 @@
 import moment from "moment-timezone";
-import { DepositionModel } from "../models";
+import { DepositionModel, ParticipantModel } from "../models";
 import formatToDateOffset from "./formatToDateOffset";
 
 const mapDepositions = ({
@@ -8,11 +8,13 @@ const mapDepositions = ({
     requesterEmail,
     details,
     depositions,
+    otherParticipants,
 }: {
     requesterPhone?: string;
     requesterName: string;
     requesterEmail: string;
     details?: string;
+    otherParticipants?: ParticipantModel.IParticipant[];
     depositions: DepositionModel.ICreateDeposition[];
 }) => {
     const files = [];
@@ -36,6 +38,7 @@ const mapDepositions = ({
                 endDate: formattedEnd === "" ? null : formatToDateOffset(String(date), formattedEnd, timeZone),
                 caption: file?.uid,
                 witness: mapWitness,
+                participants: otherParticipants,
                 isVideoRecordingNeeded: isVideoRecordingNeeded === "YES",
                 requesterPhone,
                 requesterName,

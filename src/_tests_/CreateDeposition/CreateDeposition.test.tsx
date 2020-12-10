@@ -7,6 +7,7 @@ import React from "react";
 import { act } from "react-dom/test-utils";
 import * as TEST_CONSTANTS from "../constants/createDepositions";
 import * as CONSTANTS from "../../constants/createDeposition";
+import * as ADD_PARTICIPANTS_CONSTANTS from "../../constants/otherParticipants";
 import CreateDeposition from "../../routes/CreateDeposition";
 import * as CASE_TEST_CONSTANTS from "../constants/cases";
 import * as ERRORS_CONSTANTS from "../../constants/errors";
@@ -15,6 +16,8 @@ import getMockDeps from "../utils/getMockDeps";
 
 global.MutationObserver = window.MutationObserver;
 const customDeps = getMockDeps();
+
+beforeEach(() => jest.resetModules());
 
 describe("CreateDeposition", () => {
     it("shows a case name on the Select of CaseSection when it's selected", async () => {
@@ -495,9 +498,141 @@ describe("CreateDeposition", () => {
         expect(queryByTestId("witness_delete_button")).toBeFalsy();
     });
 
-    jest.setTimeout(20000);
+    it("show display the add other participants section", async () => {
+        const { queryByText, getByTestId } = renderWithGlobalContext(<CreateDeposition />);
+        expect(queryByText(ADD_PARTICIPANTS_CONSTANTS.OTHER_PARTICIPANTS_ADD_BUTTON_LABEL)).toBeTruthy();
+        expect(getByTestId("add_participants_table")).toBeTruthy();
+        expect(getByTestId("show_modal_add_participants_button")).toBeTruthy();
+    });
+    it("show display the add participant section with empty state when no participant were added", async () => {
+        const { getByTestId } = renderWithGlobalContext(<CreateDeposition />);
+        expect(getByTestId("empty_data_section")).toBeTruthy();
+    });
+    it("show display the add participant modal when click on the add particpant button", async () => {
+        const { getByTestId } = renderWithGlobalContext(<CreateDeposition />);
+        const addParticipantButton = getByTestId("show_modal_add_participants_button");
+        await act(async () => {
+            await userEvent.click(addParticipantButton);
+        });
+        const modal = await waitForElement(() => getByTestId("add_participants_modal_form"));
+        expect(modal).toBeInTheDocument();
+    });
+    it("should create a new participant and display on the add participant table", async () => {
+        const { getByTestId, getAllByText, getByText, debug, queryByTestId } = renderWithGlobalContext(
+            <CreateDeposition />
+        );
+        const addParticipantButton = getByTestId("show_modal_add_participants_button");
+        await act(async () => {
+            await userEvent.click(addParticipantButton);
+        });
 
-    it(`add up to ${CONSTANTS.WITNESSES_LIMIT} witnesses and try to add another without success`, async () => {
+        const roleSelect = await waitForElement(() => getByText(ADD_PARTICIPANTS_CONSTANTS.ROLE_PLACEHOLDER));
+        await act(async () => {
+            await userEvent.click(roleSelect);
+        });
+        const role = await waitForElement(() => getAllByText("Attorney"));
+        await act(async () => {
+            await userEvent.click(role[1]);
+        });
+
+        expect(getByTestId("add_participants_modal_form")).toBeInTheDocument();
+        const addParticipantModalButton = getByTestId("add_participants_add_modal_button");
+        await act(async () => {
+            await userEvent.click(addParticipantModalButton);
+        });
+        expect(queryByTestId("add_participants_modal_form")).toBeNull();
+        const roleOnTheTable = await waitForElement(() => getByText("Attorney"));
+
+        expect(roleOnTheTable).toBeInTheDocument();
+    });
+
+    it("should disable show add participant button when added more than allowed participants", async () => {
+        ADD_PARTICIPANTS_CONSTANTS.MAX_PARTICIPANTS_ALLOWED = 0;
+        const { getByTestId, getAllByText, getByText, debug, queryByTestId } = renderWithGlobalContext(
+            <CreateDeposition />
+        );
+        const addParticipantButton = getByTestId("show_modal_add_participants_button");
+        await act(async () => {
+            await userEvent.click(addParticipantButton);
+        });
+
+        const roleSelect = await waitForElement(() => getByText(ADD_PARTICIPANTS_CONSTANTS.ROLE_PLACEHOLDER));
+        await act(async () => {
+            await userEvent.click(roleSelect);
+        });
+        const role = await waitForElement(() => getAllByText("Attorney"));
+        await act(async () => {
+            await userEvent.click(role[1]);
+        });
+
+        expect(getByTestId("add_participants_modal_form")).toBeInTheDocument();
+        const addParticipantModalButton = getByTestId("add_participants_add_modal_button");
+        await act(async () => {
+            await userEvent.click(addParticipantModalButton);
+        });
+        expect(getByTestId("show_modal_add_participants_button")).toHaveAttribute("disabled");
+    });
+
+    it("should open edit participant modal when click on the edit button", async () => {
+        const { getByTestId, getAllByText, getByText } = renderWithGlobalContext(<CreateDeposition />);
+        const addParticipantButton = getByTestId("show_modal_add_participants_button");
+        await act(async () => {
+            await userEvent.click(addParticipantButton);
+        });
+
+        const roleSelect = await waitForElement(() => getByText(ADD_PARTICIPANTS_CONSTANTS.ROLE_PLACEHOLDER));
+        await act(async () => {
+            await userEvent.click(roleSelect);
+        });
+        const role = await waitForElement(() => getAllByText("Attorney"));
+        await act(async () => {
+            await userEvent.click(role[1]);
+        });
+
+        const addParticipantModalButton = getByTestId("add_participants_add_modal_button");
+        await act(async () => {
+            await userEvent.click(addParticipantModalButton);
+        });
+        const editButton = getByTestId("other_participant_section_edit_button");
+        expect(editButton).toBeInTheDocument();
+        await act(async () => {
+            await userEvent.click(editButton);
+        });
+        expect(getByText(ADD_PARTICIPANTS_CONSTANTS.OTHER_PARTICIPANTS_EDIT_BUTTON_LABEL)).toBeInTheDocument();
+    });
+
+    it("should open delete particiapant modal when click on the remove button", async () => {
+        const { getByTestId, getAllByText, getByText } = renderWithGlobalContext(<CreateDeposition />);
+        const addParticipantButton = getByTestId("show_modal_add_participants_button");
+        await act(async () => {
+            await userEvent.click(addParticipantButton);
+        });
+
+        const roleSelect = await waitForElement(() => getByText(ADD_PARTICIPANTS_CONSTANTS.ROLE_PLACEHOLDER));
+        await act(async () => {
+            await userEvent.click(roleSelect);
+        });
+        const role = await waitForElement(() => getAllByText("Attorney"));
+        await act(async () => {
+            await userEvent.click(role[1]);
+        });
+
+        const addParticipantModalButton = getByTestId("add_participants_add_modal_button");
+        await act(async () => {
+            await userEvent.click(addParticipantModalButton);
+        });
+        const removeButton = getByTestId("other_participant_section_remove_button");
+        expect(removeButton).toBeInTheDocument();
+        await act(async () => {
+            await userEvent.click(removeButton);
+        });
+        expect(getByTestId("delete_participants_modal_prompt")).toBeInTheDocument();
+    });
+
+    //TODO: improve the test in order to avoid using this timeout
+    jest.setTimeout(50000);
+
+    it(`add up to ${CONSTANTS.WITNESSES_LIMIT} witnesses and try to add another without success`, async (done) => {
         const { getAllByLabelText, getAllByRole, getAllByPlaceholderText, getByTestId } = renderWithGlobalContext(
             <CreateDeposition />
         );
@@ -538,5 +673,6 @@ describe("CreateDeposition", () => {
             await act(async () => userEvent.click(addWitnessButton));
         }
         expect(addWitnessButton).toBeDisabled();
-    });
+        done();
+    });    
 });
