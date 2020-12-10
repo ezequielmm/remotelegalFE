@@ -17,7 +17,7 @@ const mapDepositions = ({
 }) => {
     const files = [];
     const mappedDepositions = depositions.map(
-        ({ witness, isVideoRecordingNeeded, date, startTime, endTime, file, ...deposition }) => {
+        ({ witness, isVideoRecordingNeeded, date, startTime, endTime, file, timeZone, ...deposition }) => {
             if (file) files.push(file);
             const formattedStart = moment(startTime).format("HH:mm:ss");
             const formattedEnd = endTime && moment(endTime).format("HH:mm:ss");
@@ -32,14 +32,15 @@ const mapDepositions = ({
                     : undefined;
             return {
                 ...deposition,
-                startDate: formatToDateOffset(String(date), formattedStart),
-                endDate: formattedEnd === "" ? null : formatToDateOffset(String(date), formattedEnd),
+                startDate: formatToDateOffset(String(date), formattedStart, timeZone),
+                endDate: formattedEnd === "" ? null : formatToDateOffset(String(date), formattedEnd, timeZone),
                 caption: file?.uid,
                 witness: mapWitness,
                 isVideoRecordingNeeded: isVideoRecordingNeeded === "YES",
                 requesterPhone,
                 requesterName,
                 requesterEmail,
+                timeZone,
                 details,
             };
         }

@@ -10,7 +10,7 @@ import Table from "../../components/Table";
 import Title from "../../components/Typography/Title";
 import * as CONSTANTS from "../../constants/depositions";
 import { useFetchDepositions } from "../../hooks/depositions/hooks";
-import { DepositionStatus, TimeZones } from "../../models/deposition";
+import { DepositionStatus } from "../../models/deposition";
 import { Roles } from "../../models/participant";
 
 export interface MappedDeposition {
@@ -25,17 +25,11 @@ export interface MappedDeposition {
     details?: string;
 }
 
-const mapTimeZone = {
-    [TimeZones.CST]: "America/Chicago",
-    [TimeZones.EST]: "America/New_York",
-    [TimeZones.PST]: "America/Los_Angeles",
-    [TimeZones.MST]: "America/Denver",
-};
-const parseDate = ({ startDate, endDate, timeZone }): { date: string; time: string } => {
-    const date = moment(startDate).tz(mapTimeZone[timeZone]);
+const parseDate = ({ startDate, endDate }): { date: string; time: string } => {
+    const date = moment(startDate).utc(true).local();
     const dateFormat = date.format("ddd MMM DD, yyyy");
     const startTime = date.format("hh:mm A");
-    const endTime = endDate ? ` to ${moment(endDate).tz(mapTimeZone[timeZone]).format("hh:mm A")}` : "";
+    const endTime = endDate ? ` to ${moment(endDate).utc(true).local().format("hh:mm A")}` : "";
     return { date: dateFormat, time: `${startTime}${endTime}` };
 };
 

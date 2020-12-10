@@ -40,6 +40,7 @@ export interface ICreateDeposition {
     isVideoRecordingNeeded: string;
     date: string;
     startTime: string;
+    timeZone: TimeZones;
     witness?: IParticipant;
     endTime?: string;
     file?: File & { uid: string };

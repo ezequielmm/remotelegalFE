@@ -1,4 +1,14 @@
 import moment from "moment-timezone";
+import { TimeZones } from "../models/deposition";
 
-export default (date: string, time: string) =>
-    moment(date.replace(/..:..:../, time)).format("YYYY-MM-DD[T]HH:mm:ss.SSSZ");
+const mapTimeZone = {
+    [TimeZones.CST]: "America/Chicago",
+    [TimeZones.EST]: "America/New_York",
+    [TimeZones.PST]: "America/Los_Angeles",
+    [TimeZones.MST]: "America/Denver",
+};
+
+export default (date: string, time: string, timeZone: TimeZones) =>
+    moment(date.replace(/..:..:../, time))
+        .tz(mapTimeZone[timeZone], true)
+        .format("YYYY-MM-DD[T]HH:mm:ss.SSSZ");

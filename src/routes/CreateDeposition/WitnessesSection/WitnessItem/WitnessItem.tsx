@@ -151,7 +151,7 @@ const WitnessItem = ({ deposition, removeWitness, witnessNumber }: WitnessItemPr
                                 defaultValue={deposition.endTime}
                                 timePickerProps={CONSTANTS.TIME_PICKER_PROPS}
                                 extraFooterText="TO BE DEFINED"
-                                handleExtraFooterClick={(onChange) => onChange(undefined)}
+                                handleExtraFooterClick={(onChange) => onChange("")}
                                 errorMessage={depositionErrors?.endTime?.message}
                                 name={`depositions[${witnessNumber}].endTime`}
                                 label={CONSTANTS.END_LABEL}
