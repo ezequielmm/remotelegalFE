@@ -1,6 +1,7 @@
 import moment from "moment-timezone";
 import * as CONSTANTS from "../../constants/createDeposition";
 import mapDepositions from "../../helpers/mapDepositions";
+import { TimeZones } from "../../models/deposition";
 import { getCaseAsc } from "./cases";
 
 // eslint-disable-next-line import/prefer-default-export
@@ -18,7 +19,7 @@ export const getDepositions1 = () => ({
             date: moment("00:00 AM", CONSTANTS.TIME_FORMAT).add(2, "days").toString(),
             startTime: moment("12:30 AM", CONSTANTS.TIME_FORMAT).toString(),
             endTime: moment("02:30 AM", CONSTANTS.TIME_FORMAT).toString(),
-            timeZone: "EST",
+            timeZone: TimeZones.EST,
             isVideoRecordingNeeded: null,
         },
     ],
