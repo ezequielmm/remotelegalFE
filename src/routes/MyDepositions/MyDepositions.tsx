@@ -48,7 +48,7 @@ const MyDepositions = () => {
                     startDate: parseDate(depositions),
                     witness: witness?.name,
                     courtReporter: courtReporter?.name,
-                    details,
+                    details: "-",
                 } as MappedDeposition;
             }),
         [data]
