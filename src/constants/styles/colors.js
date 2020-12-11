@@ -22,7 +22,17 @@ const neutrals = [black, darkGray, gray, lightGray, lightestGray, darkWhite, whi
 // In Depo pallet
 const inDepoBlue = generate("#137BBC");
 const inDepoRed = generate("#BD2414");
-const inDepoNeutrals = ["#08466C", "#024066", "#1A3C57", "#08304A", "#032A43", "#0D1E2C", "#051929"];
+const inDepoNeutrals = [
+    "#08466C",
+    "#024066",
+    "#1A3C57",
+    "#08304A",
+    "#032A43",
+    "#0D1E2C",
+    "#051929",
+    "#093755",
+    "#4EBBF8",
+];
 
 module.exports.colors = {
     gold,
