@@ -58,7 +58,7 @@ const StyledText = styled.span<ITextProps>`
 
         const displayStyle = block ? `display: block;` : `display: inline-block;`;
         const fixedHeight = height ? `height: ${getREM(height)}` : "";
-        const fontFamilyStyles = fontFamily ? `font-family: ${headerFontFamily};` : "";
+        const fontFamilyStyles = fontFamily === "header" ? `font-family: ${headerFontFamily};` : "";
 
         const styles = `
             color: ${textColor};
