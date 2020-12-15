@@ -11,6 +11,7 @@ import RHFInput from "../../../../components/RHFInput";
 import RHFSelect from "../../../../components/RHFSelect";
 import { IParticipant } from "../../../../models/participant";
 import OtherParticipantsSchema from "../../../../schemas/OtherParticipantsSchema";
+import Select from "../../../../components/Select";
 
 interface IModalProps {
     open: boolean;
@@ -133,6 +134,11 @@ export default function OtherParticipantsModal({
                         control={control}
                         errorMessage={errors.role?.message}
                         items={CONSTANTS.OTHER_PARTICIPANTS_ROLES}
+                        renderItem={(item) => (
+                            <Select.Option key={item.id} value={item.id}>
+                                {item.name}
+                            </Select.Option>
+                        )}
                     />
                 </Space>
                 <Row justify="end">

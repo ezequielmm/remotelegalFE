@@ -38,7 +38,7 @@ export const PHONE_PLACEHOLDER = "Enter phone number";
 export const OPTIONAL_ROLE_LABEL = "ROLE";
 export const ROLE_LABEL = "ROLE";
 export const ROLE_PLACEHOLDER = "Select role";
-export const ROLE_ERROR = "Chose a Role";
+export const ROLE_ERROR = "Please select a Role";
 
 export const OTHER_PARTICIPANTS_DEFAULT_VALUES = {
     emailAddress: "",
