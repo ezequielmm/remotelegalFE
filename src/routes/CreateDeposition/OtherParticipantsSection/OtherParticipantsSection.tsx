@@ -149,7 +149,7 @@ export default function OtherParticipantsSection(): ReactElement {
                         </div>
                         <Col xs={24}>
                             <Button
-                                disabled={fields.length > MAX_PARTICIPANTS_ALLOWED}
+                                disabled={fields.length >= MAX_PARTICIPANTS_ALLOWED}
                                 data-testid="show_modal_add_participants_button"
                                 type="ghost"
                                 onClick={onAddParticipant}

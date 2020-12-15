@@ -546,11 +546,19 @@ describe("CreateDeposition", () => {
         expect(roleOnTheTable).toBeInTheDocument();
     });
 
-    it("should disable show add participant button when added more than allowed participants", async () => {
-        ADD_PARTICIPANTS_CONSTANTS.MAX_PARTICIPANTS_ALLOWED = 0;
-        const { getByTestId, getAllByText, getByText, debug, queryByTestId } = renderWithGlobalContext(
+    it("should show add participant button enabled by default", async () => {
+        const { getByTestId } = renderWithGlobalContext(
             <CreateDeposition />
         );
+        expect(getByTestId("show_modal_add_participants_button")).not.toHaveAttribute("disabled");
+    });
+
+    it("should show add participant button be disabled when added more than allowed participants", async () => {
+        ADD_PARTICIPANTS_CONSTANTS.MAX_PARTICIPANTS_ALLOWED = 1;
+        const { getByTestId, getAllByText, getByText } = renderWithGlobalContext(
+            <CreateDeposition />
+        );
+        expect(getByTestId("show_modal_add_participants_button")).not.toHaveAttribute("disabled");
         const addParticipantButton = getByTestId("show_modal_add_participants_button");
         await act(async () => {
             await userEvent.click(addParticipantButton);
@@ -628,51 +636,4 @@ describe("CreateDeposition", () => {
         });
         expect(getByTestId("delete_participants_modal_prompt")).toBeInTheDocument();
     });
-
-    //TODO: improve the test in order to avoid using this timeout
-    jest.setTimeout(50000);
-
-    it(`add up to ${CONSTANTS.WITNESSES_LIMIT} witnesses and try to add another without success`, async (done) => {
-        const { getAllByLabelText, getAllByRole, getAllByPlaceholderText, getByTestId } = renderWithGlobalContext(
-            <CreateDeposition />
-        );
-        const { depositions } = TEST_CONSTANTS.getDepositions1();
-
-        const addWitnessButton = await waitForElement(() => getByTestId("add_witness_button"));
-        for (let index = 0; index < CONSTANTS.WITNESSES_LIMIT - 1; index++) {
-            // DATE FILL
-            const dateInput = getAllByPlaceholderText(CONSTANTS.DATE_PLACEHOLDER).pop();
-            await act(async () => {
-                await userEvent.click(dateInput);
-            });
-            await act(async () => {
-                await userEvent.click(dateInput);
-                await fireEvent.change(dateInput, {
-                    target: { value: moment(depositions[0].date).format(CONSTANTS.DATE_FORMAT) },
-                });
-                await fireEvent.keyDown(dateInput, { key: "enter", keyCode: 13 });
-            });
-            // TIMES FILL
-            const timeInputs = getAllByPlaceholderText(CONSTANTS.START_PLACEHOLDER);
-            const startInput = timeInputs[timeInputs.length - 2];
-            await act(async () => {
-                await userEvent.click(startInput);
-                await fireEvent.change(startInput, {
-                    target: { value: moment(depositions[0].startTime).format(CONSTANTS.TIME_FORMAT) },
-                });
-            });
-            await act(async () => {
-                const okButton = getAllByRole("button", { name: /ok/i }).pop();
-                await userEvent.click(okButton);
-            });
-            // RADIO BUTTON FILL
-            const radioButtonOption = getAllByLabelText("NO").pop();
-            await act(async () => {
-                await userEvent.click(radioButtonOption);
-            });
-            await act(async () => userEvent.click(addWitnessButton));
-        }
-        expect(addWitnessButton).toBeDisabled();
-        done();
-    });    
 });
