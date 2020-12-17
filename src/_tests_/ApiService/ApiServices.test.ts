@@ -13,7 +13,11 @@ describe("ApiService", () => {
     beforeEach(() => {
         url = "/url";
         payload = { a: 1, b: 2 };
-        fetch = jest.fn().mockResolvedValue({ status: 200, json: () => Promise.resolve({ value: { a: 1 } }) });
+        fetch = jest.fn().mockResolvedValue({
+            status: 200,
+            headers: { get: () => "application/json" },
+            json: () => Promise.resolve({ value: { a: 1 } }),
+        });
         apiService = new ApiService(fetch);
     });
 
@@ -75,7 +79,11 @@ describe("ApiService", () => {
     });
     describe("retry logic", () => {
         it("should NOT retry if the server responds with a status code that does NOT exist in the range of status codes that need retry", async () => {
-            fetch = jest.fn().mockResolvedValue({ status: 200, json: () => Promise.resolve({ value: { a: 1 } }) });
+            fetch = jest.fn().mockResolvedValue({
+                status: 200,
+                headers: { get: () => "application/json" },
+                json: async () => ({ value: { a: 1 } }),
+            });
             apiService = new ApiService(fetch);
             await (apiService as any).request({ path: url, payload, withToken: false });
             expect(fetch).toBeCalledTimes(1);

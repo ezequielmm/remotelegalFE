@@ -164,7 +164,9 @@ export class ApiService {
     ): Promise<T> => {
         try {
             const response = await this.http(path, options);
-            const parsedResponse = response.json ? await response.json() : response.ok;
+            const contentType = response.headers.get("content-type");
+            const parsedResponse =
+                contentType && contentType.includes("application/json") ? await response.json() : await response.text();
             if (!parsedResponse && options?.method === HTTP_METHOD.GET) {
                 // eslint-disable-next-line no-throw-literal
                 throw { json: async () => parsedResponse, status: 503 }; // going to the retry flow
