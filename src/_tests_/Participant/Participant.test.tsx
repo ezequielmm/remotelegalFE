@@ -1,5 +1,5 @@
 import React from "react";
-import Participant from "../../components/Participant";
+import Participant from "../../routes/InDepo/Participant";
 import * as CONSTANTS from "../constants/InDepo";
 import getParticipant from "../mocks/participant";
 import renderWithGlobalContext from "../utils/renderWithGlobalContext";

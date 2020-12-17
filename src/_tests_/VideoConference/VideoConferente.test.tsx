@@ -1,5 +1,5 @@
 import React from "react";
-import VideoConference from "../../components/VideoConference";
+import VideoConference from "../../routes/InDepo/VideoConference";
 import * as CONSTANTS from "../constants/InDepo";
 import { getParticipant, participantMap, participantMapIdentity } from "../mocks/participant";
 

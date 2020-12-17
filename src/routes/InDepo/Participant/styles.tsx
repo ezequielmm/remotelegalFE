@@ -1,6 +1,6 @@
 import styled from "styled-components";
-import spacing from "../../constants/styles/spacing";
-import { getPX, getREM } from "../../constants/styles/utils";
+import spacing from "../../../constants/styles/spacing";
+import { getPX, getREM } from "../../../constants/styles/utils";
 
 export const StyledParticipantMask = styled.div`
     border-radius: ${({ theme }) => getPX(theme.default.borderRadiusBase, spacing.baseUnit)};

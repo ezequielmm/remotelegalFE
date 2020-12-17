@@ -3,6 +3,17 @@ import React from "react";
 import styled from "styled-components";
 import { getREM, getWeightNumber } from "../../../constants/styles/utils";
 
+export enum TextState {
+    "primary",
+    "secondary",
+    "disabled",
+    "error",
+    "warning",
+    "success",
+    "info",
+    "white",
+}
+
 export interface ITextProps {
     height?: number;
     size?: "small" | "default" | "large" | "extralarge";
@@ -10,9 +21,9 @@ export interface ITextProps {
     uppercase?: boolean;
     ellipsis?: boolean;
     block?: boolean;
-    state?: "primary" | "secondary" | "disabled" | "error" | "warning" | "success" | "info" | "white" | undefined;
-    children: React.ReactChild;
+    state?: keyof typeof TextState | undefined;
     fontFamily?: "default" | "header";
+    children: React.ReactChild;
 }
 
 const StyledText = styled.span<ITextProps>`

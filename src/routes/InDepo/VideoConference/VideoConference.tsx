@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { LocalParticipant, RemoteParticipant, Room } from "twilio-video";
-import { theme } from "../../constants/styles/theme";
+import { theme } from "../../../constants/styles/theme";
 import Participant from "../Participant";
 import {
     StyledVideoConference,

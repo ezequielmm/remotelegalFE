@@ -20,6 +20,8 @@ function isResultStatusType(status: string | number): status is ResultStatusType
 
 export interface IResultProps extends Omit<ResultProps, "status"> {
     status?: ResultStatusType | CustomStatus;
+    titleColor?: string;
+    subTitleColor?: string;
 }
 
 const emptyIcon = <Icon icon={EmptyFolderIcon} />;
@@ -52,7 +54,7 @@ const resultDefault = ({ icon, status, ...rest }: IResultProps) => {
 };
 
 const StyledResult = styled(resultDefault)<IResultProps>`
-    ${({ theme }) => {
+    ${({ theme, titleColor, subTitleColor }) => {
         const inDepoTheme =
             theme.mode === "inDepo"
                 ? `
@@ -60,6 +62,8 @@ const StyledResult = styled(resultDefault)<IResultProps>`
         `
                 : "";
 
+        const titleColorStyle = titleColor ? `.ant-result-title{color: ${titleColor}}` : "";
+        const subTitleColorStyle = subTitleColor ? `.ant-result-subtitle{color: ${subTitleColor}}` : "";
         const styles = `
             .ant-result-title {
                 font-family: ${theme.default.headerFontFamily};
@@ -68,6 +72,8 @@ const StyledResult = styled(resultDefault)<IResultProps>`
                 margin-bottom: ${getREM(theme.default.spaces[1])};
                 ${inDepoTheme}
             }
+            ${titleColorStyle}
+            ${subTitleColorStyle}
         `;
         return styles;
     }}
