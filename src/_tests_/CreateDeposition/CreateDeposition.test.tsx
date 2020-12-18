@@ -1,5 +1,5 @@
 /* eslint-disable no-await-in-loop */
-import { fireEvent, waitForElement } from "@testing-library/react";
+import { fireEvent, waitForElement, waitForDomChange } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import moment from "moment-timezone";
 import "mutationobserver-shim";
@@ -547,17 +547,13 @@ describe("CreateDeposition", () => {
     });
 
     it("should show add participant button enabled by default", async () => {
-        const { getByTestId } = renderWithGlobalContext(
-            <CreateDeposition />
-        );
+        const { getByTestId } = renderWithGlobalContext(<CreateDeposition />);
         expect(getByTestId("show_modal_add_participants_button")).not.toHaveAttribute("disabled");
     });
 
     it("should show add participant button be disabled when added more than allowed participants", async () => {
         ADD_PARTICIPANTS_CONSTANTS.MAX_PARTICIPANTS_ALLOWED = 1;
-        const { getByTestId, getAllByText, getByText } = renderWithGlobalContext(
-            <CreateDeposition />
-        );
+        const { getByTestId, getAllByText, getByText } = renderWithGlobalContext(<CreateDeposition />);
         expect(getByTestId("show_modal_add_participants_button")).not.toHaveAttribute("disabled");
         const addParticipantButton = getByTestId("show_modal_add_participants_button");
         await act(async () => {
@@ -609,31 +605,76 @@ describe("CreateDeposition", () => {
         expect(getByText(ADD_PARTICIPANTS_CONSTANTS.OTHER_PARTICIPANTS_EDIT_BUTTON_LABEL)).toBeInTheDocument();
     });
 
-    it("should open delete particiapant modal when click on the remove button", async () => {
+    it("should open delete participant modal when click on the remove button", async () => {
         const { getByTestId, getAllByText, getByText } = renderWithGlobalContext(<CreateDeposition />);
         const addParticipantButton = getByTestId("show_modal_add_participants_button");
         await act(async () => {
             await userEvent.click(addParticipantButton);
         });
-
         const roleSelect = await waitForElement(() => getByText(ADD_PARTICIPANTS_CONSTANTS.ROLE_PLACEHOLDER));
         await act(async () => {
             await userEvent.click(roleSelect);
         });
         const role = await waitForElement(() => getAllByText("Attorney"));
         await act(async () => {
-            await userEvent.click(role[1]);
+            userEvent.click(role[1]);
         });
-
         const addParticipantModalButton = getByTestId("add_participants_add_modal_button");
         await act(async () => {
-            await userEvent.click(addParticipantModalButton);
+            userEvent.click(addParticipantModalButton);
         });
-        const removeButton = getByTestId("other_participant_section_remove_button");
-        expect(removeButton).toBeInTheDocument();
         await act(async () => {
-            await userEvent.click(removeButton);
+            userEvent.click(getByTestId("delete_participants_modal_prompt"));
+            await waitForDomChange();
+            const removeButton = getByText(ADD_PARTICIPANTS_CONSTANTS.OTHER_PARTICIPANTS_MODAL_DELETE_LABEL);
+            userEvent.click(removeButton);
         });
-        expect(getByTestId("delete_participants_modal_prompt")).toBeInTheDocument();
+    });
+
+    // TODO: improve the test in order to avoid using this timeout
+    jest.setTimeout(50000);
+
+    it(`add up to ${CONSTANTS.WITNESSES_LIMIT} witnesses and try to add another without success`, async (done) => {
+        const { getAllByLabelText, getAllByRole, getAllByPlaceholderText, getByTestId } = renderWithGlobalContext(
+            <CreateDeposition />
+        );
+        const { depositions } = TEST_CONSTANTS.getDepositions1();
+
+        const addWitnessButton = await waitForElement(() => getByTestId("add_witness_button"));
+        for (let index = 0; index < CONSTANTS.WITNESSES_LIMIT - 1; index++) {
+            // DATE FILL
+            const dateInput = getAllByPlaceholderText(CONSTANTS.DATE_PLACEHOLDER).pop();
+            await act(async () => {
+                await userEvent.click(dateInput);
+            });
+            await act(async () => {
+                await userEvent.click(dateInput);
+                await fireEvent.change(dateInput, {
+                    target: { value: moment(depositions[0].date).format(CONSTANTS.DATE_FORMAT) },
+                });
+                await fireEvent.keyDown(dateInput, { key: "enter", keyCode: 13 });
+            });
+            // TIMES FILL
+            const timeInputs = getAllByPlaceholderText(CONSTANTS.START_PLACEHOLDER);
+            const startInput = timeInputs[timeInputs.length - 2];
+            await act(async () => {
+                await userEvent.click(startInput);
+                await fireEvent.change(startInput, {
+                    target: { value: moment(depositions[0].startTime).format(CONSTANTS.TIME_FORMAT) },
+                });
+            });
+            await act(async () => {
+                const okButton = getAllByRole("button", { name: /ok/i }).pop();
+                await userEvent.click(okButton);
+            });
+            // RADIO BUTTON FILL
+            const radioButtonOption = getAllByLabelText("NO").pop();
+            await act(async () => {
+                await userEvent.click(radioButtonOption);
+            });
+            await act(async () => userEvent.click(addWitnessButton));
+        }
+        expect(addWitnessButton).toBeDisabled();
+        done();
     });
 });

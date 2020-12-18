@@ -10,7 +10,7 @@ import Icon from "../Icon";
 
 export interface IModalProps extends ModalProps {
     onlyBody?: boolean;
-    children: React.ReactNode;
+    children?: React.ReactNode;
 }
 
 const modalDefault = ({ children, ...rest }: IModalProps) => {

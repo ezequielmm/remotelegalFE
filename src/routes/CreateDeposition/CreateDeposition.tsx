@@ -95,7 +95,7 @@ const CreateDeposition = () => {
                                     if (history.length === 2) {
                                         return history.push("/dashboard");
                                     }
-                                    history.goBack();
+                                    return history.goBack();
                                 }}
                             >
                                 Cancel

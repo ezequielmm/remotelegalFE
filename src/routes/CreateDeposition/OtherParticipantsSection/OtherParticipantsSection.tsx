@@ -136,7 +136,7 @@ export default function OtherParticipantsSection(): ReactElement {
                                                     <Button
                                                         type="link"
                                                         onClick={() => onRemoveParticipant(index)}
-                                                        data-testid="other_participant_section_remove_button"
+                                                        data-testid="delete_participants_modal_prompt"
                                                     >
                                                         <Icon icon={DeleteIcon} style={{ fontSize: "1.4rem" }} />
                                                     </Button>
