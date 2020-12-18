@@ -4,59 +4,39 @@ import ControlsBar from "../../components/ControlsBar";
 import getParticipant from "../mocks/participant";
 import renderWithGlobalContext from "../utils/renderWithGlobalContext";
 
-let participant;
+let props;
 
-beforeEach(() => (participant = getParticipant("test1")));
+beforeEach(() => {
+    props = {
+        isRecording: false,
+        togglerRecording: jest.fn(),
+        togglerExhibits: jest.fn(),
+        togglerRealTime: jest.fn(),
+        localParticipant: getParticipant("test1"),
+        exhibitsOpen: false,
+        realTimeOpen: false,
+    };
+});
 
 test("Exhibits is opened when exhibits Open is true", async () => {
-    const { getByTestId } = renderWithGlobalContext(
-        <ControlsBar
-            exhibitsOpen
-            realTimeOpen={false}
-            togglerExhibits={jest.fn()}
-            togglerRealTime={jest.fn()}
-            localParticipant={participant}
-        />
-    );
+    const { getByTestId } = renderWithGlobalContext(<ControlsBar {...props} exhibitsOpen />);
     expect(getByTestId("exhibits")).toBeInTheDocument();
 });
 
 test("Real Time is opened when realTimeOpen is true", async () => {
-    const { getByTestId } = renderWithGlobalContext(
-        <ControlsBar
-            exhibitsOpen={false}
-            realTimeOpen
-            togglerExhibits={jest.fn()}
-            togglerRealTime={jest.fn()}
-            localParticipant={participant}
-        />
-    );
+    const { getByTestId } = renderWithGlobalContext(<ControlsBar {...props} realTimeOpen />);
     expect(getByTestId("realtime")).toBeInTheDocument();
 });
 
 test("Both exhibits and real time are opened when both conditions are true", async () => {
-    const { getByTestId } = renderWithGlobalContext(
-        <ControlsBar
-            exhibitsOpen
-            realTimeOpen
-            togglerExhibits={jest.fn()}
-            togglerRealTime={jest.fn()}
-            localParticipant={participant}
-        />
-    );
+    const { getByTestId } = renderWithGlobalContext(<ControlsBar {...props} exhibitsOpen realTimeOpen />);
     expect(getByTestId("exhibits")).toBeInTheDocument();
     expect(getByTestId("realtime")).toBeInTheDocument();
 });
 
 test("Muted icon is toggled when clicking the mute button", async () => {
     const { getByTestId, queryByTestId } = renderWithGlobalContext(
-        <ControlsBar
-            exhibitsOpen
-            realTimeOpen
-            togglerExhibits={jest.fn()}
-            togglerRealTime={jest.fn()}
-            localParticipant={participant}
-        />
+        <ControlsBar {...props} exhibitsOpen realTimeOpen />
     );
     fireEvent.click(getByTestId("audio"));
     expect(getByTestId("muted")).toBeInTheDocument();
@@ -67,13 +47,7 @@ test("Muted icon is toggled when clicking the mute button", async () => {
 
 test("Camera icon is toggled when clicking the camera button", async () => {
     const { getByTestId, queryByTestId } = renderWithGlobalContext(
-        <ControlsBar
-            exhibitsOpen
-            realTimeOpen
-            togglerExhibits={jest.fn()}
-            togglerRealTime={jest.fn()}
-            localParticipant={participant}
-        />
+        <ControlsBar {...props} exhibitsOpen realTimeOpen />
     );
     fireEvent.click(getByTestId("camera"));
     expect(getByTestId("camerahidden")).toBeInTheDocument();

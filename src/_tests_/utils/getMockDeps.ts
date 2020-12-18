@@ -7,6 +7,7 @@ import { getUser1 } from "../constants/signUp";
 
 export default (): Deps => ({
     apiService: {
+        recordDeposition: jest.fn().mockResolvedValue({}),
         joinDeposition: jest.fn().mockResolvedValue(JOIN_DEPOSITION_MOCK),
         fetchCases: jest.fn().mockResolvedValue(getCaseAsc()),
         fetchDepositions: jest.fn().mockResolvedValue(getDepositions1()),

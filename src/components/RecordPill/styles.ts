@@ -27,20 +27,24 @@ const pulse = keyframes`
 `;
 
 export const StyledRecordPill = styled.span<IRecordPillPropsStyles>`
-    background-color: ${(props: IRecordPillPropsStyles) => (props.$on ? error[5] : neutrals[0])};
+    position: absolute;
+    top: ${getREM(spaces[3] * 0.75)};
+    left: ${getREM(spaces[3] * 0.75)};
+    z-index: 50;
     display: inline-flex;
+    background-color: ${(props: IRecordPillPropsStyles) => (props.$on ? error[5] : neutrals[0])};
     align-items: center;
     justify-content: center;
     color: ${textColorInverse};
-    font-size: ${getREM(fontSizes[8])};
+    font-size: ${getREM(fontSizes[6] * 0.625)};
     line-height: 1;
     font-weight: 400;
     border-radius: ${getREM(spaces[2])};
     text-transform: uppercase;
     padding: 0 ${getREM(spaces[1])};
-    width: ${getREM(spaces[7] * 4.1)};
+    width: ${getREM(spaces[7] * 3.6)};
     height: ${getREM(spaces[7] * 0.95)};
-    box-shadow: 0 0 0 0 ${hexToRGBA(neutrals[6], 0)};
+    box-shadow: 0 0 1px 0 ${hexToRGBA(neutrals[2], 0.5)};
     transition: background-color 400ms ease-in-out;
 `;
 

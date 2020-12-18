@@ -1,7 +1,7 @@
 import React from "react";
 import { createMemoryHistory } from "history";
 import { Route } from "react-router-dom";
-import { waitForElement, waitForDomChange } from "@testing-library/react";
+import { waitForElement, waitForDomChange, fireEvent } from "@testing-library/react";
 import InDepo from "../../routes/InDepo";
 import renderWithGlobalContext from "../utils/renderWithGlobalContext";
 import getMockDeps from "../utils/getMockDeps";
@@ -10,11 +10,11 @@ import * as TESTS_CONSTANTS from "../constants/InDepo";
 
 const customDeps = getMockDeps();
 const history = createMemoryHistory();
-//TODO: Find a better way to mock Twilio (eg, adding it to DI system)
+// TODO: Find a better way to mock Twilio (eg, adding it to DI system)
 jest.mock("twilio-video", () => ({
     ...jest.requireActual("twilio-video"),
     LocalDataTrack: function dataTrack() {
-        return { test: "1234" };
+        return { send: jest.fn() };
     },
 
     createLocalTracks: async () => [],
@@ -88,6 +88,19 @@ jest.mock("twilio-video", () => ({
     }),
 }));
 
+beforeEach(() => {
+    const createElement = document.createElement.bind(document);
+    document.createElement = (tagName) => {
+        if (tagName === "canvas") {
+            return {
+                getContext: () => ({}),
+                measureText: () => ({}),
+            };
+        }
+        return createElement(tagName);
+    };
+});
+
 test("Error screen is shown when fetch fails", async () => {
     customDeps.apiService.joinDeposition = jest.fn().mockRejectedValue({});
     const { getByText } = renderWithGlobalContext(
@@ -141,4 +154,35 @@ test("VideoConference is shown if fetch is successful", async () => {
     history.push(TESTS_CONSTANTS.TEST_ROUTE);
     await waitForDomChange();
     await waitForElement(() => getByTestId("videoconference"));
+});
+
+test("Off the record is shown by default", async () => {
+    customDeps.apiService.joinDeposition = jest.fn().mockResolvedValue(TESTS_CONSTANTS.JOIN_DEPOSITION_MOCK);
+    const { getByText } = renderWithGlobalContext(
+        <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,
+        customDeps,
+        undefined,
+        history
+    );
+
+    history.push(TESTS_CONSTANTS.TEST_ROUTE);
+    await waitForDomChange();
+    expect(getByText(TESTS_CONSTANTS.OFF_PILL)).toBeInTheDocument();
+});
+
+test("On the record is shown when clicking the record button", async () => {
+    customDeps.apiService.joinDeposition = jest.fn().mockResolvedValue(TESTS_CONSTANTS.JOIN_DEPOSITION_MOCK);
+    const { getByText, getByTestId } = renderWithGlobalContext(
+        <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,
+        customDeps,
+        undefined,
+        history
+    );
+
+    history.push(TESTS_CONSTANTS.TEST_ROUTE);
+    await waitForDomChange();
+    const recordButton = getByTestId("record");
+    fireEvent.click(recordButton);
+    await waitForDomChange();
+    expect(getByText(TESTS_CONSTANTS.ON_PILL)).toBeInTheDocument();
 });

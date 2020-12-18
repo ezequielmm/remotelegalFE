@@ -68,6 +68,13 @@ export class ApiService {
         });
     };
 
+    recordDeposition = async (depositionID: string, onRecord: boolean): Promise<DepositionModel.IDeposition> => {
+        return this.request<DepositionModel.IDeposition>({
+            path: `/api/depositions/${depositionID}/record?onTheRecord=${onRecord}`,
+            method: HTTP_METHOD.POST,
+        });
+    };
+
     endDeposition = async (depositionID: string): Promise<DepositionModel.IDeposition> => {
         // TODO: Add real End Depo endpoint
         return this.request<DepositionModel.IDeposition>({

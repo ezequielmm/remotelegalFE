@@ -2,6 +2,7 @@ import React, { ReactElement, useState } from "react";
 import { Dropdown, Menu } from "antd";
 import { LocalAudioTrack, LocalParticipant, LocalVideoTrack } from "twilio-video";
 import useParticipantTracks from "../../hooks/InDepo/useParticipantTracks";
+import useRecording from "../../hooks/InDepo/useRecording";
 import useTracksStatus from "../../hooks/InDepo/useTracksStatus";
 import {
     StyledContainer,
@@ -34,6 +35,8 @@ interface IControlsBar {
     exhibitsOpen: boolean;
     togglerExhibits: React.Dispatch<React.SetStateAction<boolean>> | ((value: React.SetStateAction<boolean>) => void);
     realTimeOpen: boolean;
+    isRecording: boolean;
+    togglerRecording: React.Dispatch<React.SetStateAction<boolean>> | ((value: React.SetStateAction<boolean>) => void);
     togglerRealTime: React.Dispatch<React.SetStateAction<boolean>> | ((value: React.SetStateAction<boolean>) => void);
 }
 
@@ -43,20 +46,21 @@ export default function ControlsBar({
     togglerExhibits,
     realTimeOpen,
     togglerRealTime,
+    isRecording,
+    togglerRecording,
 }: IControlsBar): ReactElement {
     const { videoTracks, audioTracks } = useParticipantTracks(localParticipant);
     const { isAudioEnabled, cameraEnabled, setAudioEnabled, setCameraEnabled } = useTracksStatus(
         audioTracks as LocalAudioTrack[],
         videoTracks as LocalVideoTrack[]
     );
-    const [isRecording, togglerRecording] = useState(false);
+    const startPauseRecording = useRecording(!isRecording, togglerRecording);
     const [breakroomsOpen, togglerBreakrooms] = useState(false);
     const [summaryOpen, togglerSummary] = useState(false);
     const [supportOpen, togglerSupport] = useState(false);
     // TODO: Add EndDepo functionality
     // const { setEndDepo } = useEndDepo();
 
-    const toggleRecord = () => togglerRecording((prevState) => !prevState);
     const toggleBreakrooms = () => togglerBreakrooms((prevState) => !prevState);
     const toggleSummary = () => togglerSummary((prevState) => !prevState);
     const toggleSupport = () => togglerSupport((prevState) => !prevState);
@@ -106,7 +110,7 @@ export default function ControlsBar({
                 <Control
                     data-testid="record"
                     isToggled={isRecording}
-                    onClick={toggleRecord}
+                    onClick={startPauseRecording}
                     type="rounded"
                     label={isRecording ? "Go off the record" : "Go on the record"}
                     icon={

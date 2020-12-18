@@ -13,6 +13,7 @@ import disconnectFromDepo from "../../helpers/disconnectFromDepo";
 import ErrorScreen from "../../components/ErrorScreen";
 import * as CONSTANTS from "../../constants/inDepo";
 import { theme } from "../../constants/styles/theme";
+import RecordPill from "../../components/RecordPill";
 
 const InDepo = () => {
     type DepositionID = {
@@ -25,6 +26,7 @@ const InDepo = () => {
     const { depositionID } = useParams<DepositionID>();
     const [realTimeOpen, togglerRealTime] = useState(false);
     const [exhibitsOpen, togglerExhibits] = useState(false);
+    const [isRecording, togglerRecording] = useState(false);
     const [videoLayoutSize, setVideoLayoutSize] = useState(0);
     useEffect(() => {
         if (depositionID) {
@@ -40,6 +42,9 @@ const InDepo = () => {
     useEffect(() => {
         if (message.module === "endDepo") {
             disconnectFromDepo(currentRoom, dispatch);
+        }
+        if (message.module === "recordDepo") {
+            togglerRecording(message.value);
         }
     }, [message, currentRoom, dispatch]);
 
@@ -64,6 +69,7 @@ const InDepo = () => {
         <ThemeProvider theme={inDepoTheme}>
             <StyledInDepoContainer data-testid="videoconference">
                 <StyledInDepoLayout>
+                    <RecordPill on={isRecording} />
                     <Exhibits onClick={() => togglerExhibits(false)} visible={exhibitsOpen} />
                     <RealTime onClick={() => togglerRealTime(false)} visible={realTimeOpen} />
                     <VideoConference
@@ -75,6 +81,8 @@ const InDepo = () => {
                 </StyledInDepoLayout>
                 <StyledRoomFooter>
                     <ControlsBar
+                        isRecording={isRecording}
+                        togglerRecording={togglerRecording}
                         realTimeOpen={realTimeOpen}
                         togglerRealTime={togglerRealTime}
                         exhibitsOpen={exhibitsOpen}

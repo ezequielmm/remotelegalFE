@@ -11,6 +11,7 @@ export const StyledInDepoContainer = styled.div`
 
 export const StyledInDepoLayout = styled.div`
     display: flex;
+    position: relative;
     justify-content: center;
     height: calc(100% - ${({ theme }) => getREM(theme.default.spaces[5] * 3)});
     background: linear-gradient(

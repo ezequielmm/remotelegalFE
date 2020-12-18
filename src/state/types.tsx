@@ -15,6 +15,10 @@ export interface IGlobalReducer {
 
 export type DataTrackMessage = { module: string; value: any } | null;
 
+export type DepositionID = {
+    depositionID: string;
+};
+
 export type DisconnectRoomState = {
     token?: string;
     info?: object;
