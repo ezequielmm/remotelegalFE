@@ -22,7 +22,8 @@ const StyledBadge = styled(badgeDefault)<IBadgeProps>`
             theme.mode === "inDepo"
                 ? `
                 background-color: ${theme.colors.inDepoNeutrals[7]}; 
-                color: ${theme.colors.inDepoNeutrals[8]}; 
+                color: ${theme.colors.inDepoNeutrals[8]};
+                box-shadow: none;
             `
                 : `
                 background-color: ${theme.colors.primary[5]};

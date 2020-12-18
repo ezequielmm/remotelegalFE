@@ -1,10 +1,27 @@
 import React from "react";
 // also exported from '@storybook/react' if you can deal with breaking changes in 6.1
 import { Story, Meta } from "@storybook/react/types-6-0";
+import { Menu, Dropdown } from "antd";
+import { FilePdfOutlined, MoreOutlined } from "@ant-design/icons";
 import { ContainerBackground } from "./Decorators";
 import Button from "../components/Button";
 
 import Table from "../components/Table";
+import { theme } from "../constants/styles/theme";
+
+const inDepoTheme = { ...theme, mode: "inDepo" };
+const defaultTheme = { ...theme, mode: "default" };
+
+const menu = (
+    <Menu>
+        <Menu.Item>
+            <span>Rename</span>
+        </Menu.Item>
+        <Menu.Item>
+            <span>Delete</span>
+        </Menu.Item>
+    </Menu>
+);
 
 const cases = [
     {
@@ -39,6 +56,43 @@ const casesColumns = [
         dataIndex: "addedBy",
         key: "addedBy",
         sorter: (a, b) => a.addedBy - b.addedBy,
+    },
+];
+
+const depositions = [
+    {
+        key: "1",
+        status: "Pending",
+        lawFirm: "The Long Law firm",
+        requestedBy: "Corey Jimenez",
+        case: {
+            label: "Korematsu v. United States of America",
+            url: "http://url.com",
+        },
+        dateAndTime: {
+            date: "Tue Nov 02, 2020",
+            time: "01:00 to 03:00",
+        },
+        witness: "Patrick Morgan",
+        courtReporter: "Justin Hamilton",
+        jobNumber: "#0549",
+    },
+    {
+        key: "2",
+        status: "Confirmed",
+        lawFirm: "The Long Law firm",
+        requestedBy: "Corey Jimenez",
+        case: {
+            label: "Korematsu v. United States of America",
+            url: "http://url.com",
+        },
+        dateAndTime: {
+            date: "Tue Nov 02, 2020",
+            time: "01:00 to 03:00",
+        },
+        witness: "Patrick Morgan",
+        courtReporter: "Justin Hamilton",
+        jobNumber: "#0549",
     },
 ];
 
@@ -129,42 +183,89 @@ const depositionsColumns = [
     },
 ];
 
-const depositions = [
+const exhibits = [
     {
         key: "1",
-        status: "Pending",
-        lawFirm: "The Long Law firm",
-        requestedBy: "Corey Jimenez",
-        case: {
-            label: "Korematsu v. United States of America",
-            url: "http://url.com",
-        },
-        dateAndTime: {
-            date: "Tue Nov 02, 2020",
-            time: "01:00 to 03:00",
-        },
-        witness: "Patrick Morgan",
-        courtReporter: "Justin Hamilton",
-        jobNumber: "#0549",
+        file: "Certificate of examination.pdf",
+        fileSize: "90 Kb",
     },
     {
         key: "2",
-        status: "Confirmed",
-        lawFirm: "The Long Law firm",
-        requestedBy: "Corey Jimenez",
-        case: {
-            label: "Korematsu v. United States of America",
-            url: "http://url.com",
-        },
-        dateAndTime: {
-            date: "Tue Nov 02, 2020",
-            time: "01:00 to 03:00",
-        },
-        witness: "Patrick Morgan",
-        courtReporter: "Justin Hamilton",
-        jobNumber: "#0549",
+        file: "Employment certificate.pdf",
+        fileSize: "432 Kb",
+    },
+    {
+        key: "3",
+        file: "Driver’s license.jpg",
+        fileSize: "2 Mb",
+    },
+    {
+        key: "4",
+        file: "Subway photo.pdf",
+        fileSize: "148 Kb",
     },
 ];
+
+const exhibitsColumns = [
+    {
+        title: "",
+        dataIndex: "fileIcon",
+        key: "fileIcon",
+        render: () => <FilePdfOutlined />,
+        width: 40,
+    },
+    {
+        title: "File",
+        dataIndex: "file",
+        key: "file",
+        sorter: (a, b) => a.file - b.file,
+        render: (text) => <small>{text}</small>,
+    },
+    {
+        title: "File size",
+        dataIndex: "fileSize",
+        key: "fileSize",
+        render: (text) => <small>{text}</small>,
+    },
+    {
+        title: "",
+        dataIndex: "viewAction",
+        key: "viewAction",
+        render: () => (
+            <Button size="small" type="link">
+                VIEW
+            </Button>
+        ),
+        width: 60,
+    },
+    {
+        title: "",
+        dataIndex: "shareAction",
+        key: "shareAction",
+        render: () => (
+            <Button size="small" type="ghost">
+                Share
+            </Button>
+        ),
+        width: 60,
+    },
+    {
+        title: "",
+        dataIndex: "shareAction",
+        key: "shareAction",
+        render: () => (
+            <Dropdown overlay={menu}>
+                <MoreOutlined onClick={(e) => e.preventDefault()} />
+            </Dropdown>
+        ),
+        width: 20,
+    },
+];
+
+const pagination = {
+    currentPage: 1,
+    pageSize: 2,
+};
 
 export default {
     title: "Table",
@@ -178,12 +279,12 @@ export default {
     ],
 } as Meta;
 
-const Template: Story = (args) => <Table {...args} />;
-
+const Template: Story = (args) => <Table pagination={pagination} {...args} />;
 export const CasesTable = Template.bind({});
 CasesTable.args = {
     dataSource: cases,
     columns: casesColumns,
+    theme: defaultTheme,
     sortDirections: ["descend", "ascend"],
 };
 
@@ -191,5 +292,30 @@ export const DepositionsTable = Template.bind({});
 DepositionsTable.args = {
     dataSource: depositions,
     columns: depositionsColumns,
+    theme: defaultTheme,
     sortDirections: ["descend", "ascend"],
+};
+
+export const DefaultEmptyTable = Template.bind({});
+DefaultEmptyTable.args = {
+    theme: defaultTheme,
+};
+
+export const ExhibitsTable = Template.bind({});
+ExhibitsTable.args = {
+    dataSource: exhibits,
+    columns: exhibitsColumns,
+    theme: inDepoTheme,
+    sortDirections: ["descend", "ascend"],
+};
+ExhibitsTable.parameters = {
+    backgrounds: { default: "inDepo" },
+};
+
+export const InDepoEmptyTable = Template.bind({});
+InDepoEmptyTable.args = {
+    theme: inDepoTheme,
+};
+InDepoEmptyTable.parameters = {
+    backgrounds: { default: "inDepo" },
 };

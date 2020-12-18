@@ -9,6 +9,5 @@ export const ContainerMedium = styled.div`
 `;
 
 export const ContainerBackground = styled.div`
-    background: ${({ theme }) => theme.colors.neutrals[5]};
     padding: 1rem;
 `;

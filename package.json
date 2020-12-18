@@ -7,8 +7,9 @@
         "@ant-design/icons": "^4.2.2",
         "@babel/helper-skip-transparent-expression-wrappers": "^7.11.0",
         "@craco/craco": "^5.7.0",
-        "@pdftron/webviewer": "^7.1.2",
         "@hookform/resolvers": "^1.0.1",
+        "@pdftron/webviewer": "^7.1.2",
+        "@storybook/addon-backgrounds": "^6.1.11",
         "@testing-library/jest-dom": "^5.11.6",
         "@testing-library/react": "^9.3.2",
         "@testing-library/react-hooks": "^3.4.2",
@@ -92,8 +93,8 @@
         "eslint-plugin-jsx-a11y": "^6.3.1",
         "eslint-plugin-prettier": "^3.1.4",
         "lint-staged": "^10.4.0",
+        "mutationobserver-shim": "^0.3.7",
         "prettier": "^2.1.2",
-        "react-is": "^16.13.1",
-        "mutationobserver-shim": "^0.3.7"
+        "react-is": "^16.13.1"
     }
 }

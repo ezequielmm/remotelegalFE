@@ -46,3 +46,6 @@ PRBadgeInDepo.args = {
     count: 5,
     theme: inDepoTheme,
 };
+PRBadgeInDepo.parameters = {
+    backgrounds: { default: "inDepo" },
+};

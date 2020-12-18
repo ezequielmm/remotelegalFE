@@ -8,25 +8,101 @@ import { getREM, hexToRGBA } from "../../constants/styles/utils";
 const StyledTable = styled(Table)`
     ${({ theme }) => {
         const { fontSizes, spaces } = theme.default;
-        const { neutrals } = theme.colors;
+        const { neutrals, disabled, primary, inDepoBlue } = theme.colors;
+
         const styles = `
             &.ant-table-wrapper {
+                ${
+                    theme.mode === "inDepo"
+                        ? `
+                    .ant-pagination {
+                        .anticon {
+                            color: ${primary[5]};
+                        }
+                        .ant-pagination-item-link {
+                            background: transparent;
+                        }
+                        .ant-pagination-item {
+                            background: transparent;
+                            border-color: ${disabled[9]}; 
+                        }
+                        .ant-pagination-item a {
+                            color: ${primary[5]};
+                        }
+
+                        .ant-pagination .ant-pagination-item-link,
+                        .ant-pagination-item-link {
+                            border-color: ${disabled[9]};
+                            .anticon {
+                                color: ${primary[5]};
+                            }
+                        }
+                        .ant-pagination-disabled:focus .ant-pagination-item-link,
+                        .ant-pagination-disabled:hover .ant-pagination-item-link,
+                        .ant-pagination-disabled .ant-pagination-item-link,
+                        .ant-pagination-disabled:hover .ant-pagination-item-link,
+                        .ant-pagination-disabled:focus .ant-pagination-item-link {
+                            border-color: ${disabled[9]};
+                            .anticon {
+                                color: ${disabled[9]};
+                            }
+                        }
+                        .ant-pagination-item:hover,
+                        .ant-pagination-item-active,
+                        .ant-pagination-next:focus:not(.ant-pagination-disabled) .ant-pagination-item-link, 
+                        .ant-pagination-next:hover:not(.ant-pagination-disabled) .ant-pagination-item-link, 
+                        .ant-pagination-prev:focus:not(.ant-pagination-disabled) .ant-pagination-item-link, 
+                        .ant-pagination-prev:hover:not(.ant-pagination-disabled) .ant-pagination-item-link {
+                            border-color: ${primary[5]};
+                        }
+                    }
+                `
+                        : ""
+                };
                 .ant-table-empty {
                     table {
                         tbody.ant-table-tbody {
                             > tr {
                                 > td.ant-table-cell:first-child {
-                                    border-radius: ${getREM(spaces[2])};
-                                    background-color: ${neutrals[4]};
+                                    border-radius: ${theme.mode === "inDepo" ? "" : `${getREM(spaces[2])}`};
+                                    box-shadow: ${theme.mode === "inDepo" ? "none" : ""};
                                     padding: ${getREM(spaces[5])} ${getREM(spaces[5] / 2)};
+                                    &:hover {
+                                        ${theme.mode === "inDepo" ? `background: transparent;` : ""}
+                                    }
                                 }
+                            }
+                            ${
+                                theme.mode === "inDepo"
+                                    ? `
+                            .ant-empty-image {
+                                .ant-empty-img-simple-ellipse {
+                                    fill: ${primary[5]};
+                                }
+                                .ant-empty-img-simple-path {
+                                    fill: ${primary[6]};
+                                }
+                                .ant-empty-img-simple-g {
+                                    stroke: ${primary[4]};
+                                }
+                            }
+                            .ant-empty-description {
+                                color: ${primary[5]};
+                            }
+                            `
+                                    : ""
                             }
                         }
                     }
                 }
                 table {
                     border-radius: 0;
-                    border-spacing: 0 ${getREM(spaces[1])};
+                    border-spacing: ${theme.mode === "inDepo" ? "" : `0 ${getREM(spaces[1])};`};
+
+                    .ant-table-thead > tr > th:not(.ant-table-column-has-sorters), 
+                    .ant-table tfoot > tr > th:not(.ant-table-column-has-sorters) {
+                        padding: 10px 0 10px ${getREM(spaces[0] + spaces[1])};
+                    }
 
                     thead.ant-table-thead {
                         > tr {
@@ -36,7 +112,7 @@ const StyledTable = styled(Table)`
                                 font-size: ${getREM(fontSizes[8])};
                                 text-transform: uppercase;
                                 font-weight: bold;
-                                border-bottom-color: ${neutrals[3]};
+                                border-bottom-color: ${theme.mode === "inDepo" ? disabled[9] : neutrals[3]};
                                 &:first-child {
                                     .ant-table-column-sorters {
                                         padding-left: ${getREM(spaces[5])};
@@ -48,9 +124,12 @@ const StyledTable = styled(Table)`
                                     } 
                                 }
                                 .ant-table-column-sorters {
-                                    padding: 0 0 ${getREM(spaces[1])} ${getREM(spaces[0] + spaces[1])};
+                                    padding: 10px 0 10px ${getREM(spaces[0] + spaces[1])};
+                                    .active {
+                                        color: ${theme.mode === "inDepo" ? inDepoBlue[4] : ""};
+                                    }
                                     .ant-table-column-sorter {
-                                        color: ${neutrals[1]};
+                                        color: ${theme.mode === "inDepo" ? neutrals[2] : neutrals[1]};
                                         margin-top: -0.4em;
                                         .ant-table-column-sorter-up,
                                         .ant-table-column-sorter-down {
@@ -64,21 +143,40 @@ const StyledTable = styled(Table)`
 
                     tbody.ant-table-tbody {
                         > tr {
-                            background-color: ${neutrals[6]};
+                            background-color: ${theme.mode === "inDepo" ? `transparent` : neutrals[6]};
+                            ${
+                                theme.mode === "inDepo"
+                                    ? `
+                                &.ant-table-row:hover > td {
+                                    background: ${hexToRGBA(neutrals[1], 0.05)};
+                                }
+                            `
+                                    : ""
+                            };
 
                             > td.ant-table-cell {
-                                box-shadow: 0 ${getREM(spaces[2])} ${getREM(spaces[5])} 0 ${hexToRGBA(
-            neutrals[2],
-            0.08
-        )};
-                                padding: ${getREM(spaces[4])} ${getREM(spaces[5] / 2)};
+                                box-shadow: ${
+                                    theme.mode === "inDepo"
+                                        ? `none`
+                                        : `0 ${getREM(spaces[2])} ${getREM(spaces[5])} 0 ${hexToRGBA(
+                                              neutrals[2],
+                                              0.08
+                                          )}`
+                                };
+                                padding: ${getREM(spaces[3])} ${getREM(spaces[5] / 2)};
+                                color: ${theme.mode === "inDepo" ? neutrals[6] : ""};
+                                border-bottom-color: ${theme.mode === "inDepo" ? disabled[9] : ""};
                                 &:first-child {
                                     padding-left: ${getREM(spaces[5])};
-                                    border-radius: ${getREM(spaces[2])} 0 0 ${getREM(spaces[2])};
+                                    border-radius: ${
+                                        theme.mode === "inDepo" ? `0` : `${getREM(spaces[2])} 0 0 ${getREM(spaces[2])}`
+                                    };
                                 }
                                 &:last-child {
                                     padding-right: ${getREM(spaces[5])};
-                                    border-radius: 0 ${getREM(spaces[2])} ${getREM(spaces[2])} 0;
+                                    border-radius: ${
+                                        theme.mode === "inDepo" ? `0` : `0 ${getREM(spaces[2])} ${getREM(spaces[2])} 0`
+                                    };
                                 }
 
                                 small {
@@ -100,6 +198,13 @@ const StyledTable = styled(Table)`
                                     }
                                 }
                             }
+                            ${
+                                theme.mode === "inDepo"
+                                    ? `> td.ant-table-column-sort {
+                                background: ${hexToRGBA(neutrals[1], 0.05)};
+                            }`
+                                    : ""
+                            }
 
                         &.ant-table-placeholder {
                             > td {
@@ -113,6 +218,7 @@ const StyledTable = styled(Table)`
                         }
                     }
                 }
+
             }
         `;
         return styles;
