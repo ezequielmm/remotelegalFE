@@ -20,12 +20,14 @@ interface LoginProps {
 
 const Login = ({ location }: LoginProps) => {
     const { inputValue: emailValue, input: emailInput, invalid: emailInvalid } = useInput(isInvalidEMail, {
-        name: "email",
         placeholder: "Enter your email",
+        id: "email",
+        name: `email ${Math.random()}`,
     });
 
     const { inputValue: passwordValue, input: passwordInput, invalid: passwordInvalid } = useInput(isInputEmpty, {
         name: "password",
+        autoComplete: "new-password",
         placeholder: "Enter your password",
         type: "password",
     });
