@@ -1,7 +1,12 @@
 import { Room } from "twilio-video";
 import actions from "../state/InDepo/InDepoActions";
 
-const disconnectFromDepo = (room: Room, dispatch: React.SetStateAction<any>, killDepo?: (depoID: string) => void) => {
+const disconnectFromDepo = async (
+    room: Room,
+    dispatch: React.SetStateAction<any>,
+    history?,
+    killDepo?: () => Promise<void>
+) => {
     const initialState = {
         info: null,
         currentRoom: null,
@@ -11,15 +16,19 @@ const disconnectFromDepo = (room: Room, dispatch: React.SetStateAction<any>, kil
         witness: "",
     };
     const doesRoomExistAndIsParticipantConnected = room?.localParticipant?.state === "connected";
+    if (killDepo && typeof killDepo === "function") {
+        // TODO: Handle errors when closing the room
+        await killDepo();
+    }
     if (doesRoomExistAndIsParticipantConnected) {
         room.localParticipant.tracks.forEach((trackPublication: any) => {
             return trackPublication.track.kind === "audio" || trackPublication.kind === "video"
                 ? trackPublication.track.stop()
                 : null;
         });
-        dispatch(actions.disconnect(initialState));
         room.disconnect();
+        dispatch(actions.disconnect(initialState));
     }
-    return killDepo ? killDepo(room.name) : room;
+    return history?.push("/deposition/end");
 };
 export default disconnectFromDepo;

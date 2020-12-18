@@ -1,17 +1,20 @@
 import { useContext } from "react";
 import { connect, createLocalTracks, LocalDataTrack } from "twilio-video";
+import { useParams } from "react-router";
 import { GlobalStateContext } from "../../state/GlobalState";
 import configParticipantListeners from "../../helpers/configParticipantListeners";
 import useAsyncCallback from "../useAsyncCallback";
 import actions from "../../state/InDepo/InDepoActions";
 import disconnectFromDepo from "../../helpers/disconnectFromDepo";
+import { DepositionID } from "../../state/types";
 
 export const useKillDepo = () => {
     const { deps } = useContext(GlobalStateContext);
-    return useAsyncCallback(async (depositionID: string) => {
+    const { depositionID } = useParams<DepositionID>();
+    return useAsyncCallback(async () => {
         const response = await deps.apiService.endDeposition(depositionID);
         return response;
-    }, []);
+    }, [depositionID]);
 };
 
 const useGenerateToken = () => {

@@ -55,7 +55,6 @@ const RoomReducer: Reducer<IRoom, IAction> = (state: IRoom, action: IAction): IR
                 ...state,
                 currentRoom: action.payload,
             };
-
         default:
             return state;
     }

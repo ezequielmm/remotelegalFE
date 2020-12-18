@@ -6,6 +6,7 @@ import {
     LocalParticipant,
     RemoteDataTrack,
     RemoteParticipant,
+    RemoteVideoTrack,
     VideoTrack,
 } from "twilio-video";
 import trackpubsToTracks from "../../helpers/trackPubsToTracks";
@@ -14,12 +15,12 @@ const useParticipantTracks = (participant: LocalParticipant | RemoteParticipant)
     const [dataTracks, setDataTracks] = useState<DataTrack[]>([]);
     const [videoTracks, setVideoTracks] = useState<VideoTrack[]>([]);
     const [audioTracks, setAudioTracks] = useState<AudioTrack[]>([]);
-
-    const videoRef = useRef();
-    const audioRef = useRef();
+    const audioRef = useRef<HTMLAudioElement & AudioTrack>();
+    const videoRef = useRef<HTMLVideoElement & VideoTrack>();
 
     const trackSubscribed = (track: AudioTrack | VideoTrack | LocalDataTrack | RemoteDataTrack) => {
         if (track.kind === "video") {
+            videoRef.current.style.display = "block";
             return setVideoTracks((video) => [...video, track]);
         }
         if (track.kind === "audio") {
@@ -28,8 +29,11 @@ const useParticipantTracks = (participant: LocalParticipant | RemoteParticipant)
         return setDataTracks((data) => [...data, track]);
     };
 
-    const trackUnsubscribed = (track: AudioTrack | LocalDataTrack | RemoteDataTrack | VideoTrack) => {
+    const trackUnsubscribed = (
+        track: AudioTrack | LocalDataTrack | RemoteDataTrack | VideoTrack | RemoteVideoTrack
+    ) => {
         if (track.kind === "video") {
+            videoRef.current.style.display = track.name === videoRef.current.name ? "none" : "block";
             return setVideoTracks((video) => video.filter((v) => v !== track));
         }
         if (track.kind === "audio") {
@@ -43,7 +47,6 @@ const useParticipantTracks = (participant: LocalParticipant | RemoteParticipant)
         if (!participant) {
             return;
         }
-
         setVideoTracks(trackpubsToTracks(participant.videoTracks));
         setAudioTracks(trackpubsToTracks(participant.audioTracks));
         setDataTracks(trackpubsToTracks(participant.dataTracks));
@@ -56,17 +59,22 @@ const useParticipantTracks = (participant: LocalParticipant | RemoteParticipant)
 
     useEffect(() => {
         const videoTrack = videoTracks[0];
+
         if (videoTrack) {
+            if (videoRef.current) {
+                videoRef.current.name = videoTrack.name;
+            }
             videoTrack.attach(videoRef.current);
         }
         return () => videoTrack?.detach();
-    }, [videoTracks]);
+    }, [videoTracks, participant]);
 
     useEffect(() => {
         const audioTrack = audioTracks[0];
         if (audioTrack) {
             audioTrack.attach(audioRef.current);
         }
+
         return () => audioTrack?.detach();
     }, [audioTracks]);
     return { videoRef, audioRef, dataTracks, audioTracks, videoTracks };

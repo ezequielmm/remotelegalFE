@@ -76,7 +76,6 @@ export class ApiService {
     };
 
     endDeposition = async (depositionID: string): Promise<DepositionModel.IDeposition> => {
-        // TODO: Add real End Depo endpoint
         return this.request<DepositionModel.IDeposition>({
             path: `/api/depositions/${depositionID}/end`,
             method: HTTP_METHOD.POST,

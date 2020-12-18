@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 import Spinner from "../../components/Spinner";
 import Exhibits from "./Exhibits";
@@ -14,11 +14,9 @@ import ErrorScreen from "../../components/ErrorScreen";
 import * as CONSTANTS from "../../constants/inDepo";
 import { theme } from "../../constants/styles/theme";
 import RecordPill from "../../components/RecordPill";
+import { DepositionID } from "../../state/types";
 
 const InDepo = () => {
-    type DepositionID = {
-        depositionID: string;
-    };
     const inDepoTheme = { ...theme, mode: "inDepo" };
     const { state, dispatch } = useContext(GlobalStateContext);
     const [joinDeposition, loading, error] = useJoinDeposition();
@@ -28,6 +26,8 @@ const InDepo = () => {
     const [exhibitsOpen, togglerExhibits] = useState(false);
     const [isRecording, togglerRecording] = useState(false);
     const [videoLayoutSize, setVideoLayoutSize] = useState(0);
+    const history = useHistory();
+
     useEffect(() => {
         if (depositionID) {
             joinDeposition(depositionID);
@@ -41,12 +41,12 @@ const InDepo = () => {
 
     useEffect(() => {
         if (message.module === "endDepo") {
-            disconnectFromDepo(currentRoom, dispatch);
+            disconnectFromDepo(currentRoom, dispatch, history);
         }
         if (message.module === "recordDepo") {
             togglerRecording(message.value);
         }
-    }, [message, currentRoom, dispatch]);
+    }, [message, currentRoom, dispatch, history]);
 
     if (loading) {
         return <Spinner />;
@@ -92,9 +92,7 @@ const InDepo = () => {
                 </StyledRoomFooter>
             </StyledInDepoContainer>
         </ThemeProvider>
-    ) : (
-        <p>Thanks for joining the deposition</p>
-    );
+    ) : null;
 };
 
 export default InDepo;

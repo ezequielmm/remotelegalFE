@@ -21,28 +21,23 @@ export interface IConfirmProps extends IModalProps {
 const ConfirmModal = styled(Modal)<IConfirmProps>`
     ${({ theme }) => {
         const { spaces } = theme.default;
+
         const modalStyles = `
         .ant-modal-content {
             padding: ${getREM(spaces[8])};
                 .ant-modal-body {
                     padding: 0;
-                    h4 {
-                        line-height: 1.3;
-                    }
-                    .actions {
-                        margin-top: ${getREM(spaces[8])};
-                    }
                 }
                 .ant-modal-footer {
                     padding: ${getREM(spaces[8])} 0 0 0;
                     border-top: 0;
                 }
             }
-`;
+        `;
 
         const styles = `
             ${modalStyles}
-            `;
+        `;
 
         return styles;
     }}
@@ -57,6 +52,7 @@ const confirm = (props: IConfirmProps) => {
             closeIcon={closeIcon}
             destroyOnClose
             onlyBody
+            centered
             onCancel={onNegativeClick}
             {...rest}
             footer={

@@ -4,6 +4,7 @@ import { LocalAudioTrack, LocalParticipant, LocalVideoTrack } from "twilio-video
 import useParticipantTracks from "../../hooks/InDepo/useParticipantTracks";
 import useRecording from "../../hooks/InDepo/useRecording";
 import useTracksStatus from "../../hooks/InDepo/useTracksStatus";
+import EndDepoModal from "./components/EndDepoModal";
 import {
     StyledContainer,
     StyledLogo,
@@ -29,6 +30,7 @@ import { ReactComponent as SummaryIcon } from "../../assets/in-depo/Summary.svg"
 import { ReactComponent as SupportIcon } from "../../assets/in-depo/Support.svg";
 import Control from "../Control/Control";
 import Logo from "../Logo";
+import useEndDepo from "../../hooks/InDepo/useEndDepo";
 
 interface IControlsBar {
     localParticipant: LocalParticipant;
@@ -58,9 +60,8 @@ export default function ControlsBar({
     const [breakroomsOpen, togglerBreakrooms] = useState(false);
     const [summaryOpen, togglerSummary] = useState(false);
     const [supportOpen, togglerSupport] = useState(false);
-    // TODO: Add EndDepo functionality
-    // const { setEndDepo } = useEndDepo();
-
+    const [modal, setModal] = useState(false);
+    const { setEndDepo } = useEndDepo();
     const toggleBreakrooms = () => togglerBreakrooms((prevState) => !prevState);
     const toggleSummary = () => togglerSummary((prevState) => !prevState);
     const toggleSupport = () => togglerSupport((prevState) => !prevState);
@@ -78,6 +79,14 @@ export default function ControlsBar({
 
     return (
         <StyledContainer>
+            <EndDepoModal
+                endDepoFunc={() => {
+                    setModal(false);
+                    return setEndDepo(true);
+                }}
+                visible={modal}
+                closeModal={() => setModal(false)}
+            />
             <StyledLogo>
                 <Logo version="light" height="100%" />
             </StyledLogo>
@@ -124,7 +133,7 @@ export default function ControlsBar({
                 <Control
                     data-testid="end"
                     onClick={() => {
-                        // setEndDepo(true)
+                        setModal(true);
                     }}
                     type="rounded"
                     color="red"

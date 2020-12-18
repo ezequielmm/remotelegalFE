@@ -89,6 +89,7 @@ jest.mock("twilio-video", () => ({
 }));
 
 beforeEach(() => {
+    // Mocking Canvas for PDFTron
     const createElement = document.createElement.bind(document);
     document.createElement = (tagName) => {
         if (tagName === "canvas") {
@@ -132,17 +133,6 @@ test("Spinner is shown on mount", async () => {
 });
 
 test("VideoConference is shown if fetch is successful", async () => {
-    // Mocking Canvas for PDFTron
-    const createElement = document.createElement.bind(document);
-    document.createElement = (tagName) => {
-        if (tagName === "canvas") {
-            return {
-                getContext: () => ({}),
-                measureText: () => ({}),
-            };
-        }
-        return createElement(tagName);
-    };
     customDeps.apiService.joinDeposition = jest.fn().mockResolvedValue(TESTS_CONSTANTS.JOIN_DEPOSITION_MOCK);
     const { getByTestId } = renderWithGlobalContext(
         <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,
@@ -185,4 +175,43 @@ test("On the record is shown when clicking the record button", async () => {
     fireEvent.click(recordButton);
     await waitForDomChange();
     expect(getByText(TESTS_CONSTANTS.ON_PILL)).toBeInTheDocument();
+});
+
+test("End depo modal shows when clicking End Deposition button", async () => {
+    customDeps.apiService.joinDeposition = jest.fn().mockResolvedValue(TESTS_CONSTANTS.JOIN_DEPOSITION_MOCK);
+    const { getByTestId, getByText } = renderWithGlobalContext(
+        <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,
+        customDeps,
+        undefined,
+        history
+    );
+
+    history.push(TESTS_CONSTANTS.TEST_ROUTE);
+    await waitForDomChange();
+    const endButton = await waitForElement(() => getByTestId("end"));
+    fireEvent.click(endButton);
+    await waitForDomChange();
+    expect(getByText(TESTS_CONSTANTS.END_DEPO_MODAL_FIRST_TEXT)).toBeInTheDocument();
+    expect(getByText(TESTS_CONSTANTS.END_DEPO_MODAL_SECOND_TEXT)).toBeInTheDocument();
+    expect(getByText(TESTS_CONSTANTS.CANCEL_BUTTON)).toBeInTheDocument();
+    expect(getByText(TESTS_CONSTANTS.CONFIRMATION_BUTTON)).toBeInTheDocument();
+});
+
+test("Cancel button on End Depo modal closes the modal", async () => {
+    customDeps.apiService.joinDeposition = jest.fn().mockResolvedValue(TESTS_CONSTANTS.JOIN_DEPOSITION_MOCK);
+    const { getByTestId, getByText, queryByText } = renderWithGlobalContext(
+        <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,
+        customDeps,
+        undefined,
+        history
+    );
+
+    history.push(TESTS_CONSTANTS.TEST_ROUTE);
+    await waitForDomChange();
+    const endButton = await waitForElement(() => getByTestId("end"));
+    fireEvent.click(endButton);
+    await waitForDomChange();
+    fireEvent.click(getByText(TESTS_CONSTANTS.CANCEL_BUTTON));
+    expect(queryByText(TESTS_CONSTANTS.END_DEPO_MODAL_FIRST_TEXT)).toBeFalsy();
+    expect(queryByText(TESTS_CONSTANTS.END_DEPO_MODAL_SECOND_TEXT)).toBeFalsy();
 });
