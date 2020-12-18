@@ -27,16 +27,10 @@ jobs:
               if: steps.yarn-cache.outputs.cache-hit != 'true'
               run: yarn install
 
-            - name: Extract Branch Name for ENV file replacement
-              id: extract-branch-for-replacement
-              shell: bash
-              run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/tags/})"
-
             - name: Getting appropriate ENV file
-              if: endsWith(github.ref, 'uat')
               uses: canastro/copy-file-action@master
               with:
-                  source: ./env/.env.${{ steps.extract-branch-for-replacement.outputs.branch }}
+                  source: ./env/.env.uat
                   target: .env
 
             - name: Build
@@ -58,15 +52,10 @@ jobs:
             ', github.ref)
         steps:
             - uses: actions/checkout@v2
-            - name: Extract Branch Name
-              id: extract-branch
-              shell: bash
-              run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/tags/})"
-
             - name: Getting appropriate ENV file
               uses: canastro/copy-file-action@master
               with:
-                  source: ./env/.env.${{ steps.extract-branch.outputs.branch }}
+                  source: ./env/.env.uat
                   target: .env
 
             - name: Configure AWS Credentials
@@ -82,7 +71,6 @@ jobs:
                   path: ./build
 
             - name: Extract Bucket & CloudFront Distribution Id for UAT
-              if: ${{ steps.extract-branch.outputs.branch == 'uat' }}
               shell: bash
               env:
                   DIST: ${{ secrets.DISTRIBUTION_UAT }}
