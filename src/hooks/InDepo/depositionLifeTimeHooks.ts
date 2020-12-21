@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { connect, createLocalTracks, LocalDataTrack } from "twilio-video";
 import { useParams } from "react-router";
 import { GlobalStateContext } from "../../state/GlobalState";
@@ -28,6 +28,13 @@ const useGenerateToken = () => {
 export const useJoinDeposition = () => {
     const { dispatch } = useContext(GlobalStateContext);
     const [generateToken] = useGenerateToken();
+    const isMounted = useRef(true);
+    useEffect(() => {
+        return () => {
+            isMounted.current = false;
+        };
+    }, []);
+
     return useAsyncCallback(async (depositionID: string) => {
         const dataTrack = new LocalDataTrack({ maxPacketLifeTime: null, maxRetransmits: null });
         const { token, witnessEmail }: any = await generateToken(depositionID);
@@ -36,14 +43,12 @@ export const useJoinDeposition = () => {
                 return connect(token, { name: depositionID, tracks: [...localTracks, dataTrack] });
             }
         );
-
-        // Add a listener to disconnect from the room when a user closes their browser
-        window.addEventListener("beforeunload", () => {
-            disconnectFromDepo(room, dispatch);
-        });
+        if (!isMounted.current) {
+            return disconnectFromDepo(room, dispatch);
+        }
         dispatch(actions.addWitness(witnessEmail));
         dispatch(actions.addDataTrack(dataTrack));
         dispatch(actions.joinToRoom(room));
-        configParticipantListeners(room, dispatch);
+        return configParticipantListeners(room, dispatch);
     }, []);
 };

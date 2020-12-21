@@ -29,6 +29,10 @@ const InDepo = () => {
     const history = useHistory();
 
     useEffect(() => {
+        return () => disconnectFromDepo(currentRoom, dispatch);
+    }, [currentRoom, dispatch]);
+
+    useEffect(() => {
         if (depositionID) {
             joinDeposition(depositionID);
         }
