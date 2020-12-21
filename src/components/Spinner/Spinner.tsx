@@ -1,8 +1,8 @@
 import React from "react";
 import { Row, Spin } from "antd";
 
-const Spinner = () => (
-    <Row data-testid="spinner" justify="center" align="middle" style={{ height: "100vh" }}>
+const Spinner = ({ height }: { height?: string }) => (
+    <Row data-testid="spinner" justify="center" align="middle" style={{ height: height || "100vh" }}>
         <Spin size="large" />
     </Row>
 );

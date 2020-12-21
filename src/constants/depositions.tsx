@@ -11,52 +11,71 @@ export interface TableColumn {
     width: string;
 }
 
-export const getDepositionColumns = (history: History) =>
-    [
-        { title: "STATUS", field: "status", width: "11%" },
-        {
-            title: "LAW FIRM",
-            field: "company",
-            render: (text) => <strong>{text || "-"}</strong>,
-            width: "14%",
-        },
-        { title: "REQUESTED BY", field: "requester", width: "14%" },
-        { title: "CASE", field: "caseName", width: "11%" },
-        {
-            title: "DATE AND TIME",
-            field: "startDate",
-            render: ({ date, time }: { date: string; time: string }) => (
-                <div>
-                    {date} <br /> {time}
-                </div>
-            ),
-            width: "12%",
-        },
-        {
-            title: "WITNESS",
-            sorter: false,
-            field: "witness",
-            render: (text) => <strong>{text || "-"}</strong>,
-            width: "12%",
-        },
-        {
-            title: "COURT REPORTER",
-            sorter: false,
-            field: "courtReporter",
-            render: (text) => text || "-",
-            width: "12%",
-        },
-        { title: "JOB#", field: "details", render: (text) => text || "-", width: "6.5%" },
-        {
-            render: ({ id }: MappedDeposition) => (
-                <Button onClick={() => history.push(`/deposition/join/${id}`)} type="primary" size="small" width="75px">
-                    JOIN
-                </Button>
-            ),
-            sorter: false,
-            width: "6.5%",
-        },
-    ] as TableColumn[];
+export const STATUS_COLUMN = { title: "STATUS", field: "status", width: "11%" };
+export const REQUESTER_BY_COLUMN = { title: "REQUESTED BY", field: "requester", width: "14%" };
+export const LAW_COLUMN = {
+    title: "LAW FIRM",
+    field: "company",
+    render: (text) => <strong>{text || "-"}</strong>,
+    width: "14%",
+};
+export const CASE_COLUMN = { title: "CASE", field: "caseName", width: "11%" };
+export const DATE_COLUMN = {
+    title: "DATE AND TIME",
+    field: "startDate",
+    render: ({ date, time }: { date: string; time: string }) => (
+        <div>
+            {date} <br /> {time}
+        </div>
+    ),
+    width: "12%",
+};
+export const WITNESS_COLUMN = {
+    title: "WITNESS",
+    sorter: false,
+    field: "witness",
+    render: (text) => <strong>{text || "-"}</strong>,
+    width: "12%",
+};
+export const COURT_REPORTER_COLUMN = {
+    title: "COURT REPORTER",
+    sorter: false,
+    field: "courtReporter",
+    render: (text) => text || "-",
+    width: "12%",
+};
+export const JOB_COLUMN = { title: "JOB#", field: "details", render: (text) => text || "-", width: "6.5%" };
+export const getActionColumns = (history) => ({
+    render: ({ id }: MappedDeposition) => (
+        <Button onClick={() => history.push(`/deposition/join/${id}`)} type="primary" size="small" width="75px">
+            JOIN
+        </Button>
+    ),
+    sorter: false,
+    width: "6.5%",
+});
+
+export const getDepositionColumns = (history: History, isAdmin?: boolean) =>
+    (isAdmin
+        ? [
+              STATUS_COLUMN,
+              LAW_COLUMN,
+              REQUESTER_BY_COLUMN,
+              CASE_COLUMN,
+              DATE_COLUMN,
+              WITNESS_COLUMN,
+              COURT_REPORTER_COLUMN,
+              JOB_COLUMN,
+              getActionColumns(history),
+          ]
+        : [
+              STATUS_COLUMN,
+              CASE_COLUMN,
+              WITNESS_COLUMN,
+              DATE_COLUMN,
+              JOB_COLUMN,
+              getActionColumns(history),
+          ]) as TableColumn[];
 
 export const EMPTY_STATE_TITLE = "No depositions added yet";
 export const EMPTY_STATE_TEXT = "Currently, you don't have any deposition added yet. Do you want to add a deposition?";

@@ -41,6 +41,10 @@ export class ApiService {
         return this.tokenSet.accessToken;
     };
 
+    currentUser = async (): Promise<UserModel.IUser> => {
+        return this.request<UserModel.IUser>({ path: "/api/Users/currentUser" });
+    };
+
     fetchCases = async (payload): Promise<CaseModel.ICase[]> => {
         return this.request<CaseModel.ICase[]>({ path: "/api/Cases", payload }).then(
             (cases: CaseModel.ICase[]) => cases || []

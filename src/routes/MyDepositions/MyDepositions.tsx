@@ -6,10 +6,12 @@ import Button from "../../components/Button";
 import CardFetchError from "../../components/CardFetchError";
 import CardResult from "../../components/CardResult/CardResult";
 import { CustomStatus } from "../../components/Result/Result";
+import Spinner from "../../components/Spinner";
 import Table from "../../components/Table";
 import Title from "../../components/Typography/Title";
 import * as CONSTANTS from "../../constants/depositions";
 import { useFetchDepositions } from "../../hooks/depositions/hooks";
+import { useUserIsAdmin } from "../../hooks/users/hooks";
 import { DepositionStatus } from "../../models/deposition";
 import { Roles } from "../../models/participant";
 
@@ -35,6 +37,12 @@ const parseDate = ({ startDate, endDate }): { date: string; time: string } => {
 
 const MyDepositions = () => {
     const { handleListChange, sortedField, sortDirection, error, data, loading, refreshList } = useFetchDepositions();
+    const [checkIfUserIsAdmin, loadingUserIsAdmin, errorUserIsAdmin, userIsAdmin] = useUserIsAdmin();
+
+    React.useEffect(() => {
+        checkIfUserIsAdmin();
+    }, [checkIfUserIsAdmin]);
+
     const mappedDepositions = React.useMemo(
         () =>
             data?.map(({ id, details, status, requester, witness, participants, ...depositions }) => {
@@ -58,7 +66,7 @@ const MyDepositions = () => {
 
     const depositionColumns = React.useMemo(
         () =>
-            CONSTANTS.getDepositionColumns(history).map(
+            CONSTANTS.getDepositionColumns(history, userIsAdmin).map(
                 ({ sorter = true, field, ...column }: CONSTANTS.TableColumn) => ({
                     dataIndex: field,
                     sortOrder: sortedField === field && sortDirection,
@@ -66,31 +74,35 @@ const MyDepositions = () => {
                     ...column,
                 })
             ),
-        [history, sortedField, sortDirection]
+        [userIsAdmin, history, sortedField, sortDirection]
     );
 
     return (
         <>
-            {!error && (mappedDepositions === undefined || mappedDepositions?.length > 0) && (
-                <Space direction="vertical" size="large" style={{ width: "100%" }}>
-                    <Row justify="space-between">
-                        <Title level={4} noMargin weight="light">
-                            My Depositions
-                        </Title>
-                    </Row>
+            {!loadingUserIsAdmin &&
+                !error &&
+                !errorUserIsAdmin &&
+                (mappedDepositions === undefined || mappedDepositions?.length > 0) && (
+                    <Space direction="vertical" size="large" style={{ width: "100%" }}>
+                        <Row justify="space-between">
+                            <Title level={4} noMargin weight="light">
+                                My Depositions
+                            </Title>
+                        </Row>
 
-                    <Table
-                        rowKey="id"
-                        loading={loading}
-                        dataSource={mappedDepositions || []}
-                        columns={depositionColumns}
-                        onChange={handleListChange}
-                        sortDirections={["descend", "ascend"]}
-                        pagination={false}
-                    />
-                </Space>
-            )}
-            {error && <CardFetchError onClick={refreshList} />}
+                        <Table
+                            rowKey="id"
+                            loading={loading}
+                            dataSource={mappedDepositions || []}
+                            columns={depositionColumns}
+                            onChange={handleListChange}
+                            sortDirections={["descend", "ascend"]}
+                            pagination={false}
+                        />
+                    </Space>
+                )}
+            {loadingUserIsAdmin && <Spinner height="100%" />}
+            {(error || errorUserIsAdmin) && <CardFetchError onClick={refreshList} />}
             {!error && mappedDepositions?.length === 0 && (
                 <CardResult
                     title={CONSTANTS.EMPTY_STATE_TITLE}

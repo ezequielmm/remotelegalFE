@@ -16,4 +16,16 @@ export const getUser1 = () => ({
     lastName: "Last",
     password: "pass1234",
     phoneNumber: "3333333333",
+    isAdmin: true,
+});
+
+export const getUserNotAdmin = () => ({
+    id: "adfe3315-c9d6-4691-9a61-08d886951bc0",
+    creationDate: "2020-11-12T12:36:31",
+    emailAddress: "email2@address.com",
+    firstName: "First",
+    lastName: "Last",
+    password: "pass1234",
+    phoneNumber: "3333333333",
+    isAdmin: false,
 });

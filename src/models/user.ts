@@ -9,4 +9,5 @@ export interface IUser {
     companyName?: string;
     phoneNumber?: string;
     creationDate?: DateLike;
+    isAdmin?: boolean;
 }

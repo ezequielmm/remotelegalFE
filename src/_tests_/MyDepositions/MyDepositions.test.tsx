@@ -1,14 +1,15 @@
 import { fireEvent, waitForDomChange, waitForElement } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { createMemoryHistory } from "history";
 import React from "react";
+import * as COMPONENTS_CONSTANTS from "../../constants/depositions";
+import * as ERRORS_CONSTANTS from "../../constants/errors";
 import MyDepositions from "../../routes/MyDepositions";
 import * as CONSTANTS from "../constants/depositions";
-import * as ERRORS_CONSTANTS from "../../constants/errors";
-import * as COMPONENTS_CONSTANTS from "../../constants/depositions";
+import * as SIGN_UP_CONSTANTS from "../constants/signUp";
 import * as AUTH from "../mocks/Auth";
-import renderWithGlobalContext from "../utils/renderWithGlobalContext";
-import { createMemoryHistory } from "history";
 import getMockDeps from "../utils/getMockDeps";
+import renderWithGlobalContext from "../utils/renderWithGlobalContext";
 
 const customDeps = getMockDeps();
 const history = createMemoryHistory();
@@ -60,6 +61,39 @@ describe("MyDepositions", () => {
             sortDirection: "ascend",
             sortedField: field,
         });
+    });
+
+    it("shows corresponding columns if user is not admin", async () => {
+        customDeps.apiService.currentUser = jest.fn().mockResolvedValue(SIGN_UP_CONSTANTS.getUserNotAdmin());
+
+        const { queryByText } = renderWithGlobalContext(<MyDepositions />, customDeps);
+
+        await waitForDomChange();
+
+        expect(queryByText(COMPONENTS_CONSTANTS.STATUS_COLUMN.title)).toBeTruthy();
+        expect(queryByText(COMPONENTS_CONSTANTS.CASE_COLUMN.title)).toBeTruthy();
+        expect(queryByText(COMPONENTS_CONSTANTS.WITNESS_COLUMN.title)).toBeTruthy();
+        expect(queryByText(COMPONENTS_CONSTANTS.DATE_COLUMN.title)).toBeTruthy();
+        expect(queryByText(COMPONENTS_CONSTANTS.JOB_COLUMN.title)).toBeTruthy();
+
+        expect(queryByText(COMPONENTS_CONSTANTS.LAW_COLUMN.title)).toBeFalsy();
+        expect(queryByText(COMPONENTS_CONSTANTS.REQUESTER_BY_COLUMN.title)).toBeFalsy();
+        expect(queryByText(COMPONENTS_CONSTANTS.COURT_REPORTER_COLUMN.title)).toBeFalsy();
+
+        COMPONENTS_CONSTANTS.getDepositionColumns(undefined, false);
+    });
+
+    it("shows error and try again button when get an error getting if user is admin", async () => {
+        customDeps.apiService.currentUser = jest.fn().mockRejectedValue("Error");
+
+        const { getByText, getByTestId } = renderWithGlobalContext(<MyDepositions />, customDeps);
+
+        await waitForElement(() => getByText(ERRORS_CONSTANTS.FETCH_ERROR_MODAL_TITLE));
+        const refreshButton = getByTestId("error_modal_button");
+        expect(customDeps.apiService.fetchDepositions).toHaveBeenCalledWith({});
+        fireEvent.click(refreshButton);
+        await waitForDomChange();
+        expect(customDeps.apiService.fetchDepositions).toHaveBeenCalledWith({});
     });
 
     it("shows error and try again button when get an error on fetch", async () => {
