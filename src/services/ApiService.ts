@@ -127,6 +127,14 @@ export class ApiService {
         });
     };
 
+    fetchDepositionsFiles = async ({ depositionID }): Promise<boolean> => {
+        return this.request<boolean>({
+            path: `/api/Depositions/${depositionID}/exhibits`,
+            withToken: true,
+            method: HTTP_METHOD.GET,
+        });
+    };
+
     private request = async <T>({
         path,
         payload = {},

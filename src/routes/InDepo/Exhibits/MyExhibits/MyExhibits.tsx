@@ -4,10 +4,15 @@ import Result from "../../../../components/Result";
 import { CustomStatus } from "../../../../components/Result/Result";
 import Text from "../../../../components/Typography/Text";
 import { MY_EXHIBITS_RESULT_SUBTITLE, MY_EXHIBITS_RESULT_TITLE } from "../../../../constants/exhibits";
-import { ExhibitTabPaneSpacer, UploadFilesContainer } from "../styles";
+import { ExhibitTabPaneSpacer } from "../styles";
 import { theme } from "../../../../constants/styles/theme";
+import { useParams } from "react-router-dom";
+import { useUploadFile } from "../../../../hooks/exhibits/hooks";
+import UploadButton from "./UploadButton";
 
 export default function MyExhibits() {
+    const { depositionID } = useParams<{ depositionID: string }>();
+    const { upload } = useUploadFile(depositionID);
     return (
         <ExhibitTabPaneSpacer direction="vertical" size="large">
             <Space size="middle">
@@ -16,7 +21,7 @@ export default function MyExhibits() {
                 </Text>
                 <Badge count={5} />
             </Space>
-            <UploadFilesContainer>UPLOAD FILES</UploadFilesContainer>
+            <UploadButton onUpload={upload} />
             <Row justify="center" align="middle" style={{ height: "100%" }}>
                 <Result
                     title={MY_EXHIBITS_RESULT_TITLE}
