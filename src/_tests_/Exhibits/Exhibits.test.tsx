@@ -9,9 +9,10 @@ import Exhibits from "../../routes/InDepo/Exhibits";
 import { ExhibitTabData } from "../../routes/InDepo/Exhibits/ExhibitTabs/ExhibitTabs";
 import MyExhibits from "../../routes/InDepo/Exhibits/MyExhibits";
 import renderWithGlobalContext from "../utils/renderWithGlobalContext";
-import { useUploadFile } from "../../hooks/exhibits/hooks";
+import { useUploadFile, useFileList } from "../../hooks/exhibits/hooks";
 jest.mock("../../hooks/exhibits/hooks", () => ({
     useUploadFile: jest.fn(),
+    useFileList: jest.fn(),
 }));
 
 jest.mock("react-router-dom", () => ({
@@ -21,16 +22,23 @@ jest.mock("react-router-dom", () => ({
     }),
 }));
 
+beforeEach(() => {
+    useUploadFile.mockImplementation(() => ({
+        upload: jest.fn(),
+    }));
+    useFileList.mockImplementation(() => ({
+        handleFetchFiles: jest.fn(),
+        loading: false,
+        errorFetchFiles: false,
+        files: [],
+        refreshList: jest.fn(),
+    }));
+});
+
 describe("Exhibits", () => {
     it.each(CONSTANTS.EXHIBIT_TABS_DATA.map((tab) => [tab.title, tab]))(
         "should have %s tab active only if it's the default tab",
         async (title, { tabId, tabTestId }: ExhibitTabData) => {
-            useUploadFile.mockImplementation(() => ({
-                upload: jest.fn(),
-                progress: 0,
-                error: false,
-                status: "initial",
-            }));
             const { queryByTestId } = renderWithGlobalContext(
                 <ThemeProvider theme={theme}>
                     <Exhibits onClick={() => {}} visible />
@@ -48,12 +56,6 @@ describe("Exhibits", () => {
     it.each(CONSTANTS.EXHIBIT_TABS_DATA.map((tab) => [tab.title, tab]))(
         "should have %s tab with active color when click on it",
         async (title, { tabTestId }: ExhibitTabData) => {
-            useUploadFile.mockImplementation(() => ({
-                upload: jest.fn(),
-                progress: 0,
-                error: false,
-                status: "initial",
-            }));
             const { getByTestId } = renderWithGlobalContext(
                 <ThemeProvider theme={theme}>
                     <Exhibits onClick={() => {}} visible />
@@ -69,12 +71,6 @@ describe("Exhibits", () => {
     it.each(CONSTANTS.EXHIBIT_TABS_DATA.map((tab) => [tab.title, tab]))(
         "should open %s tTabPane when click on its Tab",
         async (title, { tabTestId, tabPaneTestId }: ExhibitTabData) => {
-            useUploadFile.mockImplementation(() => ({
-                upload: jest.fn(),
-                progress: 0,
-                error: false,
-                status: "initial",
-            }));
             const { getByTestId } = renderWithGlobalContext(
                 <ThemeProvider theme={theme}>
                     <Exhibits onClick={() => {}} visible />
@@ -90,9 +86,6 @@ describe("Exhibits", () => {
     it("The progress bar should be not displayed by default", async () => {
         useUploadFile.mockImplementation(() => ({
             upload: jest.fn(),
-            progress: 0,
-            error: false,
-            status: "initial",
         }));
         const { queryByTestId } = renderWithGlobalContext(
             <ThemeProvider theme={theme}>
@@ -101,5 +94,57 @@ describe("Exhibits", () => {
         );
         const progressBar = queryByTestId("progress-bar");
         expect(progressBar).not.toBeInTheDocument();
+    });
+    it("should display the file list when has more than one file in the list", async () => {
+        useFileList.mockImplementation(() => ({
+            files: [{ name: "fileName"}]
+        }));
+        const { queryByTestId } = renderWithGlobalContext(
+            <ThemeProvider theme={theme}>
+                <MyExhibits />
+            </ThemeProvider>
+        );
+        const fileListTable = queryByTestId("file-list-table");
+        expect(fileListTable).toBeInTheDocument();
+    });
+    it("should not display the file list when has zero file in the list", async () => {
+        useFileList.mockImplementation(() => ({
+            files: []
+        }));
+        const { queryByTestId } = renderWithGlobalContext(
+            <ThemeProvider theme={theme}>
+                <MyExhibits />
+            </ThemeProvider>
+        );
+        const fileListTable = queryByTestId("file-list-table");
+        expect(fileListTable).not.toBeInTheDocument();
+    });
+    it("should not display the empty state component when has more than file in the list", async () => {
+        useFileList.mockImplementation(() => ({
+            files: [{ name: "fileName"}]
+        }));
+        const { queryByTestId, queryByText } = renderWithGlobalContext(
+            <ThemeProvider theme={theme}>
+                <MyExhibits />
+            </ThemeProvider>
+        );
+        const fileListTable = queryByTestId("file-list-table");
+        const noExhibitComponent = queryByText("No exhibits added yet");
+        expect(fileListTable).toBeInTheDocument();
+        expect(noExhibitComponent).not.toBeInTheDocument();
+    });
+    it("should not display the empty state component when has zero file in the list", async () => {
+        useFileList.mockImplementation(() => ({
+            files: []
+        }));
+        const { queryByTestId, queryByText } = renderWithGlobalContext(
+            <ThemeProvider theme={theme}>
+                <MyExhibits />
+            </ThemeProvider>
+        );
+        const fileListTable = queryByTestId("file-list-table");
+        const noExhibitComponent = queryByText("No exhibits added yet");
+        expect(fileListTable).not.toBeInTheDocument();
+        expect(noExhibitComponent).toBeInTheDocument();
     });
 });

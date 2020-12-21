@@ -31,3 +31,7 @@ export const StyledDragger = styled(Dragger)`
         background: none;
     }
 `;
+
+export const StyledUploadButtonContainer = styled.div`
+    z-index: 1;
+`;

@@ -1,6 +1,7 @@
 import React, { ReactElement } from "react";
 import Text from "../Typography/Text";
 import Icon from "../Icon";
+import Button from "../Button";
 import { ReactComponent as attachIcon } from "../../assets/icons/attach-clip.svg";
 import { ReactComponent as closeIcon } from "../../assets/icons/close.svg";
 import { StyledProgressBarHeader, StyledProgressBar, StyledProgressBarContainer } from "./styles";
@@ -35,13 +36,14 @@ export default function ProgressBar({
                     trailColor={theme.default.secondary}
                 />
                 {hasError && (
-                    <Icon
-                        data-testid="progress-bar-close-icon"
-                        onClick={onClose}
-                        icon={closeIcon}
-                        style={{ fontSize: "16px" }}
-                        className="close-icon"
-                    />
+                    <Button type="link" onClick={onClose}>
+                        <Icon
+                            data-testid="progress-bar-close-icon"
+                            icon={closeIcon}
+                            style={{ fontSize: "16px" }}
+                            className="close-icon"
+                        />
+                    </Button>
                 )}
             </StyledProgressBarContainer>
         </>
