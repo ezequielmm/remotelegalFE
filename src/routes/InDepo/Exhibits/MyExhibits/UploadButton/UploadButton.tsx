@@ -1,9 +1,10 @@
 import React, { ReactElement, useState } from "react";
-import { StyledDragger, StyledUploadButtonContainer } from "../../styles";
-import Icon from "../../../../../components/Icon";
-import { ReactComponent as uploadIcon } from "../../../../../assets/in-depo/upload.svg";
 import { RcCustomRequestOptions } from "antd/lib/upload/interface";
 import { Space } from "antd";
+import { StyledUploadButtonContainer } from "../../styles";
+import Icon from "../../../../../components/Icon";
+import Dragger from "../../../../../components/Dragger";
+import { ReactComponent as uploadIcon } from "../../../../../assets/icons/upload-cloud.svg";
 import ProgressBarRender from "./ProgressBarRender";
 
 export type IUploadStatus = "success" | "pending" | "fail" | "initial";
@@ -16,18 +17,18 @@ export default function UploadButton({ onUpload, onUploadCompleted }: IUploadBut
     const [disabled, setDisabled] = useState(false);
     return (
         <StyledUploadButtonContainer>
-            <StyledDragger
+            <Dragger
                 id="fileUpload"
-                multiple={true}
+                multiple
                 data-testid="upload-button"
                 disabled={disabled}
                 name="file"
                 customRequest={onUpload}
                 onChange={({ file }) => {
                     if (file.status === "done") {
-                        onUploadCompleted()
+                        onUploadCompleted();
                     }
-                    setDisabled(file.status === "uploading")
+                    setDisabled(file.status === "uploading");
                 }}
                 progress={{ strokeWidth: 8, showInfo: false, className: "progress" }}
                 itemRender={(n, f, fl) => (
@@ -35,10 +36,10 @@ export default function UploadButton({ onUpload, onUploadCompleted }: IUploadBut
                 )}
             >
                 <Space size="middle">
-                    <Icon icon={uploadIcon} style={{ fontSize: "24px" }} />
+                    <Icon icon={uploadIcon} style={{ fontSize: "2.6rem" }} />
                     <label>UPLOAD FILES</label>
                 </Space>
-            </StyledDragger>
+            </Dragger>
         </StyledUploadButtonContainer>
     );
 }

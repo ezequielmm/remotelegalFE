@@ -1,29 +1,20 @@
 import { Progress } from "antd";
 import styled from "styled-components";
-
-export const StyledProgressBarHeader = styled.div`
-    display: flex;
-    align-items: center;
-    padding: 10px 0 2px 0;
-    gap: 5px;
-    svg {
-        fill: ${({ theme }) => theme.default.whiteColor};
-    }
-`;
+import { getPX, getREM } from "../../constants/styles/utils";
 
 export const StyledProgressBar = styled(Progress)`
+    margin-right: ${({ theme }) => getREM(theme.default.spaces[3] * 0.75)};
     .ant-progress-status-active .ant-progress-bg {
-        background-color: "#8A9A0E";
+        background-color: ${({ theme }) => theme.default.successColor};
     }
 `;
 
 export const StyledProgressBarContainer = styled.div`
     display: flex;
     align-items: center;
-    gap: 5px;
-    .close-icon {
-        svg {
-            fill: ${({ theme }) => theme.default.whiteColor};
-        }
-    }
+    margin-top: ${({ theme }) => getPX(-theme.default.spaces[0])};
+`;
+
+export const StyledComponentContainer = styled.div`
+    padding-top: ${({ theme }) => getREM(theme.default.spaces[3] * 0.75)};
 `;

@@ -1,10 +1,11 @@
 import React, { ReactElement } from "react";
+import { Space } from "antd";
 import Text from "../Typography/Text";
 import Icon from "../Icon";
 import Button from "../Button";
 import { ReactComponent as attachIcon } from "../../assets/icons/attach-clip.svg";
 import { ReactComponent as closeIcon } from "../../assets/icons/close.svg";
-import { StyledProgressBarHeader, StyledProgressBar, StyledProgressBarContainer } from "./styles";
+import { StyledProgressBar, StyledComponentContainer, StyledProgressBarContainer } from "./styles";
 import { theme } from "../../constants/styles/theme";
 
 interface IProgressBar {
@@ -21,11 +22,13 @@ export default function ProgressBar({
     onClose,
 }: IProgressBar): ReactElement {
     return (
-        <>
-            <StyledProgressBarHeader>
-                <Icon icon={attachIcon} style={{ fontSize: "16px" }} />
-                <Text state="primary">{statusText}</Text>
-            </StyledProgressBarHeader>
+        <StyledComponentContainer>
+            <Text state="white" size="small">
+                <Space>
+                    <Icon icon={attachIcon} style={{ fontSize: "16px" }} />
+                    {statusText}
+                </Space>
+            </Text>
             <StyledProgressBarContainer>
                 <StyledProgressBar
                     data-testId="progress-bar"
@@ -37,15 +40,12 @@ export default function ProgressBar({
                 />
                 {hasError && (
                     <Button type="link" onClick={onClose}>
-                        <Icon
-                            data-testid="progress-bar-close-icon"
-                            icon={closeIcon}
-                            style={{ fontSize: "16px" }}
-                            className="close-icon"
-                        />
+                        <Text state="white">
+                            <Icon data-testid="progress-bar-close-icon" icon={closeIcon} style={{ fontSize: "12px" }} />
+                        </Text>
                     </Button>
                 )}
             </StyledProgressBarContainer>
-        </>
+        </StyledComponentContainer>
     );
 }
