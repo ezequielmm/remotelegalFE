@@ -15,7 +15,7 @@ const UploadService = async (
 
     const session = await Auth.currentSession();
     const jwt = session.getIdToken().getJwtToken();
-    
+
     request.setRequestHeader("Authorization", `Bearer ${jwt}`);
     request.upload.addEventListener("progress", onUploadProgress);
     request.addEventListener("load", () => {

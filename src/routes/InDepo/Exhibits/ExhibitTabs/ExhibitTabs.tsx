@@ -60,7 +60,7 @@ export default function ExhibitTabs({
                             <Text uppercase state={highlight && !active ? "primary" : "white"} size="small">
                                 <Space size="small">
                                     {icon && (
-                                        <Icon icon={icon} style={{ fontSize: getREM(theme.default.fontSizes[7]) }} />
+                                        <Icon icon={icon} style={{ fontSize: getREM(theme.default.fontSizes[4]) }} />
                                     )}
                                     {` ${title}`}
                                 </Space>

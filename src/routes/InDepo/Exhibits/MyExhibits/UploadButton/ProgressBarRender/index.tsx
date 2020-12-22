@@ -1,1 +1,1 @@
-export { default } from "./ProgressBarRender"
+export { default } from "./ProgressBarRender";

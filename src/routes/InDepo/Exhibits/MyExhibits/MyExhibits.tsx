@@ -1,9 +1,12 @@
 import React from "react";
-import { Space, Row, Badge } from "antd";
+import { Space, Row, Badge, Col } from "antd";
 import Result from "../../../../components/Result";
+import Icon from "../../../../components/Icon";
 import { CustomStatus } from "../../../../components/Result/Result";
 import Text from "../../../../components/Typography/Text";
 import { MY_EXHIBITS_RESULT_SUBTITLE, MY_EXHIBITS_RESULT_TITLE } from "../../../../constants/exhibits";
+
+import { ReactComponent as MyExhibitsIcon } from "../../../../assets/icons/MyExhibits-empty.svg";
 import { ExhibitTabPaneSpacer } from "../styles";
 import { theme } from "../../../../constants/styles/theme";
 import { useParams } from "react-router-dom";
@@ -37,13 +40,16 @@ export default function MyExhibits() {
             )}
             {(files?.length === 0 || errorFetchFiles) && (
                 <Row justify="center" align="middle" style={{ height: "100%" }}>
-                    <Result
-                        title={MY_EXHIBITS_RESULT_TITLE}
-                        subTitle={MY_EXHIBITS_RESULT_SUBTITLE}
-                        status={CustomStatus.empty}
-                        titleColor={theme.default.primaryColor}
-                        subTitleColor={theme.default.whiteColor}
-                    />
+                    <Col sm={18} lg={14} xl={13} xxl={9}>
+                        <Result
+                            icon={<Icon icon={MyExhibitsIcon} style={{ fontSize: "6rem" }} />}
+                            title={MY_EXHIBITS_RESULT_TITLE}
+                            subTitle={MY_EXHIBITS_RESULT_SUBTITLE}
+                            status={CustomStatus.empty}
+                            titleColor={theme.default.primaryColor}
+                            subTitleColor={theme.default.whiteColor}
+                        />
+                    </Col>
                 </Row>
             )}
         </ExhibitTabPaneSpacer>

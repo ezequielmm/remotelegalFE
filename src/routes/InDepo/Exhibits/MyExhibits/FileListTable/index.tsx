@@ -1,1 +1,1 @@
-export { default } from "./FileListTable"
+export { default } from "./FileListTable";

@@ -36,6 +36,7 @@ export const ExhibitTabContainer = styled(ExhibitTabContainerWithProps).attrs((p
 }))`
     display: flex;
     flex: 1 0 0;
+    cursor: pointer;
     border-radius: ${({ theme }) => getPX(theme.default.borderRadiusBase, theme.default.baseUnit)};
     ${({ active, highlight, theme }) => {
         return (
