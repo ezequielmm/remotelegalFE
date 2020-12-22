@@ -6,6 +6,7 @@ import Icon from "../../../../../components/Icon";
 import Dragger from "../../../../../components/Dragger";
 import { ReactComponent as uploadIcon } from "../../../../../assets/icons/upload-cloud.svg";
 import ProgressBarRender from "./ProgressBarRender";
+import { MY_EXHIBITS_ALLOWED_FILE_TYPES } from "../../../../../constants/exhibits"
 
 export type IUploadStatus = "success" | "pending" | "fail" | "initial";
 interface IUploadButton {
@@ -19,6 +20,7 @@ export default function UploadButton({ onUpload, onUploadCompleted }: IUploadBut
         <StyledUploadButtonContainer>
             <Dragger
                 id="fileUpload"
+                accept={MY_EXHIBITS_ALLOWED_FILE_TYPES}
                 multiple
                 data-testid="upload-button"
                 disabled={disabled}

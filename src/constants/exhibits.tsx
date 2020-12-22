@@ -44,6 +44,7 @@ export const MY_EXHIBITS_RESULT_TITLE = "No exhibits added yet";
 export const MY_EXHIBITS_RESULT_SUBTITLE = "Start adding the exhibits that you will be using for this deposition.";
 export const MY_EXHIBITS_UPLOAD_TEXT = "Uploading file...";
 export const MY_EXHIBITS_UPLOAD_ERROR_TEXT = "Failed to upload";
+export const MY_EXHIBITS_ALLOWED_FILE_TYPES = ".pdf, .doc, .xls, .ppt, .pptx, .jpg, .png, .mp4";
 
 export const ENTERED_EXHIBITS_TITLE = "No exhibits added yet";
 export const ENTERED_EXHIBITS_SUBTITLE = "Once someone enters an exhibit to this deposition, we will show it here";
