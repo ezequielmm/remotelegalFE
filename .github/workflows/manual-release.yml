@@ -1,14 +1,14 @@
-name: Deploy to UAT
+name: Manual Deployment
 
-on:
-    release:
-        types: [created]
-        branches:
-            - uat
+on: [workflow_dispatch]
 
 jobs:
     build-test:
         runs-on: ubuntu-latest
+        if: contains('
+            refs/heads/uat
+            refs/heads/prod
+            ', github.ref)
         steps:
             - uses: actions/checkout@v2
             - name: Cache node modules
@@ -27,10 +27,16 @@ jobs:
               if: steps.yarn-cache.outputs.cache-hit != 'true'
               run: yarn install
 
+            - name: Extract Branch Name for ENV file replacement
+              id: extract-branch-for-replacement
+              shell: bash
+              run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"              
+
             - name: Getting appropriate ENV file
+              if: endsWith(github.ref, 'uat') || endsWith(github.ref, 'prod')
               uses: canastro/copy-file-action@master
               with:
-                  source: ./env/.env.uat
+                  source: ./env/.env.${{ steps.extract-branch-for-replacement.outputs.branch }}
                   target: .env
 
             - name: Build
@@ -45,17 +51,22 @@ jobs:
 
     pack-deploy:
         runs-on: ubuntu-latest
-        needs: [build-test]
         if: contains('
-            refs/tags/uat
             refs/heads/uat
-            ', github.ref)
+            refs/heads/prod
+            ', github.ref)        
+        needs: [build-test]
         steps:
             - uses: actions/checkout@v2
+            - name: Extract Branch Name
+              id: extract-branch
+              shell: bash
+              run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+            
             - name: Getting appropriate ENV file
               uses: canastro/copy-file-action@master
               with:
-                  source: ./env/.env.uat
+                  source: ./env/.env.${{ steps.extract-branch.outputs.branch }}
                   target: .env
 
             - name: Configure AWS Credentials
@@ -71,12 +82,21 @@ jobs:
                   path: ./build
 
             - name: Extract Bucket & CloudFront Distribution Id for UAT
+              if: ${{ steps.extract-branch.outputs.branch == 'uat' }}
               shell: bash
               env:
                   DIST: ${{ secrets.DISTRIBUTION_UAT }}
               run: |
                   echo "DISTRIBUTION=$DIST" >> $GITHUB_ENV
                   echo "BUCKET=prp-fe-uat" >> $GITHUB_ENV
+            - name: Extract Bucket & CloudFront Distribution Id for PROD
+              if: ${{ steps.extract-branch.outputs.branch == 'prod' }}
+              shell: bash
+              env:
+                  DIST: ${{ secrets.DISTRIBUTION_PROD }}
+              run: |
+                  echo "DISTRIBUTION=$DIST" >> $GITHUB_ENV
+                  echo "BUCKET=prp-fe-uat" >> $GITHUB_ENV                  
             - name: Upload publish to S3
               run: |
                   aws s3 sync ./build s3://$BUCKET --delete
