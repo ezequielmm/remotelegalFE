@@ -5,7 +5,7 @@ const UploadService = async (
     fileName: string,
     onUploadProgress: (ev: ProgressEvent) => void,
     onComplete: () => void,
-    onError: () => void
+    onError: (Error?: string[]) => void
 ) => {
     const formData = new FormData();
     formData.append("file", fileName);
@@ -24,7 +24,13 @@ const UploadService = async (
             return onComplete();
         }
         if (statusFirstDigit === "4" || statusFirstDigit === "5") {
-            return onError();
+            try {
+                const errorResponses = JSON.parse(request.response);
+                const errors = errorResponses.map((error) => error.message);
+                return onError(errors);
+            } catch (error) {
+                onError();
+            }
         }
     });
     request.send(formData);

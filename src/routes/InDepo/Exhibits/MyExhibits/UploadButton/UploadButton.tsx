@@ -6,7 +6,7 @@ import Icon from "../../../../../components/Icon";
 import Dragger from "../../../../../components/Dragger";
 import { ReactComponent as uploadIcon } from "../../../../../assets/icons/upload-cloud.svg";
 import ProgressBarRender from "./ProgressBarRender";
-import { MY_EXHIBITS_ALLOWED_FILE_TYPES } from "../../../../../constants/exhibits"
+import { MY_EXHIBITS_ALLOWED_FILE_TYPES } from "../../../../../constants/exhibits";
 
 export type IUploadStatus = "success" | "pending" | "fail" | "initial";
 interface IUploadButton {
@@ -34,7 +34,11 @@ export default function UploadButton({ onUpload, onUploadCompleted }: IUploadBut
                 }}
                 progress={{ strokeWidth: 8, showInfo: false, className: "progress" }}
                 itemRender={(n, f, fl) => (
-                    <ProgressBarRender error={f.status === "error"} percent={f.percent} status={f.status} />
+                    <ProgressBarRender
+                        errors={f?.error}
+                        percent={f.percent}
+                        status={f.status}
+                    />
                 )}
             >
                 <Space size="middle">
