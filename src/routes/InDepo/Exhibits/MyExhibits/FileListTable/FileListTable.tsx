@@ -6,8 +6,9 @@ import Button from "../../../../../components/Button";
 import { ReactComponent as kebebIcon } from "../../../../../assets/icons/kebeb.svg";
 import Icon from "../../../../../components/Icon";
 import FileIcon from "../FileIcon";
-import { StyledFileListTable } from "./styles";
 import { formatBytes } from "../../../../../helpers/formatBytes";
+import Table from "../../../../../components/Table";
+import { theme } from "../../../../../constants/styles/theme";
 
 const menu = (
     <Menu>
@@ -37,12 +38,13 @@ const columns = [
             const fileExtension = name.split(".").pop();
             return <FileIcon type={fileExtension} />;
         },
+        sorter: (a, b) => a.displayName.localeCompare(b.displayName),
+        width: theme.default.spaces[5],
     },
     {
         title: "",
         dataIndex: "displayName",
         key: "displayName",
-        sorter: (a, b) => a.displayName.localeCompare(b.displayName),
     },
     {
         title: "FILE SIZE",
@@ -54,13 +56,23 @@ const columns = [
         title: "",
         dataIndex: "view",
         key: "view",
-        render: () => <Button type="text">View</Button>,
+        render: () => (
+            <Button type="text" size="small">
+                View
+            </Button>
+        ),
+        width: theme.default.spaces[11],
     },
     {
         title: "",
         dataIndex: "share",
         key: "share",
-        render: () => <Button type="link">Share</Button>,
+        render: () => (
+            <Button type="ghost" size="small">
+                Share
+            </Button>
+        ),
+        width: theme.default.spaces[11],
     },
     {
         title: "",
@@ -71,8 +83,9 @@ const columns = [
                 <Icon icon={kebebIcon} style={{ fontSize: "24px" }} />
             </Dropdown>
         ),
+        width: theme.default.spaces[5],
     },
 ];
 
-const FileListTable = (props: TableProps<DefaultRecordType>) => <StyledFileListTable columns={columns} {...props} />;
+const FileListTable = (props: TableProps<DefaultRecordType>) => <Table columns={columns} {...props} />;
 export default FileListTable;

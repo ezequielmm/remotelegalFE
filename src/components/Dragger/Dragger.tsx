@@ -14,6 +14,7 @@ const StyledDragger = styled(Dragger)`
                   align-items: center;
                   justify-content: center;
                   border: dashed 1px ${primary[5]};
+                  height: unset;
                   .anticon {
                     color: ${primary[5]};
                   }

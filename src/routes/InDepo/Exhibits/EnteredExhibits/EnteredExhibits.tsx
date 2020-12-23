@@ -1,7 +1,8 @@
 import React from "react";
-import { Space, Row, Badge, Col } from "antd";
+import { Space, Row, Col } from "antd";
 import Result from "../../../../components/Result";
 import Icon from "../../../../components/Icon";
+import Badge from "../../../../components/Badge";
 import { CustomStatus } from "../../../../components/Result/Result";
 import Text from "../../../../components/Typography/Text";
 import { ENTERED_EXHIBITS_SUBTITLE, ENTERED_EXHIBITS_TITLE } from "../../../../constants/exhibits";

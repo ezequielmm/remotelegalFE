@@ -1,18 +1,19 @@
 import React from "react";
-import { Space, Row, Badge, Col } from "antd";
-import Result from "../../../../components/Result";
-import Icon from "../../../../components/Icon";
-import { CustomStatus } from "../../../../components/Result/Result";
-import Text from "../../../../components/Typography/Text";
-import { MY_EXHIBITS_RESULT_SUBTITLE, MY_EXHIBITS_RESULT_TITLE } from "../../../../constants/exhibits";
-
-import { ReactComponent as MyExhibitsIcon } from "../../../../assets/icons/MyExhibits-empty.svg";
-import { ExhibitTabPaneSpacer } from "../styles";
-import { theme } from "../../../../constants/styles/theme";
+import { Space, Row, Col } from "antd";
 import { useParams } from "react-router-dom";
 import { useFileList, useUploadFile } from "../../../../hooks/exhibits/hooks";
+import { MY_EXHIBITS_RESULT_SUBTITLE, MY_EXHIBITS_RESULT_TITLE } from "../../../../constants/exhibits";
+import Result from "../../../../components/Result";
+import { CustomStatus } from "../../../../components/Result/Result";
+import Icon from "../../../../components/Icon";
+import { ReactComponent as MyExhibitsIcon } from "../../../../assets/icons/MyExhibits-empty.svg";
+import Text from "../../../../components/Typography/Text";
+import Badge from "../../../../components/Badge";
+
+import { ExhibitTabPaneSpacer, ScrollTableContainer } from "../styles";
 import UploadButton from "./UploadButton";
 import FileListTable from "./FileListTable";
+import { theme } from "../../../../constants/styles/theme";
 
 export default function MyExhibits() {
     const { depositionID } = useParams<{ depositionID: string }>();
@@ -27,31 +28,33 @@ export default function MyExhibits() {
                 </Text>
                 <Badge count={files?.length || 0} />
             </Space>
-            <UploadButton onUpload={upload} onUploadCompleted={refreshList} />
-            {files?.length > 0 && (
-                <FileListTable
-                    data-testid="file-list-table"
-                    loading={loading}
-                    dataSource={files}
-                    pagination={false}
-                    sortDirections={["descend", "ascend"]}
-                    onChange={handleFetchFiles}
-                />
-            )}
-            {(files?.length === 0 || errorFetchFiles) && (
-                <Row justify="center" align="middle" style={{ height: "100%" }}>
-                    <Col sm={18} lg={14} xl={13} xxl={9}>
-                        <Result
-                            icon={<Icon icon={MyExhibitsIcon} style={{ fontSize: "6rem" }} />}
-                            title={MY_EXHIBITS_RESULT_TITLE}
-                            subTitle={MY_EXHIBITS_RESULT_SUBTITLE}
-                            status={CustomStatus.empty}
-                            titleColor={theme.default.primaryColor}
-                            subTitleColor={theme.default.whiteColor}
-                        />
-                    </Col>
-                </Row>
-            )}
+            <ScrollTableContainer direction="vertical" size="large">
+                <UploadButton onUpload={upload} onUploadCompleted={refreshList} />
+                {files?.length > 0 && (
+                    <FileListTable
+                        data-testid="file-list-table"
+                        loading={loading}
+                        dataSource={files}
+                        pagination={false}
+                        sortDirections={["descend", "ascend"]}
+                        onChange={handleFetchFiles}
+                    />
+                )}
+                {(files?.length === 0 || errorFetchFiles) && (
+                    <Row justify="center" align="middle" style={{ height: "100%" }}>
+                        <Col sm={18} lg={14} xl={13} xxl={9}>
+                            <Result
+                                icon={<Icon icon={MyExhibitsIcon} style={{ fontSize: "6rem" }} />}
+                                title={MY_EXHIBITS_RESULT_TITLE}
+                                subTitle={MY_EXHIBITS_RESULT_SUBTITLE}
+                                status={CustomStatus.empty}
+                                titleColor={theme.default.primaryColor}
+                                subTitleColor={theme.default.whiteColor}
+                            />
+                        </Col>
+                    </Row>
+                )}
+            </ScrollTableContainer>
         </ExhibitTabPaneSpacer>
     );
 }

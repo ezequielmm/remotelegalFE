@@ -212,7 +212,7 @@ const exhibitsColumns = [
         dataIndex: "fileIcon",
         key: "fileIcon",
         render: () => <FilePdfOutlined />,
-        width: 40,
+        width: theme.default.spaces[5],
     },
     {
         title: "File",
@@ -236,7 +236,7 @@ const exhibitsColumns = [
                 VIEW
             </Button>
         ),
-        width: 60,
+        width: theme.default.spaces[11],
     },
     {
         title: "",
@@ -247,7 +247,7 @@ const exhibitsColumns = [
                 Share
             </Button>
         ),
-        width: 60,
+        width: theme.default.spaces[11],
     },
     {
         title: "",
@@ -258,7 +258,7 @@ const exhibitsColumns = [
                 <MoreOutlined onClick={(e) => e.preventDefault()} />
             </Dropdown>
         ),
-        width: 20,
+        width: theme.default.spaces[5],
     },
 ];
 

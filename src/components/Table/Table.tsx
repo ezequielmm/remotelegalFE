@@ -7,14 +7,22 @@ import { getREM, hexToRGBA } from "../../constants/styles/utils";
 
 const StyledTable = styled(Table)`
     ${({ theme }) => {
-        const { fontSizes, spaces } = theme.default;
-        const { neutrals, disabled, primary, inDepoBlue } = theme.colors;
+        const { fontSizes, spaces, borderRadiusBase } = theme.default;
+        const { neutrals, disabled, primary, inDepoBlue, inDepoNeutrals } = theme.colors;
 
         const styles = `
             &.ant-table-wrapper {
                 ${
                     theme.mode === "inDepo"
                         ? `
+                    .ant-spin-container {
+                        background: ${hexToRGBA(inDepoNeutrals[6], 1)};
+                        border-radius: ${getREM(borderRadiusBase)};
+                        &::after {
+                            background: ${hexToRGBA(inDepoNeutrals[6], 1)};
+                            transition: opacity 0.3s;
+                        }
+                    }
                     .ant-pagination {
                         .anticon {
                             color: ${primary[5]};
@@ -163,7 +171,7 @@ const StyledTable = styled(Table)`
                                               0.08
                                           )}`
                                 };
-                                padding: ${getREM(spaces[3])} ${getREM(spaces[5] / 2)};
+                                padding: ${getREM(spaces[3] * 0.75)} ${getREM(spaces[5] / 2)};
                                 color: ${theme.mode === "inDepo" ? neutrals[6] : ""};
                                 border-bottom-color: ${theme.mode === "inDepo" ? disabled[9] : ""};
                                 &:first-child {
