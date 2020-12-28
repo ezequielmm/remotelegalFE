@@ -45,7 +45,7 @@ export const MY_EXHIBITS_RESULT_SUBTITLE = "Start adding the exhibits that you w
 export const MY_EXHIBITS_UPLOAD_TEXT = "Uploading file...";
 export const MY_EXHIBITS_UPLOAD_COMPLETE_TEXT = "File uploaded";
 export const MY_EXHIBITS_UPLOAD_ERROR_TEXT = "Failed to upload";
-export const MY_EXHIBITS_ALLOWED_FILE_TYPES = ".pdf, .doc, .xls, .ppt, .pptx, .jpg, .png, .mp4";
+export const MY_EXHIBITS_ALLOWED_FILE_TYPES = ".pdf, .doc, .docx, .xls, .xlsx, .ppt, .pptx, .jpg, .jpeg, , .png, .mp4";
 export const MY_EXHIBITS_TIME_TO_CLOSE_AFTER_COMPLETE = 3000;
 export const MY_EXHIBITS_TIME_TO_CLOSE_AFTER_ERROR = 10000;
 
