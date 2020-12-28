@@ -97,7 +97,7 @@ describe("Exhibits", () => {
     });
     it("should display the file list when has more than one file in the list", async () => {
         useFileList.mockImplementation(() => ({
-            files: [{ name: "fileName" }],
+            files: [{ displayName: "fileName" }],
         }));
         const { queryByTestId } = renderWithGlobalContext(
             <ThemeProvider theme={theme}>
@@ -121,7 +121,7 @@ describe("Exhibits", () => {
     });
     it("should not display the empty state component when has more than file in the list", async () => {
         useFileList.mockImplementation(() => ({
-            files: [{ name: "fileName" }],
+            files: [{ displayName: "fileName" }],
         }));
         const { queryByTestId, queryByText } = renderWithGlobalContext(
             <ThemeProvider theme={theme}>

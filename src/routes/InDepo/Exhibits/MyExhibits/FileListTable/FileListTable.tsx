@@ -1,7 +1,5 @@
 import React from "react";
 import { Dropdown, Menu } from "antd";
-import { TableProps } from "antd/lib/table";
-import { DefaultRecordType } from "rc-table/lib/interface";
 import Button from "../../../../../components/Button";
 import { ReactComponent as kebebIcon } from "../../../../../assets/icons/kebeb.svg";
 import Icon from "../../../../../components/Icon";
@@ -32,13 +30,15 @@ const menu = (
 const columns = [
     {
         title: "FILE",
-        dataIndex: "name",
-        key: "name",
-        render: (name) => {
-            const fileExtension = name.split(".").pop();
+        dataIndex: "displayName",
+        key: "displayName",
+        render: (displayName) => {
+            const fileExtension = displayName.split(".").pop();
             return <FileIcon type={fileExtension} />;
         },
         sorter: (a, b) => a.displayName.localeCompare(b.displayName),
+        sortDirections: ["descend", "ascend"],
+        defaultSortOrder: 'ascend',
         width: theme.default.spaces[5],
     },
     {
@@ -47,10 +47,10 @@ const columns = [
         key: "displayName",
     },
     {
-        title: "FILE SIZE",
+        title: "SIZE",
         dataIndex: "size",
         key: "size",
-        render: (size) => formatBytes(size),
+        render: (size) => formatBytes(size, 0),
     },
     {
         title: "",
@@ -87,5 +87,5 @@ const columns = [
     },
 ];
 
-const FileListTable = (props: TableProps<DefaultRecordType>) => <Table columns={columns} {...props} />;
+const FileListTable = (props) => <Table columns={columns} {...props} />;
 export default FileListTable;
