@@ -20,6 +20,7 @@ export default function FileIcon({ type }: Props): ReactElement {
         ppt: docIcon,
         pptx: docIcon,
         jpg: imgIcon,
+        jpeg: imgIcon,
         png: imgIcon,
         mp4: videoIcon,
     };
