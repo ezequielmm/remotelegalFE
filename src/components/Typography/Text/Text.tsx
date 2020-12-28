@@ -98,6 +98,7 @@ const text = ({
     block = false,
     fontFamily = "default",
     children,
+    ...props
 }: ITextProps) => {
     return (
         <StyledText
@@ -109,6 +110,7 @@ const text = ({
             ellipsis={ellipsis}
             block={block}
             fontFamily={fontFamily}
+            {...props}
         >
             {children}
         </StyledText>

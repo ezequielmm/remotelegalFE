@@ -6,7 +6,7 @@ export const getNoDepositions = () => [];
 
 export const PARTICIPANT_NAME = "Participant Name";
 
-export const getDepositions1 = () =>
+export const getDepositions = () =>
     [
         {
             id: "859233bf-a627-471c-02bb-08d8962d8ea9",

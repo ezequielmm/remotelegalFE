@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { LocalParticipant, RemoteParticipant, Room } from "twilio-video";
 import { theme } from "../../../constants/styles/theme";
+import { TimeZones } from "../../../models/general";
 import Participant from "../Participant";
 import {
     StyledVideoConference,
@@ -20,11 +21,12 @@ type TLayoutClass = keyof typeof LayoutSize;
 interface IVideoConferenceProps {
     attendees: Room["participants"];
     layoutSize: LayoutSize;
+    timeZone: TimeZones;
     witnessID: string;
     localParticipant: LocalParticipant;
 }
 
-const VideoConference = ({ attendees, layoutSize, witnessID, localParticipant }: IVideoConferenceProps) => {
+const VideoConference = ({ attendees, timeZone, layoutSize, witnessID, localParticipant }: IVideoConferenceProps) => {
     const [layoutClass, setLayoutClass] = useState<TLayoutClass>(null);
     const [attendeesHeight, setAttendeesHeight] = useState<string>("");
     const [witnessHeight, setWitnessHeight] = useState<string>("");
@@ -84,7 +86,7 @@ const VideoConference = ({ attendees, layoutSize, witnessID, localParticipant }:
     return (
         <StyledVideoConference className={layoutClass} ref={videoConferenceContainer}>
             <StyledDeponentContainer height={witnessHeight}>
-                <Participant participant={witness} />
+                <Participant timeZone={timeZone} participant={witness} />
             </StyledDeponentContainer>
             <StyledAttendeesContainer height={attendeesHeight}>
                 {participants

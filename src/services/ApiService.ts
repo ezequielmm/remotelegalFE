@@ -57,6 +57,10 @@ export class ApiService {
         );
     };
 
+    fetchDeposition = async (depositionID: string): Promise<DepositionModel.IDeposition> => {
+        return this.request<DepositionModel.IDeposition>({ path: `/api/depositions/${depositionID}` });
+    };
+
     createCase = async (caseData): Promise<CaseModel.ICase> => {
         return this.request<CaseModel.ICase>({
             path: "/api/Cases",

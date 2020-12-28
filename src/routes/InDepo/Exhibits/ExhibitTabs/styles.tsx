@@ -31,8 +31,8 @@ export const ExhibitTabsContainer = styled.div`
 `;
 
 export const ExhibitTabContainer = styled(ExhibitTabContainerWithProps).attrs((props: ExhibitTabContainerProps) => ({
-    active: props.active,
-    highlight: props.highlight,
+    active: props.active ? "true" : undefined,
+    highlight: props.highlight ? "true" : undefined,
 }))`
     display: flex;
     flex: 1 0 0;

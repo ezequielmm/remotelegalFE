@@ -37,7 +37,7 @@ export const useJoinDeposition = () => {
 
     return useAsyncCallback(async (depositionID: string) => {
         const dataTrack = new LocalDataTrack({ maxPacketLifeTime: null, maxRetransmits: null });
-        const { token, witnessEmail }: any = await generateToken(depositionID);
+        const { timeZone, token, witnessEmail }: any = await generateToken(depositionID);
         const room = await createLocalTracks({ audio: true, video: { aspectRatio: 1.777777777777778 } }).then(
             (localTracks) => {
                 return connect(token, { name: depositionID, tracks: [...localTracks, dataTrack] });
@@ -47,6 +47,7 @@ export const useJoinDeposition = () => {
             return disconnectFromDepo(room, dispatch);
         }
         dispatch(actions.addWitness(witnessEmail));
+        dispatch(actions.setTimeZone(timeZone));
         dispatch(actions.addDataTrack(dataTrack));
         dispatch(actions.joinToRoom(room));
         return configParticipantListeners(room, dispatch);

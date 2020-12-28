@@ -1,4 +1,5 @@
 import React from "react";
+import { DepositionModel } from "../../models";
 import { IDeposition } from "../../models/deposition";
 import { GlobalStateContext } from "../../state/GlobalState";
 import useAsyncCallback from "../useAsyncCallback";
@@ -10,6 +11,22 @@ export const useScheduleDepositions = () => {
         const depositionCreated = await deps.apiService.createDepositions({ depositionList, files, caseId });
         return depositionCreated;
     }, []);
+};
+
+export const useFetchDeposition = () => {
+    const { deps } = React.useContext(GlobalStateContext);
+    const [fetchDeposition, , error] = useAsyncCallback<
+        any,
+        DepositionModel.IDeposition,
+        (depositionID: string) => Promise<DepositionModel.IDeposition>
+    >(async (depositionId) => {
+        const depositionCreated = await deps.apiService.fetchDeposition(depositionId);
+        return depositionCreated;
+    }, []);
+    React.useEffect(() => {
+        if (error) console.error("Error fetching deposition.");
+    }, [error]);
+    return fetchDeposition;
 };
 
 export const useFetchDepositions = () => {

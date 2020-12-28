@@ -29,7 +29,7 @@ describe("MyDepositions", () => {
     });
 
     it("shows a table with 1 record with a constant name when backend returns 1 deposition", async () => {
-        customDeps.apiService.fetchDepositions = jest.fn().mockResolvedValue(CONSTANTS.getDepositions1());
+        customDeps.apiService.fetchDepositions = jest.fn().mockResolvedValue(CONSTANTS.getDepositions());
         const { getAllByText } = renderWithGlobalContext(<MyDepositions />, customDeps);
         expect(customDeps.apiService.fetchDepositions).toHaveBeenCalledWith({});
 

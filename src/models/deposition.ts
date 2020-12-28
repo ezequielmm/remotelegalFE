@@ -1,4 +1,4 @@
-import { DateLike } from "./general";
+import { DateLike, TimeZones } from "./general";
 import { IParticipant } from "./participant";
 import { IUser } from "./user";
 
@@ -6,13 +6,6 @@ export enum DepositionStatus {
     pending = "Pending",
     approved = "Approved",
     canceled = "Canceled",
-}
-
-export enum TimeZones {
-    EST = "EST",
-    CST = "CST",
-    MST = "MST",
-    PST = "PST",
 }
 
 export interface IDeposition {

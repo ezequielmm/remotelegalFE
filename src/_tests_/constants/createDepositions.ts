@@ -1,12 +1,12 @@
 import moment from "moment-timezone";
 import * as CONSTANTS from "../../constants/createDeposition";
 import mapDepositions from "../../helpers/mapDepositions";
-import { TimeZones } from "../../models/deposition";
+import { TimeZones } from "../../models/general";
 import { getCaseAsc } from "./cases";
 
 // eslint-disable-next-line import/prefer-default-export
 
-export const getDepositions1 = () => ({
+export const getDepositions = () => ({
     caseId: getCaseAsc()[0].id,
     depositions: [
         {
@@ -30,7 +30,7 @@ export const getDepositions1 = () => ({
 });
 
 export const getMappedDepositions1 = () => {
-    const { details, requesterPhone, requesterName, requesterEmail, depositions } = getDepositions1();
+    const { details, requesterPhone, requesterName, requesterEmail, depositions } = getDepositions();
     return mapDepositions({
         depositions,
         requesterPhone,

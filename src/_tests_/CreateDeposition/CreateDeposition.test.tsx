@@ -199,7 +199,7 @@ describe("CreateDeposition", () => {
             queryByText,
             deps,
         } = renderWithGlobalContext(<CreateDeposition />);
-        const { caseId, requesterName, requesterEmail, depositions } = TEST_CONSTANTS.getDepositions1();
+        const { caseId, requesterName, requesterEmail, depositions } = TEST_CONSTANTS.getDepositions();
         const scheduleDeposition = await waitForElement(() => getByTestId("create_deposition_button"));
         expect(deps.apiService.fetchCases).toHaveBeenCalledWith({});
         await act(async () => {
@@ -291,7 +291,7 @@ describe("CreateDeposition", () => {
             getByTestId,
             deps,
         } = renderWithGlobalContext(<CreateDeposition />);
-        const { caseId, requesterName, requesterEmail, depositions } = TEST_CONSTANTS.getDepositions1();
+        const { caseId, requesterName, requesterEmail, depositions } = TEST_CONSTANTS.getDepositions();
         const scheduleDeposition = await waitForElement(() => getByTestId("create_deposition_button"));
         expect(deps.apiService.fetchCases).toHaveBeenCalledWith({});
         await act(async () => {
@@ -404,7 +404,7 @@ describe("CreateDeposition", () => {
             getByTestId,
             getAllByTestId,
         } = renderWithGlobalContext(<CreateDeposition />);
-        const { depositions } = TEST_CONSTANTS.getDepositions1();
+        const { depositions } = TEST_CONSTANTS.getDepositions();
 
         // DATE FILL
         const dateInput = getByPlaceholderText(CONSTANTS.DATE_PLACEHOLDER);
@@ -452,7 +452,7 @@ describe("CreateDeposition", () => {
             getByTestId,
             queryByTestId,
         } = renderWithGlobalContext(<CreateDeposition />);
-        const { depositions } = TEST_CONSTANTS.getDepositions1();
+        const { depositions } = TEST_CONSTANTS.getDepositions();
 
         // DATE FILL
         const dateInput = getByPlaceholderText(CONSTANTS.DATE_PLACEHOLDER);
@@ -638,7 +638,7 @@ describe("CreateDeposition", () => {
         const { getAllByLabelText, getAllByRole, getAllByPlaceholderText, getByTestId } = renderWithGlobalContext(
             <CreateDeposition />
         );
-        const { depositions } = TEST_CONSTANTS.getDepositions1();
+        const { depositions } = TEST_CONSTANTS.getDepositions();
 
         const addWitnessButton = await waitForElement(() => getByTestId("add_witness_button"));
         for (let index = 0; index < CONSTANTS.WITNESSES_LIMIT - 1; index++) {

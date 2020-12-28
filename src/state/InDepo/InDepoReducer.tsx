@@ -1,5 +1,6 @@
 import { Reducer } from "react";
 import { LocalDataTrack, Room } from "twilio-video";
+import { TimeZones } from "../../models/general";
 import { IAction, DataTrackMessage } from "../types";
 import { ACTION_TYPE } from "./InDepoActions";
 
@@ -10,6 +11,7 @@ export interface IRoom {
     message?: DataTrackMessage;
     dataTrack?: LocalDataTrack | null;
     witness?: string;
+    timeZone?: TimeZones;
 }
 
 export const RoomReducerInitialState: IRoom = {
@@ -19,6 +21,7 @@ export const RoomReducerInitialState: IRoom = {
     dataTrack: null,
     message: { module: "", value: "" },
     witness: "",
+    timeZone: null,
 };
 
 const RoomReducer: Reducer<IRoom, IAction> = (state: IRoom, action: IAction): IRoom => {
@@ -55,6 +58,12 @@ const RoomReducer: Reducer<IRoom, IAction> = (state: IRoom, action: IAction): IR
                 ...state,
                 currentRoom: action.payload,
             };
+        case ACTION_TYPE.SET_TIMEZONE:
+            return {
+                ...state,
+                timeZone: action.payload,
+            };
+
         default:
             return state;
     }

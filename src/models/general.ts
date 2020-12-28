@@ -43,3 +43,17 @@ export interface ITokenSet {
 }
 
 export type DateLike = Date | string | number;
+
+export enum TimeZones {
+    EST = "EST",
+    CST = "CST",
+    MST = "MST",
+    PST = "PST",
+}
+
+export const mapTimeZone = {
+    [TimeZones.CST]: "America/Chicago",
+    [TimeZones.EST]: "America/New_York",
+    [TimeZones.PST]: "America/Los_Angeles",
+    [TimeZones.MST]: "America/Denver",
+};

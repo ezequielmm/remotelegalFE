@@ -1,4 +1,5 @@
 import { LocalDataTrack, Room } from "twilio-video";
+import { TimeZones } from "../../models/general";
 import { DataTrackMessage, DisconnectRoomState } from "../types";
 
 export enum ACTION_TYPE {
@@ -9,6 +10,7 @@ export enum ACTION_TYPE {
     IN_DEPO_REMOVE_PARTICIPANT = "IN_DEPO_REMOVE_PARTICIPANT",
     IN_DEPO_ADD_DATA_TRACK = "IN_DEPO_ADD_DATA_TRACK",
     ADD_WITNESS = "IN_DEPO_ADD_WITNESS",
+    SET_TIMEZONE = "IN_DEPO_SET_TIMEZONE",
 }
 
 const actions = {
@@ -35,6 +37,10 @@ const actions = {
     }),
     addWitness: (payload: string) => ({
         type: ACTION_TYPE.ADD_WITNESS,
+        payload,
+    }),
+    setTimeZone: (payload: TimeZones) => ({
+        type: ACTION_TYPE.SET_TIMEZONE,
         payload,
     }),
     removeRemoteParticipant: (payload: Room) => ({
