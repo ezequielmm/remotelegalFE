@@ -23,6 +23,7 @@ export const ScrollTableContainer = styled(AntSpace)`
     scrollbar-width: thin;
     &::-webkit-scrollbar {
         width: ${({ theme }) => getPX(theme.default.spaces[0])};
+        height: ${({ theme }) => getPX(theme.default.spaces[0])};
     }
     &::-webkit-scrollbar-track {
         background-color: ${({ theme }) => theme.colors.inDepoNeutrals[1]};

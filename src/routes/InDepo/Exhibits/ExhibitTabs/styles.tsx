@@ -17,6 +17,7 @@ const ExhibitTabContainerWithProps = ({ children, ...props }: ExhibitTabContaine
 export const Tabs = styled(AntTabs)<TabsProps>`
     height: 100%;
 
+    .ant-tabs-content-holder,
     .ant-tabs-content-top {
         height: 100%;
     }

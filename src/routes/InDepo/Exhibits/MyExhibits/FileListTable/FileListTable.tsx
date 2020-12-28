@@ -1,5 +1,6 @@
 import React from "react";
 import { Dropdown, Menu } from "antd";
+import Text from "../../../../../components/Typography/Text";
 import Button from "../../../../../components/Button";
 import { ReactComponent as kebebIcon } from "../../../../../assets/icons/kebeb.svg";
 import Icon from "../../../../../components/Icon";
@@ -7,6 +8,7 @@ import FileIcon from "../FileIcon";
 import { formatBytes } from "../../../../../helpers/formatBytes";
 import Table from "../../../../../components/Table";
 import { theme } from "../../../../../constants/styles/theme";
+import { getREM } from "../../../../../constants/styles/utils";
 
 const menu = (
     <Menu>
@@ -38,19 +40,23 @@ const columns = [
         },
         sorter: (a, b) => a.displayName.localeCompare(b.displayName),
         sortDirections: ["descend", "ascend"],
-        defaultSortOrder: 'ascend',
-        width: theme.default.spaces[5],
+        defaultSortOrder: "ascend",
+        width: getREM(theme.default.spaces[7] * 2),
     },
     {
         title: "",
         dataIndex: "displayName",
         key: "displayName",
+        render: (name) => <Text state="white">{name}</Text>,
+        width: getREM(theme.default.spaces[7] * 6),
+        ellipsis: true,
     },
     {
         title: "SIZE",
         dataIndex: "size",
         key: "size",
         render: (size) => formatBytes(size, 0),
+        width: getREM(theme.default.spaces[7] * 3.5),
     },
     {
         title: "",
@@ -61,7 +67,6 @@ const columns = [
                 View
             </Button>
         ),
-        width: theme.default.spaces[11],
     },
     {
         title: "",
@@ -72,7 +77,6 @@ const columns = [
                 Share
             </Button>
         ),
-        width: theme.default.spaces[11],
     },
     {
         title: "",
@@ -83,7 +87,7 @@ const columns = [
                 <Icon icon={kebebIcon} style={{ fontSize: "24px" }} />
             </Dropdown>
         ),
-        width: theme.default.spaces[5],
+        width: getREM(theme.default.spaces[5] * 2),
     },
 ];
 
