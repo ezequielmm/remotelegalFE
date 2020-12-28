@@ -62,6 +62,11 @@ const MyDepositions = () => {
         [data]
     );
 
+    const handleRefresh = () => {
+        if (error) refreshList();
+        if (errorUserIsAdmin) checkIfUserIsAdmin();
+    };
+
     const history = useHistory();
 
     const depositionColumns = React.useMemo(
@@ -102,7 +107,7 @@ const MyDepositions = () => {
                     </Space>
                 )}
             {loadingUserIsAdmin && <Spinner height="100%" />}
-            {(error || errorUserIsAdmin) && <CardFetchError onClick={refreshList} />}
+            {(error || errorUserIsAdmin) && <CardFetchError onClick={handleRefresh} />}
             {!error && mappedDepositions?.length === 0 && (
                 <CardResult
                     title={CONSTANTS.EMPTY_STATE_TITLE}

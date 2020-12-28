@@ -1,16 +1,24 @@
-import React from "react";
+import { fireEvent, waitForDomChange, waitForElement } from "@testing-library/react";
 import { createMemoryHistory } from "history";
+import React from "react";
 import { Route } from "react-router-dom";
-import { waitForElement, waitForDomChange, fireEvent } from "@testing-library/react";
-import InDepo from "../../routes/InDepo";
-import renderWithGlobalContext from "../utils/renderWithGlobalContext";
-import getMockDeps from "../utils/getMockDeps";
 import * as MODULE_CONSTANTS from "../../constants/inDepo";
+import InDepo from "../../routes/InDepo";
 import * as TESTS_CONSTANTS from "../constants/InDepo";
+import getMockDeps from "../utils/getMockDeps";
+import renderWithGlobalContext from "../utils/renderWithGlobalContext";
 
 const customDeps = getMockDeps();
 const history = createMemoryHistory();
 // TODO: Find a better way to mock Twilio (eg, adding it to DI system)
+
+Object.defineProperty(global.navigator, "mediaDevices", {
+    get: () => ({
+        getUserMedia: jest.fn().mockResolvedValue(false),
+    }),
+});
+
+//TODO: Find a better way to mock Twilio (eg, adding it to DI system)
 jest.mock("twilio-video", () => ({
     ...jest.requireActual("twilio-video"),
     LocalDataTrack: function dataTrack() {

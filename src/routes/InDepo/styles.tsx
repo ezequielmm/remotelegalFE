@@ -64,6 +64,7 @@ export const StyledLayoutHeader = styled.div`
 
 export const StyledLayoutContent = styled.div`
     height: 100%;
+    overflow: hidden;
     padding: ${({ theme }) => `0 ${getREM(theme.default.spaces[1])}`};
     overflow: hidden;
 `;

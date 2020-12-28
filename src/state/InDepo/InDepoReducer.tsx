@@ -1,6 +1,8 @@
+import moment from "moment-timezone";
 import { Reducer } from "react";
 import { LocalDataTrack, Room } from "twilio-video";
 import { TimeZones } from "../../models/general";
+import { TranscriptionModel } from "../../models";
 import { IAction, DataTrackMessage } from "../types";
 import { ACTION_TYPE } from "./InDepoActions";
 
@@ -12,6 +14,7 @@ export interface IRoom {
     dataTrack?: LocalDataTrack | null;
     witness?: string;
     timeZone?: TimeZones;
+    transcriptions?: TranscriptionModel.Transcription[];
 }
 
 export const RoomReducerInitialState: IRoom = {
@@ -22,6 +25,7 @@ export const RoomReducerInitialState: IRoom = {
     message: { module: "", value: "" },
     witness: "",
     timeZone: null,
+    transcriptions: [],
 };
 
 const RoomReducer: Reducer<IRoom, IAction> = (state: IRoom, action: IAction): IRoom => {
@@ -31,6 +35,25 @@ const RoomReducer: Reducer<IRoom, IAction> = (state: IRoom, action: IAction): IR
                 ...state,
                 dataTrack: action.payload,
             };
+        case ACTION_TYPE.IN_DEPO_ADD_TRANSCRIPTION: {
+            const newTranscription = action.payload;
+            if (newTranscription.text === "") return state;
+            const laterTranscriptionIndex = state.transcriptions.findIndex((transcription) => {
+                return moment(newTranscription.time).isBefore(moment(transcription.time), "second");
+            });
+            const transcriptions =
+                laterTranscriptionIndex === -1
+                    ? [...state.transcriptions, newTranscription]
+                    : [
+                          state.transcriptions.slice(0, laterTranscriptionIndex),
+                          newTranscription,
+                          state.transcriptions.slice(laterTranscriptionIndex),
+                      ];
+            return {
+                ...state,
+                transcriptions,
+            };
+        }
         case ACTION_TYPE.ADD_WITNESS:
             return {
                 ...state,

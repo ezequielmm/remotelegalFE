@@ -31,6 +31,7 @@ import { ReactComponent as SupportIcon } from "../../assets/in-depo/Support.svg"
 import Control from "../Control/Control";
 import Logo from "../Logo";
 import useEndDepo from "../../hooks/InDepo/useEndDepo";
+import useStreamAudio from "../../hooks/useStreamAudio";
 
 interface IControlsBar {
     localParticipant: LocalParticipant;
@@ -62,6 +63,8 @@ export default function ControlsBar({
     const [supportOpen, togglerSupport] = useState(false);
     const [modal, setModal] = useState(false);
     const { setEndDepo } = useEndDepo();
+    const toggleMicrophone = useStreamAudio();
+
     const toggleBreakrooms = () => togglerBreakrooms((prevState) => !prevState);
     const toggleSummary = () => togglerSummary((prevState) => !prevState);
     const toggleSupport = () => togglerSupport((prevState) => !prevState);
@@ -69,6 +72,11 @@ export default function ControlsBar({
     const toggleRealTime = () => togglerRealTime((prevState) => !prevState);
 
     const Panel = <Menu>Panel</Menu>;
+
+    React.useEffect(() => {
+        toggleMicrophone(isAudioEnabled);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isAudioEnabled]);
 
     const composeBreakroomsIcon = (
         <StyledComposedIconContainer>

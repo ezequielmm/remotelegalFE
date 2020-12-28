@@ -5,6 +5,12 @@ import { END_DEPO_DATATRACK_MESSAGE } from "../constants/InDepo";
 import useEndDepo from "../../hooks/InDepo/useEndDepo";
 import disconnectFromDepo from "../../helpers/disconnectFromDepo";
 
+Object.defineProperty(global.navigator, "mediaDevices", {
+    get: () => ({
+        getUserMedia: jest.fn().mockResolvedValue(false),
+    }),
+});
+
 jest.mock("react-router", () => ({
     ...jest.requireActual("react-router"),
     useParams: () => ({

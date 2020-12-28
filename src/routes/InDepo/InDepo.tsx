@@ -15,6 +15,7 @@ import * as CONSTANTS from "../../constants/inDepo";
 import { theme } from "../../constants/styles/theme";
 import RecordPill from "../../components/RecordPill";
 import { DepositionID } from "../../state/types";
+import actions from "../../state/InDepo/InDepoActions";
 
 const InDepo = () => {
     const inDepoTheme = { ...theme, mode: "inDepo" };
@@ -49,6 +50,9 @@ const InDepo = () => {
         }
         if (message.module === "recordDepo") {
             togglerRecording(message.value);
+        }
+        if (message.module === "addTranscription") {
+            dispatch(actions.addTranscription(message.value));
         }
     }, [message, currentRoom, dispatch, history]);
 

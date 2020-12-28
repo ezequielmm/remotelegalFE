@@ -1,6 +1,7 @@
 const fonts = {
     fontFamily: "'Lato', sans-serif,",
     headerFontFamily: "'Merriweather', serif",
+    codeFontFamily: "'PT Mono', monospace",
     fontSizeBase: 0.875, // 14px
     fontSizes: [4, 3, 2.25, 1.5, 1.25, 1.125, 1, 0.875, 0.75, 0.5],
     lineHeightBase: 1.5,

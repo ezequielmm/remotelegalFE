@@ -1,5 +1,5 @@
-import React from "react";
 import { fireEvent } from "@testing-library/react";
+import React from "react";
 import ControlsBar from "../../components/ControlsBar";
 import getParticipant from "../mocks/participant";
 import renderWithGlobalContext from "../utils/renderWithGlobalContext";
@@ -16,6 +16,18 @@ beforeEach(() => {
         exhibitsOpen: false,
         realTimeOpen: false,
     };
+});
+
+Object.defineProperty(global.navigator, "mediaDevices", {
+    get: () => ({
+        getUserMedia: jest.fn().mockResolvedValue(false),
+    }),
+});
+
+let participant;
+
+beforeEach(() => {
+    participant = getParticipant("test1");
 });
 
 test("Exhibits is opened when exhibits Open is true", async () => {

@@ -22,6 +22,7 @@
         "@types/styled-components": "^5.1.4",
         "@types/twilio-video": "^2.7.1",
         "antd": "^4.8.2",
+        "audio-recorder-polyfill": "^0.4.1",
         "aws-amplify": "^3.3.12",
         "craco-less": "^1.17.0",
         "husky": "^4.3.0",
