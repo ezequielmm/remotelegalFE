@@ -54,14 +54,6 @@ export const StyledLayoutCotainer = styled.div<StyledLayoutCotainerProps>`
     }}
 `;
 
-export const StyledLayoutHeader = styled.div`
-    display: flex;
-    justify-content: space-between;
-    flex-direction: row-reverse;
-    width: 100%;
-    padding-bottom: ${({ theme }) => getREM(theme.default.spaces[3])};
-`;
-
 export const StyledLayoutContent = styled.div`
     height: 100%;
     overflow: hidden;

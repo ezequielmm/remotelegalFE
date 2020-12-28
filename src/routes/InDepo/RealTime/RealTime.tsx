@@ -1,15 +1,12 @@
 import React, { useContext, useEffect, useRef } from "react";
 import moment from "moment";
 import { Space } from "antd";
-import { ReactComponent as CloseIcon } from "../../../assets/icons/close.svg";
-import Icon from "../../../components/Icon";
 import Text from "../../../components/Typography/Text";
-import { theme } from "../../../constants/styles/theme";
 import { GlobalStateContext } from "../../../state/GlobalState";
-import { StyledLayoutCotainer, StyledLayoutHeader, StyledLayoutContent, ContainerProps } from "../styles";
+import { StyledLayoutCotainer, StyledLayoutContent, ContainerProps } from "../styles";
 import { RoughDraftContainer, StyledRealTimeContainer, RealTimeHeader } from "./styles";
 
-const RealTime = ({ visible, onClick }: ContainerProps) => {
+const RealTime = ({ visible }: ContainerProps) => {
     const { state } = useContext(GlobalStateContext);
     const scrollableRef = useRef(null);
     const { transcriptions } = state.room;
@@ -25,9 +22,6 @@ const RealTime = ({ visible, onClick }: ContainerProps) => {
 
     return (
         <StyledLayoutCotainer visible={visible}>
-            <StyledLayoutHeader>
-                <Icon icon={CloseIcon} onClick={onClick} style={{ color: theme.default.whiteColor }} />
-            </StyledLayoutHeader>
             <StyledLayoutContent>
                 <StyledRealTimeContainer>
                     <div ref={scrollableRef}>

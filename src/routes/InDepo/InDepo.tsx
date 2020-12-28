@@ -78,8 +78,8 @@ const InDepo = () => {
             <StyledInDepoContainer data-testid="videoconference">
                 <StyledInDepoLayout>
                     <RecordPill on={isRecording} />
-                    <Exhibits onClick={() => togglerExhibits(false)} visible={exhibitsOpen} />
-                    <RealTime onClick={() => togglerRealTime(false)} visible={realTimeOpen} />
+                    <Exhibits visible={exhibitsOpen} />
+                    <RealTime visible={realTimeOpen} />
                     <VideoConference
                         localParticipant={currentRoom.localParticipant}
                         witnessID={witness}
