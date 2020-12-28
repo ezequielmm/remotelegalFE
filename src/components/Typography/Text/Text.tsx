@@ -23,6 +23,7 @@ export interface ITextProps {
     block?: boolean;
     state?: keyof typeof TextState | undefined;
     font?: "default" | "header" | "code";
+    dataTestId?: string;
     children: React.ReactChild;
 }
 
@@ -99,10 +100,12 @@ const text = ({
     block = false,
     font = "default",
     children,
+    dataTestId,
     ...props
 }: ITextProps) => {
     return (
         <StyledText
+            data-testid={dataTestId}
             height={height}
             size={size}
             weight={weight}

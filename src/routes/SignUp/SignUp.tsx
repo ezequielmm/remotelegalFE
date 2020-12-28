@@ -135,7 +135,12 @@ const SignUp = () => {
                                         <Text size="large">Create your account</Text>
                                     </div>
                                     {(networkError || SignUpErrorMessage) && (
-                                        <Alert message={networkError || SignUpErrorMessage} type="error" showIcon />
+                                        <Alert
+                                            data-testid={networkError || SignUpErrorMessage}
+                                            message={networkError || SignUpErrorMessage}
+                                            type="error"
+                                            showIcon
+                                        />
                                     )}
                                     <div>
                                         <Row gutter={16}>
@@ -144,7 +149,11 @@ const SignUp = () => {
                                                     <InputWrapper>
                                                         {nameInput}
                                                         {nameErrorMessage && (
-                                                            <Text size="small" state="error">
+                                                            <Text
+                                                                dataTestId={nameErrorMessage}
+                                                                size="small"
+                                                                state="error"
+                                                            >
                                                                 {nameErrorMessage}
                                                             </Text>
                                                         )}
@@ -156,7 +165,11 @@ const SignUp = () => {
                                                     <InputWrapper>
                                                         {lastNameInput}
                                                         {lastNameErrorMessage && (
-                                                            <Text size="small" state="error">
+                                                            <Text
+                                                                dataTestId={lastNameErrorMessage}
+                                                                size="small"
+                                                                state="error"
+                                                            >
                                                                 {lastNameErrorMessage}
                                                             </Text>
                                                         )}
@@ -168,7 +181,7 @@ const SignUp = () => {
                                             <InputWrapper>
                                                 {emailInput}
                                                 {emailErrorMessage && (
-                                                    <Text size="small" state="error">
+                                                    <Text dataTestId={emailErrorMessage} size="small" state="error">
                                                         {emailErrorMessage}
                                                     </Text>
                                                 )}
@@ -178,7 +191,11 @@ const SignUp = () => {
                                             <InputWrapper>
                                                 {companyNameInput}
                                                 {companyNameErrorMessage && (
-                                                    <Text size="small" state="error">
+                                                    <Text
+                                                        dataTestId={companyNameErrorMessage}
+                                                        size="small"
+                                                        state="error"
+                                                    >
                                                         {companyNameErrorMessage}
                                                     </Text>
                                                 )}
@@ -188,7 +205,11 @@ const SignUp = () => {
                                             <InputWrapper>
                                                 {companyAddressInput}
                                                 {companyAddressErrorMessage && (
-                                                    <Text size="small" state="error">
+                                                    <Text
+                                                        dataTestId={companyAddressErrorMessage}
+                                                        size="small"
+                                                        state="error"
+                                                    >
                                                         {companyAddressErrorMessage}
                                                     </Text>
                                                 )}
@@ -198,7 +219,7 @@ const SignUp = () => {
                                             <InputWrapper>
                                                 {phoneInput}
                                                 {phoneErrorMessage && (
-                                                    <Text size="small" state="error">
+                                                    <Text dataTestId={phoneErrorMessage} size="small" state="error">
                                                         {phoneErrorMessage}
                                                     </Text>
                                                 )}
@@ -208,7 +229,7 @@ const SignUp = () => {
                                             <InputWrapper>
                                                 {passwordInput}
                                                 {passwordErrorMessage && (
-                                                    <Text size="small" state="error">
+                                                    <Text dataTestId={passwordErrorMessage} size="small" state="error">
                                                         {passwordErrorMessage}
                                                     </Text>
                                                 )}
@@ -226,17 +247,26 @@ const SignUp = () => {
                                             <InputWrapper>
                                                 {confirmPasswordInput}
                                                 {confirmPasswordErrorMessage && (
-                                                    <Text size="small" state="error">
+                                                    <Text
+                                                        dataTestId={confirmPasswordErrorMessage}
+                                                        size="small"
+                                                        state="error"
+                                                    >
                                                         {confirmPasswordErrorMessage}
                                                     </Text>
                                                 )}
                                             </InputWrapper>
                                         </Form.Item>
-                                        <Checkbox checked={checked} onChange={() => setChecked(!checked)}>
+                                        <Checkbox
+                                            data-testid="sign_up_terms_checkbox"
+                                            checked={checked}
+                                            onChange={() => setChecked(!checked)}
+                                        >
                                             I agree to Remote Legal Terms of Use
                                         </Checkbox>
                                     </div>
                                     <Button
+                                        data-testid="sign_up_create_account"
                                         type="primary"
                                         block
                                         disabled={disabledButton}
@@ -248,7 +278,9 @@ const SignUp = () => {
                                     <Space size="small" style={{ width: "100%" }}>
                                         <Text>Have an account?</Text>
                                         <Link tabIndex={-1} to="/">
-                                            <Button type="link">Log in</Button>
+                                            <Button data-testid="sign_up_login_link" type="link">
+                                                Log in
+                                            </Button>
                                         </Link>
                                     </Space>
                                 </>

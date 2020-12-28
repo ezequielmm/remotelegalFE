@@ -1,16 +1,17 @@
 import { TimePickerProps } from "antd/lib/time-picker";
 import React from "react";
+import moment from "moment-timezone";
+import styled from "styled-components";
 import RHFWrapper from "../RHFWrapper";
 import TimePicker from "../TimePicker";
 import Button from "../Button";
 import { RHFWrapperProps } from "../RHFWrapper/RHFWrapper";
-import moment from "moment-timezone";
-import styled from "styled-components";
 
 interface RHFTimePickerProps extends RHFWrapperProps {
     placeholder?: string;
     timePickerProps?: TimePickerProps;
     extraFooterText?: string;
+    dataTestId?: string;
     handleExtraFooterClick?: (onChange: (...event: any[]) => void, value: string) => void;
 }
 
@@ -24,6 +25,7 @@ export default function RHFTimePicker({
     handleExtraFooterClick,
     timePickerProps,
     placeholder,
+    dataTestId,
     ...wrapperProps
 }: RHFTimePickerProps) {
     return (
@@ -33,6 +35,7 @@ export default function RHFTimePicker({
                     defaultValue={moment(wrapperProps.defaultValue)}
                     placeholder={placeholder}
                     name={inputName}
+                    data-testid={dataTestId}
                     onBlur={onBlur}
                     onChange={(ev) => onChange(ev)}
                     value={value}

@@ -9,6 +9,7 @@ interface RHFSelectProps extends RHFWrapperProps {
     placeholder?: string;
     renderUnselectableOption?: () => React.ReactNode;
     renderItem?: (item) => React.ReactNode;
+    dataTestId?: string;
     items: Record<string, any>;
 }
 
@@ -19,6 +20,7 @@ export default function RHFSelect({
     placeholder,
     renderUnselectableOption,
     renderItem,
+    dataTestId,
     ...wrapperProps
 }: RHFSelectProps) {
     if (items.length && typeof items[0] === "object" && !renderItem) {
@@ -30,6 +32,7 @@ export default function RHFSelect({
         <RHFWrapper
             component={({ onChange, onBlur, value }) => (
                 <Select
+                    data-testid={dataTestId}
                     defaultValue={wrapperProps.defaultValue}
                     disabled={disabled}
                     loading={loading}

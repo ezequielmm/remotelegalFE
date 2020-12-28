@@ -136,6 +136,7 @@ const WitnessItem = ({ deposition, removeWitness, witnessNumber }: WitnessItemPr
                         </Col>
                         <Col xs={5}>
                             <RHFTimePicker
+                                dataTestId="witness_start_picker"
                                 control={control}
                                 defaultValue={deposition.startTime}
                                 timePickerProps={CONSTANTS.TIME_PICKER_PROPS}
@@ -147,6 +148,7 @@ const WitnessItem = ({ deposition, removeWitness, witnessNumber }: WitnessItemPr
                         </Col>
                         <Col xs={5}>
                             <RHFTimePicker
+                                dataTestId="witness_end_picker"
                                 control={control}
                                 defaultValue={deposition.endTime}
                                 timePickerProps={CONSTANTS.TIME_PICKER_PROPS}
@@ -160,6 +162,7 @@ const WitnessItem = ({ deposition, removeWitness, witnessNumber }: WitnessItemPr
                         </Col>
                         <Col xs={4}>
                             <RHFSelect
+                                dataTestId="witness_timezone"
                                 control={control}
                                 defaultValue={deposition.timeZone}
                                 errorMessage={depositionErrors?.timeZone?.message}

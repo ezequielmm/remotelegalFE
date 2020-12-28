@@ -31,6 +31,7 @@ const CaseSection = ({ cases, loadingCases, fetchingError }: CaseSectionProps) =
                 </Col>
                 <Col xs={10}>
                     <RHFSelect
+                        dataTestId="case_selector"
                         placeholder={CONSTANTS.CASE_SELECT_PLACEHOLDER}
                         label="Case"
                         name="caseId"
@@ -41,12 +42,12 @@ const CaseSection = ({ cases, loadingCases, fetchingError }: CaseSectionProps) =
                         noMargin
                         items={cases}
                         renderItem={(item) => (
-                            <Select.Option key={item.id} value={item.id}>
+                            <Select.Option data-testid={item.name} key={item.id} value={item.id}>
                                 {item.name}
                             </Select.Option>
                         )}
                         renderUnselectableOption={() => (
-                            <Button disabled style={{ width: "100%" }}>
+                            <Button data-testid="new_case_button" disabled style={{ width: "100%" }}>
                                 ADD NEW CASE
                             </Button>
                         )}

@@ -46,7 +46,7 @@ export default function RHFWrapper({
                 <Space>
                     {label}
                     {!!infoToolTip && (
-                        <Tooltip title={infoToolTip}>
+                        <Tooltip data-testid="tooltip" title={infoToolTip}>
                             <InfoCircleOutlined />
                         </Tooltip>
                     )}
@@ -56,7 +56,7 @@ export default function RHFWrapper({
         >
             <InputSpacing>
                 <Controller defaultValue={defaultValue} control={control} name={name} render={component} />
-                <Text block height={1} size="small" state="error">
+                <Text dataTestId={errorMessage} block height={1} size="small" state="error">
                     {errorMessage}
                 </Text>
             </InputSpacing>

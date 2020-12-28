@@ -8,13 +8,13 @@ export const menuRoutes = [
     {
         title: "MENU",
         routes: [
-            { path: "/dashboard", name: "Dashboard", icon: DashboardIcon },
-            { path: "/my-cases", name: "My cases", icon: CasesIcon },
-            { path: "/depositions", name: "My depositions", icon: DepositionsIcon },
+            { path: "/dashboard", name: "Dashboard", icon: DashboardIcon, dataTestId: "dashboard" },
+            { path: "/my-cases", name: "My cases", icon: CasesIcon, dataTestId: "my_cases" },
+            { path: "/depositions", name: "My depositions", dataTestId: "my_depositions", icon: DepositionsIcon },
         ],
     },
     {
         title: "SUPPORT",
-        routes: [{ path: "/help", name: "Help", icon: SupportIcon }],
+        routes: [{ path: "/help", name: "Help", dataTestId: "help", icon: SupportIcon }],
     },
 ];

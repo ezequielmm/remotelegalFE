@@ -17,7 +17,11 @@ const Dashboard = () => {
                         subTitle="Want to schedule a deposition? Click the button below"
                         status={CustomStatus.empty}
                         extra={
-                            <Button type="primary" onClick={() => history.push("/deposition/new")}>
+                            <Button
+                                data-testid="dashboard_schedule_deposition_button"
+                                type="primary"
+                                onClick={() => history.push("/deposition/new")}
+                            >
                                 Schedule deposition
                             </Button>
                         }

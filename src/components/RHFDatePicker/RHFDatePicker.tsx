@@ -29,6 +29,7 @@ export default function RHFDatePicker({
         <RHFWrapper
             component={({ name: inputName, onChange, onBlur, value }) => (
                 <DatePicker
+                    data-testid="date_picker"
                     defaultValue={typeof defaultValue === "string" ? moment(new Date(defaultValue)) : defaultValue}
                     format={DATE_FORMAT}
                     placeholder={placeholder}

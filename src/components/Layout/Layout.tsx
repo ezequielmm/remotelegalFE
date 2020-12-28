@@ -49,9 +49,11 @@ const AppLayout = ({ children }: DashboardProps) => {
                         <Space size="large" align="start">
                             <Icon style={{ fontSize: "1.25rem" }} icon={Messages} />
                             <Icon style={{ fontSize: "1.25rem" }} icon={Bell} />
-                            <Dropdown overlay={menu} trigger={["click"]}>
+                            <Dropdown data-testid="user_menu" overlay={menu} trigger={["click"]}>
                                 <Space align="center" size={12}>
-                                    <Text ellipsis={false}>User Name</Text>
+                                    <Text data-testid="user_option" ellipsis={false}>
+                                        User Name
+                                    </Text>
                                     <Icon
                                         style={{ fontSize: "0.625rem", marginLeft: "0.25rem" }}
                                         icon={DropdownArrow}
@@ -66,6 +68,7 @@ const AppLayout = ({ children }: DashboardProps) => {
                 <Sider width="16%">
                     <div>
                         <Button
+                            data-testid="schedule_deposition"
                             disabled={pathname.includes("deposition/new")}
                             type="primary"
                             block
@@ -88,7 +91,7 @@ const AppLayout = ({ children }: DashboardProps) => {
                                     key={group.title}
                                 >
                                     {group.routes.map((item) => (
-                                        <Menu.Item key={item.path}>
+                                        <Menu.Item data-testid={item.dataTestId} key={item.path}>
                                             <Icon icon={item.icon} />
                                             {item.name}
                                         </Menu.Item>

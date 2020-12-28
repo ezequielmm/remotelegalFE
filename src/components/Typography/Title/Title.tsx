@@ -11,6 +11,7 @@ export interface ITitleProps {
     ellipsis?: boolean;
     noMargin?: boolean;
     children: string;
+    dataTestId?: string;
 }
 
 const StyledHeader = styled.div<ITitleProps>`
@@ -48,11 +49,12 @@ const StyledHeader = styled.div<ITitleProps>`
     }}
 `;
 
-const title = ({ level = 1, weight, ellipsis = true, noMargin, children }: ITitleProps) => {
+const title = ({ level = 1, weight, ellipsis = true, noMargin, children, dataTestId }: ITitleProps) => {
     const headerTag = level ? `h${level}` : "h1";
 
     return (
         <StyledHeader
+            data-testid={dataTestId}
             as={headerTag as HeadingTag}
             weight={weight}
             level={level}

@@ -19,7 +19,10 @@ const UploadButton = ({ fileName, label, removeFile }: IUploadButton) => {
             <Icon icon={CloseIcon} onClick={removeFile} className="close-icon" style={{ fontSize: "16px" }} />
         </StyledAttachButton>
     ) : (
-        <StyledUploadButton icon={<Icon style={{ fontSize: "24px" }} icon={UploadCloudIcon} />}>
+        <StyledUploadButton
+            data-testid="caption_input"
+            icon={<Icon style={{ fontSize: "24px" }} icon={UploadCloudIcon} />}
+        >
             {label}
         </StyledUploadButton>
     );

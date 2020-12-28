@@ -22,12 +22,12 @@ const CodeSent = ({ email }: CodeSentProps) => {
     return (
         <Row justify="center">
             <Space direction="vertical" size={theme.default.spaces[11] * theme.default.baseUnit}>
-                {error && <Alert message={NETWORK_ERROR} type="error" showIcon />}
+                {error && <Alert data-testid={error} message={NETWORK_ERROR} type="error" showIcon />}
                 <Col style={{ textAlign: "center" }}>
-                    <Title level={3} weight="light" noMargin>
+                    <Title dataTestId="code_sent_title" level={3} weight="light" noMargin>
                         Check your mailbox
                     </Title>
-                    <Title level={4} weight="light">
+                    <Title dataTestId="code_sent_mail" level={4} weight="light">
                         {email}
                     </Title>
                 </Col>
@@ -35,7 +35,7 @@ const CodeSent = ({ email }: CodeSentProps) => {
                     <Text size="extralarge" state="disabled">
                         Didn’t get the email?
                     </Text>
-                    <StyledButtonLink type="link" onClick={handleLinkFetch}>
+                    <StyledButtonLink data-testid="code_sent_resend_link" type="link" onClick={handleLinkFetch}>
                         Click here to resend it
                     </StyledButtonLink>
                 </Space>
