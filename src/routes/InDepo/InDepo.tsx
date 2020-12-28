@@ -21,7 +21,7 @@ const InDepo = () => {
     const inDepoTheme = { ...theme, mode: "inDepo" };
     const { state, dispatch } = useContext(GlobalStateContext);
     const [joinDeposition, loading, error] = useJoinDeposition();
-    const { message, currentRoom, witness, timeZone } = state.room;
+    const { message, currentRoom, witness, dataTrack, timeZone } = state.room;
     const { depositionID } = useParams<DepositionID>();
     const [realTimeOpen, togglerRealTime] = useState(false);
     const [exhibitsOpen, togglerExhibits] = useState(false);
@@ -30,7 +30,15 @@ const InDepo = () => {
     const history = useHistory();
 
     useEffect(() => {
-        return () => disconnectFromDepo(currentRoom, dispatch);
+        const cleanUpFunction = () => {
+            disconnectFromDepo(currentRoom, dispatch);
+        };
+        window.addEventListener("beforeunload", cleanUpFunction);
+
+        return () => {
+            disconnectFromDepo(currentRoom, dispatch);
+            window.removeEventListener("beforeunload", cleanUpFunction);
+        };
     }, [currentRoom, dispatch]);
 
     useEffect(() => {
@@ -73,7 +81,7 @@ const InDepo = () => {
         );
     }
 
-    return currentRoom ? (
+    return currentRoom && dataTrack ? (
         <ThemeProvider theme={inDepoTheme}>
             <StyledInDepoContainer data-testid="videoconference">
                 <StyledInDepoLayout>

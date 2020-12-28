@@ -29,6 +29,7 @@ export const useJoinDeposition = () => {
     const { dispatch } = useContext(GlobalStateContext);
     const [generateToken] = useGenerateToken();
     const isMounted = useRef(true);
+
     useEffect(() => {
         return () => {
             isMounted.current = false;
@@ -43,13 +44,14 @@ export const useJoinDeposition = () => {
                 return connect(token, { name: depositionID, tracks: [...localTracks, dataTrack] });
             }
         );
+
         if (!isMounted.current) {
             return disconnectFromDepo(room, dispatch);
         }
+        dispatch(actions.joinToRoom(room));
         dispatch(actions.addWitness(witnessEmail));
         dispatch(actions.setTimeZone(timeZone));
         dispatch(actions.addDataTrack(dataTrack));
-        dispatch(actions.joinToRoom(room));
         return configParticipantListeners(room, dispatch);
     }, []);
 };

@@ -28,6 +28,6 @@ test("It calls dispatch with proper actions", async () => {
             })
         );
         expect(state.dispatch).toHaveBeenCalledWith(actions.addWitness(JOIN_DEPOSITION_MOCK.witnessEmail));
-        expect(state.dispatch).toHaveBeenLastCalledWith(actions.joinToRoom("room"));
+        expect(state.dispatch).toHaveBeenCalledWith(actions.joinToRoom("room"));
     });
 });
