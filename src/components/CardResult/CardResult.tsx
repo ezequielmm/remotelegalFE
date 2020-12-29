@@ -10,17 +10,19 @@ export default function CardResult({
     subTitle,
     status,
     extra,
+    icon,
 }: {
     title: string;
     subTitle: string;
     status?: ResultStatusType | CustomStatus;
+    icon?: React.ReactNode;
     extra: React.ReactNode;
 }) {
     return (
         <Row justify="center" align="middle" style={{ height: "100%" }}>
             <Col sm={24} lg={18} xl={13} xxl={10}>
                 <Card>
-                    <Result title={title} subTitle={subTitle} status={status} extra={extra} />
+                    <Result title={title} subTitle={subTitle} status={status} extra={extra} icon={icon} />
                 </Card>
             </Col>
         </Row>

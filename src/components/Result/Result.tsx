@@ -1,5 +1,5 @@
 import React from "react";
-import { Result } from "antd";
+import { Result as ANTResult } from "antd";
 import { ResultStatusType, ResultProps } from "antd/lib/result/index";
 import styled from "styled-components";
 import Icon from "../Icon";
@@ -50,7 +50,7 @@ const resultDefault = ({ icon, status, ...rest }: IResultProps) => {
 
     const defaultIcon = icon || customIcon();
 
-    return <Result status={defaultStatus} {...rest} icon={defaultIcon} />;
+    return <ANTResult status={defaultStatus} {...rest} icon={defaultIcon} />;
 };
 
 const StyledResult = styled(resultDefault)<IResultProps>`
@@ -79,8 +79,8 @@ const StyledResult = styled(resultDefault)<IResultProps>`
     }}
 `;
 
-const result = (props: IResultProps) => {
+const Result = (props: IResultProps) => {
     return <StyledResult {...props} />;
 };
 
-export default result;
+export default Result;

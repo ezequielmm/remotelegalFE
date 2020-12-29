@@ -5,6 +5,8 @@ import * as CONSTANTS from "../../../constants/createDeposition";
 import CardFetchError from "../../../components/CardFetchError";
 import { CustomStatus } from "../../../components/Result/Result";
 import CardResult from "../../../components/CardResult";
+import { ReactComponent as SuccessCreateIcon } from "../../../assets/icons/success-schedule.svg";
+import Icon from "../../../components/Icon";
 
 interface CreateDepositionResultCardProps {
     addNewCase: () => void;
@@ -28,6 +30,7 @@ export default function CreateDepositionResultCard({
             title={CONSTANTS.getSuccessDepositionTitle(createdDepositions)}
             subTitle={CONSTANTS.SUCCESS_DEPOSITION_SUBTITLE}
             status={CustomStatus.successCreate}
+            icon={<Icon icon={SuccessCreateIcon} />}
             extra={
                 <Row>
                     <Space direction="vertical" size="small" style={{ width: "100%" }}>
