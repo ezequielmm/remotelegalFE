@@ -13,7 +13,7 @@ export const StyledRealTimeContainer = styled.div`
         scrollbar-color: ${({ theme }) => `${theme.colors.inDepoBlue[6]} ${theme.default.disabledBg}`};
         scrollbar-width: thin;
         &::-webkit-scrollbar {
-            width: ${({ theme }) => getPX(theme.default.spaces[0])};
+            width: ${({ theme }) => getPX(theme.default.spaces[2])};
         }
         &::-webkit-scrollbar-track {
             background-color: ${({ theme }) => theme.default.disabledBg};

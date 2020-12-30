@@ -1,5 +1,5 @@
 import "@testing-library/jest-dom";
-import { act } from "@testing-library/react";
+import { act, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import React from "react";
 import { ThemeProvider } from "styled-components";
@@ -9,10 +9,11 @@ import Exhibits from "../../routes/InDepo/Exhibits";
 import { ExhibitTabData } from "../../routes/InDepo/Exhibits/ExhibitTabs/ExhibitTabs";
 import MyExhibits from "../../routes/InDepo/Exhibits/MyExhibits";
 import renderWithGlobalContext from "../utils/renderWithGlobalContext";
-import { useUploadFile, useFileList } from "../../hooks/exhibits/hooks";
+import { useUploadFile, useFileList, useSignedUrl } from "../../hooks/exhibits/hooks";
 jest.mock("../../hooks/exhibits/hooks", () => ({
     useUploadFile: jest.fn(),
     useFileList: jest.fn(),
+    useSignedUrl: jest.fn(),
 }));
 
 jest.mock("react-router-dom", () => ({
@@ -146,5 +147,107 @@ describe("Exhibits", () => {
         const noExhibitComponent = queryByText("No exhibits added yet");
         expect(fileListTable).not.toBeInTheDocument();
         expect(noExhibitComponent).toBeInTheDocument();
+    });
+    it("should not display the view document by default", () => {
+        useFileList.mockImplementation(() => ({
+            files: [{ displayName: "fileName.jpg", fileUri: "fileUri" }],
+        }));
+        const { queryByTestId } = renderWithGlobalContext(
+            <ThemeProvider theme={theme}>
+                <MyExhibits />
+            </ThemeProvider>
+        );
+        const fileViewButton = queryByTestId("file-list-view-button");
+        expect(fileViewButton).toBeInTheDocument();
+        const viewDocument = queryByTestId("view-document-header");
+        expect(viewDocument).not.toBeInTheDocument();
+    });
+    it("should display the view document component when click on a file view button", () => {
+        useFileList.mockImplementation(() => ({
+            files: [{ displayName: "fileName.jpg", fileUri: "fileUri" }],
+        }));
+        useSignedUrl.mockImplementation(() => ({
+            documentUrl: "documentId",
+            pending: false,
+        }));
+        const { queryByTestId } = renderWithGlobalContext(
+            <ThemeProvider theme={theme}>
+                <MyExhibits />
+            </ThemeProvider>
+        );
+        const fileViewButton = queryByTestId("file-list-view-button");
+        expect(fileViewButton).toBeInTheDocument();
+        fireEvent.click(fileViewButton);
+        const viewDocument = queryByTestId("view-document-header");
+        expect(viewDocument).toBeInTheDocument();
+    });
+
+    it("should spinner be displayed when pending load document", () => {
+        useFileList.mockImplementation(() => ({
+            files: [{ displayName: "fileName.jpg", fileUri: "fileUri" }],
+        }));
+        useSignedUrl.mockImplementation(() => ({
+            pending: true,
+        }));
+        const { queryByTestId } = renderWithGlobalContext(
+            <ThemeProvider theme={theme}>
+                <MyExhibits />
+            </ThemeProvider>
+        );
+        const fileViewButton = queryByTestId("file-list-view-button");
+        expect(fileViewButton).toBeInTheDocument();
+        fireEvent.click(fileViewButton);
+        const viewDocument = queryByTestId("view-document-header");
+        expect(viewDocument).toBeInTheDocument();
+        expect(queryByTestId("spinner")).toBeInTheDocument();
+        expect(queryByTestId("view-document-share-button")).toBeDisabled();
+    });
+
+    it("should disable the share button when has an error", () => {
+        useFileList.mockImplementation(() => ({
+            files: [{ displayName: "fileName.jpg", fileUri: "fileUri" }],
+        }));
+        useSignedUrl.mockImplementation(() => ({
+            documentUrl: "documentId",
+            pending: false,
+            error: true,
+        }));
+        const { queryByTestId } = renderWithGlobalContext(
+            <ThemeProvider theme={theme}>
+                <MyExhibits />
+            </ThemeProvider>
+        );
+        const fileViewButton = queryByTestId("file-list-view-button");
+        expect(fileViewButton).toBeInTheDocument();
+        fireEvent.click(fileViewButton);
+        const viewDocument = queryByTestId("view-document-header");
+        expect(viewDocument).toBeInTheDocument();
+        expect(queryByTestId("view-document-share-button")).toBeDisabled();
+    });
+
+    it("should display file list again after click on the view document's back button", () => {
+        useFileList.mockImplementation(() => ({
+            files: [{ displayName: "fileName.jpg", fileUri: "fileUri", id: "documentId" }],
+        }));
+        useSignedUrl.mockImplementation(() => ({
+            documentUrl: "documentId",
+            pending: false,
+        }));
+        const { queryByTestId, getByTestId } = renderWithGlobalContext(
+            <ThemeProvider theme={theme}>
+                <MyExhibits />
+            </ThemeProvider>
+        );
+        const fileViewButton = queryByTestId("file-list-view-button");
+        expect(fileViewButton).toBeInTheDocument();
+        fireEvent.click(fileViewButton);
+        const viewDocument = queryByTestId("view-document-header");
+        expect(viewDocument).toBeInTheDocument();
+        expect(fileViewButton).not.toBeInTheDocument();
+        const backButton = getByTestId("view-document-back-button");
+        expect(backButton).toBeInTheDocument();
+        fireEvent.click(backButton);
+        expect(viewDocument).not.toBeInTheDocument();
+        expect(queryByTestId("file-list-view-button")).toBeInTheDocument();
     });
 });

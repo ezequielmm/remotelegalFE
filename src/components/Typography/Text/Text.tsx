@@ -21,6 +21,7 @@ export interface ITextProps {
     uppercase?: boolean;
     ellipsis?: boolean;
     block?: boolean;
+    align?: "center" | "right";
     state?: keyof typeof TextState | undefined;
     font?: "default" | "header" | "code";
     dataTestId?: string;
@@ -28,7 +29,7 @@ export interface ITextProps {
 }
 
 const StyledText = styled.span<ITextProps>`
-    ${({ height, size, weight, state, uppercase, ellipsis, block, font, theme }) => {
+    ${({ height, size, weight, state, uppercase, ellipsis, block, font, align, theme }) => {
         const { textColor, fontSizes, fontFamily, headerFontFamily, codeFontFamily } = theme.default;
 
         const setFontSize = (textSize, sizes) => {
@@ -70,6 +71,8 @@ const StyledText = styled.span<ITextProps>`
             `
             : "";
 
+        const textAlign = align ? `text-align: ${["center", "right"].includes(align) ? align : false};` : "";
+
         const displayStyle = block ? `display: block;` : `display: inline-block;`;
         const fixedHeight = height ? `height: ${getREM(height)}` : "";
 
@@ -84,6 +87,7 @@ const StyledText = styled.span<ITextProps>`
             ${ellipsisStyle}
             ${displayStyle}
             ${fixedHeight}
+            ${textAlign}
         `;
 
         return styles;
@@ -99,6 +103,7 @@ const text = ({
     ellipsis = true,
     block = false,
     font = "default",
+    align,
     children,
     dataTestId,
     ...props
@@ -112,8 +117,8 @@ const text = ({
             state={state}
             uppercase={uppercase}
             ellipsis={ellipsis}
-            block={block}
-            font={font}
+            block={!!align || block}
+            align={align}
             {...props}
         >
             {children}

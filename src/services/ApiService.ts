@@ -140,6 +140,15 @@ export class ApiService {
         });
     };
 
+    getDocumentUrl = async ({ documentId, ...payload }): Promise<boolean> => {
+        return this.request<boolean>({
+            path: `/api/documents/${documentId}`,
+            payload,
+            withToken: true,
+            method: HTTP_METHOD.GET,
+        });
+    };
+
     private request = async <T>({
         path,
         payload = {},

@@ -1,95 +1,146 @@
-import React from "react";
-import { Dropdown, Menu } from "antd";
-import Text from "../../../../../components/Typography/Text";
+import React, { useState } from "react";
+import { Dropdown, Menu, Space, Tooltip } from "antd";
+import { TableProps } from "antd/lib/table";
+import { DefaultRecordType } from "rc-table/lib/interface";
+import Column from "antd/lib/table/Column";
+import { theme as GlobalTheme } from "../../../../../constants/styles/theme";
+import { getREM } from "../../../../../constants/styles/utils";
 import Button from "../../../../../components/Button";
-import { ReactComponent as kebebIcon } from "../../../../../assets/icons/kebeb.svg";
+import Table from "../../../../../components/Table";
+import Text from "../../../../../components/Typography/Text";
 import Icon from "../../../../../components/Icon";
 import FileIcon from "../FileIcon";
+import { ReactComponent as kebebIcon } from "../../../../../assets/icons/kebeb.svg";
+import { ReactComponent as DeleteIcon } from "../../../../../assets/icons/delete.svg";
+import { ReactComponent as RenameIcon } from "../../../../../assets/icons/edit.svg";
 import { formatBytes } from "../../../../../helpers/formatBytes";
-import Table from "../../../../../components/Table";
-import { theme } from "../../../../../constants/styles/theme";
-import { getREM } from "../../../../../constants/styles/utils";
+import FileListActionModal from "./FileListActionModal";
+import { ModalMode } from "./FileListActionModal/FileListActionModal";
+import { ExhibitFile } from "../../../../../types/ExhibitFile";
+import { StyledFileNameCell } from "./styles";
 
-const menu = (
-    <Menu>
-        <Menu.Item key="0">
-            <a target="_blank" rel="noopener noreferrer" href="http://www.alipay.com/">
-                1st menu item
-            </a>
-        </Menu.Item>
-        <Menu.Item key="1">
-            <a target="_blank" rel="noopener noreferrer" href="http://www.taobao.com/">
-                2nd menu item
-            </a>
-        </Menu.Item>
-        <Menu.Divider />
-        <Menu.Item key="3" disabled>
-            3rd menu item（disabled）
-        </Menu.Item>
-    </Menu>
-);
+interface IFileListTable extends TableProps<DefaultRecordType> {
+    onClickViewFile: (item: any) => void;
+}
 
-const columns = [
-    {
-        title: "FILE",
-        dataIndex: "displayName",
-        key: "displayName",
-        render: (displayName) => {
-            const fileExtension = displayName.split(".").pop();
-            return <FileIcon type={fileExtension} />;
-        },
-        sorter: (a, b) => a.displayName.localeCompare(b.displayName),
-        sortDirections: ["descend", "ascend"],
-        defaultSortOrder: "ascend",
-        width: getREM(theme.default.spaces[7] * 2),
-    },
-    {
-        title: "",
-        dataIndex: "displayName",
-        key: "displayName",
-        render: (name) => <Text state="white">{name}</Text>,
-        width: getREM(theme.default.spaces[7] * 6),
-        ellipsis: true,
-    },
-    {
-        title: "SIZE",
-        dataIndex: "size",
-        key: "size",
-        render: (size) => formatBytes(size, 0),
-        width: getREM(theme.default.spaces[7] * 3.5),
-    },
-    {
-        title: "",
-        dataIndex: "view",
-        key: "view",
-        render: () => (
-            <Button type="text" size="small">
-                View
-            </Button>
-        ),
-    },
-    {
-        title: "",
-        dataIndex: "share",
-        key: "share",
-        render: () => (
-            <Button type="ghost" size="small">
-                Share
-            </Button>
-        ),
-    },
-    {
-        title: "",
-        dataIndex: "options",
-        key: "options",
-        render: () => (
-            <Dropdown overlay={menu}>
-                <Icon icon={kebebIcon} style={{ fontSize: "24px" }} />
-            </Dropdown>
-        ),
-        width: getREM(theme.default.spaces[5] * 2),
-    },
-];
+const FileListTable = (props: IFileListTable) => {
+    const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
+    const [currentModalMode, setCurrentModalMode] = useState<ModalMode>(null);
+    const toggleModal = (mode: ModalMode) => {
+        setConfirmModalIsOpen(true);
+        setCurrentModalMode(mode);
+    };
+    const menu = (
+        <Menu>
+            <Menu.Item key="0">
+                <Button type="link" onClick={() => toggleModal("rename")}>
+                    <Space size="middle">
+                        <Icon icon={RenameIcon} style={{ fontSize: "1.4rem" }} />
+                        <span>Rename</span>
+                    </Space>
+                </Button>
+            </Menu.Item>
+            <Menu.Item key="1">
+                <Button type="link" onClick={() => toggleModal("delete")}>
+                    <Space size="middle">
+                        <Icon icon={DeleteIcon} style={{ fontSize: "1.4rem" }} />
+                        <span>Delete</span>
+                    </Space>
+                </Button>
+            </Menu.Item>
+        </Menu>
+    );
+    const handleCloseClick = () => {
+        setConfirmModalIsOpen(false);
+    };
 
-const FileListTable = (props) => <Table columns={columns} {...props} />;
+    const onRenameOkHandler = (value: string) => {
+        setConfirmModalIsOpen(false);
+    };
+    const onDeleteOkHandler = () => {};
+    const onRenameCancelHandler = () => {};
+    const onDeleteCancelHandler = () => {};
+
+    return (
+        <>
+            <FileListActionModal
+                mode={currentModalMode}
+                visible={confirmModalIsOpen}
+                onRenameOk={onRenameOkHandler}
+                onDeleteOk={onDeleteOkHandler}
+                onRenameCancel={onRenameCancelHandler}
+                onDeleteCancel={onDeleteCancelHandler}
+                onCancel={handleCloseClick}
+            />
+            <Table {...props}>
+                <Column
+                    title="FILE"
+                    dataIndex="displayName"
+                    key="displayName"
+                    width="100%"
+                    ellipsis
+                    sorter={(a: ExhibitFile, b: ExhibitFile) => a.displayName.localeCompare(b.displayName)}
+                    sortDirections={["descend", "ascend"]}
+                    defaultSortOrder="ascend"
+                    render={(displayName) => {
+                        const fileExtension = displayName.split(".").pop();
+                        return (
+                            <StyledFileNameCell>
+                                <FileIcon type={fileExtension} />
+                                <Tooltip title={displayName}>
+                                    <Text state="white">{displayName}</Text>
+                                </Tooltip>
+                            </StyledFileNameCell>
+                        );
+                    }}
+                />
+                <Column
+                    title="SIZE"
+                    dataIndex="size"
+                    key="size"
+                    width={getREM(GlobalTheme.default.spaces[6] * 6)}
+                    render={(size) => formatBytes(size, 0)}
+                />
+                <Column
+                    title=""
+                    dataIndex="view"
+                    key="view"
+                    width={getREM(GlobalTheme.default.spaces[8] * 4)}
+                    render={(item, file: any, index) => (
+                        <Button
+                            type="text"
+                            size="small"
+                            data-testid="file-list-view-button"
+                            onClick={() => props.onClickViewFile(file)}
+                        >
+                            View
+                        </Button>
+                    )}
+                />
+                <Column
+                    dataIndex="share"
+                    key="share"
+                    width={getREM(GlobalTheme.default.spaces[8] * 4)}
+                    render={(item) => (
+                        <Button size="small" type="ghost">
+                            Share
+                        </Button>
+                    )}
+                />
+                <Column
+                    title=""
+                    dataIndex="options"
+                    key="options"
+                    className="file-list-options-button"
+                    width={getREM(GlobalTheme.default.spaces[6] * 3)}
+                    render={(item) => (
+                        <Dropdown disabled overlay={menu} trigger={["click"]}>
+                            <Icon icon={kebebIcon} style={{ fontSize: "24px" }} />
+                        </Dropdown>
+                    )}
+                />
+            </Table>
+        </>
+    );
+};
 export default FileListTable;

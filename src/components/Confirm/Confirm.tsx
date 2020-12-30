@@ -44,7 +44,7 @@ const ConfirmModal = styled(Modal)<IConfirmProps>`
 `;
 
 const confirm = (props: IConfirmProps) => {
-    const { title, subTitle, onNegativeClick, onPositiveClick, negativeLabel, positiveLabel, ...rest } = props;
+    const { title, subTitle, onNegativeClick, onPositiveClick, negativeLabel, positiveLabel, children, ...rest } = props;
     const closeIcon = <Icon icon={CloseIcon} />;
 
     return (
@@ -72,6 +72,7 @@ const confirm = (props: IConfirmProps) => {
             <Text state="disabled" ellipsis={false}>
                 {subTitle}
             </Text>
+            {children}
         </ConfirmModal>
     );
 };

@@ -46,8 +46,21 @@ export const MY_EXHIBITS_UPLOAD_TEXT = "Uploading file...";
 export const MY_EXHIBITS_UPLOAD_COMPLETE_TEXT = "File uploaded";
 export const MY_EXHIBITS_UPLOAD_ERROR_TEXT = "Failed to upload";
 export const MY_EXHIBITS_ALLOWED_FILE_TYPES = ".pdf, .doc, .docx, .xls, .xlsx, .ppt, .pptx, .jpg, .jpeg, , .png, .mp4";
+export const MY_EXHIBITS_RENAME_TITLE_TEXT = "Rename Exhibit";
+export const MY_EXHIBITS_RENAME_SUBTITLE_TEXT = "To rename the exhibit, type the new name on the field below.";
+export const MY_EXHIBITS_RENAME_NAME_LABEL = "EXHIBIT NAME";
+export const MY_EXHIBITS_RENAME_OK_BUTTON_TEXT = "SAVE";
+export const MY_EXHIBITS_RENAME_CANCEL_BUTTON_TEXT = "CANCEL";
+export const MY_EXHIBITS_DELETE_TITLE_TEXT = "Delete Exhibit";
+export const MY_EXHIBITS_DELETE_SUBTITLE_TEXT =
+    "This action cannot be undone. Are you sure you want to delete the exhibit?";
+export const MY_EXHIBITS_DELETE_OK_BUTTON_TEXT = "yes, delete exhibit";
+export const MY_EXHIBITS_DELETE_CANCEL_BUTTON_TEXT = "no, keep it";
 export const MY_EXHIBITS_TIME_TO_CLOSE_AFTER_COMPLETE = 3000;
 export const MY_EXHIBITS_TIME_TO_CLOSE_AFTER_ERROR = 10000;
+
+export const EXHIBIT_FILE_ERROR_TITLE = "Exhibit can’t be displayed";
+export const EXHIBIT_FILE_ERROR_SUBTITLE = "Please try opening the Exhibit again.";
 
 export const ENTERED_EXHIBITS_TITLE = "No exhibits added yet";
 export const ENTERED_EXHIBITS_SUBTITLE = "Once someone enters an exhibit to this deposition, we will show it here";

@@ -17,13 +17,13 @@ export const ScrollTableContainer = styled(AntSpace)`
     height: 100%;
     display: flex;
     flex-direction: column;
-    padding-right: ${({ theme }) => getPX(theme.default.spaces[1])};
+    padding-right: ${({ theme }) => getPX(theme.default.spaces[3])};
     overflow-y: auto;
     scrollbar-color: ${({ theme }) => `${theme.colors.inDepoBlue[6]} ${theme.colors.inDepoNeutrals[1]}`};
     scrollbar-width: thin;
     &::-webkit-scrollbar {
-        width: ${({ theme }) => getPX(theme.default.spaces[0])};
-        height: ${({ theme }) => getPX(theme.default.spaces[0])};
+        width: ${({ theme }) => getPX(theme.default.spaces[2])};
+        height: ${({ theme }) => getPX(theme.default.spaces[2])};
     }
     &::-webkit-scrollbar-track {
         background-color: ${({ theme }) => theme.colors.inDepoNeutrals[1]};

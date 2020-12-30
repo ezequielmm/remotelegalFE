@@ -8,6 +8,7 @@ import {
     FULL_SCREEN_BUTTON,
 } from "../../constants/PDFTronViewer";
 import customisePDFTronToolbars from "../../helpers/customisePDFTronToolbars";
+import { StyledPDFTronViewerContainer } from "./styles";
 
 interface PdfTronViewerProps {
     document?: string | Blob | File;
@@ -36,6 +37,8 @@ const PDFTronViewer = ({ document, filename }: PdfTronViewerProps) => {
                         },
                     });
                     instance.setTheme("dark");
+                    const FitMode = instance.FitMode;
+                    instance.setFitMode(FitMode.FitWidth);
                     customisePDFTronToolbars(header, "toolbarGroup-Annotate", ANNOTATE_ITEMS);
                     customisePDFTronToolbars(header, "toolbarGroup-Shapes", SHAPES_ITEMS);
                     customisePDFTronToolbars(header, "toolbarGroup-Insert", INSERT_ITEMS);
@@ -49,11 +52,11 @@ const PDFTronViewer = ({ document, filename }: PdfTronViewerProps) => {
 
     useEffect(() => {
         if (PDFTron && document && filename) {
-            PDFTron.loadDocument(document, { filename, extension: "pdf" });
+            PDFTron.loadDocument(document, { filename });
         }
     }, [document, PDFTron, filename]);
 
-    return <div style={{ height: "100%", width: "100%" }} ref={viewerRef} />;
+    return <StyledPDFTronViewerContainer ref={viewerRef} />;
 };
 
 export default PDFTronViewer;

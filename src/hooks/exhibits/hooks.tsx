@@ -1,6 +1,8 @@
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState, Key } from "react";
+import { TablePaginationConfig } from "antd/lib/table";
 import uploadFile from "../../services/UploadService";
 import { GlobalStateContext } from "../../state/GlobalState";
+import { ExhibitFile } from "../../types/ExhibitFile";
 import useAsyncCallback from "../useAsyncCallback";
 
 export const useUploadFile = (depositionID: string) => {
@@ -20,7 +22,21 @@ export const useUploadFile = (depositionID: string) => {
     return { upload };
 };
 
-export const useFileList = (depositionID: string) => {
+export const useFileList = (
+    depositionID: string
+): {
+    handleFetchFiles: (
+        pagination: TablePaginationConfig,
+        filters: Record<string, Key[] | null>,
+        sorter: Record<string, any>
+    ) => void;
+    loading: boolean;
+    errorFetchFiles;
+    files: ExhibitFile[];
+    sortDirection;
+    sortedField;
+    refreshList;
+} => {
     const [sortedField, setSortedField] = useState();
     const [sortDirection, setSortDirection] = useState();
     const { deps } = useContext(GlobalStateContext);
@@ -52,4 +68,18 @@ export const useFileList = (depositionID: string) => {
     }, [fetchFiles]);
 
     return { handleFetchFiles, loading, errorFetchFiles, files, sortDirection, sortedField, refreshList };
+};
+
+export const useSignedUrl = (documentId: string) => {
+    const { deps } = useContext(GlobalStateContext);
+
+    const [getURL, pending, error, documentUrl] = useAsyncCallback(async (payload) => {
+        const depositionFiles = await deps.apiService.getDocumentUrl({ documentId, ...payload });
+        return depositionFiles;
+    }, []);
+    useEffect(() => {
+        getURL();
+    }, [getURL]);
+
+    return { getURL, pending, error, documentUrl };
 };
