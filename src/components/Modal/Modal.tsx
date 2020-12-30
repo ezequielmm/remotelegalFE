@@ -22,12 +22,12 @@ const StyledModal = styled(modalDefault)<IModalProps>`
         const stylesOnlyBody = onlyBody
             ? `
             .ant-modal-body {
-                padding: ${getREM(theme.default.spaces[11])} ${getREM(theme.default.spaces[13])};
+                padding: ${getREM(theme.default.spaces[6] * 4)} ${getREM(theme.default.spaces[6] * 5)};
             }
 
             @media (max-width: 576px) {
                 .ant-modal-body {
-                    padding: ${styledTheme.default.spaces[7]}rem;
+                    padding: ${styledTheme.default.spaces[12]}rem;
                 }
             }
             `

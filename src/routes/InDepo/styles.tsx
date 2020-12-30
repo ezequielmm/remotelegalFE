@@ -13,19 +13,19 @@ export const StyledInDepoLayout = styled.div`
     display: flex;
     position: relative;
     justify-content: center;
-    height: calc(100% - ${({ theme }) => getREM(theme.default.spaces[5] * 3)});
+    height: calc(100% - ${({ theme }) => getREM(theme.default.spaces[9] * 3)});
     background: linear-gradient(
         to bottom,
         ${({ theme }) => theme.colors.inDepoNeutrals[2]} 0%,
         ${({ theme }) => theme.colors.inDepoNeutrals[2]} 60%,
         ${({ theme }) => theme.colors.inDepoNeutrals[5]} 100%
     );
-    padding: ${({ theme }) => getREM(theme.default.spaces[3])};
+    padding: ${({ theme }) => getREM(theme.default.spaces[6])};
 `;
 
 export const StyledRoomFooter = styled.div`
     width: 100%;
-    height: ${({ theme }) => getREM(theme.default.spaces[5] * 3)};
+    height: ${({ theme }) => getREM(theme.default.spaces[9] * 3)};
 `;
 
 export interface ContainerProps {
@@ -40,8 +40,8 @@ export const StyledLayoutCotainer = styled.div<StyledLayoutCotainerProps>`
     flex-direction: column;
     height: 100%;
     flex: 1 1 0%;
-    padding: ${({ theme }) => `${getREM(theme.default.spaces[3])}`};
-    margin-right: ${({ theme }) => getREM(theme.default.spaces[3])};
+    padding: ${({ theme }) => `${getREM(theme.default.spaces[6])}`};
+    margin-right: ${({ theme }) => getREM(theme.default.spaces[6])};
     border-radius: ${({ theme }) => getREM(theme.default.borderRadiusBase)};
     overflow: hidden;
     background: ${({ theme }) => theme.colors.inDepoNeutrals[6]};
@@ -57,6 +57,6 @@ export const StyledLayoutCotainer = styled.div<StyledLayoutCotainerProps>`
 export const StyledLayoutContent = styled.div`
     height: 100%;
     overflow: hidden;
-    padding: ${({ theme }) => `0 ${getREM(theme.default.spaces[1])}`};
+    padding: ${({ theme }) => `0 ${getREM(theme.default.spaces[3])}`};
     overflow: hidden;
 `;

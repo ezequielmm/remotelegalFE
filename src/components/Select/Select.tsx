@@ -28,7 +28,6 @@ export const StyledSelect = styled(ANTSelect).attrs((props: ISelectProps) => ({
                 box-shadow: 0 0 0 2px ${hexToRGBA(errorColor, 0.2)};
             `;
 
-        // TODO add missing spaces token
         const styles = `
             ${sizeStyles};
             width: 100%;
@@ -44,10 +43,10 @@ export const StyledSelect = styled(ANTSelect).attrs((props: ISelectProps) => ({
             }
 
             .ant-select-arrow {
-                font-size: ${getREM(theme.default.spaces[5])};
-                top: calc(50% - ${getREM(theme.default.spaces[5])} / 2);
-                width: ${getREM(theme.default.spaces[5])};
-                height: ${getREM(theme.default.spaces[5])};
+                font-size: ${getREM(theme.default.spaces[9])};
+                top: calc(50% - ${getREM(theme.default.spaces[9])} / 2);
+                width: ${getREM(theme.default.spaces[9])};
+                height: ${getREM(theme.default.spaces[9])};
                 margin-top: 0;
                 .anticon {
                     pointer-events: none;
@@ -56,7 +55,7 @@ export const StyledSelect = styled(ANTSelect).attrs((props: ISelectProps) => ({
 
             .ant-select-clear {
                 box-shadow: -5px 0 10px 10px ${theme.default.whiteColor};
-                right: ${getPX(theme.default.spaces[3])};
+                right: ${getPX(theme.default.spaces[6])};
             }
 
             .ant-select-dropdown {
@@ -71,13 +70,13 @@ export const StyledSelect = styled(ANTSelect).attrs((props: ISelectProps) => ({
                 scrollbar-color: ${theme.colors.inDepoBlue[6]} ${theme.default.whiteColor};
 
                 &::-webkit-scrollbar {
-                    width: ${getPX(theme.default.spaces[1])};
+                    width: ${getPX(theme.default.spaces[3])};
                 }
                 &::-webkit-scrollbar-track {
                     background-color: ${theme.default.whiteColor};
                 }
                 &::-webkit-scrollbar-thumb {
-                    border-radius: ${getPX(theme.default.spaces[5])};
+                    border-radius: ${getPX(theme.default.spaces[9])};
                     background: ${theme.colors.inDepoBlue[6]};
                 }
             }

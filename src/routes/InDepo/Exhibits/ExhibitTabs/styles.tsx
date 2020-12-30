@@ -54,14 +54,14 @@ export const ExhibitTabContainer = styled(ExhibitTabContainerWithProps).attrs((p
 export const ExhibitTabContainerText = styled.div`
     display: flex;
     flex-direction: column;
-    padding: ${({ theme }) => `${getREM(theme.default.spaces[2])} ${getREM(theme.default.spaces[5])}`};
+    padding: ${({ theme }) => `${getREM(theme.default.spaces[5])} ${getREM(theme.default.spaces[9])}`};
 `;
 
 export const Stick = styled.div`
     margin-top: auto;
     margin-bottom: auto;
     margin-left: -1px;
-    height: ${({ theme }) => getREM(theme.default.spaces[5])};
+    height: ${({ theme }) => getREM(theme.default.spaces[9])};
     width: 1px;
     background: ${({ theme }) => theme.colors.disabled[7]};
 `;
@@ -73,5 +73,5 @@ export const TabPane = styled(AntTabs.TabPane)<TabPaneProps>`
 export const ExhibitTabPaneContainer = styled.div`
     height: inherit;
     width: 100%;
-    padding: ${({ theme }) => `${getREM(theme.default.spaces[5])} 0`};
+    padding: ${({ theme }) => `${getREM(theme.default.spaces[9])} 0`};
 `;

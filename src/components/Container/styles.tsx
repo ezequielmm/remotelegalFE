@@ -18,7 +18,7 @@ export const StyledHeaderSection = styled.section`
     justify-self: center;
     align-self: center;
     @media (max-width: 1024px) {
-        padding: ${({ theme }) => getREM(theme.default.spaces[7])};
+        padding: ${({ theme }) => getREM(theme.default.spaces[12])};
     }
     @media (max-width: 576px) {
         width: 100%;
@@ -34,12 +34,12 @@ export const StyledFormContainer = styled.section`
         overflow-y: auto;
 
         & > * {
-            padding: ${({ theme }) => getREM(theme.default.spaces[11])} 0;
+            padding: ${({ theme }) => getREM(theme.default.spaces[6] * 4)} 0;
         }
     }
 
     @media (max-width: 1024px) {
         border-radius: 43px 43px 0 0;
-        padding: ${({ theme }) => getREM(theme.default.spaces[7])} 0;
+        padding: ${({ theme }) => getREM(theme.default.spaces[12])} 0;
     }
 `;

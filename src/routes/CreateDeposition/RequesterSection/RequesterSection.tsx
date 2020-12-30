@@ -21,7 +21,7 @@ const RequesterSection = ({ invalidRequester }: RequesterSectionProps) => {
                         {CONSTANTS.REQUESTER_TITLE}
                     </Title>
                 </Col>
-                <Row gutter={theme.default.baseUnit * theme.default.spaces[5]} style={{ width: "100%" }}>
+                <Row gutter={theme.default.baseUnit * theme.default.spaces[9]} style={{ width: "100%" }}>
                     <Col xs={8}>
                         <RHFInput
                             control={control}

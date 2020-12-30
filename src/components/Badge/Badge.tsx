@@ -33,19 +33,19 @@ const StyledBadge = styled(badgeDefault)<IBadgeProps>`
             size === "small"
                 ? `
                     font-size: ${getREM(theme.default.fontSizes[9])};
-                    min-width: ${getREM(theme.default.spaces[4])};
+                    min-width: ${getREM(theme.default.spaces[7])};
                 `
                 : `
-                    min-width: ${getREM(theme.default.spaces[6])};
-                    height: ${getREM(theme.default.spaces[6])};
-                    line-height: ${getREM(theme.default.spaces[6])};
+                    min-width: ${getREM(theme.default.spaces[10])};
+                    height: ${getREM(theme.default.spaces[10])};
+                    line-height: ${getREM(theme.default.spaces[10])};
                     font-size: ${getREM(theme.default.fontSizes[6])};
                 `;
 
         const styles = `
             .ant-badge-count {
-                border-radius: ${getREM(theme.default.spaces[0])};
-                min-width: ${getREM(theme.default.spaces[5])};
+                border-radius: ${getREM(theme.default.spaces[2])};
+                min-width: ${getREM(theme.default.spaces[9])};
                 ${badgeSize}
                 ${inDepoTheme}
             }

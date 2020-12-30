@@ -24,12 +24,12 @@ const ConfirmModal = styled(Modal)<IConfirmProps>`
 
         const modalStyles = `
         .ant-modal-content {
-            padding: ${getREM(spaces[8])};
+            padding: ${getREM(spaces[8] * 2)};
                 .ant-modal-body {
                     padding: 0;
                 }
                 .ant-modal-footer {
-                    padding: ${getREM(spaces[8])} 0 0 0;
+                    padding: ${getREM(spaces[8] * 2)} 0 0 0;
                     border-top: 0;
                 }
             }

@@ -67,14 +67,14 @@ const StyledPopupContainer = styled(PopupContainer)<IPopupContainer>`
                         scrollbar-color: ${theme.colors.inDepoBlue[6]} ${theme.default.whiteColor};
 
                         &::-webkit-scrollbar {
-                            width: ${getPX(theme.default.spaces[1])};
+                            width: ${getPX(theme.default.spaces[3])};
                         }
 
                         &::-webkit-scrollbar-track {
                             background-color: ${theme.default.whiteColor};
                         }
                         &::-webkit-scrollbar-thumb {
-                            border-radius: ${getPX(theme.default.spaces[5])};
+                            border-radius: ${getPX(theme.default.spaces[9])};
 
                             background: ${theme.colors.inDepoBlue[6]};
                         }

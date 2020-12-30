@@ -31,10 +31,10 @@ const StyledButton = styled(buttonDefault)<IButtonProps>`
             size === "small"
                 ? `
                     font-size: ${getREM(fontSizes[4] / 2)};
-                    padding: ${getREM(spaces[2] / 2)} ${getREM(spaces[2])};
+                    padding: ${getREM(spaces[5] / 2)} ${getREM(spaces[5])};
                     min-width: auto;
-                    height: ${getREM(spaces[7])};
-                    border-radius: ${getREM(spaces[1])};
+                    height: ${getREM(spaces[12])};
+                    border-radius: ${getREM(spaces[3])};
                     line-height: 1.2;
                 `
                 : "";

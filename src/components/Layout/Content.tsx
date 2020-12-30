@@ -12,7 +12,7 @@ const { Content } = Layout;
 const StyledContent = styled(Content)`
     ${({ theme }) => {
         const styles = `
-            padding: ${getREM(theme.default.spaces[9])};
+            padding: ${getREM(theme.default.spaces[6] * 3)};
             `;
 
         return styles;

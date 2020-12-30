@@ -11,7 +11,7 @@ const Container = ({ children }: ContainerProps) => (
     <StyledContainer>
         <StyledHeaderSection>
             <header>
-                <Logo version="light" width={getREM(theme.default.spaces[8] * 10)} />
+                <Logo version="light" width={getREM(theme.default.spaces[8] * 20)} />
             </header>
         </StyledHeaderSection>
         <StyledFormContainer>{children}</StyledFormContainer>

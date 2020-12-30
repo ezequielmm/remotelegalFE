@@ -72,7 +72,7 @@ const WitnessItem = ({ deposition, removeWitness, witnessNumber }: WitnessItemPr
                     </Text>
                 </Col>
                 <Col xs={24}>
-                    <Row gutter={theme.default.baseUnit * theme.default.spaces[5]} style={{ width: "100%" }}>
+                    <Row gutter={theme.default.baseUnit * theme.default.spaces[9]} style={{ width: "100%" }}>
                         <Col xs={6}>
                             <RHFInput
                                 control={control}
@@ -117,7 +117,7 @@ const WitnessItem = ({ deposition, removeWitness, witnessNumber }: WitnessItemPr
                             />
                         </Col>
                     </Row>
-                    <Row gutter={theme.default.baseUnit * theme.default.spaces[5]} style={{ width: "100%" }}>
+                    <Row gutter={theme.default.baseUnit * theme.default.spaces[9]} style={{ width: "100%" }}>
                         <Col xs={6}>
                             <RHFDatePicker
                                 defaultValue={deposition.date}
@@ -173,7 +173,7 @@ const WitnessItem = ({ deposition, removeWitness, witnessNumber }: WitnessItemPr
                             />
                         </Col>
                     </Row>
-                    <Row gutter={theme.default.baseUnit * theme.default.spaces[5]} style={{ width: "100%" }}>
+                    <Row gutter={theme.default.baseUnit * theme.default.spaces[9]} style={{ width: "100%" }}>
                         <Col xs={12}>
                             <RHFRadioButton
                                 control={control}

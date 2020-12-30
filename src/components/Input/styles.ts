@@ -43,6 +43,6 @@ export const StyledInput = styled(AntInput).attrs((props: IInputProps) => ({
 
 export const InputWrapper = styled.div`
     & > *:not(:last-child) {
-        margin-bottom: ${({ theme }) => getREM(theme.default.spaces[1])};
+        margin-bottom: ${({ theme }) => getREM(theme.default.spaces[3])};
     }
 `;

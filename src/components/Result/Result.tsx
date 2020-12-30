@@ -69,7 +69,7 @@ const StyledResult = styled(resultDefault)<IResultProps>`
                 font-family: ${theme.default.headerFontFamily};
                 font-weight: 300;
                 line-height: ${theme.default.lineHeightBase};
-                margin-bottom: ${getREM(theme.default.spaces[1])};
+                margin-bottom: ${getREM(theme.default.spaces[3])};
                 ${inDepoTheme}
             }
             ${titleColorStyle}

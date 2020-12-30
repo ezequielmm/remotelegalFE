@@ -72,9 +72,9 @@ const StyledTable = styled(Table)`
                         tbody.ant-table-tbody {
                             > tr {
                                 > td.ant-table-cell:first-child {
-                                    border-radius: ${theme.mode === "inDepo" ? "" : `${getREM(spaces[2])}`};
+                                    border-radius: ${theme.mode === "inDepo" ? "" : `${getREM(spaces[5])}`};
                                     box-shadow: ${theme.mode === "inDepo" ? "none" : ""};
-                                    padding: ${getREM(spaces[5])} ${getREM(spaces[5] / 2)};
+                                    padding: ${getREM(spaces[9])} ${getREM(spaces[4])};
                                     &:hover {
                                         ${theme.mode === "inDepo" ? `background: transparent;` : ""}
                                     }
@@ -105,11 +105,11 @@ const StyledTable = styled(Table)`
                 }
                 table {
                     border-radius: 0;
-                    border-spacing: ${theme.mode === "inDepo" ? "" : `0 ${getREM(spaces[1])};`};
+                    border-spacing: ${theme.mode === "inDepo" ? "" : `0 ${getREM(spaces[3])};`};
 
                     .ant-table-thead > tr > th:not(.ant-table-column-has-sorters), 
                     .ant-table tfoot > tr > th:not(.ant-table-column-has-sorters) {
-                        padding: 10px 0 10px ${getREM(spaces[0] + spaces[1])};
+                        padding: 10px 0 10px ${getREM(spaces[4])};
                     }
 
                     thead.ant-table-thead {
@@ -123,16 +123,16 @@ const StyledTable = styled(Table)`
                                 border-bottom-color: ${theme.mode === "inDepo" ? disabled[9] : neutrals[3]};
                                 &:first-child {
                                     .ant-table-column-sorters {
-                                        padding-left: ${getREM(spaces[5])};
+                                        padding-left: ${getREM(spaces[9])};
                                     } 
                                 }
                                 &:last-child {
                                     .ant-table-column-sorters {
-                                        padding-right: ${getREM(spaces[5])};
+                                        padding-right: ${getREM(spaces[9])};
                                     } 
                                 }
                                 .ant-table-column-sorters {
-                                    padding: 10px 0 10px ${getREM(spaces[0] + spaces[1])};
+                                    padding: 10px 0 10px ${getREM(spaces[4])};
                                     .active {
                                         color: ${theme.mode === "inDepo" ? inDepoBlue[4] : ""};
                                     }
@@ -166,24 +166,24 @@ const StyledTable = styled(Table)`
                                 box-shadow: ${
                                     theme.mode === "inDepo"
                                         ? `none`
-                                        : `0 ${getREM(spaces[2])} ${getREM(spaces[5])} 0 ${hexToRGBA(
+                                        : `0 ${getREM(spaces[5])} ${getREM(spaces[9])} 0 ${hexToRGBA(
                                               neutrals[2],
                                               0.08
                                           )}`
                                 };
-                                padding: ${getREM(spaces[3] * 0.75)} ${getREM(spaces[5] / 2)};
+                                padding: ${getREM(spaces[4])};
                                 color: ${theme.mode === "inDepo" ? neutrals[6] : ""};
                                 border-bottom-color: ${theme.mode === "inDepo" ? disabled[9] : ""};
                                 &:first-child {
-                                    padding-left: ${getREM(spaces[5])};
+                                    padding-left: ${getREM(spaces[9])};
                                     border-radius: ${
-                                        theme.mode === "inDepo" ? `0` : `${getREM(spaces[2])} 0 0 ${getREM(spaces[2])}`
+                                        theme.mode === "inDepo" ? `0` : `${getREM(spaces[5])} 0 0 ${getREM(spaces[5])}`
                                     };
                                 }
                                 &:last-child {
-                                    padding-right: ${getREM(spaces[5])};
+                                    padding-right: ${getREM(spaces[9])};
                                     border-radius: ${
-                                        theme.mode === "inDepo" ? `0` : `0 ${getREM(spaces[2])} ${getREM(spaces[2])} 0`
+                                        theme.mode === "inDepo" ? `0` : `0 ${getREM(spaces[5])} ${getREM(spaces[5])} 0`
                                     };
                                 }
 
@@ -216,12 +216,12 @@ const StyledTable = styled(Table)`
 
                         &.ant-table-placeholder {
                             > td {
-                                box-shadow: 0 ${getREM(spaces[2])} ${getREM(spaces[5])} 0 ${hexToRGBA(
+                                box-shadow: 0 ${getREM(spaces[5])} ${getREM(spaces[9])} 0 ${hexToRGBA(
             neutrals[2],
             0.08
         )};
-                                padding-left: ${getREM(spaces[5])};
-                                border-radius: ${getREM(spaces[2])};
+                                padding-left: ${getREM(spaces[9])};
+                                border-radius: ${getREM(spaces[5])};
                             }
                         }
                     }

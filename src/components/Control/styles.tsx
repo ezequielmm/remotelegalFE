@@ -38,7 +38,7 @@ export const StyledRoundedControl = styled(roundButton)`
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: ${({ theme }) => `0 ${getREM(theme.default.spaces[2])}`}; // TODO refactor spacing
+    padding: ${({ theme }) => `0 ${getREM(theme.default.spaces[5])}`};
     border: ${({ isToggled, theme }) => (isToggled ? `1px solid ${theme.default.primaryColor}` : "none")};
 
     &,
@@ -75,7 +75,7 @@ export const StyledRoundedControl = styled(roundButton)`
 
 export const StyledRoundedButton = styled(StyledRoundedControl)`
     height: auto;
-    padding: ${({ theme }) => `${getREM(theme.default.spaces[1])} ${getREM(theme.default.spaces[3])}`};
+    padding: ${({ theme }) => `${getREM(theme.default.spaces[3])} ${getREM(theme.default.spaces[6])}`};
     box-shadow: none;
 
     &,

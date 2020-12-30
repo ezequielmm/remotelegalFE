@@ -44,5 +44,5 @@ export const SectionRow = styled(Row).attrs((props: SectionRowProps) => ({
 }))<SectionRowProps>`
     width: 100%;
     border-bottom: ${({ theme, separator }) => separator && `1px solid ${theme.colors.neutrals[3]}`};
-    margin-bottom: ${({ theme, separator }) => separator && getREM(theme.default.spaces[5])};
+    margin-bottom: ${({ theme, separator }) => separator && getREM(theme.default.spaces[9])};
 `;

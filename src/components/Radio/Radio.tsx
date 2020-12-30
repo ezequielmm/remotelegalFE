@@ -9,11 +9,11 @@ const StyledRadio = styled(Radio)`
             &.ant-radio-wrapper {
                 display: flex;
                 align-items: center;
-                margin-right: ${getREM(theme.default.spaces[7])};
+                margin-right: ${getREM(theme.default.spaces[12])};
                 .ant-radio {
                     .ant-radio-inner {
-                        width: ${getREM(theme.default.spaces[2])};
-                        height: ${getREM(theme.default.spaces[2])};
+                        width: ${getREM(theme.default.spaces[5])};
+                        height: ${getREM(theme.default.spaces[5])};
                         border-color: ${theme.colors.disabled[6]};
 
                         &:after {

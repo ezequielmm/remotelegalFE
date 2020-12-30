@@ -21,12 +21,12 @@ const StyledSider = styled(defaultSider)<ISiderProps>`
         const antMenu = `
             .ant-menu {
                 &-item {
-                    padding: 0 ${getREM(theme.default.spaces[3])};
+                    padding: 0 ${getREM(theme.default.spaces[6])};
                     border-radius: ${getPX(theme.default.borderRadiusBase, theme.default.baseUnit)};
 
                     &-group-title {
                         color: ${theme.default.whiteColor};
-                        padding-top: ${getREM(theme.default.spaces[5])};
+                        padding-top: ${getREM(theme.default.spaces[9])};
                         padding-bottom: 0;
                     }
                 }
@@ -35,13 +35,13 @@ const StyledSider = styled(defaultSider)<ISiderProps>`
 
         const buttonSmaller = `
             .ant-btn.ant-btn-primary {
-                height: ${getREM(theme.default.spaces[8])};
+                height: ${getREM(theme.default.spaces[8] * 2)};
                 font-size: ${getREM(theme.default.fontSizes[8])};
             }
         `;
 
         const styles = `
-            padding: ${getREM(theme.default.spaces[3])};
+            padding: ${getREM(theme.default.spaces[6])};
 
             .ant-layout-sider-children {
                 display: flex;
@@ -49,7 +49,7 @@ const StyledSider = styled(defaultSider)<ISiderProps>`
                 justify-content: space-between;
 
                 & > :last-child {
-                    padding: ${getREM(theme.default.spaces[1])};
+                    padding: ${getREM(theme.default.spaces[3])};
                 }
             }
 

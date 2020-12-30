@@ -48,7 +48,7 @@ export const StyledIdentityBox = styled.div`
     position: absolute;
     bottom: 0;
     left: 0;
-    padding: ${({ theme }) => `${getREM(theme.default.spaces[4] / 2)} ${getREM(theme.default.spaces[5] / 2)}`};
+    padding: ${({ theme }) => `${getREM(theme.default.spaces[7] / 2)} ${getREM(theme.default.spaces[4])}`};
     display: flex;
     flex-direction: column;
     max-width: 100%;

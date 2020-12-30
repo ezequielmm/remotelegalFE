@@ -6,9 +6,9 @@ const flexAlignCenter = `
     align-items: center;
 `;
 
-const iconMargins = `
+const iconMargins = (theme) => `
     & > * {
-        margin: 0 6px; // TODO refactor spacing
+        margin: 0 ${getREM(theme.default.spaces[3] * theme.default.spaces[4])}; // 0.375
 
         &:first-child {
             margin-left: 0;
@@ -22,8 +22,8 @@ const iconMargins = `
 
 export const StyledContainer = styled.div`
     ${flexAlignCenter}
-    height: ${({ theme }) => getREM(theme.default.spaces[5] * 3)};
-    padding: 0 ${({ theme }) => getREM(theme.default.spaces[3])}; // TODO refactor spacing
+    height: ${({ theme }) => getREM(theme.default.spaces[7] * 4)};
+    padding: 0 ${({ theme }) => getREM(theme.default.spaces[6])};
     background-color: ${({ theme }) => theme.colors.inDepoNeutrals[3]};
     border-top: 1px solid ${({ theme }) => theme.colors.inDepoNeutrals[0]};
 
@@ -34,7 +34,7 @@ export const StyledContainer = styled.div`
 
 export const StyledLogo = styled.div`
     & > * {
-        height: ${({ theme }) => getREM(theme.default.spaces[8])}; // TODO refactor spacing
+        height: ${({ theme }) => getREM(theme.default.spaces[8] * 2)};
         width: auto;
         display: flex;
     }
@@ -43,7 +43,7 @@ export const StyledLogo = styled.div`
 export const StyledVideoControls = styled.div`
     ${flexAlignCenter}
     justify-content: center;
-    ${iconMargins}
+    ${({ theme }) => iconMargins(theme)}
 `;
 
 export const StyledGeneralControls = styled.div`
@@ -54,16 +54,16 @@ export const StyledGeneralControls = styled.div`
 
 export const StyledPrimaryControls = styled.div`
     ${flexAlignCenter}
-    ${iconMargins}
+    ${({ theme }) => iconMargins(theme)}
 `;
 
 export const StyledSecondaryControls = styled.div`
     height: 100%;
     ${flexAlignCenter}
-    ${iconMargins}
+    ${({ theme }) => iconMargins(theme)}
     border-left: 1px solid ${({ theme }) => theme.colors.inDepoNeutrals[0]};
-    padding-left: 6px; // TODO refactor spacing
-    margin-left: 6px; // TODO refactor spacing
+    padding-left: ${({ theme }) => getREM(theme.default.spaces[3] * theme.default.spaces[4])}; // 0.375
+    margin-left: ${({ theme }) => getREM(theme.default.spaces[3] * theme.default.spaces[4])}; // 0.375
 `;
 
 export const StyledComposedIconContainer = styled.div`

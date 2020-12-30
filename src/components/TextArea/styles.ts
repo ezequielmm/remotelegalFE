@@ -46,6 +46,6 @@ export const StyledTextArea = styled(AntTextArea).attrs((props: ITextAreaProps) 
 
 export const TextAreaWrapper = styled.div`
     & > *:not(:last-child) {
-        margin-bottom: ${({ theme }) => getREM(theme.default.spaces[1])};
+        margin-bottom: ${({ theme }) => getREM(theme.default.spaces[3])};
     }
 `;

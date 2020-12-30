@@ -17,9 +17,9 @@ const pulse = keyframes`
   }
 
 	30% {
-    box-shadow: 0 0 0 ${getREM(spaces[1] * 0.75)} ${hexToRGBA(neutrals[6], 0)};
+    box-shadow: 0 0 0 ${getREM(spaces[3] * spaces[4])} ${hexToRGBA(neutrals[6], 0)};
     background: transparent;
-  }
+  }}
   
   100% {
     box-shadow: 0 0 0 0 ${hexToRGBA(neutrals[6], 0)};
@@ -28,8 +28,8 @@ const pulse = keyframes`
 
 export const StyledRecordPill = styled.span<IRecordPillPropsStyles>`
     position: absolute;
-    top: ${getREM(spaces[3] * 0.75)};
-    left: ${getREM(spaces[3] * 0.75)};
+    top: ${getREM(spaces[4])};
+    left: ${getREM(spaces[4])};
     z-index: 50;
     display: inline-flex;
     background-color: ${(props: IRecordPillPropsStyles) => (props.$on ? error[5] : neutrals[0])};
@@ -39,18 +39,18 @@ export const StyledRecordPill = styled.span<IRecordPillPropsStyles>`
     font-size: ${getREM(fontSizes[6] * 0.625)};
     line-height: 1;
     font-weight: 400;
-    border-radius: ${getREM(spaces[2])};
+    border-radius: ${getREM(spaces[5])};
     text-transform: uppercase;
-    padding: 0 ${getREM(spaces[1])};
-    width: ${getREM(spaces[7] * 3.6)};
-    height: ${getREM(spaces[7] * 0.95)};
+    padding: 0 ${getREM(spaces[3])};
+    width: ${getREM(spaces[12] * 3.6)};
+    height: ${getREM(spaces[12] * 0.95)};
     box-shadow: 0 0 1px 0 ${hexToRGBA(neutrals[2], 0.5)};
     transition: background-color 400ms ease-in-out;
 `;
 
 export const StyledIcon = styled(Icon)<IRecordPillPropsStyles>`
     display: ${({ $on }) => ($on ? "inline-block" : "none")};
-    margin-right: ${getREM(spaces[1] * 0.75)};
+    margin-right: ${getREM(spaces[3] * spaces[4])};
     border-radius: 100%;
     animation: ${pulse} 3.5s infinite;
     background: transparent;

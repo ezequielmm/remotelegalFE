@@ -14,13 +14,13 @@ const StyledCard = styled(ANTDCard)`
         const { spaces, fontSizes, headerFontFamily } = theme.default;
         const styles = `
             &.ant-card {
-                padding: ${getREM(spaces[7])};
-                box-shadow: 0 ${getREM(spaces[2])} ${getREM(spaces[5])} 0 ${hexToRGBA(neutrals[2], 0.08)}
+                padding: ${getREM(spaces[12])};
+                box-shadow: 0 ${getREM(spaces[5])} ${getREM(spaces[9])} 0 ${hexToRGBA(neutrals[2], 0.08)}
                 
                 .ant-card-head {
                     font-family: ${headerFontFamily};
                     padding: 0;
-                    margin: 0 0 ${getREM(spaces[3])};
+                    margin: 0 0 ${getREM(spaces[6])};
                     border: 0;
                     min-height: auto;
 

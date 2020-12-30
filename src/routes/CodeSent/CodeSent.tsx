@@ -21,7 +21,7 @@ const CodeSent = ({ email }: CodeSentProps) => {
     };
     return (
         <Row justify="center">
-            <Space direction="vertical" size={theme.default.spaces[11] * theme.default.baseUnit}>
+            <Space direction="vertical" size={theme.default.spaces[6] * 4 * theme.default.baseUnit}>
                 {error && <Alert data-testid={error} message={NETWORK_ERROR} type="error" showIcon />}
                 <Col style={{ textAlign: "center" }}>
                     <Title dataTestId="code_sent_title" level={3} weight="light" noMargin>
