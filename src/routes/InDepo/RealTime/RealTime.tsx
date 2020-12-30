@@ -1,15 +1,15 @@
-import React, { useContext, useEffect, useRef } from "react";
-import moment from "moment";
-import { Space } from "antd";
-import Text from "../../../components/Typography/Text";
-import { GlobalStateContext } from "../../../state/GlobalState";
+import React, { useEffect, useRef } from "react";
+// import moment from "moment";
+// import { Space } from "antd";
+// import Text from "../../../components/Typography/Text";
+// import { GlobalStateContext } from "../../../state/GlobalState";
 import { StyledLayoutCotainer, StyledLayoutContent, ContainerProps } from "../styles";
-import { RoughDraftContainer, StyledRealTimeContainer, RealTimeHeader } from "./styles";
+// import { RoughDraftContainer, StyledRealTimeContainer, RealTimeHeader } from "./styles";
 
 const RealTime = ({ visible }: ContainerProps) => {
-    const { state } = useContext(GlobalStateContext);
+    // const { state } = useContext(GlobalStateContext);
     const scrollableRef = useRef(null);
-    const { transcriptions } = state.room;
+    // const { transcriptions } = state.room;
 
     useEffect(() => {
         if (scrollableRef && scrollableRef.current) {
@@ -23,7 +23,7 @@ const RealTime = ({ visible }: ContainerProps) => {
     return (
         <StyledLayoutCotainer visible={visible}>
             <StyledLayoutContent>
-                <StyledRealTimeContainer>
+                {/* <StyledRealTimeContainer>
                     <div ref={scrollableRef}>
                         <div>
                             <RealTimeHeader>
@@ -56,7 +56,7 @@ const RealTime = ({ visible }: ContainerProps) => {
                             </Space>
                         </div>
                     </div>
-                </StyledRealTimeContainer>
+                </StyledRealTimeContainer> */}
             </StyledLayoutContent>
         </StyledLayoutCotainer>
     );

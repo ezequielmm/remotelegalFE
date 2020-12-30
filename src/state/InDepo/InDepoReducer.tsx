@@ -1,4 +1,3 @@
-import moment from "moment-timezone";
 import { Reducer } from "react";
 import { LocalDataTrack, Room } from "twilio-video";
 import { TimeZones } from "../../models/general";
@@ -37,21 +36,21 @@ const RoomReducer: Reducer<IRoom, IAction> = (state: IRoom, action: IAction): IR
             };
         case ACTION_TYPE.IN_DEPO_ADD_TRANSCRIPTION: {
             const newTranscription = action.payload;
-            if (newTranscription.text === "") return state;
-            const laterTranscriptionIndex = state.transcriptions.findIndex((transcription) => {
-                return moment(newTranscription.time).isBefore(moment(transcription.time), "second");
-            });
-            const transcriptions =
-                laterTranscriptionIndex === -1
-                    ? [...state.transcriptions, newTranscription]
-                    : [
-                          state.transcriptions.slice(0, laterTranscriptionIndex),
-                          newTranscription,
-                          state.transcriptions.slice(laterTranscriptionIndex),
-                      ];
+            // if (newTranscription.text === "") return state;
+            // const laterTranscriptionIndex = state.transcriptions.findIndex((transcription) => {
+            //     return moment(newTranscription.time).isBefore(moment(transcription.time), "second");
+            // });
+            // const transcriptions =
+            //     laterTranscriptionIndex === -1
+            //         ? [...state.transcriptions, newTranscription]
+            //         : [
+            //               ...state.transcriptions.slice(0, laterTranscriptionIndex),
+            //               newTranscription,
+            //               ...<state.transcriptions.slice(laterTranscriptionIndex),
+            //           ];
             return {
                 ...state,
-                transcriptions,
+                transcriptions: [...state.transcriptions, newTranscription],
             };
         }
         case ACTION_TYPE.ADD_WITNESS:
