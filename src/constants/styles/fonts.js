@@ -1,5 +1,5 @@
 const fonts = {
-    fontFamily: "'Lato', sans-serif,",
+    fontFamily: "'Lato', sans-serif",
     headerFontFamily: "'Merriweather', serif",
     codeFontFamily: "'PT Mono', monospace",
     fontSizeBase: 0.875, // 14px

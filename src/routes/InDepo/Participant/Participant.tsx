@@ -30,7 +30,7 @@ const Participant = ({
                 </StyledTimeBox>
             )}
             <StyledIdentityBox>
-                <Text size="small" weight="bold" state="white">
+                <Text size="default" weight="bold" state="white">
                     {participant?.identity ? participant.identity : "waiting for witness"}
                 </Text>
             </StyledIdentityBox>

@@ -48,26 +48,36 @@ export const StyledIdentityBox = styled.div`
     position: absolute;
     bottom: 0;
     left: 0;
-    padding: ${({ theme }) => `${getREM(theme.default.spaces[7] / 2)} ${getREM(theme.default.spaces[4])}`};
+    font-size: ${({ theme }) => getREM(theme.default.fontSizes[6])};
+    padding: ${({ theme }) =>
+        `${getREM(theme.default.spaces[12])} ${getREM(theme.default.spaces[4])} ${getREM(
+            theme.default.spaces[7] / 2
+        )}`};
     display: flex;
     flex-direction: column;
     max-width: 100%;
-    background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, #000000 100%);
-    text-shadow: 0px 0px 8px rgba(0, 0, 0, 0.5);
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.5) 100%);
+    text-shadow: 0px 0px 2px rgba(0, 0, 0, 0.3), 0px 0px 8px rgba(0, 0, 0, 0.5);
     right: 0;
 `;
 
 export const StyledTimeBox = styled.div`
     text-transform: uppercase;
     position: absolute;
+    font-size: ${({ theme }) => getREM(theme.default.fontSizes[6])};
     top: 0;
     right: 0;
     left: 0;
-    padding: ${({ theme }) => `${getREM(theme.default.spaces[4] / 2)} ${getREM(theme.default.spaces[5] / 2)}`};
+    padding: ${({ theme }) =>
+        `
+        ${getREM(theme.default.spaces[7] / 2)}
+        ${getREM(theme.default.spaces[4])} 
+        ${getREM(theme.default.spaces[12])} 
+        `};
     display: flex;
     flex-direction: column;
     text-align: right;
     max-width: 100%;
-    background: linear-gradient(180deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0) 100%);
-    text-shadow: 0px 0px 8px rgba(0, 0, 0, 0.5);
+    background: linear-gradient(0, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.5) 100%);
+    text-shadow: 0px 0px 2px rgba(0, 0, 0, 0.3), 0px 0px 8px rgba(0, 0, 0, 0.5);
 `;

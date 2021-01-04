@@ -9,7 +9,7 @@ export default function Clock({ timeZone }: { timeZone?: TimeZones }) {
     const time = useShowTime({ timeZone, updateInterval: SECOND });
 
     return (
-        <Text data-testid="participant_time" size="small" weight="bold" state="white">
+        <Text data-testid="participant_time" size="default" weight="bold" state="white">
             {time}
         </Text>
     );
