@@ -17,7 +17,7 @@ export default function EnteredExhibits() {
                 <Text size="large" state="white">
                     Entered exhibits
                 </Text>
-                <Badge count={5} />
+                <Badge count={0} />
             </Space>
             <Row justify="center" align="middle" style={{ height: "100%" }}>
                 <Col sm={18} lg={14} xl={13} xxl={9}>
