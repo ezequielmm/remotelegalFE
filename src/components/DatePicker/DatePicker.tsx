@@ -2,7 +2,7 @@ import React from "react";
 import { DatePicker } from "antd";
 import { DatePickerProps } from "antd/lib/date-picker";
 import styled from "styled-components";
-import { getREM, hexToRGBA } from "../../constants/styles/utils";
+import { getREM, hexToRGBA, getWeightNumber } from "../../constants/styles/utils";
 import Icon from "../Icon";
 import { ReactComponent as CalendarIcon } from "../../assets/icons/calendar.svg";
 import PopupContainer from "../PopupContainer";
@@ -64,7 +64,7 @@ const StyledPopupContainer = styled(PopupContainer)<IPopupContainer>`
                 .ant-picker-body {
                     .ant-picker-content {
                         thead th {
-                            font-weight: bold;
+                            font-weight: ${getWeightNumber("bold")};
                         }
                         .ant-picker-cell .ant-picker-cell-inner {
                             border-radius: 2px;

@@ -1,3 +1,5 @@
+const { fonts } = require("./fonts");
+
 function getREM(unit) {
     return `${unit}rem`;
 }
@@ -15,19 +17,19 @@ function getWeightNumber(weight) {
 
     switch (weight) {
         case "light":
-            numberWeight = 300;
+            numberWeight = fonts.fontWeights.light;
             break;
 
         case "regular":
-            numberWeight = 400;
+            numberWeight = fonts.fontWeights.regular;
             break;
 
         case "bold":
-            numberWeight = 700;
+            numberWeight = fonts.fontWeights.bold;
             break;
 
         default:
-            numberWeight = 400;
+            numberWeight = fonts.fontWeights.regular;
             break;
     }
 

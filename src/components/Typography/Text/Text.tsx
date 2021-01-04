@@ -80,7 +80,7 @@ const StyledText = styled.span<ITextProps>`
             color: ${textColor};
             font-family: ${setFontFamily(font)};
             font-size: ${setFontSize(size, fontSizes)};
-            font-weight: ${weight ? getWeightNumber(weight) : 400};
+            font-weight: ${getWeightNumber(weight || "normal")};
             line-height: 1.5;
             ${stateStyle}
             ${uppercaseStyle}

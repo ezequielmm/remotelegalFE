@@ -8,6 +8,11 @@ const fonts = {
     typographyTitleFontWeight: 700,
     typographyTitleMarginTop: 1.2,
     typographyTitleMarginBottom: 0.5,
+    fontWeights: {
+        light: 300,
+        regular: 400,
+        bold: 700,
+    },
 };
 
 module.exports = { fonts };

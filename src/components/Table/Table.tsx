@@ -3,7 +3,7 @@ import { Table } from "antd";
 import { DefaultRecordType } from "rc-table/lib/interface";
 import { TableProps } from "antd/lib/table/Table";
 import styled from "styled-components";
-import { getREM, hexToRGBA } from "../../constants/styles/utils";
+import { getREM, hexToRGBA, getWeightNumber } from "../../constants/styles/utils";
 
 const StyledTable = styled(Table)`
     ${({ theme }) => {
@@ -119,7 +119,7 @@ const StyledTable = styled(Table)`
                                 background-color: transparent;
                                 font-size: ${getREM(fontSizes[8])};
                                 text-transform: uppercase;
-                                font-weight: bold;
+                                font-weight: ${getWeightNumber("bold")};
                                 border-bottom-color: ${theme.mode === "inDepo" ? disabled[9] : neutrals[3]};
                                 &:first-child {
                                     .ant-table-column-sorters {

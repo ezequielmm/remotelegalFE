@@ -55,6 +55,7 @@ const theme = {
         fontSizes: fonts.fontSizes,
         spaces: spacing.spaces,
         heightBase: spacing.heightBase,
+        fontWeights: fonts.fontWeights,
     },
     mode: "default",
 };

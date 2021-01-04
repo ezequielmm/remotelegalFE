@@ -1,5 +1,5 @@
 import styled, { keyframes } from "styled-components";
-import { getREM, hexToRGBA } from "../../constants/styles/utils";
+import { getREM, hexToRGBA, getWeightNumber } from "../../constants/styles/utils";
 import Icon from "../Icon";
 import { theme } from "../../constants/styles/theme";
 
@@ -38,7 +38,7 @@ export const StyledRecordPill = styled.span<IRecordPillPropsStyles>`
     color: ${textColorInverse};
     font-size: ${getREM(fontSizes[6] * 0.625)};
     line-height: 1;
-    font-weight: 400;
+    font-weight: ${getWeightNumber("normal")};
     border-radius: ${getREM(spaces[5])};
     text-transform: uppercase;
     padding: 0 ${getREM(spaces[3])};
