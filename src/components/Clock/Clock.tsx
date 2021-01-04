@@ -10,7 +10,7 @@ export default function Clock({ timeZone }: { timeZone?: TimeZones }) {
 
     return (
         <Text data-testid="participant_time" size="default" weight="bold" state="white">
-            {time}
+            {time && `${time} (${String(timeZone)})`}
         </Text>
     );
 }
