@@ -11,38 +11,59 @@ export interface TableColumn {
     width: string;
 }
 
-export const STATUS_COLUMN = { title: "STATUS", field: "status", width: "11%" };
-export const REQUESTER_BY_COLUMN = { title: "REQUESTED BY", field: "requester", width: "14%" };
+export const STATUS_COLUMN = {
+    title: "STATUS",
+    field: "status",
+    render: (text) => <small>{text}</small>,
+    width: 95,
+};
+export const REQUESTER_BY_COLUMN = {
+    title: "REQUESTED BY",
+    field: "requester",
+    render: (text) => <small>{text}</small>,
+};
 export const LAW_COLUMN = {
     title: "LAW FIRM",
     field: "company",
-    render: (text) => <strong>{text || "-"}</strong>,
-    width: "14%",
+    render: (text) => (
+        <small>
+            <b>{text || "-"}</b>
+        </small>
+    ),
 };
-export const CASE_COLUMN = { title: "CASE", field: "caseName", width: "11%" };
+export const CASE_COLUMN = {
+    title: "CASE",
+    field: "caseName",
+    width: 120,
+    ellipsis: true,
+    render: (text) => <small>{text}</small>,
+};
 export const DATE_COLUMN = {
     title: "DATE AND TIME",
     field: "startDate",
     render: ({ date, time }: { date: string; time: string }) => (
-        <div>
-            {date} <br /> {time}
-        </div>
+        <>
+            <small>{date}</small>
+            <small>{time}</small>
+        </>
     ),
-    width: "12%",
+    width: 150,
 };
 export const WITNESS_COLUMN = {
     title: "WITNESS",
     sorter: false,
     field: "witness",
-    render: (text) => <strong>{text || "-"}</strong>,
-    width: "12%",
+    render: (text) => (
+        <small>
+            <b>{text || "-"}</b>
+        </small>
+    ),
 };
 export const COURT_REPORTER_COLUMN = {
     title: "COURT REPORTER",
     sorter: false,
     field: "courtReporter",
     render: (text) => text || "-",
-    width: "12%",
 };
 export const JOB_COLUMN = { title: "JOB#", field: "details", render: (text) => text || "-", width: "6.5%" };
 export const getActionColumns = (history) => ({
@@ -52,7 +73,7 @@ export const getActionColumns = (history) => ({
         </Button>
     ),
     sorter: false,
-    width: "6.5%",
+    width: 90,
 });
 
 export const getDepositionColumns = (history: History, isAdmin?: boolean) =>
