@@ -1,16 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import { Redirect, Link } from "react-router-dom";
 import { Col, Row, Form, Space, Alert } from "antd";
-import useInput from "../../hooks/useInput";
 import { InputWrapper } from "../../components/Input/styles";
 import Container from "../../components/Container";
 import Button from "../../components/Button";
 import Title from "../../components/Typography/Title";
 import Text from "../../components/Typography/Text";
 import * as ERRORS from "../../constants/login";
-import isInputEmpty from "../../helpers/isInputEmpty";
 import isInvalidEMail from "../../helpers/isInvalidEmail";
 import { useSignIn, useVerifyToken } from "../../hooks/auth";
+import Input from "../../components/Input";
 
 interface LoginProps {
     location?: {
@@ -19,30 +18,28 @@ interface LoginProps {
 }
 
 const Login = ({ location }: LoginProps) => {
-    const { inputValue: emailValue, input: emailInput, invalid: emailInvalid } = useInput(isInvalidEMail, {
-        placeholder: "Enter your email",
-        id: "email",
-        name: `email ${Math.random()}`,
-    });
+    const [emailInput, setEmailInput] = useState({ value: "", pristine: false });
 
-    const { inputValue: passwordValue, input: passwordInput, invalid: passwordInvalid } = useInput(isInputEmpty, {
-        name: "password",
-        autoComplete: "new-password",
-        placeholder: "Enter your password",
-        type: "password",
-    });
+    const [passwordInput, setPasswordInput] = useState({ value: "", pristine: false });
 
-    const { onSubmit, loading, submitError } = useSignIn(location, emailValue, passwordValue);
+    const { onSubmit, loading, submitError } = useSignIn(location, emailInput.value, passwordInput.value);
 
     const { isAuthenticated, verificationHash, data, error } = useVerifyToken();
 
     const emailErrorMessage =
-        (emailInvalid && !emailValue.length && ERRORS.EMPTY_EMAIL_ERROR) ||
-        (emailInvalid && ERRORS.INVALID_EMAIL_ERROR);
+        (emailInput.pristine && !emailInput.value.length && ERRORS.EMPTY_EMAIL_ERROR) ||
+        (emailInput.pristine && isInvalidEMail(emailInput.value) && ERRORS.INVALID_EMAIL_ERROR);
 
-    const passwordErrorMessage = passwordInvalid && ERRORS.EMPTY_PASSWORD_ERROR;
+    const passwordErrorMessage = !passwordInput.value.length && passwordInput.pristine && ERRORS.EMPTY_PASSWORD_ERROR;
 
-    const disabledButton = isInvalidEMail(emailValue) || loading || isInputEmpty(passwordValue);
+    const handleSubmit = () => {
+        setPasswordInput({ ...passwordInput, pristine: true });
+        setEmailInput({ ...emailInput, pristine: true });
+        if (!isInvalidEMail(emailInput.value) && passwordInput.value) {
+            return onSubmit();
+        }
+        return null;
+    };
 
     return isAuthenticated && !verificationHash ? (
         <Redirect to="/dashboard" />
@@ -50,7 +47,7 @@ const Login = ({ location }: LoginProps) => {
         <Container>
             <Row justify="center" align="middle">
                 <Col xs={20} sm={16} lg={14} xxl={12}>
-                    <Form onFinish={onSubmit} layout="vertical">
+                    <Form onFinish={handleSubmit} layout="vertical">
                         <Space direction="vertical" size="large" style={{ width: "100%" }}>
                             <div>
                                 <Title level={3} weight="light" noMargin>
@@ -67,7 +64,15 @@ const Login = ({ location }: LoginProps) => {
                             <div>
                                 <Form.Item label="Email" htmlFor="email">
                                     <InputWrapper>
-                                        {emailInput}
+                                        <Input
+                                            onChange={(e) => {
+                                                setEmailInput({ value: e.target.value, pristine: false });
+                                            }}
+                                            invalid={emailErrorMessage.length > 0}
+                                            value={emailInput.value}
+                                            placeholder="Enter your email"
+                                            name="email"
+                                        />
                                         {emailErrorMessage && (
                                             <Text size="small" state="error">
                                                 {emailErrorMessage}
@@ -95,7 +100,16 @@ const Login = ({ location }: LoginProps) => {
                                     htmlFor="password"
                                 >
                                     <InputWrapper>
-                                        {passwordInput}
+                                        <Input
+                                            onChange={(e) => {
+                                                setPasswordInput({ value: e.target.value, pristine: false });
+                                            }}
+                                            invalid={passwordErrorMessage.length > 0}
+                                            name="password"
+                                            value={passwordInput.value}
+                                            placeholder="Enter your password"
+                                            type="password"
+                                        />
                                         {passwordErrorMessage && (
                                             <Text size="small" state="error">
                                                 {passwordErrorMessage}
@@ -103,7 +117,7 @@ const Login = ({ location }: LoginProps) => {
                                         )}
                                     </InputWrapper>
                                 </Form.Item>
-                                <Button type="primary" block disabled={disabledButton} htmlType="submit">
+                                <Button disabled={loading} type="primary" block htmlType="submit">
                                     Log In
                                 </Button>
                             </div>

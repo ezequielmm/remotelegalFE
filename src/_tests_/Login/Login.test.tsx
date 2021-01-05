@@ -17,66 +17,56 @@ const Dashboard = () => {
 };
 
 describe("Login", () => {
-    it("should validate inputs on blur on the first load and the button should be disabled", async () => {
-        const { getByPlaceholderText, queryByText, getByRole } = renderWithGlobalContext(<Login />);
+    it("should validate inputs on submit", async () => {
+        const { queryByText, getByRole } = renderWithGlobalContext(<Login />);
         const button = getByRole("button", { name: /Log In/i });
-        expect(button).toBeDisabled();
-        const emailInput = getByPlaceholderText(CONSTANTS.EMAIL_PLACEHOLDER);
-        const passwordInput = getByPlaceholderText(CONSTANTS.PASSWORD_PLACEHOLDER);
-        fireEvent.change(emailInput, { target: { value: "" } });
-        fireEvent.change(passwordInput, { target: { value: "" } });
+        expect(button).toBeEnabled();
         expect(queryByText(ERRORS.EMPTY_PASSWORD_ERROR)).toBeFalsy();
         expect(queryByText(ERRORS.EMPTY_EMAIL_ERROR)).toBeFalsy();
-        fireEvent.focus(emailInput);
-        fireEvent.focus(passwordInput);
-        fireEvent.blur(emailInput);
-        fireEvent.blur(passwordInput);
+        fireEvent.click(button);
         await waitForDomChange();
         expect(queryByText(ERRORS.EMPTY_PASSWORD_ERROR)).toBeTruthy();
         expect(queryByText(ERRORS.EMPTY_EMAIL_ERROR)).toBeTruthy();
     });
 
     it("should display the correct error message when invalid email is entered", async () => {
-        const { getByPlaceholderText, queryByText } = renderWithGlobalContext(<Login />);
+        const { getByPlaceholderText, queryByText, getByRole } = renderWithGlobalContext(<Login />);
+        const button = getByRole("button", { name: /Log In/i });
         const emailInput = getByPlaceholderText(CONSTANTS.EMAIL_PLACEHOLDER);
         fireEvent.change(emailInput, { target: { value: "test1" } });
-        fireEvent.focus(emailInput);
-        fireEvent.blur(emailInput);
+        fireEvent.click(button);
         await waitForDomChange();
         expect(queryByText(ERRORS.INVALID_EMAIL_ERROR)).toBeTruthy();
     });
 
-    it("should validate inputs on change", async () => {
-        const { getByPlaceholderText, queryByText } = renderWithGlobalContext(<Login />);
-        const emailInput = getByPlaceholderText(CONSTANTS.EMAIL_PLACEHOLDER);
+    it("should display the correct error message when no password is entered", async () => {
+        const { getByPlaceholderText, queryByText, getByRole } = renderWithGlobalContext(<Login />);
+        const button = getByRole("button", { name: /Log In/i });
         const passwordInput = getByPlaceholderText(CONSTANTS.PASSWORD_PLACEHOLDER);
-        fireEvent.change(emailInput, { target: { value: "test1" } });
-        fireEvent.focus(emailInput);
-        fireEvent.blur(emailInput);
-        await waitForDomChange();
-        expect(queryByText(ERRORS.INVALID_EMAIL_ERROR)).toBeTruthy();
-        fireEvent.change(emailInput, { target: { value: "" } });
-        expect(queryByText(ERRORS.EMPTY_EMAIL_ERROR)).toBeTruthy();
-        fireEvent.change(passwordInput, { target: { value: "aaaa" } });
-        fireEvent.focus(passwordInput);
-        fireEvent.blur(passwordInput);
-        expect(queryByText(ERRORS.EMPTY_PASSWORD_ERROR)).toBeFalsy();
         fireEvent.change(passwordInput, { target: { value: "" } });
+        fireEvent.click(button);
+        await waitForDomChange();
         expect(queryByText(ERRORS.EMPTY_PASSWORD_ERROR)).toBeTruthy();
     });
 
-    it("should display a button enabled after inputs are validated", async () => {
-        const { getByPlaceholderText, getByRole } = renderWithGlobalContext(<Login />);
+    it("should remove validation messages on change after submit", async () => {
+        const { getByPlaceholderText, queryByText, getByRole } = renderWithGlobalContext(<Login />);
         const button = getByRole("button", { name: /Log In/i });
         const emailInput = getByPlaceholderText(CONSTANTS.EMAIL_PLACEHOLDER);
         const passwordInput = getByPlaceholderText(CONSTANTS.PASSWORD_PLACEHOLDER);
-        fireEvent.change(emailInput, { target: { value: "test1@gmail.com" } });
+        fireEvent.change(emailInput, { target: { value: "test1" } });
+        fireEvent.click(button);
         await waitForDomChange();
-        fireEvent.change(passwordInput, { target: { value: "aaaa" } });
-        expect(button).toBeEnabled();
+        expect(queryByText(ERRORS.EMPTY_PASSWORD_ERROR)).toBeTruthy();
+        expect(queryByText(ERRORS.INVALID_EMAIL_ERROR)).toBeTruthy();
+        fireEvent.change(passwordInput, { target: { value: "test123" } });
+        fireEvent.change(emailInput, { target: { value: "" } });
+        await waitForDomChange();
+        expect(queryByText(ERRORS.INVALID_EMAIL_ERROR)).toBeFalsy();
+        expect(queryByText(ERRORS.EMPTY_PASSWORD_ERROR)).toBeFalsy();
     });
 
-    it("should call auth with the right parameters", async () => {
+    it("should call auth with the right parameters and button should be disabled", async () => {
         Auth.signIn = jest.fn().mockImplementation(() => {
             return new Promise(() => {
                 return "";
