@@ -8,13 +8,13 @@ const mapDepositions = ({
     requesterEmail,
     details,
     depositions,
-    otherParticipants,
+    normalizedParticipants,
 }: {
     requesterPhone?: string;
     requesterName: string;
     requesterEmail: string;
     details?: string;
-    otherParticipants?: ParticipantModel.IParticipant[];
+    normalizedParticipants?: ParticipantModel.IParticipant[];
     depositions: DepositionModel.ICreateDeposition[];
 }) => {
     const files = [];
@@ -38,7 +38,7 @@ const mapDepositions = ({
                 endDate: formattedEnd === "" ? null : formatToDateOffset(String(date), formattedEnd, timeZone),
                 caption: file?.uid,
                 witness: mapWitness,
-                participants: otherParticipants,
+                participants: normalizedParticipants,
                 isVideoRecordingNeeded: isVideoRecordingNeeded === "YES",
                 requesterPhone,
                 requesterName,

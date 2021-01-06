@@ -1,7 +1,7 @@
 import React, { ReactElement } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Space, Form, Row } from "antd";
-import { useForm } from "react-hook-form";
+import { useForm, useFormContext } from "react-hook-form";
 import Modal from "../../../../components/Modal";
 import Confirm from "../../../../components/Confirm";
 import Button from "../../../../components/Button";
@@ -58,7 +58,10 @@ export default function OtherParticipantsModal({
         mode: "onBlur",
         defaultValues: initialValues,
     });
-
+    const { getValues } = useFormContext();
+    const isCourtReporterAlreadyAdded = getValues().otherParticipants?.some(
+        (participant) => participant?.role === CONSTANTS.COURT_REPORTER_ROLE
+    );
     const deleteMessage = (
         <Confirm
             visible={open}
@@ -123,7 +126,13 @@ export default function OtherParticipantsModal({
                             name="role"
                             control={control}
                             errorMessage={errors.role?.message}
-                            items={CONSTANTS.OTHER_PARTICIPANTS_ROLES}
+                            items={
+                                isCourtReporterAlreadyAdded
+                                    ? CONSTANTS.OTHER_PARTICIPANTS_ROLES.filter(
+                                          (participant) => participant !== CONSTANTS.COURT_REPORTER_ROLE
+                                      )
+                                    : CONSTANTS.OTHER_PARTICIPANTS_ROLES
+                            }
                             renderItem={(item) => (
                                 <Select.Option key={item.id} value={item.id}>
                                     {item.name}

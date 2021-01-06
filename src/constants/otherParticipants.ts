@@ -1,6 +1,6 @@
 export const OTHER_PARTICIPANTS_SECTION_TITLE = "Other Participants";
 export const OTHER_PARTICIPANTS_SECTION_SUBTITLE = "Only invited participants will be given access to this deposition.";
-
+export const COURT_REPORTER_ROLE = "Court Reporter";
 export const OTHER_PARTICIPANTS_COLUMNS_TITLES = ["EMAIL ADDRESS", "NAME", "PHONE NUMBER", "ROLE"];
 
 export const OTHER_PARTICIPANTS_MODAL_TITLE = "Add participant";
@@ -18,7 +18,14 @@ export const EMPTY_STATE_TITLE = "No participants added yet.";
 export const EMPTY_STATE_TEXT = "Currently, you don't have any case added yet. Do you want to add a case?";
 
 export const OTHER_PARTICIPANTS_FIELDS = ["email", "name", "phone", "role", "action"];
-export const OTHER_PARTICIPANTS_ROLES = ["Attorney", "Observer", "Paralegal"];
+export const OTHER_PARTICIPANTS_ROLES = [
+    "Attorney",
+    "Observer",
+    "Paralegal",
+    "Tech Expert",
+    "Court Reporter",
+    "Interpreter",
+];
 
 export const OPTIONAL_EMAIL_LABEL = "Email Address (Optional)";
 export const EMAIL_LABEL = "Email Address";

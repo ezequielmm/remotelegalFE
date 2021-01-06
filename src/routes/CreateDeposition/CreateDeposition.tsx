@@ -52,6 +52,10 @@ const CreateDeposition = () => {
             details,
             otherParticipants,
         } = values;
+        const normalizedParticipants = otherParticipants?.map((participant) => ({
+            ...participant,
+            role: participant?.role.replace(/\s/g, ""),
+        }));
 
         const { files, mappedDepositions } = mapDepositions({
             depositions,
@@ -59,7 +63,7 @@ const CreateDeposition = () => {
             requesterName,
             requesterEmail,
             details,
-            otherParticipants,
+            normalizedParticipants,
         });
 
         scheduleDepositions({ depositionList: mappedDepositions, files, caseId });

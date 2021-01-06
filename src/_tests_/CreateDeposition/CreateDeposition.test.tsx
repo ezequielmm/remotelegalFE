@@ -20,6 +20,40 @@ const customDeps = getMockDeps();
 beforeEach(() => jest.resetModules());
 
 describe("CreateDeposition", () => {
+    it("Court Reporter shouldn´t appear again in the options once selected", async () => {
+        const { getByTestId, getByText, getAllByText } = renderWithGlobalContext(<CreateDeposition />);
+        const addParticipantButton = getByTestId("show_modal_add_participants_button");
+        await act(async () => {
+            userEvent.click(addParticipantButton);
+        });
+        await act(async () => {
+            userEvent.click(await waitForElement(() => getByText(ADD_PARTICIPANTS_CONSTANTS.ROLE_PLACEHOLDER)));
+            const courtReporterRole = await waitForElement(() =>
+                getByText(ADD_PARTICIPANTS_CONSTANTS.COURT_REPORTER_ROLE)
+            );
+            userEvent.click(courtReporterRole);
+        });
+        userEvent.click(getByTestId("add_participants_add_modal_button"));
+        await waitForDomChange();
+        userEvent.click(addParticipantButton);
+        await waitForDomChange();
+        await act(async () => {
+            userEvent.click(await waitForElement(() => getByText(ADD_PARTICIPANTS_CONSTANTS.ROLE_PLACEHOLDER)));
+            expect(getAllByText("Court Reporter")).toHaveLength(1);
+        });
+    });
+    it("should display all available roles", async () => {
+        const { getByTestId, getAllByText, getByText } = renderWithGlobalContext(<CreateDeposition />);
+        await act(async () => {
+            userEvent.click(getByTestId("show_modal_add_participants_button"));
+        });
+        await act(async () => {
+            userEvent.click(await waitForElement(() => getByText(ADD_PARTICIPANTS_CONSTANTS.ROLE_PLACEHOLDER)));
+            await waitForElement(() =>
+                ADD_PARTICIPANTS_CONSTANTS.OTHER_PARTICIPANTS_ROLES.map((role) => getAllByText(role))
+            );
+        });
+    });
     it("shows a case name on the Select of CaseSection when it's selected", async () => {
         const { getByText, getAllByText, queryByText, deps } = renderWithGlobalContext(<CreateDeposition />);
         const caseSelect = await waitForElement(() => getByText(CONSTANTS.CASE_SELECT_PLACEHOLDER));
