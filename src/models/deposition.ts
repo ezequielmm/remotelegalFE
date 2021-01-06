@@ -8,6 +8,12 @@ export enum DepositionStatus {
     canceled = "Canceled",
 }
 
+export type DepositionPermissions = ["Recording"?, "EndDeposition"?];
+
+export interface IDepositionPermissions {
+    permissions: DepositionPermissions;
+}
+
 export interface IDeposition {
     id: string;
     caseName: string;

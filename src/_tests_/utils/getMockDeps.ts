@@ -1,7 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 import { Deps } from "../../models/general";
 import { getCaseAsc, getOneCase } from "../constants/cases";
-import { JOIN_DEPOSITION_MOCK } from "../constants/InDepo";
+import { JOIN_DEPOSITION_MOCK, PERMISSIONS_MOCK } from "../constants/InDepo";
 import { getDepositions } from "../constants/depositions";
 import { getUser1 } from "../constants/signUp";
 
@@ -9,6 +9,7 @@ export default (): Deps => ({
     apiService: {
         recordDeposition: jest.fn().mockResolvedValue({}),
         joinDeposition: jest.fn().mockResolvedValue(JOIN_DEPOSITION_MOCK),
+        getDepositionPermissions: jest.fn().mockResolvedValue({ permissions: PERMISSIONS_MOCK }),
         fetchCases: jest.fn().mockResolvedValue(getCaseAsc()),
         fetchDeposition: jest.fn().mockResolvedValue(getDepositions()[0]),
         fetchDepositions: jest.fn().mockResolvedValue(getDepositions()),

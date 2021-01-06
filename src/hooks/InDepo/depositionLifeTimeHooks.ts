@@ -6,6 +6,7 @@ import configParticipantListeners from "../../helpers/configParticipantListeners
 import useAsyncCallback from "../useAsyncCallback";
 import actions from "../../state/InDepo/InDepoActions";
 import disconnectFromDepo from "../../helpers/disconnectFromDepo";
+import useDepositionPermissions from "./useDepositionPermissions";
 import { DepositionID } from "../../state/types";
 
 export const useKillDepo = () => {
@@ -19,8 +20,9 @@ export const useKillDepo = () => {
 
 const useGenerateToken = () => {
     const { deps } = useContext(GlobalStateContext);
-    return useAsyncCallback(async (payload: string) => {
-        const response = await deps.apiService.joinDeposition(payload);
+    const { depositionID } = useParams<DepositionID>();
+    return useAsyncCallback(async () => {
+        const response = await deps.apiService.joinDeposition(depositionID);
         return response;
     }, []);
 };
@@ -35,10 +37,12 @@ export const useJoinDeposition = () => {
             isMounted.current = false;
         };
     }, []);
+    const [getDepositionPermissions] = useDepositionPermissions();
 
     return useAsyncCallback(async (depositionID: string) => {
         const dataTrack = new LocalDataTrack({ maxPacketLifeTime: null, maxRetransmits: null });
-        const { timeZone, token, witnessEmail }: any = await generateToken(depositionID);
+        const { permissions } = await getDepositionPermissions();
+        const { timeZone, token, witnessEmail }: any = await generateToken();
         const room = await createLocalTracks({ audio: true, video: { aspectRatio: 1.777777777777778 } }).then(
             (localTracks) => {
                 return connect(token, { name: depositionID, tracks: [...localTracks, dataTrack] });
@@ -49,6 +53,7 @@ export const useJoinDeposition = () => {
             return disconnectFromDepo(room, dispatch);
         }
         dispatch(actions.joinToRoom(room));
+        dispatch(actions.setPermissions(permissions));
         dispatch(actions.addWitness(witnessEmail));
         dispatch(actions.setTimeZone(timeZone));
         dispatch(actions.addDataTrack(dataTrack));

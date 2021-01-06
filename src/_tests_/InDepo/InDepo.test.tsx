@@ -223,3 +223,33 @@ test("Cancel button on End Depo modal closes the modal", async () => {
     expect(queryByText(TESTS_CONSTANTS.END_DEPO_MODAL_FIRST_TEXT)).toBeFalsy();
     expect(queryByText(TESTS_CONSTANTS.END_DEPO_MODAL_SECOND_TEXT)).toBeFalsy();
 });
+test("Record button and end deposition are shown", async () => {
+    customDeps.apiService.joinDeposition = jest.fn().mockResolvedValue(TESTS_CONSTANTS.JOIN_DEPOSITION_MOCK);
+    const { getByTestId } = renderWithGlobalContext(
+        <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,
+        customDeps,
+        undefined,
+        history
+    );
+
+    history.push(TESTS_CONSTANTS.TEST_ROUTE);
+    await waitForDomChange();
+    await waitForElement(() => getByTestId("end"));
+    await waitForElement(() => getByTestId("record"));
+});
+
+test("Record button and end deposition are not shown", async () => {
+    customDeps.apiService.joinDeposition = jest.fn().mockResolvedValue(TESTS_CONSTANTS.JOIN_DEPOSITION_MOCK);
+    customDeps.apiService.getDepositionPermissions = jest.fn().mockResolvedValue({ permissions: [] });
+    const { queryByTestId } = renderWithGlobalContext(
+        <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,
+        customDeps,
+        undefined,
+        history
+    );
+
+    history.push(TESTS_CONSTANTS.TEST_ROUTE);
+    await waitForDomChange();
+    expect(queryByTestId("end")).toBeFalsy();
+    expect(queryByTestId("record")).toBeFalsy();
+});

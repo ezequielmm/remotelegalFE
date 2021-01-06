@@ -69,21 +69,28 @@ export class ApiService {
         });
     };
 
-    joinDeposition = async (depositionID: string): Promise<DepositionModel.IDeposition> => {
+    getDepositionPermissions = async (depositionID: string) => {
         return this.request<DepositionModel.IDeposition>({
+            path: `/api/permissions/depositions/${depositionID}`,
+            method: HTTP_METHOD.GET,
+        });
+    };
+
+    joinDeposition = async (depositionID: string): Promise<DepositionModel.DepositionPermissions> => {
+        return this.request({
             path: `/api/depositions/${depositionID}/join`,
             method: HTTP_METHOD.POST,
         });
     };
 
-    recordDeposition = async (depositionID: string, onRecord: boolean): Promise<DepositionModel.IDeposition> => {
+    recordDeposition = async (depositionID: string, onRecord: boolean) => {
         return this.request<DepositionModel.IDeposition>({
             path: `/api/depositions/${depositionID}/record?onTheRecord=${onRecord}`,
             method: HTTP_METHOD.POST,
         });
     };
 
-    endDeposition = async (depositionID: string): Promise<DepositionModel.IDeposition> => {
+    endDeposition = async (depositionID: string) => {
         return this.request<DepositionModel.IDeposition>({
             path: `/api/depositions/${depositionID}/end`,
             method: HTTP_METHOD.POST,
@@ -159,8 +166,8 @@ export class ApiService {
     }: RequestParams): Promise<T> => {
         if (withToken && !this.tokenSet) await this.getTokenSet();
         const jwt = withToken ? `Bearer ${this.tokenSet.accessToken}` : undefined;
-
         const queryParams =
+            Object.entries(payload).length &&
             method === HTTP_METHOD.GET &&
             `?${Object.entries(payload)
                 .filter(([, value]) => value !== undefined)

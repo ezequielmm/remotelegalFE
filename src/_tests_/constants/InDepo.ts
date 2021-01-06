@@ -14,3 +14,4 @@ export const CANCEL_BUTTON = "No, stay";
 export const CONFIRMATION_BUTTON = "Yes, end deposition";
 export const END_DEPO_SCREEN_FIRST_TEXT = "This deposition has ended";
 export const END_DEPO_SCREEN_SECOND_TEXT = "Thanks for using Remote Legal.";
+export const PERMISSIONS_MOCK = ["EndDeposition", "Recording"];

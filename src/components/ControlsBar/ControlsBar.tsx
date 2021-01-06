@@ -34,6 +34,8 @@ import useEndDepo from "../../hooks/InDepo/useEndDepo";
 // import useStreamAudio from "../../hooks/useStreamAudio";
 
 interface IControlsBar {
+    canRecord: boolean;
+    canEnd: boolean;
     localParticipant: LocalParticipant;
     exhibitsOpen: boolean;
     togglerExhibits: React.Dispatch<React.SetStateAction<boolean>> | ((value: React.SetStateAction<boolean>) => void);
@@ -51,6 +53,8 @@ export default function ControlsBar({
     togglerRealTime,
     isRecording,
     togglerRecording,
+    canEnd,
+    canRecord,
 }: IControlsBar): ReactElement {
     const { videoTracks, audioTracks } = useParticipantTracks(localParticipant);
     const { isAudioEnabled, cameraEnabled, setAudioEnabled, setCameraEnabled } = useTracksStatus(
@@ -124,30 +128,35 @@ export default function ControlsBar({
                         )
                     }
                 />
-                <Control
-                    data-testid="record"
-                    isToggled={isRecording}
-                    onClick={startPauseRecording}
-                    type="rounded"
-                    label={isRecording ? "Go off the record" : "Go on the record"}
-                    icon={
-                        isRecording ? (
-                            <Icon icon={PauseIcon} style={{ fontSize: "1.625rem" }} />
-                        ) : (
-                            <Icon icon={RecordIcon} style={{ fontSize: "1.625rem" }} />
-                        )
-                    }
-                />
-                <Control
-                    data-testid="end"
-                    onClick={() => {
-                        setModal(true);
-                    }}
-                    type="rounded"
-                    color="red"
-                    label="End Deposition"
-                    icon={<Icon icon={EndCallIcon} style={{ fontSize: "1.625rem" }} />}
-                />
+                {canRecord && (
+                    <Control
+                        data-testid="record"
+                        isToggled={isRecording}
+                        onClick={startPauseRecording}
+                        type="rounded"
+                        label={isRecording ? "Go off the record" : "Go on the record"}
+                        icon={
+                            isRecording ? (
+                                <Icon icon={PauseIcon} style={{ fontSize: "1.625rem" }} />
+                            ) : (
+                                <Icon icon={RecordIcon} style={{ fontSize: "1.625rem" }} />
+                            )
+                        }
+                    />
+                )}
+
+                {canEnd && (
+                    <Control
+                        data-testid="end"
+                        onClick={() => {
+                            setModal(true);
+                        }}
+                        type="rounded"
+                        color="red"
+                        label="End Deposition"
+                        icon={<Icon icon={EndCallIcon} style={{ fontSize: "1.625rem" }} />}
+                    />
+                )}
             </StyledVideoControls>
             <StyledGeneralControls>
                 <StyledPrimaryControls>

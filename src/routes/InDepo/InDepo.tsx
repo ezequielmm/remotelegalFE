@@ -21,7 +21,7 @@ const InDepo = () => {
     const inDepoTheme = { ...theme, mode: "inDepo" };
     const { state, dispatch } = useContext(GlobalStateContext);
     const [joinDeposition, loading, error] = useJoinDeposition();
-    const { message, currentRoom, witness, dataTrack, timeZone } = state.room;
+    const { message, currentRoom, witness, permissions, timeZone, dataTrack } = state.room;
     const { depositionID } = useParams<DepositionID>();
     const [realTimeOpen, togglerRealTime] = useState(false);
     const [exhibitsOpen, togglerExhibits] = useState(false);
@@ -100,6 +100,8 @@ const InDepo = () => {
                     <ControlsBar
                         isRecording={isRecording}
                         togglerRecording={togglerRecording}
+                        canEnd={permissions.includes("EndDeposition")}
+                        canRecord={permissions.includes("Recording")}
                         realTimeOpen={realTimeOpen}
                         togglerRealTime={togglerRealTime}
                         exhibitsOpen={exhibitsOpen}

@@ -13,6 +13,7 @@ export enum ACTION_TYPE {
     IN_DEPO_ADD_TRANSCRIPTION = "IN_DEPO_ADD_TRANSCRIPTION",
     ADD_WITNESS = "IN_DEPO_ADD_WITNESS",
     SET_TIMEZONE = "IN_DEPO_SET_TIMEZONE",
+    IN_DEPO_SET_PERMISSIONS = "IN_DEPO_SET_PERMISSIONS",
 }
 
 const actions = {
@@ -40,6 +41,10 @@ const actions = {
     }),
     disconnect: (payload: DisconnectRoomState) => ({
         type: ACTION_TYPE.IN_DEPO_DISCONNECT,
+        payload,
+    }),
+    setPermissions: (payload: string[]) => ({
+        type: ACTION_TYPE.IN_DEPO_SET_PERMISSIONS,
         payload,
     }),
     addRemoteParticipant: (payload: Room) => ({

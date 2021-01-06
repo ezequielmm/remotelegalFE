@@ -18,7 +18,7 @@ import RouteWithLayout from "./RouteWithLayout/RouteWithLayout";
 import Viewer from "./PDFTronViewer";
 import CreateDeposition from "../routes/CreateDeposition";
 import MyDepositions from "../routes/MyDepositions";
-import EndDepoScreen from "../routes/InDepo/components/EndDepoScreen/EndDepoScreen";
+import EndDepoScreen from "../routes/InDepo/components/EndDepoScreen";
 
 function App() {
     const tagManagerId = {

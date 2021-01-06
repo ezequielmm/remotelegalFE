@@ -16,6 +16,11 @@ jest.mock("twilio-video", () => ({
     connect: async () => "room",
 }));
 
+jest.mock("react-router", () => ({
+    ...jest.requireActual("react-router"),
+    useParams: () => ({ depositionID: "test1234" }),
+}));
+
 test("It calls dispatch with proper actions", async () => {
     const { result } = renderHook(() => useJoinDeposition(), { wrapper });
     const [joinToRoom] = result.current;

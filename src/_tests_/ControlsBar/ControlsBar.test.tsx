@@ -15,6 +15,8 @@ beforeEach(() => {
         localParticipant: getParticipant("test1"),
         exhibitsOpen: false,
         realTimeOpen: false,
+        canRecord: false,
+        canEnd: false,
     };
 });
 
@@ -24,29 +26,23 @@ Object.defineProperty(global.navigator, "mediaDevices", {
     }),
 });
 
-let participant;
-
-beforeEach(() => {
-    participant = getParticipant("test1");
-});
-
 test("Exhibits is opened when exhibits Open is true", async () => {
     const { getByTestId } = renderWithGlobalContext(<ControlsBar {...props} exhibitsOpen />);
     expect(getByTestId("exhibits")).toBeInTheDocument();
 });
 
-test("Real Time is opened when realTimeOpen is true", async () => {
+test("Real Time is opened when realTimeOpen is true", () => {
     const { getByTestId } = renderWithGlobalContext(<ControlsBar {...props} realTimeOpen />);
     expect(getByTestId("realtime")).toBeInTheDocument();
 });
 
-test("Both exhibits and real time are opened when both conditions are true", async () => {
+test("Both exhibits and real time are opened when both conditions are true", () => {
     const { getByTestId } = renderWithGlobalContext(<ControlsBar {...props} exhibitsOpen realTimeOpen />);
     expect(getByTestId("exhibits")).toBeInTheDocument();
     expect(getByTestId("realtime")).toBeInTheDocument();
 });
 
-test("Muted icon is toggled when clicking the mute button", async () => {
+test("Muted icon is toggled when clicking the mute button", () => {
     const { getByTestId, queryByTestId } = renderWithGlobalContext(
         <ControlsBar {...props} exhibitsOpen realTimeOpen />
     );
@@ -57,7 +53,7 @@ test("Muted icon is toggled when clicking the mute button", async () => {
     expect(queryByTestId("muted")).toBeFalsy();
 });
 
-test("Camera icon is toggled when clicking the camera button", async () => {
+test("Camera icon is toggled when clicking the camera button", () => {
     const { getByTestId, queryByTestId } = renderWithGlobalContext(
         <ControlsBar {...props} exhibitsOpen realTimeOpen />
     );
@@ -66,4 +62,24 @@ test("Camera icon is toggled when clicking the camera button", async () => {
     fireEvent.click(getByTestId("camera"));
     expect(getByTestId("camerashown")).toBeInTheDocument();
     expect(queryByTestId("camerahidden")).toBeFalsy();
+});
+
+test("End depo button doesn´t show if prop is false", () => {
+    const { queryByTestId } = renderWithGlobalContext(<ControlsBar {...props} />);
+    expect(queryByTestId("end")).toBeFalsy();
+});
+
+test("Record button doesn´t show if prop is false", () => {
+    const { queryByTestId } = renderWithGlobalContext(<ControlsBar {...props} />);
+    expect(queryByTestId("record")).toBeFalsy();
+});
+
+test("End depo button shows if prop is true", () => {
+    const { queryByTestId } = renderWithGlobalContext(<ControlsBar {...props} canEnd />);
+    expect(queryByTestId("end")).toBeTruthy();
+});
+
+test("Record button shows if prop is true", () => {
+    const { queryByTestId } = renderWithGlobalContext(<ControlsBar {...props} canRecord />);
+    expect(queryByTestId("record")).toBeTruthy();
 });

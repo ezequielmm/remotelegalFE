@@ -14,6 +14,7 @@ export interface IRoom {
     witness?: string;
     timeZone?: TimeZones;
     transcriptions?: TranscriptionModel.Transcription[];
+    permissions?: string[];
 }
 
 export const RoomReducerInitialState: IRoom = {
@@ -25,6 +26,7 @@ export const RoomReducerInitialState: IRoom = {
     witness: "",
     timeZone: null,
     transcriptions: [],
+    permissions: [],
 };
 
 const RoomReducer: Reducer<IRoom, IAction> = (state: IRoom, action: IAction): IRoom => {
@@ -53,6 +55,11 @@ const RoomReducer: Reducer<IRoom, IAction> = (state: IRoom, action: IAction): IR
                 transcriptions: [...state.transcriptions, newTranscription],
             };
         }
+        case ACTION_TYPE.IN_DEPO_SET_PERMISSIONS:
+            return {
+                ...state,
+                permissions: action.payload,
+            };
         case ACTION_TYPE.ADD_WITNESS:
             return {
                 ...state,
