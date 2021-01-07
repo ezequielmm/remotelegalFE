@@ -9,7 +9,6 @@
         "@craco/craco": "^5.7.0",
         "@hookform/resolvers": "^1.0.1",
         "@pdftron/webviewer": "^7.1.2",
-        "@storybook/addon-backgrounds": "^6.1.11",
         "@testing-library/jest-dom": "^5.11.6",
         "@testing-library/react": "^9.3.2",
         "@testing-library/react-hooks": "^3.4.2",

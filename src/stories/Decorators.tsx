@@ -11,3 +11,11 @@ export const ContainerMedium = styled.div`
 export const ContainerBackground = styled.div`
     padding: 1rem;
 `;
+
+export const ContainerCentered = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+`;

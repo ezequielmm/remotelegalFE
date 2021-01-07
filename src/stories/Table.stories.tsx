@@ -9,9 +9,6 @@ import Button from "../components/Button";
 import Table from "../components/Table";
 import { theme } from "../constants/styles/theme";
 
-const inDepoTheme = { ...theme, mode: "inDepo" };
-const defaultTheme = { ...theme, mode: "default" };
-
 const menu = (
     <Menu>
         <Menu.Item>
@@ -284,7 +281,6 @@ export const CasesTable = Template.bind({});
 CasesTable.args = {
     dataSource: cases,
     columns: casesColumns,
-    theme: defaultTheme,
     sortDirections: ["descend", "ascend"],
 };
 
@@ -292,30 +288,17 @@ export const DepositionsTable = Template.bind({});
 DepositionsTable.args = {
     dataSource: depositions,
     columns: depositionsColumns,
-    theme: defaultTheme,
     sortDirections: ["descend", "ascend"],
 };
 
 export const DefaultEmptyTable = Template.bind({});
-DefaultEmptyTable.args = {
-    theme: defaultTheme,
-};
 
 export const ExhibitsTable = Template.bind({});
 ExhibitsTable.args = {
     dataSource: exhibits,
     columns: exhibitsColumns,
-    theme: inDepoTheme,
     sortDirections: ["descend", "ascend"],
 };
 ExhibitsTable.parameters = {
-    backgrounds: { default: "inDepo" },
-};
-
-export const InDepoEmptyTable = Template.bind({});
-InDepoEmptyTable.args = {
-    theme: inDepoTheme,
-};
-InDepoEmptyTable.parameters = {
     backgrounds: { default: "inDepo" },
 };
