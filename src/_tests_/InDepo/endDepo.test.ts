@@ -3,11 +3,19 @@ import dataTrackMock from "../mocks/dataTrack";
 import wrapper from "../mocks/wrapper";
 import { END_DEPO_DATATRACK_MESSAGE } from "../constants/InDepo";
 import useEndDepo from "../../hooks/InDepo/useEndDepo";
-import disconnectFromDepo from "../../helpers/disconnectFromDepo";
+
+jest.mock("audio-recorder-polyfill", () => {
+    return jest.fn().mockImplementation(() => ({
+        start: jest.fn(),
+        addEventListener: jest.fn(),
+        removeEventListener: jest.fn(),
+        stop: jest.fn(),
+    }));
+});
 
 Object.defineProperty(global.navigator, "mediaDevices", {
     get: () => ({
-        getUserMedia: jest.fn().mockResolvedValue(false),
+        getUserMedia: jest.fn().mockResolvedValue(true),
     }),
 });
 
@@ -37,6 +45,5 @@ test("endDepo hook calls disconnect with proper params", (done) => {
         result.current.setEndDepo(true);
     });
     // TODO fix this test
-    // setTimeout(() => expect(disconnectFromDepo).toBeCalled());
     done();
 });

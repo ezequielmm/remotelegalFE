@@ -55,6 +55,7 @@ export const useJoinDeposition = () => {
         dispatch(actions.joinToRoom(room));
         dispatch(actions.setPermissions(permissions));
         dispatch(actions.addWitness(witnessEmail));
+        // dispatch(actions.setTranscriptions(transcriptions || []));
         dispatch(actions.setTimeZone(timeZone));
         dispatch(actions.addDataTrack(dataTrack));
         return configParticipantListeners(room, dispatch);

@@ -1,15 +1,21 @@
-import React, { useEffect, useRef } from "react";
-// import moment from "moment";
-// import { Space } from "antd";
-// import Text from "../../../components/Typography/Text";
-// import { GlobalStateContext } from "../../../state/GlobalState";
-import { StyledLayoutCotainer, StyledLayoutContent, ContainerProps } from "../styles";
-// import { RoughDraftContainer, StyledRealTimeContainer, RealTimeHeader } from "./styles";
+import React, { useContext, useEffect, useRef } from "react";
+import { Space } from "antd";
+import moment from "moment-timezone";
+import Text from "../../../components/Typography/Text";
+import { GlobalStateContext } from "../../../state/GlobalState";
+import { ContainerProps, StyledLayoutContent, StyledLayoutCotainer } from "../styles";
+import { RealTimeHeader, RoughDraftContainer, StyledRealTimeContainer } from "./styles";
+import { TimeZones } from "../../../models/general";
 
-const RealTime = ({ visible }: ContainerProps) => {
-    // const { state } = useContext(GlobalStateContext);
+const RealTime = ({
+    visible,
+    timeZone,
+}: ContainerProps & {
+    timeZone: TimeZones;
+}) => {
+    const { state } = useContext(GlobalStateContext);
     const scrollableRef = useRef(null);
-    // const { transcriptions } = state.room;
+    const { transcriptions } = state.room;
 
     useEffect(() => {
         if (scrollableRef && scrollableRef.current) {
@@ -23,7 +29,7 @@ const RealTime = ({ visible }: ContainerProps) => {
     return (
         <StyledLayoutCotainer visible={visible}>
             <StyledLayoutContent>
-                {/* <StyledRealTimeContainer>
+                <StyledRealTimeContainer>
                     <div ref={scrollableRef}>
                         <div>
                             <RealTimeHeader>
@@ -42,13 +48,26 @@ const RealTime = ({ visible }: ContainerProps) => {
                             <Space direction="vertical" size="middle">
                                 {transcriptions.map((transcription) => (
                                     <Space direction="vertical" size="small" key={transcription.time}>
-                                        <Text state="disabled" font="code" size="small" weight="bold" block>
+                                        <Text
+                                            state="disabled"
+                                            font="code"
+                                            size="small"
+                                            weight="bold"
+                                            block
+                                            dataTestId="transcription_title"
+                                        >
                                             <>
                                                 {transcription.participantName} |{" "}
-                                                {moment(transcription.time).format("HH:mm:ss A")}
+                                                {moment(transcription.time).tz(timeZone).format("hh:mm:ss A")}
                                             </>
                                         </Text>
-                                        <Text font="code" size="small" block ellipsis={false}>
+                                        <Text
+                                            font="code"
+                                            size="small"
+                                            block
+                                            ellipsis={false}
+                                            dataTestId="transcription_text"
+                                        >
                                             {transcription.text}
                                         </Text>
                                     </Space>
@@ -56,7 +75,7 @@ const RealTime = ({ visible }: ContainerProps) => {
                             </Space>
                         </div>
                     </div>
-                </StyledRealTimeContainer> */}
+                </StyledRealTimeContainer>
             </StyledLayoutContent>
         </StyledLayoutCotainer>
     );

@@ -1,13 +1,17 @@
 import AudioRecorder from "audio-recorder-polyfill";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import useTranscriptAudio from "./InDepo/useTranscriptAudio";
-
-// AudioRecorder.encoder = mpegEncoder;
-// AudioRecorder.prototype.mimeType = "audio/mpeg";
 
 export default () => {
     const [recorder, setRecorder] = useState(null);
-    const [transcriptAudio] = useTranscriptAudio();
+    const transcriptAudio = useTranscriptAudio();
+
+    useEffect(() => {
+        return () => {
+            if (recorder) recorder.stop();
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const stopMicrophone = useCallback(() => {
         if (recorder) recorder.stop();

@@ -14,6 +14,7 @@ export enum ACTION_TYPE {
     ADD_WITNESS = "IN_DEPO_ADD_WITNESS",
     SET_TIMEZONE = "IN_DEPO_SET_TIMEZONE",
     IN_DEPO_SET_PERMISSIONS = "IN_DEPO_SET_PERMISSIONS",
+    SET_TRANSCRIPTIONS = "IN_DEPO_SET_TRANSCRIPTIONS",
 }
 
 const actions = {
@@ -57,6 +58,10 @@ const actions = {
     }),
     setTimeZone: (payload: TimeZones) => ({
         type: ACTION_TYPE.SET_TIMEZONE,
+        payload,
+    }),
+    setTranscriptions: (payload: TranscriptionModel.Transcription[]) => ({
+        type: ACTION_TYPE.SET_TRANSCRIPTIONS,
         payload,
     }),
     removeRemoteParticipant: (payload: Room) => ({

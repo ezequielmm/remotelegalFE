@@ -4,6 +4,15 @@ import ControlsBar from "../../components/ControlsBar";
 import getParticipant from "../mocks/participant";
 import renderWithGlobalContext from "../utils/renderWithGlobalContext";
 
+jest.mock("audio-recorder-polyfill", () => {
+    return jest.fn().mockImplementation(() => ({
+        start: jest.fn(),
+        addEventListener: jest.fn(),
+        removeEventListener: jest.fn(),
+        stop: jest.fn(),
+    }));
+});
+
 let props;
 
 beforeEach(() => {
@@ -22,45 +31,45 @@ beforeEach(() => {
 
 Object.defineProperty(global.navigator, "mediaDevices", {
     get: () => ({
-        getUserMedia: jest.fn().mockResolvedValue(false),
+        getUserMedia: jest.fn().mockResolvedValue(true),
     }),
 });
 
 test("Exhibits is opened when exhibits Open is true", async () => {
-    const { getByTestId } = renderWithGlobalContext(<ControlsBar {...props} exhibitsOpen />);
-    expect(getByTestId("exhibits")).toBeInTheDocument();
+    const { findByTestId } = renderWithGlobalContext(<ControlsBar {...props} exhibitsOpen />);
+    expect(await findByTestId("exhibits")).toBeInTheDocument();
 });
 
-test("Real Time is opened when realTimeOpen is true", () => {
-    const { getByTestId } = renderWithGlobalContext(<ControlsBar {...props} realTimeOpen />);
-    expect(getByTestId("realtime")).toBeInTheDocument();
+test("Real Time is opened when realTimeOpen is true", async () => {
+    const { findByTestId } = renderWithGlobalContext(<ControlsBar {...props} realTimeOpen />);
+    expect(await findByTestId("realtime")).toBeInTheDocument();
 });
 
-test("Both exhibits and real time are opened when both conditions are true", () => {
-    const { getByTestId } = renderWithGlobalContext(<ControlsBar {...props} exhibitsOpen realTimeOpen />);
-    expect(getByTestId("exhibits")).toBeInTheDocument();
-    expect(getByTestId("realtime")).toBeInTheDocument();
+test("Both exhibits and real time are opened when both conditions are true", async () => {
+    const { findByTestId } = renderWithGlobalContext(<ControlsBar {...props} exhibitsOpen realTimeOpen />);
+    expect(await findByTestId("exhibits")).toBeInTheDocument();
+    expect(await findByTestId("realtime")).toBeInTheDocument();
 });
 
-test("Muted icon is toggled when clicking the mute button", () => {
-    const { getByTestId, queryByTestId } = renderWithGlobalContext(
+test("Muted icon is toggled when clicking the mute button", async () => {
+    const { findByTestId, queryByTestId } = renderWithGlobalContext(
         <ControlsBar {...props} exhibitsOpen realTimeOpen />
     );
-    fireEvent.click(getByTestId("audio"));
-    expect(getByTestId("muted")).toBeInTheDocument();
-    fireEvent.click(getByTestId("audio"));
-    expect(getByTestId("unmuted")).toBeInTheDocument();
+    fireEvent.click(await findByTestId("audio"));
+    expect(await findByTestId("muted")).toBeInTheDocument();
+    fireEvent.click(await findByTestId("audio"));
+    expect(await findByTestId("unmuted")).toBeInTheDocument();
     expect(queryByTestId("muted")).toBeFalsy();
 });
 
-test("Camera icon is toggled when clicking the camera button", () => {
-    const { getByTestId, queryByTestId } = renderWithGlobalContext(
+test("Camera icon is toggled when clicking the camera button", async () => {
+    const { findByTestId, queryByTestId } = renderWithGlobalContext(
         <ControlsBar {...props} exhibitsOpen realTimeOpen />
     );
-    fireEvent.click(getByTestId("camera"));
-    expect(getByTestId("camerahidden")).toBeInTheDocument();
-    fireEvent.click(getByTestId("camera"));
-    expect(getByTestId("camerashown")).toBeInTheDocument();
+    fireEvent.click(await findByTestId("camera"));
+    expect(await findByTestId("camerahidden")).toBeInTheDocument();
+    fireEvent.click(await findByTestId("camera"));
+    expect(await findByTestId("camerashown")).toBeInTheDocument();
     expect(queryByTestId("camerahidden")).toBeFalsy();
 });
 

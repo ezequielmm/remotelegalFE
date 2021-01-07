@@ -1,6 +1,7 @@
 import { fireEvent, waitForDomChange, waitForElement } from "@testing-library/react";
 import { createMemoryHistory } from "history";
 import React from "react";
+import { act } from "react-dom/test-utils";
 import { Route } from "react-router-dom";
 import * as MODULE_CONSTANTS from "../../constants/inDepo";
 import InDepo from "../../routes/InDepo";
@@ -8,13 +9,22 @@ import * as TESTS_CONSTANTS from "../constants/InDepo";
 import getMockDeps from "../utils/getMockDeps";
 import renderWithGlobalContext from "../utils/renderWithGlobalContext";
 
+jest.mock("audio-recorder-polyfill", () => {
+    return jest.fn().mockImplementation(() => ({
+        start: jest.fn(),
+        addEventListener: jest.fn(),
+        removeEventListener: jest.fn(),
+        stop: jest.fn(),
+    }));
+});
+
 const customDeps = getMockDeps();
 const history = createMemoryHistory();
 // TODO: Find a better way to mock Twilio (eg, adding it to DI system)
 
 Object.defineProperty(global.navigator, "mediaDevices", {
     get: () => ({
-        getUserMedia: jest.fn().mockResolvedValue(false),
+        getUserMedia: jest.fn().mockResolvedValue(true),
     }),
 });
 
@@ -253,3 +263,38 @@ test("Record button and end deposition are not shown", async () => {
     expect(queryByTestId("end")).toBeFalsy();
     expect(queryByTestId("record")).toBeFalsy();
 });
+
+// TODO PRM-1446 [FE] - Get persisted transcriptions from BE
+// describe("InDepo -> RealTime", () => {
+//     it("shows transcriptions when joinDeposition returns a transcriptions list not empty", async () => {
+//         const { getByTestId, queryByTestId } = renderWithGlobalContext(
+//             <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,
+//             customDeps,
+//             undefined,
+//             history
+//         );
+//         history.push(TESTS_CONSTANTS.TEST_ROUTE);
+//         await waitForDomChange();
+//         fireEvent.click(await waitForElement(() => getByTestId("realtime")));
+//         act(() => expect(queryByTestId("transcription_text")).toBeTruthy());
+//         act(() => expect(queryByTestId("transcription_title")).toBeTruthy());
+//     });
+
+//     it("shows no transcriptions when when joinDeposition returns a transcriptions empty", async () => {
+//         customDeps.apiService.joinDeposition = jest
+//             .fn()
+//             .mockResolvedValue(TESTS_CONSTANTS.JOIN_DEPOSITION_MOCK_EMPTY_DEPOSITION);
+//         const { getByTestId, queryByTestId } = renderWithGlobalContext(
+//             <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,
+//             customDeps,
+//             undefined,
+//             history
+//         );
+//         history.push(TESTS_CONSTANTS.TEST_ROUTE);
+//         await waitForDomChange();
+
+//         fireEvent.click(await waitForElement(() => getByTestId("realtime")));
+//         act(() => expect(queryByTestId("transcription_text")).toBeFalsy());
+//         act(() => expect(queryByTestId("transcription_title")).toBeFalsy());
+//     });
+// });

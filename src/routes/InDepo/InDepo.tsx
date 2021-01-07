@@ -87,7 +87,7 @@ const InDepo = () => {
                 <StyledInDepoLayout>
                     <RecordPill on={isRecording} />
                     <Exhibits visible={exhibitsOpen} />
-                    <RealTime visible={realTimeOpen} />
+                    <RealTime visible={realTimeOpen} timeZone={timeZone} />
                     <VideoConference
                         localParticipant={currentRoom.localParticipant}
                         witnessID={witness}

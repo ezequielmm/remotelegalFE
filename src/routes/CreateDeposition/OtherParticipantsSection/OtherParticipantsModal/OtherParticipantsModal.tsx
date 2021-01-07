@@ -47,10 +47,10 @@ export default function OtherParticipantsModal({
     };
 
     const initialValues = {
-        email: currentParticipant?.email,
-        name: currentParticipant?.name,
-        phone: currentParticipant?.phone,
-        role: currentParticipant?.role,
+        email: currentParticipant?.email || "",
+        name: currentParticipant?.name || "",
+        phone: currentParticipant?.phone || "",
+        role: currentParticipant?.role || null,
     };
 
     const { handleSubmit, control, errors } = useForm({

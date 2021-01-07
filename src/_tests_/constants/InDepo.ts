@@ -1,7 +1,16 @@
+import { timeZone } from "../mocks/transcription";
+
 export const END_DEPO_DATATRACK_MESSAGE = JSON.stringify({ module: "endDepo", value: "" });
 export const JOIN_DEPOSITION_MOCK = {
     token: "1234",
     witnessEmail: "test@test.com",
+    timeZone,
+};
+export const JOIN_DEPOSITION_MOCK_EMPTY_DEPOSITION = {
+    token: "1234",
+    witnessEmail: "test@test.com",
+    transcriptions: [],
+    timeZone,
 };
 export const WAITING_FOR_WITNESS = "waiting for witness";
 export const ROUTE = "/deposition/join/:depositionID";
