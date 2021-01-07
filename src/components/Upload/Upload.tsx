@@ -6,6 +6,9 @@ const StyledUpload = styled(Upload)`
     .ant-upload.ant-upload-select.ant-upload-select-text {
         display: block;
     }
+    .ant-upload:focus button {
+        background: #fffcf0;
+    }
 `;
 
 export default StyledUpload;
