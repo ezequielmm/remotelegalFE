@@ -2,17 +2,7 @@ import React from "react";
 
 import styled from "styled-components";
 import { getREM, getWeightNumber } from "../../../constants/styles/utils";
-
-export enum TextState {
-    "primary",
-    "secondary",
-    "disabled",
-    "error",
-    "warning",
-    "success",
-    "info",
-    "white",
-}
+import ColorStatus from "../../../types/ColorStatus";
 
 export interface ITextProps {
     height?: number;
@@ -22,7 +12,7 @@ export interface ITextProps {
     ellipsis?: boolean;
     block?: boolean;
     align?: "center" | "right";
-    state?: keyof typeof TextState | undefined;
+    state?: keyof typeof ColorStatus | undefined;
     font?: "default" | "header" | "code";
     dataTestId?: string;
     children: React.ReactChild;

@@ -3,7 +3,7 @@ import React from "react";
 import { Space } from "antd";
 import Icon from "../../../../components/Icon";
 import Text from "../../../../components/Typography/Text";
-import { TextState } from "../../../../components/Typography/Text/Text";
+import ColorStatus from "../../../../types/ColorStatus";
 import { ExhibitTabContainer, ExhibitTabContainerText, ExhibitTabsContainer, Stick } from "./styles";
 import { theme } from "../../../../constants/styles/theme";
 import { getREM } from "../../../../constants/styles/utils";
@@ -43,7 +43,7 @@ export default function ExhibitTabs({
                 const tab = tabsTitles.find(({ tabId }) => tabId === props.tab);
                 if (!tab) return undefined;
                 const { tabTestId, title, subTitle, icon } = tab;
-                let subtitleState: keyof typeof TextState = "disabled";
+                let subtitleState: keyof typeof ColorStatus = "disabled";
                 if (active) subtitleState = "white";
                 else if (highlight) subtitleState = "primary";
 
