@@ -1,21 +1,23 @@
-export const DISABLED_BUTTONS = ["selectToolButton, textSelectButton", "toolbarGroup-Edit", "fullscreenButton"];
+export const DISABLED_BUTTONS = [
+    "selectToolButton, textSelectButton",
+    "toolbarGroup-Edit",
+    "fullscreenButton",
+    "thumbDelete",
+    "thumbMultiDelete",
+    "toolbarGroup-Shapes",
+    "toggleNotesButton",
+    "toolbarGroup-Insert",
+];
 
 export const ANNOTATE_ITEMS = [
     "highlightToolGroupButton",
     "underlineToolGroupButton",
     "freeTextToolGroupButton",
     "freeHandToolGroupButton",
+    "undoButton",
+    "redoButton",
+    "AnnotationEraserTool",
 ];
-
-export const SHAPES_ITEMS = [
-    "shapeToolGroupButton",
-    "ellipseToolGroupButton",
-    "lineToolGroupButton",
-    "polyLineToolGroupButton",
-    "arrowToolGroupButton",
-];
-
-export const INSERT_ITEMS = ["signatureToolButton", "toolsOverlay", "calloutToolGroupButton"];
 
 export const FULL_SCREEN_BUTTON = {
     img:
