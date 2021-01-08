@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { Redirect, Link } from "react-router-dom";
-import { Col, Row, Form, Space, Alert } from "antd";
+import { Col, Row, Form, Space } from "antd";
 import { InputWrapper } from "../../components/Input/styles";
 import Container from "../../components/Container";
+import Alert from "../../components/Alert";
 import Button from "../../components/Button";
 import Title from "../../components/Typography/Title";
 import Text from "../../components/Typography/Text";
@@ -55,12 +56,10 @@ const Login = ({ location }: LoginProps) => {
                                 </Title>
                                 <Text size="large">Log in into your account</Text>
                             </div>
-                            {data && (
-                                <Alert message="Your email has been verified successfully" type="success" showIcon />
-                            )}
-                            {error && error !== 409 && <Alert message={ERRORS.NETWORK_ERROR} type="error" showIcon />}
-                            {error === 409 && <Alert message={ERRORS.INVALID_CODE_ERROR} type="error" showIcon />}
-                            {submitError && <Alert message={submitError} type="error" showIcon />}
+                            {data && <Alert message="Your email has been verified successfully" type="success" />}
+                            {error && error !== 409 && <Alert message={ERRORS.NETWORK_ERROR} type="error" />}
+                            {error === 409 && <Alert message={ERRORS.INVALID_CODE_ERROR} type="error" />}
+                            {submitError && <Alert message={submitError} type="error" />}
                             <div>
                                 <Form.Item label="Email" htmlFor="email">
                                     <InputWrapper>

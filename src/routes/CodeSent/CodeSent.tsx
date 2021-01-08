@@ -1,7 +1,8 @@
 import React from "react";
-import { Col, Row, Alert, Space } from "antd";
+import { Col, Row, Space } from "antd";
 import { NETWORK_ERROR } from "../../constants/codeSent";
 import { useVerifyEmail } from "../../hooks/auth";
+import Alert from "../../components/Alert";
 import Title from "../../components/Typography/Title";
 import Text from "../../components/Typography/Text";
 import { StyledButtonLink } from "./styles";
@@ -22,7 +23,7 @@ const CodeSent = ({ email }: CodeSentProps) => {
     return (
         <Row justify="center">
             <Space direction="vertical" size={theme.default.spaces[6] * 4 * theme.default.baseUnit}>
-                {error && <Alert data-testid={error} message={NETWORK_ERROR} type="error" showIcon />}
+                {error && <Alert data-testid={error} message={NETWORK_ERROR} type="error" />}
                 <Col style={{ textAlign: "center" }}>
                     <Title dataTestId="code_sent_title" level={3} weight="light" noMargin>
                         Check your mailbox

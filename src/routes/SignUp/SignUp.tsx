@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { Checkbox, Col, Form, Row, Space, Alert } from "antd";
+import { Checkbox, Col, Form, Row, Space } from "antd";
 import { Redirect, Link } from "react-router-dom";
 import useInput from "../../hooks/useInput";
 import Container from "../../components/Container";
+import Alert from "../../components/Alert";
 import Button from "../../components/Button";
 import * as ERRORS from "../../constants/signUp";
 import { useAuthentication, useSignUp } from "../../hooks/auth";
@@ -139,7 +140,6 @@ const SignUp = () => {
                                             data-testid={networkError || SignUpErrorMessage}
                                             message={networkError || SignUpErrorMessage}
                                             type="error"
-                                            showIcon
                                         />
                                     )}
                                     <div>

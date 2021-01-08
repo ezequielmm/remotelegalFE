@@ -1,9 +1,10 @@
 import React, { useEffect, useRef } from "react";
-import { Space, Row, Form, Alert } from "antd";
+import { Space, Row, Form } from "antd";
 import useInput from "../../../hooks/useInput";
 import isInputEmpty from "../../../helpers/isInputEmpty";
 import { InputWrapper } from "../../../components/Input/styles";
 import Input from "../../../components/Input";
+import Alert from "../../../components/Alert";
 import Title from "../../../components/Typography/Title";
 import Text from "../../../components/Typography/Text";
 import { useCreateCase } from "../../../hooks/cases/hooks";
@@ -90,7 +91,7 @@ const CaseModal = ({ open, handleClose, fetchCases }: IModalProps) => {
                                 Please complete the information below.
                             </Text>
                         </div>
-                        {error && <Alert message={NETWORK_ERROR} type="error" showIcon />}
+                        {error && <Alert message={NETWORK_ERROR} type="error" />}
                         <div>
                             <Form onFinish={() => createCase(caseNameValue, caseNumber)} layout="vertical">
                                 <Form.Item label="Name" htmlFor="case-name">

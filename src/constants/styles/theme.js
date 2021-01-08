@@ -76,7 +76,6 @@ const modifiedVariables = {
     "@alert-warning-border-color": theme.default.warningColor,
     "@alert-error-border-color": theme.default.errorColor,
     "@alert-warning-bg-color": theme.colors.warning[2],
-    "@alert-icon-top": getREM(theme.default.fontSizes[4] / 2 + theme.default.baseUnit - 1),
     "@font-family": theme.default.fontFamily,
     "@code-family": theme.default.codeFontFamily,
     "@font-size-base": getREM(theme.default.fontSizeBase),
