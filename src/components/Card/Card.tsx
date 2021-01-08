@@ -12,6 +12,14 @@ const StyledCard = styled(ANTDCard)`
     ${({ theme }) => {
         const { neutrals } = theme.colors;
         const { spaces, fontSizes, headerFontFamily } = theme.default;
+
+        const inDepoTheme =
+            theme.mode === "inDepo"
+                ? `
+                    background: ${theme.colors.inDepoNeutrals[4]};
+                `
+                : "";
+
         const styles = `
             &.ant-card {
                 padding: ${getREM(spaces[12])};
@@ -34,7 +42,7 @@ const StyledCard = styled(ANTDCard)`
                     padding: 0;
                 }
             }
-
+            ${inDepoTheme}
         `;
         return styles;
     }}

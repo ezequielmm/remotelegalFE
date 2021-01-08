@@ -127,6 +127,9 @@ const modifiedVariables = {
     "@select-item-selected-bg": theme.default.primaryColor,
     "@select-item-selected-color": theme.default.whiteColor,
     "@select-item-selected-font-weight": "500",
+    "@list-item-padding": `${getREM(theme.default.spaces[6])}`,
+    "@list-item-padding-sm": `${getREM(theme.default.spaces[4])} ${getREM(theme.default.spaces[6])}`,
+    "@list-item-padding-lg": `${getREM(theme.default.spaces[6])} ${getREM(theme.default.spaces[9])}`,
 };
 
 module.exports = { theme, modifiedVariables };
