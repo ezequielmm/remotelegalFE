@@ -107,6 +107,7 @@ export default function ControlsBar({
                     data-testid="audio"
                     type="circle"
                     onClick={() => setAudioEnabled(!isAudioEnabled)}
+                    isToggled={!isAudioEnabled}
                     icon={
                         isAudioEnabled ? (
                             <Icon data-testid="unmuted" icon={UnmuteIcon} style={{ fontSize: "1.625rem" }} />
@@ -119,7 +120,7 @@ export default function ControlsBar({
                     data-testid="camera"
                     type="circle"
                     onClick={() => setCameraEnabled(!cameraEnabled)}
-                    isToggled={cameraEnabled}
+                    isToggled={!cameraEnabled}
                     icon={
                         cameraEnabled ? (
                             <Icon data-testid="camerashown" icon={CameraOnIcon} style={{ fontSize: "1.625rem" }} />
