@@ -43,7 +43,7 @@ export default function ExhibitTabs({
                 const tab = tabsTitles.find(({ tabId }) => tabId === props.tab);
                 if (!tab) return undefined;
                 const { tabTestId, title, subTitle, icon } = tab;
-                let subtitleState: ColorStatus | ColorStatus.disabled;
+                let subtitleState: ColorStatus = ColorStatus.disabled;
                 if (active) subtitleState = ColorStatus.white;
                 else if (highlight) subtitleState = ColorStatus.primary;
 

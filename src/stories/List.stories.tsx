@@ -7,6 +7,7 @@ import List from "../components/List";
 import Card from "../components/Card";
 import { ContainerSmall } from "./Decorators";
 import Button from "../components/Button";
+import ColorStatus from "../types/ColorStatus";
 
 export default {
     title: "List",
@@ -51,7 +52,7 @@ PRListCustomItem.args = {
         return (
             <Row align="middle" justify="space-between" style={{ width: "100%" }}>
                 <div>
-                    <Text block state="primary">
+                    <Text block state={ColorStatus.primary}>
                         {`Item ${item}`}
                     </Text>
                 </div>

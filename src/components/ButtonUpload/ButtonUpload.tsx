@@ -13,7 +13,7 @@ export interface IUploadButton {
 }
 const UploadButton = ({ fileName, label, removeFile }: IUploadButton) => {
     return fileName ? (
-        <StyledAttachButton icon={<Icon style={{ fontSize: "20px" }} icon={AttachClipIcon} />}>
+        <StyledAttachButton icon={<Icon style={{ fontSize: "20px" }} icon={AttachClipIcon} />} tabIndex={-1}>
             <Text state={ColorStatus.primary}>{fileName}</Text>
             <Icon
                 icon={CloseIcon}
