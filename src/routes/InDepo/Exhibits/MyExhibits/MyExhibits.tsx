@@ -16,6 +16,7 @@ import FileListTable from "./FileListTable";
 import ViewDocument from "./ViewDocument";
 import { theme } from "../../../../constants/styles/theme";
 import { ExhibitFile } from "../../../../types/ExhibitFile";
+import ColorStatus from "../../../../types/ColorStatus";
 
 export default function MyExhibits() {
     const { depositionID } = useParams<{ depositionID: string }>();
@@ -28,7 +29,7 @@ export default function MyExhibits() {
             {!selectedFile && (
                 <>
                     <Space size="middle">
-                        <Text size="large" state="white">
+                        <Text size="large" state={ColorStatus.white}>
                             My Exhibits
                         </Text>
                         <Badge count={files?.length || 0} />

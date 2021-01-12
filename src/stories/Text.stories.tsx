@@ -2,6 +2,7 @@ import React from "react";
 // also exported from '@storybook/react' if you can deal with breaking changes in 6.1
 import { Story, Meta } from "@storybook/react/types-6-0";
 
+import ColorStatus from "../types/ColorStatus";
 import Text from "../components/Typography/Text";
 
 export default {
@@ -23,7 +24,7 @@ export default {
         state: {
             control: {
                 type: "select",
-                options: ["error", "warning", "success", "info", "primary", "secondary", undefined],
+                options: Object.values(ColorStatus),
             },
         },
         uppercase: { control: "boolean" },

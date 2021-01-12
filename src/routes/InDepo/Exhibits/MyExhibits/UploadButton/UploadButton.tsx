@@ -7,6 +7,7 @@ import Dragger from "../../../../../components/Dragger";
 import { ReactComponent as uploadIcon } from "../../../../../assets/icons/upload-cloud.svg";
 import ProgressBarRender from "./ProgressBarRender";
 import { MY_EXHIBITS_ALLOWED_FILE_TYPES } from "../../../../../constants/exhibits";
+import ColorStatus from "../../../../../types/ColorStatus";
 
 export type IUploadStatus = "success" | "pending" | "fail" | "initial";
 interface IUploadButton {
@@ -36,7 +37,7 @@ export default function UploadButton({ onUpload, onUploadCompleted }: IUploadBut
         >
             <Space size="middle">
                 <Icon icon={uploadIcon} style={{ fontSize: "2.6rem" }} />
-                <Text state="white">UPLOAD FILES</Text>
+                <Text state={ColorStatus.white}>UPLOAD FILES</Text>
             </Space>
         </Dragger>
     );

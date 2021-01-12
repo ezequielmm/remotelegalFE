@@ -16,6 +16,7 @@ import * as CONSTANTS from "../../../../constants/createDeposition";
 import { theme } from "../../../../constants/styles/theme";
 import { DeleteWitnessButton, SectionRow, WitnessTitleContainer } from "../../styles";
 import { ReactComponent as DeleteIcon } from "../../../../assets/general/Delete.svg";
+import ColorStatus from "../../../../types/ColorStatus";
 
 interface WitnessItemProps {
     deposition: Partial<ArrayField<Record<string, any>>>;
@@ -67,7 +68,7 @@ const WitnessItem = ({ deposition, removeWitness, witnessNumber }: WitnessItemPr
                             </DeleteWitnessButton>
                         )}
                     </WitnessTitleContainer>
-                    <Text state="disabled" ellipsis={false}>
+                    <Text state={ColorStatus.disabled} ellipsis={false}>
                         {CONSTANTS.WITNESS_SUBTITLE}
                     </Text>
                 </Col>

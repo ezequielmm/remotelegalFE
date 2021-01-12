@@ -15,6 +15,7 @@ import CodeSent from "../CodeSent/CodeSent";
 import Title from "../../components/Typography/Title";
 import Text from "../../components/Typography/Text";
 import { InputWrapper } from "../../components/Input/styles";
+import ColorStatus from "../../types/ColorStatus";
 
 const SignUp = () => {
     const { isAuthenticated } = useAuthentication();
@@ -152,7 +153,7 @@ const SignUp = () => {
                                                             <Text
                                                                 dataTestId={nameErrorMessage}
                                                                 size="small"
-                                                                state="error"
+                                                                state={ColorStatus.error}
                                                             >
                                                                 {nameErrorMessage}
                                                             </Text>
@@ -168,7 +169,7 @@ const SignUp = () => {
                                                             <Text
                                                                 dataTestId={lastNameErrorMessage}
                                                                 size="small"
-                                                                state="error"
+                                                                state={ColorStatus.error}
                                                             >
                                                                 {lastNameErrorMessage}
                                                             </Text>
@@ -181,7 +182,11 @@ const SignUp = () => {
                                             <InputWrapper>
                                                 {emailInput}
                                                 {emailErrorMessage && (
-                                                    <Text dataTestId={emailErrorMessage} size="small" state="error">
+                                                    <Text
+                                                        dataTestId={emailErrorMessage}
+                                                        size="small"
+                                                        state={ColorStatus.error}
+                                                    >
                                                         {emailErrorMessage}
                                                     </Text>
                                                 )}
@@ -194,7 +199,7 @@ const SignUp = () => {
                                                     <Text
                                                         dataTestId={companyNameErrorMessage}
                                                         size="small"
-                                                        state="error"
+                                                        state={ColorStatus.error}
                                                     >
                                                         {companyNameErrorMessage}
                                                     </Text>
@@ -208,7 +213,7 @@ const SignUp = () => {
                                                     <Text
                                                         dataTestId={companyAddressErrorMessage}
                                                         size="small"
-                                                        state="error"
+                                                        state={ColorStatus.error}
                                                     >
                                                         {companyAddressErrorMessage}
                                                     </Text>
@@ -219,7 +224,11 @@ const SignUp = () => {
                                             <InputWrapper>
                                                 {phoneInput}
                                                 {phoneErrorMessage && (
-                                                    <Text dataTestId={phoneErrorMessage} size="small" state="error">
+                                                    <Text
+                                                        dataTestId={phoneErrorMessage}
+                                                        size="small"
+                                                        state={ColorStatus.error}
+                                                    >
                                                         {phoneErrorMessage}
                                                     </Text>
                                                 )}
@@ -229,15 +238,29 @@ const SignUp = () => {
                                             <InputWrapper>
                                                 {passwordInput}
                                                 {passwordErrorMessage && (
-                                                    <Text dataTestId={passwordErrorMessage} size="small" state="error">
+                                                    <Text
+                                                        dataTestId={passwordErrorMessage}
+                                                        size="small"
+                                                        state={ColorStatus.error}
+                                                    >
                                                         {passwordErrorMessage}
                                                     </Text>
                                                 )}
                                                 <div>
-                                                    <Text size="small" block ellipsis={false} state="disabled">
+                                                    <Text
+                                                        size="small"
+                                                        block
+                                                        ellipsis={false}
+                                                        state={ColorStatus.disabled}
+                                                    >
                                                         8 digits minimum, combining numbers and letters
                                                     </Text>
-                                                    <Text size="small" block ellipsis={false} state="disabled">
+                                                    <Text
+                                                        size="small"
+                                                        block
+                                                        ellipsis={false}
+                                                        state={ColorStatus.disabled}
+                                                    >
                                                         At least one uppercase and one lowercase
                                                     </Text>
                                                 </div>
@@ -250,7 +273,7 @@ const SignUp = () => {
                                                     <Text
                                                         dataTestId={confirmPasswordErrorMessage}
                                                         size="small"
-                                                        state="error"
+                                                        state={ColorStatus.error}
                                                     >
                                                         {confirmPasswordErrorMessage}
                                                     </Text>

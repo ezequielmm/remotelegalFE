@@ -2,6 +2,7 @@ import React from "react";
 import { StyledAttachButton, StyledUploadButton } from "./styles";
 import Text from "../Typography/Text";
 import Icon from "../Icon";
+import ColorStatus from "../../types/ColorStatus";
 import { ReactComponent as UploadCloudIcon } from "../../assets/icons/upload-cloud.svg";
 import { ReactComponent as AttachClipIcon } from "../../assets/icons/attach-clip.svg";
 import { ReactComponent as CloseIcon } from "../../assets/icons/close.svg";
@@ -12,8 +13,8 @@ export interface IUploadButton {
 }
 const UploadButton = ({ fileName, label, removeFile }: IUploadButton) => {
     return fileName ? (
-        <StyledAttachButton icon={<Icon style={{ fontSize: "20px" }} icon={AttachClipIcon} />} tabIndex={-1}>
-            <Text state="primary">{fileName}</Text>
+        <StyledAttachButton icon={<Icon style={{ fontSize: "20px" }} icon={AttachClipIcon} />}>
+            <Text state={ColorStatus.primary}>{fileName}</Text>
             <Icon
                 icon={CloseIcon}
                 onClick={removeFile}

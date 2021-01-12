@@ -12,6 +12,7 @@ import Modal from "../../../components/Modal";
 import Button from "../../../components/Button";
 import Result from "../../../components/Result";
 import { CustomStatus } from "../../../components/Result/Result";
+import ColorStatus from "../../../types/ColorStatus";
 
 interface IModalProps {
     open: boolean;
@@ -87,7 +88,7 @@ const CaseModal = ({ open, handleClose, fetchCases }: IModalProps) => {
                             <Title level={4} weight="light" noMargin>
                                 Add case
                             </Title>
-                            <Text state="disabled" ellipsis={false}>
+                            <Text state={ColorStatus.disabled} ellipsis={false}>
                                 Please complete the information below.
                             </Text>
                         </div>
@@ -97,7 +98,7 @@ const CaseModal = ({ open, handleClose, fetchCases }: IModalProps) => {
                                 <Form.Item label="Name" htmlFor="case-name">
                                     <InputWrapper>
                                         {caseNameInput}
-                                        <Text size="small" state="error">
+                                        <Text size="small" state={ColorStatus.error}>
                                             {caseNameErrorMessage}
                                         </Text>
                                     </InputWrapper>

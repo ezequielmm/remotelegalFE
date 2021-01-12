@@ -2,6 +2,7 @@ import React from "react";
 import { ButtonProps, ButtonType } from "antd/lib/button";
 import Text from "../Typography/Text";
 import { StyledRoundedControl, StyledCircleControl, StyledRoundedControlInRed, StyledRoundedButton } from "./styles";
+import ColorStatus from "../../types/ColorStatus";
 
 export enum Types {
     CIRCLE = "circle",
@@ -36,7 +37,7 @@ export default function Control({ isToggled, type, label, icon, color, ...rest }
         <Button {...rest} isToggled={isToggled}>
             {icon}
             {label && (
-                <Text size="small" state={isToggled && color !== "red" ? "primary" : "white"}>
+                <Text size="small" state={isToggled && color !== "red" ? ColorStatus.primary : ColorStatus.white}>
                     {label}
                 </Text>
             )}

@@ -6,6 +6,7 @@ import { TimeZones } from "../../../models/general";
 import Clock from "../../../components/Clock";
 import Text from "../../../components/Typography/Text";
 import { StyledIdentityBox, StyledParticipantMask, StyledTimeBox } from "./styles";
+import ColorStatus from "../../../types/ColorStatus";
 
 const AspectRatio = require("../../../assets/in-depo/aspect-ratio-16-9.svg");
 
@@ -30,7 +31,7 @@ const Participant = ({
                 </StyledTimeBox>
             )}
             <StyledIdentityBox>
-                <Text size="default" weight="bold" state="white">
+                <Text size="default" weight="bold" state={ColorStatus.white}>
                     {participant?.identity ? participant.identity : "waiting for witness"}
                 </Text>
             </StyledIdentityBox>

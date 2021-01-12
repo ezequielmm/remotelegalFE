@@ -1,8 +1,10 @@
 import React from "react";
 
 import { Story, Meta } from "@storybook/react/types-6-0";
+
 import Tag from "../components/Tag";
 import { theme } from "../constants/styles/theme";
+import ColorStatus from "../types/ColorStatus";
 
 const inDepoTheme = { ...theme, mode: "inDepo" };
 const defaultTheme = { ...theme, mode: "default" };
@@ -23,7 +25,8 @@ export default {
         },
         color: {
             control: {
-                type: "text",
+                type: "select",
+                options: Object.values(ColorStatus),
             },
         },
     },

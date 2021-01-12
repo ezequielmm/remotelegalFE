@@ -10,6 +10,8 @@ import useInput from "../hooks/useInput";
 import { InputWrapper } from "../components/Input/styles";
 import isInvalidEMail from "../helpers/isInvalidEmail";
 
+import ColorStatus from "../types/ColorStatus";
+
 export default {
     title: "Input",
     component: Input,
@@ -55,7 +57,7 @@ export const PRInputForm: Story = (args) => {
                 <InputWrapper>
                     {emailInput}
                     {emailInvalid && !emailValue.length && (
-                        <Text size="small" state="error">
+                        <Text size="small" state={ColorStatus.error}>
                             {args.errorMessage}
                         </Text>
                     )}

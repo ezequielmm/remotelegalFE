@@ -11,6 +11,7 @@ import * as ERRORS from "../../constants/login";
 import isInvalidEMail from "../../helpers/isInvalidEmail";
 import { useSignIn, useVerifyToken } from "../../hooks/auth";
 import Input from "../../components/Input";
+import ColorStatus from "../../types/ColorStatus";
 
 interface LoginProps {
     location?: {
@@ -73,7 +74,7 @@ const Login = ({ location }: LoginProps) => {
                                             name="email"
                                         />
                                         {emailErrorMessage && (
-                                            <Text size="small" state="error">
+                                            <Text size="small" state={ColorStatus.error}>
                                                 {emailErrorMessage}
                                             </Text>
                                         )}
@@ -110,7 +111,7 @@ const Login = ({ location }: LoginProps) => {
                                             type="password"
                                         />
                                         {passwordErrorMessage && (
-                                            <Text size="small" state="error">
+                                            <Text size="small" state={ColorStatus.error}>
                                                 {passwordErrorMessage}
                                             </Text>
                                         )}

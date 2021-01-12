@@ -8,6 +8,7 @@ import { IModalProps } from "../Modal/Modal";
 import Title from "../Typography/Title";
 import Text from "../Typography/Text";
 import Button from "../Button";
+import ColorStatus from "../../types/ColorStatus";
 
 export interface IConfirmProps extends IModalProps {
     title?: string;
@@ -44,7 +45,16 @@ const ConfirmModal = styled(Modal)<IConfirmProps>`
 `;
 
 const confirm = (props: IConfirmProps) => {
-    const { title, subTitle, onNegativeClick, onPositiveClick, negativeLabel, positiveLabel, children, ...rest } = props;
+    const {
+        title,
+        subTitle,
+        onNegativeClick,
+        onPositiveClick,
+        negativeLabel,
+        positiveLabel,
+        children,
+        ...rest
+    } = props;
     const closeIcon = <Icon icon={CloseIcon} />;
 
     return (
@@ -69,7 +79,7 @@ const confirm = (props: IConfirmProps) => {
             <Title level={4} weight="light">
                 {title}
             </Title>
-            <Text state="disabled" ellipsis={false}>
+            <Text state={ColorStatus.disabled} ellipsis={false}>
                 {subTitle}
             </Text>
             {children}

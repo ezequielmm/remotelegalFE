@@ -6,6 +6,7 @@ import { GlobalStateContext } from "../../../state/GlobalState";
 import { ContainerProps, StyledLayoutContent, StyledLayoutCotainer } from "../styles";
 import { RealTimeHeader, RoughDraftContainer, StyledRealTimeContainer } from "./styles";
 import { TimeZones } from "../../../models/general";
+import ColorStatus from "../../../types/ColorStatus";
 
 const RealTime = ({
     visible,
@@ -34,10 +35,17 @@ const RealTime = ({
                         <div>
                             <RealTimeHeader>
                                 <Space direction="vertical" size="small">
-                                    <Text state="primary" font="code" size="small" weight="bold" block uppercase>
+                                    <Text
+                                        state={ColorStatus.primary}
+                                        font="code"
+                                        size="small"
+                                        weight="bold"
+                                        block
+                                        uppercase
+                                    >
                                         KOREMATSU V. UNITED STATES
                                     </Text>
-                                    <Text state="disabled" font="code" size="small" block>
+                                    <Text state={ColorStatus.disabled} font="code" size="small" block>
                                         Case No. 123-45214
                                     </Text>
                                 </Space>
@@ -53,7 +61,7 @@ const RealTime = ({
                                         key={transcription.transcriptDateTime + transcription.userEmail}
                                     >
                                         <Text
-                                            state="disabled"
+                                            state={ColorStatus.disabled}
                                             font="code"
                                             size="small"
                                             weight="bold"

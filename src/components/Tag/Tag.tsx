@@ -6,7 +6,7 @@ import { getREM, getWeightNumber } from "../../constants/styles/utils";
 import ColorStatus from "../../types/ColorStatus";
 export interface ITagProps extends Omit<TagProps, "color"> {
     pill?: boolean;
-    color?: keyof typeof ColorStatus | undefined;
+    color?: ColorStatus;
 }
 interface StyledTagProps extends Omit<ITagProps, "pill"> {
     $pill?: boolean;

@@ -5,6 +5,7 @@ import Text from "../../../../../../components/Typography/Text";
 import Button from "../../../../../../components/Button";
 import Icon from "../../../../../../components/Icon";
 import { ReactComponent as backIcon } from "../../../../../../assets/in-depo/back.svg";
+import ColorStatus from "../../../../../../types/ColorStatus";
 
 interface Props {
     fileName: string;
@@ -16,7 +17,7 @@ export default function ViewDocumentHeader({ fileName, onClose, disabled = false
     return (
         <StyledViewDocumentHeader align="middle" data-testid="view-document-header">
             <Col md={6} xxl={4}>
-                <Text state="white">
+                <Text state={ColorStatus.white}>
                     <Icon
                         data-testid="view-document-back-button"
                         icon={backIcon}
@@ -27,7 +28,7 @@ export default function ViewDocumentHeader({ fileName, onClose, disabled = false
             </Col>
             <Col md={12} xxl={16}>
                 <Tooltip title={fileName}>
-                    <Text size="large" state="white" block align="center">
+                    <Text size="large" state={ColorStatus.white} block align="center">
                         {fileName}
                     </Text>
                 </Tooltip>

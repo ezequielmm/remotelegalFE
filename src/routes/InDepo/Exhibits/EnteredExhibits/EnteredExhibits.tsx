@@ -9,12 +9,13 @@ import { ENTERED_EXHIBITS_SUBTITLE, ENTERED_EXHIBITS_TITLE } from "../../../../c
 import { ReactComponent as EnteredExhibitsIcon } from "../../../../assets/icons/EnteredExhibits-empty.svg";
 import { ExhibitTabPaneSpacer } from "../styles";
 import { theme } from "../../../../constants/styles/theme";
+import ColorStatus from "../../../../types/ColorStatus";
 
 export default function EnteredExhibits() {
     return (
         <ExhibitTabPaneSpacer direction="vertical" size="large">
             <Space size="middle">
-                <Text size="large" state="white">
+                <Text size="large" state={ColorStatus.white}>
                     Entered exhibits
                 </Text>
                 <Badge count={0} />

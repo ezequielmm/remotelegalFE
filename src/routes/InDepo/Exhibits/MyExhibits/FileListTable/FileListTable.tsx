@@ -18,6 +18,7 @@ import FileListActionModal from "./FileListActionModal";
 import { ModalMode } from "./FileListActionModal/FileListActionModal";
 import { ExhibitFile } from "../../../../../types/ExhibitFile";
 import { StyledFileNameCell } from "./styles";
+import ColorStatus from "../../../../../types/ColorStatus";
 
 interface IFileListTable extends TableProps<DefaultRecordType> {
     onClickViewFile: (item: any) => void;
@@ -88,7 +89,7 @@ const FileListTable = (props: IFileListTable) => {
                             <StyledFileNameCell>
                                 <FileIcon type={fileExtension} />
                                 <Tooltip title={displayName}>
-                                    <Text state="white">{displayName}</Text>
+                                    <Text state={ColorStatus.white}>{displayName}</Text>
                                 </Tooltip>
                             </StyledFileNameCell>
                         );

@@ -15,6 +15,7 @@ import { ReactComponent as DeleteIcon } from "../../../assets/icons/delete.svg";
 import { ReactComponent as EditIcon } from "../../../assets/icons/edit.svg";
 import Icon from "../../../components/Icon";
 import OtherParticipantsEmptySection from "./OtherParticipantsEmptySection";
+import ColorStatus from "../../../types/ColorStatus";
 
 export default function OtherParticipantsSection(): ReactElement {
     const [openOtherParticipants, setOpenOtherParticipants] = React.useState(false);
@@ -85,7 +86,7 @@ export default function OtherParticipantsSection(): ReactElement {
                                 <Title level={5} weight="regular">
                                     {CONSTANTS.OTHER_PARTICIPANTS_SECTION_TITLE}
                                 </Title>
-                                <Text state="disabled" ellipsis={false}>
+                                <Text state={ColorStatus.disabled} ellipsis={false}>
                                     {CONSTANTS.OTHER_PARTICIPANTS_SECTION_SUBTITLE}
                                 </Text>
                             </Col>

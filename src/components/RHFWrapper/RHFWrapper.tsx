@@ -4,6 +4,7 @@ import { Form, Space, Tooltip } from "antd";
 import { Control, Controller } from "react-hook-form";
 import Text from "../Typography/Text";
 import { InputSpacing } from "./styles";
+import ColorStatus from "../../types/ColorStatus";
 
 export interface RHFWrapperProps {
     component?: (data: {
@@ -56,7 +57,7 @@ export default function RHFWrapper({
         >
             <InputSpacing>
                 <Controller defaultValue={defaultValue} control={control} name={name} render={component} />
-                <Text dataTestId={errorMessage} block height={1} size="small" state="error">
+                <Text dataTestId={errorMessage} block height={1} size="small" state={ColorStatus.error}>
                     {errorMessage}
                 </Text>
             </InputSpacing>

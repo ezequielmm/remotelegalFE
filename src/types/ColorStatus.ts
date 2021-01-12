@@ -1,12 +1,12 @@
 enum ColorStatus {
-    "primary",
-    "secondary",
-    "disabled",
-    "error",
-    "warning",
-    "success",
-    "info",
-    "white",
+    primary = "primary",
+    secondary = "secondary",
+    disabled = "disabled",
+    error = "error",
+    warning = "warning",
+    success = "success",
+    info = "info",
+    white = "white",
 }
 
 export default ColorStatus;

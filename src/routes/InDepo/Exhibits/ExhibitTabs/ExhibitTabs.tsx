@@ -43,9 +43,9 @@ export default function ExhibitTabs({
                 const tab = tabsTitles.find(({ tabId }) => tabId === props.tab);
                 if (!tab) return undefined;
                 const { tabTestId, title, subTitle, icon } = tab;
-                let subtitleState: keyof typeof ColorStatus = "disabled";
-                if (active) subtitleState = "white";
-                else if (highlight) subtitleState = "primary";
+                let subtitleState: ColorStatus | ColorStatus.disabled;
+                if (active) subtitleState = ColorStatus.white;
+                else if (highlight) subtitleState = ColorStatus.primary;
 
                 return (
                     <ExhibitTabContainer
@@ -57,7 +57,11 @@ export default function ExhibitTabs({
                     >
                         {!active && previousTabIsNotSelected && isNotFirstTab && <Stick />}
                         <ExhibitTabContainerText data-testid={active && `${tabTestId}_active`}>
-                            <Text uppercase state={highlight && !active ? "primary" : "white"} size="small">
+                            <Text
+                                uppercase
+                                state={highlight && !active ? ColorStatus.primary : ColorStatus.white}
+                                size="small"
+                            >
                                 <Space size="small">
                                     {icon && (
                                         <Icon icon={icon} style={{ fontSize: getREM(theme.default.fontSizes[4]) }} />

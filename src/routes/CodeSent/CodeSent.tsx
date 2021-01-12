@@ -7,6 +7,7 @@ import Title from "../../components/Typography/Title";
 import Text from "../../components/Typography/Text";
 import { StyledButtonLink } from "./styles";
 import { theme } from "../../constants/styles/theme";
+import ColorStatus from "../../types/ColorStatus";
 
 interface CodeSentProps {
     email: string;
@@ -33,7 +34,7 @@ const CodeSent = ({ email }: CodeSentProps) => {
                     </Title>
                 </Col>
                 <Space size="small" align="start">
-                    <Text size="extralarge" state="disabled">
+                    <Text size="extralarge" state={ColorStatus.disabled}>
                         Didn’t get the email?
                     </Text>
                     <StyledButtonLink data-testid="code_sent_resend_link" type="link" onClick={handleLinkFetch}>

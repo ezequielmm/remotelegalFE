@@ -13,6 +13,7 @@ import RHFSelect from "../../../../components/RHFSelect";
 import { IParticipant } from "../../../../models/participant";
 import OtherParticipantsSchema from "../../../../schemas/OtherParticipantsSchema";
 import Select from "../../../../components/Select";
+import ColorStatus from "../../../../types/ColorStatus";
 
 export interface IModalProps {
     open: boolean;
@@ -86,7 +87,7 @@ export default function OtherParticipantsModal({
                     <Title level={4} weight="light">
                         {CONSTANTS.OTHER_PARTICIPANTS_MODAL_TITLE}
                     </Title>
-                    <Text state="disabled" ellipsis={false} height={2}>
+                    <Text state={ColorStatus.disabled} ellipsis={false} height={2}>
                         {CONSTANTS.OTHER_PARTICIPANTS_MODAL_SUBTITLE}
                     </Text>
                 </div>

@@ -1,11 +1,12 @@
 import React, { ReactElement } from "react";
+import { Col, Row, Form } from "antd";
 import { IConfirmProps } from "../../../../../../components/Confirm/Confirm";
 import Confirm from "../../../../../../components/Confirm";
 import * as CONSTANTS from "../../../../../../constants/exhibits";
-import { Col, Row, Form } from "antd";
 import Text from "../../../../../../components/Typography/Text";
 import { InputWrapper } from "../../../../../../components/Input/styles";
 import useInput from "../../../../../../hooks/useInput";
+import ColorStatus from "../../../../../../types/ColorStatus";
 
 export type ModalMode = "rename" | "delete";
 
@@ -34,7 +35,7 @@ export default function FileListActionModal({
                     <Form.Item label="Exhibit Name">
                         <InputWrapper>
                             {input}
-                            <Text size="small" state="error">
+                            <Text size="small" state={ColorStatus.error}>
                                 {exhibitNameErrorMessage}
                             </Text>
                         </InputWrapper>

@@ -6,6 +6,7 @@ import Title from "../../../../components/Typography/Title";
 import Text from "../../../../components/Typography/Text";
 import { theme } from "../../../../constants/styles/theme";
 import { getREM } from "../../../../constants/styles/utils";
+import ColorStatus from "../../../../types/ColorStatus";
 
 const EndDepoScreen = () => (
     <Layout style={{ height: "100vh" }}>
@@ -19,7 +20,7 @@ const EndDepoScreen = () => (
                                 <Title level={4} weight="light">
                                     This deposition has ended
                                 </Title>
-                                <Text state="disabled">Thanks for using Remote Legal.</Text>
+                                <Text state={ColorStatus.disabled}>Thanks for using Remote Legal.</Text>
                             </div>
                         </Space>
                     </Row>

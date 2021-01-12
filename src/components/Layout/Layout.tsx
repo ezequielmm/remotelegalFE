@@ -12,6 +12,7 @@ import { ReactComponent as Bell } from "../../assets/layout/Bell.svg";
 import { ReactComponent as Messages } from "../../assets/layout/Messages.svg";
 import { ReactComponent as DropdownArrow } from "../../assets/layout/DropdownArrow.svg";
 import * as CONSTANTS from "../../constants/layout";
+import ColorStatus from "../../types/ColorStatus";
 
 const { Header } = Layout;
 
@@ -84,7 +85,7 @@ const AppLayout = ({ children }: DashboardProps) => {
                             {CONSTANTS.menuRoutes.map((group) => (
                                 <Menu.ItemGroup
                                     title={
-                                        <Text state="white" size="small">
+                                        <Text state={ColorStatus.white} size="small">
                                             {group.title}
                                         </Text>
                                     }
@@ -101,10 +102,10 @@ const AppLayout = ({ children }: DashboardProps) => {
                         </Menu>
                     </div>
                     <div>
-                        <Text state="disabled" size="small" ellipsis={false}>
+                        <Text state={ColorStatus.disabled} size="small" ellipsis={false}>
                             Remote Legal © 2021
                         </Text>
-                        <Text state="disabled" size="small" ellipsis={false}>
+                        <Text state={ColorStatus.disabled} size="small" ellipsis={false}>
                             All rights Reserved
                         </Text>
                     </div>

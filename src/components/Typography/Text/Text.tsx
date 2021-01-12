@@ -12,7 +12,7 @@ export interface ITextProps {
     ellipsis?: boolean;
     block?: boolean;
     align?: "center" | "right";
-    state?: keyof typeof ColorStatus | undefined;
+    state?: ColorStatus;
     font?: "default" | "header" | "code";
     dataTestId?: string;
     children: React.ReactChild;

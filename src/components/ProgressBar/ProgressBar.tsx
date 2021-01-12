@@ -7,6 +7,7 @@ import { ReactComponent as attachIcon } from "../../assets/icons/attach-clip.svg
 import { ReactComponent as closeIcon } from "../../assets/icons/close.svg";
 import { StyledProgressBar, StyledComponentContainer, StyledProgressBarContainer } from "./styles";
 import { theme } from "../../constants/styles/theme";
+import ColorStatus from "../../types/ColorStatus";
 
 interface IProgressBar {
     statusText?: string;
@@ -19,7 +20,7 @@ export default function ProgressBar({ statusText = "", percent, errors = [], onC
     return (
         <StyledComponentContainer>
             {errors.length === 0 && (
-                <Text state="white" size="small">
+                <Text state={ColorStatus.white} size="small">
                     <Space>
                         <Icon icon={attachIcon} style={{ fontSize: "16px" }} />
                         {statusText}
@@ -27,7 +28,7 @@ export default function ProgressBar({ statusText = "", percent, errors = [], onC
                 </Text>
             )}
             {errors.map((error) => (
-                <Text key={error} state="white" size="small" ellipsis>
+                <Text key={error} state={ColorStatus.white} size="small" ellipsis>
                     <Space>
                         <Icon icon={attachIcon} style={{ fontSize: "16px" }} />
                         {error}
@@ -45,7 +46,7 @@ export default function ProgressBar({ statusText = "", percent, errors = [], onC
                 />
                 {errors.length > 0 && (
                     <Button type="link" onClick={onClose}>
-                        <Text state="white">
+                        <Text state={ColorStatus.white}>
                             <Icon data-testid="progress-bar-close-icon" icon={closeIcon} style={{ fontSize: "12px" }} />
                         </Text>
                     </Button>

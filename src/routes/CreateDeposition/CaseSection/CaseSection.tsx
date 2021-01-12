@@ -8,6 +8,7 @@ import Title from "../../../components/Typography/Title";
 import Button from "../../../components/Button";
 import Card from "../../../components/Card";
 import * as CONSTANTS from "../../../constants/createDeposition";
+import ColorStatus from "../../../types/ColorStatus";
 
 interface CaseSectionProps {
     cases: Record<string, any>;
@@ -25,7 +26,7 @@ const CaseSection = ({ cases, loadingCases, fetchingError }: CaseSectionProps) =
                     <Title level={5} weight="regular">
                         {CONSTANTS.CASE_TITLE}
                     </Title>
-                    <Text state="disabled" ellipsis={false}>
+                    <Text state={ColorStatus.disabled} ellipsis={false}>
                         {CONSTANTS.CASE_SUBTITLE}
                     </Text>
                 </Col>
