@@ -164,7 +164,7 @@ test("VideoConference is shown if fetch is successful", async () => {
     await waitForElement(() => getByTestId("videoconference"));
 });
 
-test("Off the record is shown by default", async () => {
+test("Off the record is shown when isOnTheRecord is false", async () => {
     customDeps.apiService.joinDeposition = jest.fn().mockResolvedValue(TESTS_CONSTANTS.JOIN_DEPOSITION_MOCK);
     const { getByText } = renderWithGlobalContext(
         <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,
@@ -191,6 +191,22 @@ test("On the record is shown when clicking the record button", async () => {
     await waitForDomChange();
     const recordButton = getByTestId("record");
     fireEvent.click(recordButton);
+    await waitForDomChange();
+    expect(getByText(TESTS_CONSTANTS.ON_PILL)).toBeInTheDocument();
+});
+
+test("On the record is shown when isOnTheRecord is true", async () => {
+    customDeps.apiService.joinDeposition = jest
+        .fn()
+        .mockResolvedValue({ ...TESTS_CONSTANTS.JOIN_DEPOSITION_MOCK, isOnTheRecord: true });
+    const { getByText } = renderWithGlobalContext(
+        <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,
+        customDeps,
+        undefined,
+        history
+    );
+
+    history.push(TESTS_CONSTANTS.TEST_ROUTE);
     await waitForDomChange();
     expect(getByText(TESTS_CONSTANTS.ON_PILL)).toBeInTheDocument();
 });

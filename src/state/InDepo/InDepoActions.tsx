@@ -15,6 +15,7 @@ export enum ACTION_TYPE {
     SET_TIMEZONE = "IN_DEPO_SET_TIMEZONE",
     IN_DEPO_SET_PERMISSIONS = "IN_DEPO_SET_PERMISSIONS",
     SET_TRANSCRIPTIONS = "IN_DEPO_SET_TRANSCRIPTIONS",
+    SET_IS_RECORDING = "IN_DEPO_SET_IS_RECORDING",
 }
 
 const actions = {
@@ -59,6 +60,10 @@ const actions = {
     }),
     setTimeZone: (payload: TimeZones) => ({
         type: ACTION_TYPE.SET_TIMEZONE,
+        payload,
+    }),
+    setIsRecoding: (payload: boolean) => ({
+        type: ACTION_TYPE.SET_IS_RECORDING,
         payload,
     }),
     setTranscriptions: (payload: TranscriptionModel.Transcription[]) => ({

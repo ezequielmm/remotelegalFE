@@ -14,6 +14,7 @@ export interface IRoom {
     dataTrack?: LocalDataTrack | null;
     witness?: string;
     timeZone?: TimeZones;
+    isRecording?: boolean;
     transcriptions?: TranscriptionModel.Transcription[];
     permissions?: string[];
 }
@@ -25,6 +26,7 @@ export const RoomReducerInitialState: IRoom = {
     dataTrack: null,
     message: { module: "", value: "" },
     witness: "",
+    isRecording: null,
     timeZone: null,
     transcriptions: [],
     permissions: [],
@@ -100,6 +102,11 @@ const RoomReducer: Reducer<IRoom, IAction> = (state: IRoom, action: IAction): IR
             return {
                 ...state,
                 timeZone: action.payload,
+            };
+        case ACTION_TYPE.SET_IS_RECORDING:
+            return {
+                ...state,
+                isRecording: action.payload,
             };
 
         default:

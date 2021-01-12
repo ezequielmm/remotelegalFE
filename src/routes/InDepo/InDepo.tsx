@@ -21,11 +21,10 @@ const InDepo = () => {
     const inDepoTheme = { ...theme, mode: "inDepo" };
     const { state, dispatch } = useContext(GlobalStateContext);
     const [joinDeposition, loading, error] = useJoinDeposition();
-    const { message, currentRoom, witness, permissions, timeZone, dataTrack } = state.room;
+    const { isRecording, message, currentRoom, witness, permissions, timeZone, dataTrack } = state.room;
     const { depositionID } = useParams<DepositionID>();
     const [realTimeOpen, togglerRealTime] = useState(false);
     const [exhibitsOpen, togglerExhibits] = useState(false);
-    const [isRecording, togglerRecording] = useState(false);
     const [videoLayoutSize, setVideoLayoutSize] = useState(0);
     const history = useHistory();
 
@@ -57,7 +56,7 @@ const InDepo = () => {
             disconnectFromDepo(currentRoom, dispatch, history);
         }
         if (message.module === "recordDepo") {
-            togglerRecording(message.value);
+            dispatch(actions.setIsRecoding(message.value));
         }
         if (message.module === "addTranscription") {
             dispatch(actions.addTranscription(message.value));
@@ -99,7 +98,6 @@ const InDepo = () => {
                 <StyledRoomFooter>
                     <ControlsBar
                         isRecording={isRecording}
-                        togglerRecording={togglerRecording}
                         canEnd={permissions.includes("EndDeposition")}
                         canRecord={permissions.includes("Recording")}
                         realTimeOpen={realTimeOpen}

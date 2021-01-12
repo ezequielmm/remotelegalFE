@@ -41,7 +41,6 @@ interface IControlsBar {
     togglerExhibits: React.Dispatch<React.SetStateAction<boolean>> | ((value: React.SetStateAction<boolean>) => void);
     realTimeOpen: boolean;
     isRecording: boolean;
-    togglerRecording: React.Dispatch<React.SetStateAction<boolean>> | ((value: React.SetStateAction<boolean>) => void);
     togglerRealTime: React.Dispatch<React.SetStateAction<boolean>> | ((value: React.SetStateAction<boolean>) => void);
 }
 
@@ -52,7 +51,6 @@ export default function ControlsBar({
     realTimeOpen,
     togglerRealTime,
     isRecording,
-    togglerRecording,
     canEnd,
     canRecord,
 }: IControlsBar): ReactElement {
@@ -61,7 +59,7 @@ export default function ControlsBar({
         audioTracks as LocalAudioTrack[],
         videoTracks as LocalVideoTrack[]
     );
-    const startPauseRecording = useRecording(!isRecording, togglerRecording);
+    const startPauseRecording = useRecording(!isRecording);
     const [breakroomsOpen, togglerBreakrooms] = useState(false);
     const [summaryOpen, togglerSummary] = useState(false);
     const [supportOpen, togglerSupport] = useState(false);

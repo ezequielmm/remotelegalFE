@@ -6,12 +6,11 @@ export const JOIN_DEPOSITION_MOCK = {
     witnessEmail: "test@test.com",
     transcriptions: [getTranscription()],
     timeZone,
+    isOnTheRecord: false,
 };
 export const JOIN_DEPOSITION_MOCK_EMPTY_DEPOSITION = {
-    token: "1234",
-    witnessEmail: "test@test.com",
+    ...JOIN_DEPOSITION_MOCK,
     transcriptions: [],
-    timeZone,
 };
 export const WAITING_FOR_WITNESS = "waiting for witness";
 export const ROUTE = "/deposition/join/:depositionID";
