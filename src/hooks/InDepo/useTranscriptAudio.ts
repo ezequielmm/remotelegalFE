@@ -17,7 +17,7 @@ const useTranscriptAudio = () => {
             if (!text) return;
             const parsedTranscription = {
                 text,
-                participantName: currentRoom?.localParticipant?.identity,
+                userEmail: currentRoom?.localParticipant?.identity,
                 time: date,
             };
             dataTrack.send(

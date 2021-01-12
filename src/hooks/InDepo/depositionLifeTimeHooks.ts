@@ -8,6 +8,7 @@ import actions from "../../state/InDepo/InDepoActions";
 import disconnectFromDepo from "../../helpers/disconnectFromDepo";
 import useDepositionPermissions from "./useDepositionPermissions";
 import { DepositionID } from "../../state/types";
+import useGetTranscriptions from "./useGetTranscriptions";
 
 export const useKillDepo = () => {
     const { deps } = useContext(GlobalStateContext);
@@ -38,10 +39,12 @@ export const useJoinDeposition = () => {
         };
     }, []);
     const [getDepositionPermissions] = useDepositionPermissions();
+    const [getTranscriptions] = useGetTranscriptions();
 
     return useAsyncCallback(async (depositionID: string) => {
         const dataTrack = new LocalDataTrack({ maxPacketLifeTime: null, maxRetransmits: null });
         const { permissions } = await getDepositionPermissions();
+        const transcriptions = await getTranscriptions();
         const { timeZone, token, witnessEmail }: any = await generateToken();
         const room = await createLocalTracks({ audio: true, video: { aspectRatio: 1.777777777777778 } }).then(
             (localTracks) => {
@@ -55,7 +58,7 @@ export const useJoinDeposition = () => {
         dispatch(actions.joinToRoom(room));
         dispatch(actions.setPermissions(permissions));
         dispatch(actions.addWitness(witnessEmail));
-        dispatch(actions.setTranscriptions([]));
+        dispatch(actions.setTranscriptions(transcriptions || []));
         dispatch(actions.setTimeZone(timeZone));
         dispatch(actions.addDataTrack(dataTrack));
         return configParticipantListeners(room, dispatch);

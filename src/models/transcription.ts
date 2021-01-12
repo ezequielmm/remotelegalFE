@@ -1,5 +1,8 @@
+import { DateLike } from "./general";
+
 export interface Transcription {
     text: string;
-    participantName?: string;
-    time?: string;
+    userEmail?: string;
+    userName?: string;
+    transcriptDateTime?: DateLike;
 }

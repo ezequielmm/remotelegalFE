@@ -9,6 +9,7 @@ export default (): Deps => ({
     apiService: {
         recordDeposition: jest.fn().mockResolvedValue({}),
         joinDeposition: jest.fn().mockResolvedValue(JOIN_DEPOSITION_MOCK),
+        getDepositionTranscriptions: jest.fn().mockResolvedValue([getDepositions()]),
         getDepositionPermissions: jest.fn().mockResolvedValue({ permissions: PERMISSIONS_MOCK }),
         fetchCases: jest.fn().mockResolvedValue(getCaseAsc()),
         fetchDeposition: jest.fn().mockResolvedValue(getDepositions()[0]),

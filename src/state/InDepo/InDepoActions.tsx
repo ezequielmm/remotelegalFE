@@ -23,12 +23,13 @@ const actions = {
         payload: dataTrack,
     }),
 
-    addTranscription: ({ text, participantName, time }: TranscriptionModel.Transcription) => ({
+    addTranscription: ({ text, userEmail, userName, transcriptDateTime }: TranscriptionModel.Transcription) => ({
         type: ACTION_TYPE.IN_DEPO_ADD_TRANSCRIPTION,
         payload: {
             text,
-            participantName,
-            time,
+            userEmail,
+            userName,
+            transcriptDateTime,
         },
     }),
 

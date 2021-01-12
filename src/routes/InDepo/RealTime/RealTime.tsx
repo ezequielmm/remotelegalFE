@@ -47,7 +47,11 @@ const RealTime = ({
                             <RoughDraftContainer>ROUGH DRAFT: NOT FOR OFFICIAL USE</RoughDraftContainer>
                             <Space direction="vertical" size="middle">
                                 {transcriptions.map((transcription) => (
-                                    <Space direction="vertical" size="small" key={transcription.time}>
+                                    <Space
+                                        direction="vertical"
+                                        size="small"
+                                        key={transcription.transcriptDateTime + transcription.userEmail}
+                                    >
                                         <Text
                                             state="disabled"
                                             font="code"
@@ -57,8 +61,10 @@ const RealTime = ({
                                             dataTestId="transcription_title"
                                         >
                                             <>
-                                                {transcription.participantName} |{" "}
-                                                {moment(transcription.time).tz(timeZone).format("hh:mm:ss A")}
+                                                {transcription.userEmail} |{" "}
+                                                {moment(transcription.transcriptDateTime)
+                                                    .tz(timeZone)
+                                                    .format("hh:mm:ss A")}
                                             </>
                                         </Text>
                                         <Text

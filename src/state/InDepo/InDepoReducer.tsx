@@ -41,7 +41,10 @@ const RoomReducer: Reducer<IRoom, IAction> = (state: IRoom, action: IAction): IR
             const newTranscription = action.payload;
             if (newTranscription.text === "") return state;
             const laterTranscriptionIndex = state.transcriptions.findIndex((transcription) => {
-                return moment(newTranscription.time).isBefore(moment(transcription.time), "second");
+                return moment(newTranscription.transcriptDateTime).isBefore(
+                    moment(transcription.transcriptDateTime),
+                    "second"
+                );
             });
             const transcriptions =
                 laterTranscriptionIndex === -1

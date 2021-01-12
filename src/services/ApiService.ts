@@ -76,6 +76,13 @@ export class ApiService {
         });
     };
 
+    getDepositionTranscriptions = async (depositionID: string) => {
+        return this.request<DepositionModel.IDeposition>({
+            path: `/transcriptions/${depositionID}`,
+            method: HTTP_METHOD.GET,
+        });
+    };
+
     joinDeposition = async (depositionID: string): Promise<DepositionModel.DepositionPermissions> => {
         return this.request({
             path: `/api/depositions/${depositionID}/join`,
