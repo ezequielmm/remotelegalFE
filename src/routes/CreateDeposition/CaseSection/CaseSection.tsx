@@ -45,6 +45,7 @@ const CaseSection = ({ cases, loadingCases, fetchingError }: CaseSectionProps) =
                         renderItem={(item) => (
                             <Select.Option data-testid={item.name} key={item.id} value={item.id}>
                                 {item.name}
+                                {item.caseNumber && ` | ${item.caseNumber}`}
                             </Select.Option>
                         )}
                         renderUnselectableOption={() => (
