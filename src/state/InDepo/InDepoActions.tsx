@@ -2,6 +2,7 @@ import { LocalDataTrack, Room } from "twilio-video";
 import { TimeZones } from "../../models/general";
 import { DataTrackMessage, DisconnectRoomState } from "../types";
 import { TranscriptionModel } from "../../models";
+import { ExhibitFile } from "../../types/ExhibitFile";
 
 export enum ACTION_TYPE {
     SEND_MESSAGE = "SEND_MESSAGE",
@@ -11,6 +12,9 @@ export enum ACTION_TYPE {
     IN_DEPO_REMOVE_PARTICIPANT = "IN_DEPO_REMOVE_PARTICIPANT",
     IN_DEPO_ADD_DATA_TRACK = "IN_DEPO_ADD_DATA_TRACK",
     IN_DEPO_ADD_TRANSCRIPTION = "IN_DEPO_ADD_TRANSCRIPTION",
+    IN_DEPO_START_SHARE_EXHIBIT = "IN_DEPO_START_SHARE_EXHIBIT",
+    IN_DEPO_STOP_SHARE_EXHIBIT = "IN_DEPO_STOP_SHARE_EXHIBIT",
+    IN_DEPO_SET_CURRENT_EXHIBIT_OWNER = "IN_DEPO_SET_CURRENT_EXHIBIT_OWNER",
     ADD_WITNESS = "IN_DEPO_ADD_WITNESS",
     SET_TIMEZONE = "IN_DEPO_SET_TIMEZONE",
     IN_DEPO_SET_PERMISSIONS = "IN_DEPO_SET_PERMISSIONS",
@@ -72,6 +76,18 @@ const actions = {
     }),
     removeRemoteParticipant: (payload: Room) => ({
         type: ACTION_TYPE.IN_DEPO_REMOVE_PARTICIPANT,
+        payload,
+    }),
+    setSharedExhibit: (payload: ExhibitFile) => ({
+        type: ACTION_TYPE.IN_DEPO_START_SHARE_EXHIBIT,
+        payload,
+    }),
+    stopShareExhibit: () => ({
+        type: ACTION_TYPE.IN_DEPO_STOP_SHARE_EXHIBIT,
+        payload: null,
+    }),
+    setIsCurrentExhibitOwner: (payload: boolean) => ({
+        type: ACTION_TYPE.IN_DEPO_SET_CURRENT_EXHIBIT_OWNER,
         payload,
     }),
 };

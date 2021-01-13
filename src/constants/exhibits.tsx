@@ -58,6 +58,14 @@ export const MY_EXHIBITS_DELETE_OK_BUTTON_TEXT = "yes, delete exhibit";
 export const MY_EXHIBITS_DELETE_CANCEL_BUTTON_TEXT = "no, keep it";
 export const MY_EXHIBITS_TIME_TO_CLOSE_AFTER_COMPLETE = 3000;
 export const MY_EXHIBITS_TIME_TO_CLOSE_AFTER_ERROR = 10000;
+export const MY_EXHIBITS_SHARE_MODAL_TITLE = "Share with all participants?";
+export const MY_EXHIBITS_SHARE_MODAL_TITLE_ERROR = "Cannot share exhibit";
+export const MY_EXHIBITS_SHARE_MODAL_SUBTITLE = "By accepting you’re going to share this document with all the participants in this deposition.";
+export const MY_EXHIBITS_SHARE_MODAL_SUBTITLE_ERROR = "You cannot share an exhibit when other participant is already sharing.";
+export const MY_EXHIBITS_SHARE_MODAL_NOT_SHOW_AGAIN_LABEL = "Don’t show this alert again in this deposition";
+export const MY_EXHIBITS_SHARE_MODAL_OK_BUTTON_LABEL = "YES, SHARE EXHIBIT";
+export const MY_EXHIBITS_SHARE_MODAL_OK_BUTTON_LABEL_ERROR = "OK";
+export const MY_EXHIBITS_SHARE_MODAL_CANCEL_BUTTON_LABEL = "NO, DON’T SHARE";
 
 export const EXHIBIT_FILE_ERROR_TITLE = "Exhibit can’t be displayed";
 export const EXHIBIT_FILE_ERROR_SUBTITLE = "Please try opening the Exhibit again.";
@@ -67,3 +75,4 @@ export const ENTERED_EXHIBITS_SUBTITLE = "Once someone enters an exhibit to this
 
 export const LIVE_EXHIBITS_TITLE = "Nobody is showing an exhibit at the moment";
 export const LIVE_EXHIBITS_SUBTITLE = "Once someone is sharing an exhibit you will see it here.";
+export const LIVE_EXHIBITS_SHARE_ERROR_409 = "Can't share document while another document is being shared.";

@@ -67,12 +67,16 @@ const confirm = (props: IConfirmProps) => {
             {...rest}
             footer={
                 <>
-                    <Button type="text" onClick={onNegativeClick}>
-                        {negativeLabel}
-                    </Button>
-                    <Button type="primary" onClick={onPositiveClick}>
-                        {positiveLabel}
-                    </Button>
+                    {!!negativeLabel && (
+                        <Button type="text" onClick={onNegativeClick}>
+                            {negativeLabel}
+                        </Button>
+                    )}
+                    {positiveLabel && (
+                        <Button type="primary" onClick={onPositiveClick}>
+                            {positiveLabel}
+                        </Button>
+                    )}
                 </>
             }
         >

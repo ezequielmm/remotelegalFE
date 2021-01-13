@@ -1,7 +1,14 @@
+type AddedBy = {
+    firstName: string;
+    id: string;
+    lastName: string;
+};
+
 export type ExhibitFile = {
     id: string;
     name: string;
     displayName: string;
     size: number;
-    fileUri: string;
+    preSignedUrl?: string;
+    addedBy?: AddedBy;
 };

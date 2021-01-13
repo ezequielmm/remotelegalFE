@@ -13,7 +13,7 @@ import Badge from "../../../../components/Badge";
 import { ExhibitTabPaneSpacer, ScrollTableContainer } from "../styles";
 import UploadButton from "./UploadButton";
 import FileListTable from "./FileListTable";
-import ViewDocument from "./ViewDocument";
+import ExhibitViewer from "../ExhibitViewer";
 import { theme } from "../../../../constants/styles/theme";
 import { ExhibitFile } from "../../../../types/ExhibitFile";
 import ColorStatus from "../../../../types/ColorStatus";
@@ -65,10 +65,10 @@ export default function MyExhibits() {
                 </>
             )}
             {selectedFile && (
-                <ViewDocument
-                    documentId={selectedFile.id}
-                    fileName={selectedFile?.displayName}
+                <ExhibitViewer
+                    file={selectedFile}
                     onClose={() => setSelectedFile(null)}
+                    showShareButtonOnHeader={true}
                 />
             )}
         </ExhibitTabPaneSpacer>

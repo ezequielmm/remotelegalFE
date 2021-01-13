@@ -9,11 +9,23 @@ import Exhibits from "../../routes/InDepo/Exhibits";
 import { ExhibitTabData } from "../../routes/InDepo/Exhibits/ExhibitTabs/ExhibitTabs";
 import MyExhibits from "../../routes/InDepo/Exhibits/MyExhibits";
 import renderWithGlobalContext from "../utils/renderWithGlobalContext";
-import { useUploadFile, useFileList, useSignedUrl } from "../../hooks/exhibits/hooks";
+import { rootReducer } from "../../state/GlobalState";
+import getMockDeps from "../utils/getMockDeps";
+import state from "../mocks/state";
+import actions from "../../state/InDepo/InDepoActions";
+import {
+    useUploadFile,
+    useFileList,
+    useSignedUrl,
+    useShareExhibitFile,
+    useExhibitTabs,
+} from "../../hooks/exhibits/hooks";
 jest.mock("../../hooks/exhibits/hooks", () => ({
     useUploadFile: jest.fn(),
     useFileList: jest.fn(),
     useSignedUrl: jest.fn(),
+    useShareExhibitFile: jest.fn(),
+    useExhibitTabs: jest.fn(),
 }));
 
 jest.mock("react-router-dom", () => ({
@@ -33,6 +45,19 @@ beforeEach(() => {
         errorFetchFiles: false,
         files: [],
         refreshList: jest.fn(),
+    }));
+    useShareExhibitFile.mockImplementation(() => ({
+        sharedExhibit: {},
+    }));
+    useExhibitTabs.mockImplementation(() => ({
+        highlightKey: 0,
+        activeKey: CONSTANTS.DEFAULT_ACTIVE_TAB,
+        setActivetKey: jest.fn(),
+    }));
+    useSignedUrl.mockImplementation(() => ({
+        pending: false,
+        error: null,
+        documentUrl: "",
     }));
 });
 
@@ -54,24 +79,34 @@ describe("Exhibits", () => {
         }
     );
 
-    it.each(CONSTANTS.EXHIBIT_TABS_DATA.map((tab) => [tab.title, tab]))(
+    it.each(CONSTANTS.EXHIBIT_TABS_DATA.map((tab, key) => [tab.title, tab, key]))(
         "should have %s tab with active color when click on it",
-        async (title, { tabTestId }: ExhibitTabData) => {
-            const { getByTestId } = renderWithGlobalContext(
+        async (title, { tabTestId, tabPaneTestId, tabId }: ExhibitTabData, key) => {
+            useExhibitTabs.mockImplementation(() => ({
+                highlightKey: key,
+                activeKey: tabId,
+                setActivetKey: jest.fn(),
+            }));
+            const { queryByTestId } = renderWithGlobalContext(
                 <ThemeProvider theme={theme}>
                     <Exhibits onClick={() => {}} visible />
                 </ThemeProvider>
             );
-            const tab = getByTestId(tabTestId);
+            const tab = queryByTestId(tabTestId);
             await act(async () => userEvent.click(tab));
-            const activeTab = getByTestId(`${tabTestId}_active`);
+            const activeTab = queryByTestId(`${tabTestId}_active`);
             expect(activeTab).toBeTruthy();
         }
     );
 
-    it.each(CONSTANTS.EXHIBIT_TABS_DATA.map((tab) => [tab.title, tab]))(
+    it.each(CONSTANTS.EXHIBIT_TABS_DATA.map((tab, key) => [tab.title, tab, key]))(
         "should open %s tTabPane when click on its Tab",
-        async (title, { tabTestId, tabPaneTestId }: ExhibitTabData) => {
+        async (title, { tabTestId, tabPaneTestId, tabId }: ExhibitTabData, key) => {
+            useExhibitTabs.mockImplementation(() => ({
+                highlightKey: key,
+                activeKey: tabId,
+                setActivetKey: jest.fn(),
+            }));
             const { getByTestId } = renderWithGlobalContext(
                 <ThemeProvider theme={theme}>
                     <Exhibits onClick={() => {}} visible />
@@ -150,7 +185,7 @@ describe("Exhibits", () => {
     });
     it("should not display the view document by default", () => {
         useFileList.mockImplementation(() => ({
-            files: [{ displayName: "fileName.jpg", fileUri: "fileUri" }],
+            files: [{ displayName: "fileName.jpg", preSignedURL: "preSignedURL" }],
         }));
         const { queryByTestId } = renderWithGlobalContext(
             <ThemeProvider theme={theme}>
@@ -159,12 +194,12 @@ describe("Exhibits", () => {
         );
         const fileViewButton = queryByTestId("file-list-view-button");
         expect(fileViewButton).toBeInTheDocument();
-        const viewDocument = queryByTestId("view-document-header");
-        expect(viewDocument).not.toBeInTheDocument();
+        const exhibitViewerHeader = queryByTestId("view-document-header");
+        expect(exhibitViewerHeader).not.toBeInTheDocument();
     });
     it("should display the view document component when click on a file view button", () => {
         useFileList.mockImplementation(() => ({
-            files: [{ displayName: "fileName.jpg", fileUri: "fileUri" }],
+            files: [{ displayName: "fileName.jpg", preSignedURL: "preSignedURL" }],
         }));
         useSignedUrl.mockImplementation(() => ({
             documentUrl: "documentId",
@@ -178,13 +213,13 @@ describe("Exhibits", () => {
         const fileViewButton = queryByTestId("file-list-view-button");
         expect(fileViewButton).toBeInTheDocument();
         fireEvent.click(fileViewButton);
-        const viewDocument = queryByTestId("view-document-header");
-        expect(viewDocument).toBeInTheDocument();
+        const exhibitViewerHeader = queryByTestId("view-document-header");
+        expect(exhibitViewerHeader).toBeInTheDocument();
     });
 
     it("should spinner be displayed when pending load document", () => {
         useFileList.mockImplementation(() => ({
-            files: [{ displayName: "fileName.jpg", fileUri: "fileUri" }],
+            files: [{ displayName: "fileName.jpg", preSignedURL: "preSignedURL" }],
         }));
         useSignedUrl.mockImplementation(() => ({
             pending: true,
@@ -197,37 +232,14 @@ describe("Exhibits", () => {
         const fileViewButton = queryByTestId("file-list-view-button");
         expect(fileViewButton).toBeInTheDocument();
         fireEvent.click(fileViewButton);
-        const viewDocument = queryByTestId("view-document-header");
-        expect(viewDocument).toBeInTheDocument();
+        const exhibitViewerHeader = queryByTestId("view-document-header");
+        expect(exhibitViewerHeader).toBeInTheDocument();
         expect(queryByTestId("spinner")).toBeInTheDocument();
-        expect(queryByTestId("view-document-share-button")).toBeDisabled();
-    });
-
-    it("should disable the share button when has an error", () => {
-        useFileList.mockImplementation(() => ({
-            files: [{ displayName: "fileName.jpg", fileUri: "fileUri" }],
-        }));
-        useSignedUrl.mockImplementation(() => ({
-            documentUrl: "documentId",
-            pending: false,
-            error: true,
-        }));
-        const { queryByTestId } = renderWithGlobalContext(
-            <ThemeProvider theme={theme}>
-                <MyExhibits />
-            </ThemeProvider>
-        );
-        const fileViewButton = queryByTestId("file-list-view-button");
-        expect(fileViewButton).toBeInTheDocument();
-        fireEvent.click(fileViewButton);
-        const viewDocument = queryByTestId("view-document-header");
-        expect(viewDocument).toBeInTheDocument();
-        expect(queryByTestId("view-document-share-button")).toBeDisabled();
     });
 
     it("should display file list again after click on the view document's back button", () => {
         useFileList.mockImplementation(() => ({
-            files: [{ displayName: "fileName.jpg", fileUri: "fileUri", id: "documentId" }],
+            files: [{ displayName: "fileName.jpg", preSignedURL: "preSignedURL", id: "documentId" }],
         }));
         useSignedUrl.mockImplementation(() => ({
             documentUrl: "documentId",
@@ -241,13 +253,157 @@ describe("Exhibits", () => {
         const fileViewButton = queryByTestId("file-list-view-button");
         expect(fileViewButton).toBeInTheDocument();
         fireEvent.click(fileViewButton);
-        const viewDocument = queryByTestId("view-document-header");
-        expect(viewDocument).toBeInTheDocument();
+        const exhibitViewerHeader = queryByTestId("view-document-header");
+        expect(exhibitViewerHeader).toBeInTheDocument();
         expect(fileViewButton).not.toBeInTheDocument();
         const backButton = getByTestId("view-document-back-button");
         expect(backButton).toBeInTheDocument();
         fireEvent.click(backButton);
-        expect(viewDocument).not.toBeInTheDocument();
+        expect(exhibitViewerHeader).not.toBeInTheDocument();
         expect(queryByTestId("file-list-view-button")).toBeInTheDocument();
+    });
+
+    it("should display the share document component when click on a file share button", () => {
+        useFileList.mockImplementation(() => ({
+            files: [{ displayName: "fileName.jpg", preSignedURL: "preSignedURL" }],
+        }));
+        useSignedUrl.mockImplementation(() => ({
+            documentUrl: "documentId",
+            pending: false,
+        }));
+        const { queryByTestId } = renderWithGlobalContext(
+            <ThemeProvider theme={theme}>
+                <MyExhibits />
+            </ThemeProvider>,
+            getMockDeps(),
+            {
+                ...rootReducer,
+                initialState: {
+                    room: {
+                        ...rootReducer.initialState.room,
+                        isRecording: true,
+                    },
+                },
+            }
+        );
+        const ShareFileButton = queryByTestId("file-list-share-button");
+        expect(ShareFileButton).toBeInTheDocument();
+        fireEvent.click(ShareFileButton);
+        const sharedExhibitModal = queryByTestId("share_document_modal");
+        expect(sharedExhibitModal).toBeInTheDocument();
+    });
+    it("should display the share exhibit button disabled when isRecording is false", () => {
+        useFileList.mockImplementation(() => ({
+            files: [{ displayName: "fileName.jpg", preSignedURL: "preSignedURL" }],
+        }));
+        useSignedUrl.mockImplementation(() => ({
+            documentUrl: "documentId",
+            pending: false,
+        }));
+        const { queryByTestId } = renderWithGlobalContext(
+            <ThemeProvider theme={theme}>
+                <MyExhibits />
+            </ThemeProvider>,
+            getMockDeps(),
+            {
+                ...rootReducer,
+                initialState: {
+                    room: {
+                        ...rootReducer.initialState.room,
+                    },
+                },
+            }
+        );
+        const ShareFileButton = queryByTestId("file-list-share-button");
+        expect(ShareFileButton).toBeDisabled();
+    });
+    it("should display the share exhibit button enabled when isRecording is true", () => {
+        useFileList.mockImplementation(() => ({
+            files: [{ displayName: "fileName.jpg", preSignedURL: "preSignedURL" }],
+        }));
+        useSignedUrl.mockImplementation(() => ({
+            documentUrl: "documentId",
+            pending: false,
+        }));
+        const { queryByTestId } = renderWithGlobalContext(
+            <ThemeProvider theme={theme}>
+                <MyExhibits />
+            </ThemeProvider>,
+            getMockDeps(),
+            {
+                ...rootReducer,
+                initialState: {
+                    room: {
+                        ...rootReducer.initialState.room,
+                        isRecording: true,
+                    },
+                },
+            }
+        );
+        const ShareFileButton = queryByTestId("file-list-share-button");
+        expect(ShareFileButton).not.toBeDisabled();
+    });
+    it("should display the share exhibit button on exhibit viewer disabled when isRecording is false", () => {
+        useFileList.mockImplementation(() => ({
+            files: [{ displayName: "fileName.jpg", preSignedURL: "preSignedURL", id: "documentId" }],
+        }));
+        useSignedUrl.mockImplementation(() => ({
+            documentUrl: "documentId",
+            pending: false,
+        }));
+        const { queryByTestId, getByTestId } = renderWithGlobalContext(
+            <ThemeProvider theme={theme}>
+                <MyExhibits />
+            </ThemeProvider>,
+            getMockDeps(),
+            {
+                ...rootReducer,
+                initialState: {
+                    room: {
+                        ...rootReducer.initialState.room,
+                    },
+                },
+            }
+        );
+        const fileViewButton = queryByTestId("file-list-view-button");
+        expect(fileViewButton).toBeInTheDocument();
+        fireEvent.click(fileViewButton);
+        const exhibitViewerHeader = queryByTestId("view-document-header");
+        expect(exhibitViewerHeader).toBeInTheDocument();
+        expect(fileViewButton).not.toBeInTheDocument();
+        const shareButton = getByTestId("view-document-share-button");
+        expect(shareButton).toBeDisabled();
+    });
+    it("should display the share exhibit button on exhibit viewer enabled when isRecording is true", () => {
+        useFileList.mockImplementation(() => ({
+            files: [{ displayName: "fileName.jpg", preSignedURL: "preSignedURL", id: "documentId" }],
+        }));
+        useSignedUrl.mockImplementation(() => ({
+            documentUrl: "documentId",
+            pending: false,
+        }));
+        const { queryByTestId, getByTestId } = renderWithGlobalContext(
+            <ThemeProvider theme={theme}>
+                <MyExhibits />
+            </ThemeProvider>,
+            getMockDeps(),
+            {
+                ...rootReducer,
+                initialState: {
+                    room: {
+                        ...rootReducer.initialState.room,
+                        isRecording: true,
+                    },
+                },
+            }
+        );
+        const fileViewButton = queryByTestId("file-list-view-button");
+        expect(fileViewButton).toBeInTheDocument();
+        fireEvent.click(fileViewButton);
+        const exhibitViewerHeader = queryByTestId("view-document-header");
+        expect(exhibitViewerHeader).toBeInTheDocument();
+        expect(fileViewButton).not.toBeInTheDocument();
+        const shareButton = getByTestId("view-document-share-button");
+        expect(shareButton).not.toBeDisabled();
     });
 });

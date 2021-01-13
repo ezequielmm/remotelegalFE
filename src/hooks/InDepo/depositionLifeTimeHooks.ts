@@ -9,6 +9,7 @@ import disconnectFromDepo from "../../helpers/disconnectFromDepo";
 import useDepositionPermissions from "./useDepositionPermissions";
 import { DepositionID } from "../../state/types";
 import useGetTranscriptions from "./useGetTranscriptions";
+import { useExhibitFileInfo } from "../exhibits/hooks";
 
 export const useKillDepo = () => {
     const { deps } = useContext(GlobalStateContext);
@@ -31,6 +32,7 @@ const useGenerateToken = () => {
 export const useJoinDeposition = () => {
     const { dispatch } = useContext(GlobalStateContext);
     const [generateToken] = useGenerateToken();
+    const [fetchExhibitFileInfo] = useExhibitFileInfo();
     const isMounted = useRef(true);
 
     useEffect(() => {
@@ -45,7 +47,10 @@ export const useJoinDeposition = () => {
         const dataTrack = new LocalDataTrack({ maxPacketLifeTime: null, maxRetransmits: null });
         const { permissions } = await getDepositionPermissions();
         const transcriptions = await getTranscriptions();
-        const { isOnTheRecord, timeZone, token, witnessEmail }: any = await generateToken();
+        const { isOnTheRecord, timeZone, token, witnessEmail, isSharing }: any = await generateToken();
+        if(isSharing) {
+            fetchExhibitFileInfo(depositionID)
+        }
         const room = await createLocalTracks({ audio: true, video: { aspectRatio: 1.777777777777778 } }).then(
             (localTracks) => {
                 return connect(token, { name: depositionID, tracks: [...localTracks, dataTrack] });

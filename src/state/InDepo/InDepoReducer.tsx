@@ -5,6 +5,7 @@ import { TimeZones } from "../../models/general";
 import { TranscriptionModel } from "../../models";
 import { IAction, DataTrackMessage } from "../types";
 import { ACTION_TYPE } from "./InDepoActions";
+import { ExhibitFile } from "../../types/ExhibitFile";
 
 export interface IRoom {
     info?: object;
@@ -17,6 +18,8 @@ export interface IRoom {
     isRecording?: boolean;
     transcriptions?: TranscriptionModel.Transcription[];
     permissions?: string[];
+    currentExhibit?: ExhibitFile;
+    isCurrentExhibitOwner?: boolean;
 }
 
 export const RoomReducerInitialState: IRoom = {
@@ -30,6 +33,8 @@ export const RoomReducerInitialState: IRoom = {
     timeZone: null,
     transcriptions: [],
     permissions: [],
+    currentExhibit: null,
+    isCurrentExhibitOwner: false,
 };
 
 const RoomReducer: Reducer<IRoom, IAction> = (state: IRoom, action: IAction): IRoom => {
@@ -107,6 +112,21 @@ const RoomReducer: Reducer<IRoom, IAction> = (state: IRoom, action: IAction): IR
             return {
                 ...state,
                 isRecording: action.payload,
+            };
+        case ACTION_TYPE.IN_DEPO_START_SHARE_EXHIBIT:
+            return {
+                ...state,
+                currentExhibit: action.payload,
+            };
+        case ACTION_TYPE.IN_DEPO_STOP_SHARE_EXHIBIT:
+            return {
+                ...state,
+                currentExhibit: null,
+            };
+        case ACTION_TYPE.IN_DEPO_SET_CURRENT_EXHIBIT_OWNER:
+            return {
+                ...state,
+                isCurrentExhibitOwner: action.payload,
             };
 
         default:

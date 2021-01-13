@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Dropdown, Menu, Space, Tooltip } from "antd";
 import { TableProps } from "antd/lib/table";
 import { DefaultRecordType } from "rc-table/lib/interface";
@@ -18,7 +18,9 @@ import FileListActionModal from "./FileListActionModal";
 import { ModalMode } from "./FileListActionModal/FileListActionModal";
 import { ExhibitFile } from "../../../../../types/ExhibitFile";
 import { StyledFileNameCell } from "./styles";
+import ExhibitSharingModal from "../../ExhibitViewer/ExhibitSharingModal";
 import ColorStatus from "../../../../../types/ColorStatus";
+import { GlobalStateContext } from "../../../../../state/GlobalState";
 
 interface IFileListTable extends TableProps<DefaultRecordType> {
     onClickViewFile: (item: any) => void;
@@ -27,6 +29,11 @@ interface IFileListTable extends TableProps<DefaultRecordType> {
 const FileListTable = (props: IFileListTable) => {
     const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
     const [currentModalMode, setCurrentModalMode] = useState<ModalMode>(null);
+    const [exhibitSharingModalOpen, setExhibitSharingModalOpen] = useState(false);
+    const [selectedSharedExhibitFile, setSelectedSharedExhibitFile] = useState<ExhibitFile>(null);
+    const { state } = useContext(GlobalStateContext);
+    const { isRecording } = state.room;
+
     const toggleModal = (mode: ModalMode) => {
         setConfirmModalIsOpen(true);
         setCurrentModalMode(mode);
@@ -62,8 +69,18 @@ const FileListTable = (props: IFileListTable) => {
     const onRenameCancelHandler = () => {};
     const onDeleteCancelHandler = () => {};
 
+    const onShareOkHandler = () => {
+        setExhibitSharingModalOpen(false);
+    };
     return (
         <>
+            <ExhibitSharingModal
+                destroyOnClose
+                file={selectedSharedExhibitFile}
+                visible={exhibitSharingModalOpen}
+                onShareOk={onShareOkHandler}
+                onShareCancel={() => setExhibitSharingModalOpen(false)}
+            />
             <FileListActionModal
                 mode={currentModalMode}
                 visible={confirmModalIsOpen}
@@ -122,11 +139,22 @@ const FileListTable = (props: IFileListTable) => {
                     dataIndex="share"
                     key="share"
                     width={getREM(GlobalTheme.default.spaces[8] * 4)}
-                    render={(item) => (
-                        <Button size="small" type="ghost">
-                            Share
-                        </Button>
-                    )}
+                    render={(item, file: ExhibitFile) => {
+                        return (
+                            <Button
+                                disabled={!isRecording}
+                                size="small"
+                                type="ghost"
+                                data-testid="file-list-share-button"
+                                onClick={() => {
+                                    setSelectedSharedExhibitFile(file);
+                                    setExhibitSharingModalOpen(true);
+                                }}
+                            >
+                                Share
+                            </Button>
+                        );
+                    }}
                 />
                 <Column
                     title=""

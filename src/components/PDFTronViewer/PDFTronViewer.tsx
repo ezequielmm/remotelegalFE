@@ -4,7 +4,7 @@ import * as CONSTANTS from "../../constants/PDFTronViewer";
 import customisePDFTronToolbars from "../../helpers/customisePDFTronToolbars";
 import { StyledPDFTronViewerContainer } from "./styles";
 
-interface PdfTronViewerProps {
+export interface PdfTronViewerProps {
     document?: string | Blob | File;
     filename?: string;
 }
