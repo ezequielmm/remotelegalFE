@@ -17,11 +17,11 @@ const Participant = ({
     timeZone?: TimeZones;
     participant: LocalParticipant | RemoteParticipant;
 }) => {
-    const { videoRef, audioRef, dataTracks } = useParticipantTracks(participant);
+    const { videoDisabled, videoRef, audioRef, dataTracks } = useParticipantTracks(participant);
     useDataTrack(dataTracks);
 
     return (
-        <StyledParticipantMask>
+        <StyledParticipantMask videoDisabled={videoDisabled}>
             <video ref={videoRef} autoPlay />
             <audio ref={audioRef} autoPlay />
             <img src={AspectRatio} alt="16/9" />

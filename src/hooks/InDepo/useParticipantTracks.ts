@@ -14,6 +14,7 @@ import trackpubsToTracks from "../../helpers/trackPubsToTracks";
 const useParticipantTracks = (participant: LocalParticipant | RemoteParticipant) => {
     const [dataTracks, setDataTracks] = useState<DataTrack[]>([]);
     const [videoTracks, setVideoTracks] = useState<VideoTrack[]>([]);
+    const [videoDisabled, setVideoDisabled] = useState<boolean>(false);
     const [audioTracks, setAudioTracks] = useState<AudioTrack[]>([]);
     const audioRef = useRef<HTMLAudioElement & AudioTrack>();
     const videoRef = useRef<HTMLVideoElement & VideoTrack>();
@@ -43,6 +44,20 @@ const useParticipantTracks = (participant: LocalParticipant | RemoteParticipant)
         return setDataTracks((data) => data.filter((dt) => dt !== track));
     };
 
+    const trackDisabled = (track: AudioTrack | LocalDataTrack | RemoteDataTrack | VideoTrack | RemoteVideoTrack) => {
+        if (track.kind === "video") {
+            setVideoDisabled(true);
+            if (videoRef.current) videoRef.current.style.display = "none";
+        }
+    };
+
+    const trackEnabled = (track: AudioTrack | LocalDataTrack | RemoteDataTrack | VideoTrack | RemoteVideoTrack) => {
+        if (track.kind === "video") {
+            setVideoDisabled(false);
+            if (videoRef.current) videoRef.current.style.display = "block";
+        }
+    };
+
     useEffect(() => {
         if (!participant) {
             return;
@@ -52,6 +67,8 @@ const useParticipantTracks = (participant: LocalParticipant | RemoteParticipant)
         setDataTracks(trackpubsToTracks(participant.dataTracks));
         participant.on("trackSubscribed", trackSubscribed);
         participant.on("trackUnsubscribed", trackUnsubscribed);
+        participant.on("trackDisabled", trackDisabled);
+        participant.on("trackEnabled", trackEnabled);
 
         // eslint-disable-next-line consistent-return
         return () => participant?.removeAllListeners();
@@ -77,6 +94,6 @@ const useParticipantTracks = (participant: LocalParticipant | RemoteParticipant)
 
         return () => audioTrack?.detach();
     }, [audioTracks]);
-    return { videoRef, audioRef, dataTracks, audioTracks, videoTracks };
+    return { videoDisabled, videoRef, audioRef, dataTracks, audioTracks, videoTracks };
 };
 export default useParticipantTracks;
