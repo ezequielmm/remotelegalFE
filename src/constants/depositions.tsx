@@ -18,7 +18,7 @@ export const STATUS_COLUMN = {
     width: 95,
 };
 export const REQUESTER_BY_COLUMN = {
-    title: "REQUESTED BY",
+    title: "REQUESTER",
     field: "requester",
     render: (text) => <small>{text}</small>,
 };
@@ -34,9 +34,9 @@ export const LAW_COLUMN = {
 export const CASE_COLUMN = {
     title: "CASE",
     field: "caseName",
-    width: 120,
     ellipsis: true,
     render: (text) => <small>{text}</small>,
+    width: 170,
 };
 export const DATE_COLUMN = {
     title: "DATE AND TIME",
@@ -47,7 +47,7 @@ export const DATE_COLUMN = {
             <small>{time}</small>
         </>
     ),
-    width: 150,
+    width: 170,
 };
 export const WITNESS_COLUMN = {
     title: "WITNESS",
