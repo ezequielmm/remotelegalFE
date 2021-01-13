@@ -20,8 +20,8 @@ export default {
 const Template: Story = ({ title, content, ...rest }) => (
     <Modal onlyBody destroyOnClose {...rest}>
         <Result
-            title={"Modal Title"}
-            subTitle={"content lorem ipsum dolor sit amet"}
+            title="Modal Title"
+            subTitle="content lorem ipsum dolor sit amet"
             extra={[<Button type="primary">Primary Action</Button>]}
         />
     </Modal>

@@ -1,6 +1,7 @@
 const { colors } = require("./colors");
 const { fonts } = require("./fonts");
 const { spacing } = require("./spacing");
+const { breakpoints } = require("./breakpoints");
 const { borders } = require("./borders");
 const { getREM, getPX, getEM } = require("./utils");
 
@@ -56,6 +57,8 @@ const theme = {
         spaces: spacing.spaces,
         heightBase: spacing.heightBase,
         fontWeights: fonts.fontWeights,
+        breakpoints,
+        modalWidth: spacing.modalWidth,
     },
     mode: "default",
 };

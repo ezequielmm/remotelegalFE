@@ -25,7 +25,7 @@ const StyledModal = styled(modalDefault)<IModalProps>`
                 padding: ${getREM(theme.default.spaces[6] * 4)} ${getREM(theme.default.spaces[6] * 5)};
             }
 
-            @media (max-width: 576px) {
+            @media (max-width: ${theme.default.breakpoints.sm}) {
                 .ant-modal-body {
                     padding: ${styledTheme.default.spaces[12]}rem;
                 }
@@ -52,7 +52,7 @@ const modal = (props: IModalProps) => {
             footer={footer}
             closeIcon={closeIcon}
             {...rest}
-            width={theme.default.baseUnit * 38}
+            width={theme.default.modalWidth.default}
         >
             {children}
         </StyledModal>

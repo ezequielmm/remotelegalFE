@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { theme } from "../../constants/styles/theme";
 import { getREM } from "../../constants/styles/utils";
 
 const BgImage = require("../../assets/login/bg.jpg");
@@ -10,17 +11,17 @@ export const StyledContainer = styled.div`
     background-image: url(${BgImage});
     background-size: cover;
 
-    @media (max-width: 1024px) {
+    @media (max-width: ${theme.default.breakpoints.xl}) {
         grid-template-columns: 1fr;
     }
 `;
 export const StyledHeaderSection = styled.section`
     justify-self: center;
     align-self: center;
-    @media (max-width: 1024px) {
+    @media (max-width: ${theme.default.breakpoints.xl}) {
         padding: ${({ theme }) => getREM(theme.default.spaces[12])};
     }
-    @media (max-width: 576px) {
+    @media (max-width: ${theme.default.breakpoints.sm}) {
         width: 100%;
         overflow: hidden;
     }
@@ -30,7 +31,7 @@ export const StyledFormContainer = styled.section`
     border-radius: 43px 0 0 43px;
     display: grid;
 
-    @media (min-width: 1024px) {
+    @media (min-width: ${theme.default.breakpoints.xl}) {
         overflow-y: auto;
 
         & > * {
@@ -38,7 +39,7 @@ export const StyledFormContainer = styled.section`
         }
     }
 
-    @media (max-width: 1024px) {
+    @media (max-width: ${theme.default.breakpoints.xl}) {
         border-radius: 43px 43px 0 0;
         padding: ${({ theme }) => getREM(theme.default.spaces[12])} 0;
     }
