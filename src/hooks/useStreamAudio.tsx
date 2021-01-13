@@ -23,7 +23,10 @@ export default () => {
             dataAvailableHandler = (e) => {
                 const fileReader = new FileReader();
                 fileReader.onload = (event) => {
-                    transcriptAudio(event.target.result);
+                    const buffer: ArrayBuffer =
+                        typeof event.target.result !== "string" ? event.target.result : new ArrayBuffer(0);
+                    const sampleRate = new Int32Array(buffer.slice(24, 28))[0];
+                    transcriptAudio(buffer, sampleRate);
                 };
                 fileReader.readAsArrayBuffer(e.data);
             };

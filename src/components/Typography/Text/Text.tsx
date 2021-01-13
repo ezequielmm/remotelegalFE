@@ -109,6 +109,7 @@ const text = ({
             ellipsis={ellipsis}
             block={!!align || block}
             align={align}
+            font={font}
             {...props}
         >
             {children}

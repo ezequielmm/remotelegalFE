@@ -31,11 +31,11 @@ const useTranscriptAudio = () => {
         [currentRoom, dataTrack, dispatch]
     );
 
-    const [sendMessage] = useWebSocket(`/transcriptions`, sendAudio, true, `depositionId=${depositionID}`);
+    const [sendMessage] = useWebSocket(`/transcriptions`, sendAudio, true);
 
     const [transcriptAudio] = useAsyncCallback(
-        async (audio: ArrayBuffer | string) => {
-            sendMessage(audio);
+        async (audio: ArrayBuffer | string, sampleRate: number) => {
+            sendMessage({ audio, extraUrl: `depositionId=${depositionID}&sampleRate=${sampleRate}` });
         },
         [sendMessage]
     );
