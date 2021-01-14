@@ -1,7 +1,8 @@
+import { SelectProps } from "antd/lib/select";
 import React from "react";
 import RHFWrapper from "../RHFWrapper";
-import Select from "../Select";
 import { RHFWrapperProps } from "../RHFWrapper/RHFWrapper";
+import Select from "../Select";
 
 interface RHFSelectProps extends RHFWrapperProps {
     disabled?: boolean;
@@ -9,6 +10,7 @@ interface RHFSelectProps extends RHFWrapperProps {
     placeholder?: string;
     renderUnselectableOption?: () => React.ReactNode;
     renderItem?: (item) => React.ReactNode;
+    filter?: SelectProps<any>["filterOption"];
     dataTestId?: string;
     items: Record<string, any>;
 }
@@ -17,6 +19,7 @@ export default function RHFSelect({
     disabled,
     loading,
     items,
+    filter,
     placeholder,
     renderUnselectableOption,
     renderItem,
@@ -41,11 +44,9 @@ export default function RHFSelect({
                     onChange={onChange}
                     value={value}
                     invalid={!!wrapperProps.errorMessage}
-                    showSearch
+                    showSearch={!!filter}
                     optionFilterProp="children"
-                    filterOption={(input, option) =>
-                        option.children.includes ? option.children.includes(input.toLowerCase()) : true
-                    }
+                    filterOption={filter}
                 >
                     {items.map((item) =>
                         typeof item === "string" ? (

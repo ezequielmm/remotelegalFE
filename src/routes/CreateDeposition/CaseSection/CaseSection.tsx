@@ -53,6 +53,11 @@ const CaseSection = ({ cases, loadingCases, fetchingError }: CaseSectionProps) =
                                 ADD NEW CASE
                             </Button>
                         )}
+                        filter={(input, option) =>
+                            option.children.length
+                                ? option.children[0].toLowerCase().includes(input.toLowerCase())
+                                : true
+                        }
                     />
                 </Col>
             </Space>
