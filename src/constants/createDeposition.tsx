@@ -20,10 +20,10 @@ export const DATE_LABEL = "Date";
 export const DATE_PLACEHOLDER = "MM/DD/YYYY";
 
 export const START_LABEL = "Start";
-export const START_PLACEHOLDER = "hh:mm PM";
+export const START_PLACEHOLDER = "hh:mm AM";
 
 export const END_LABEL = "End (Optional)";
-export const END_PLACEHOLDER = "hh:mm PM";
+export const END_PLACEHOLDER = "hh:mm AM";
 
 export const UPLOAD_CAPTION_LABEL = "CAPTION (Optional)";
 export const UPLOAD_CAPTION_PLACEHOLDER = "UPLOAD CAPTION";
