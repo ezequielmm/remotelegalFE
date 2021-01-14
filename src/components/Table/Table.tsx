@@ -190,6 +190,10 @@ const StyledTable = styled(Table)`
                                 small {
                                     font-size: ${getREM(fontSizes[8])};
                                     display: block;
+                                    
+                                    @media (min-width: ${theme.default.breakpoints.xxl}) {
+                                        font-size: ${getREM(fontSizes[7])};
+                                    }
                                 }
 
                                 &.ant-table-cell-ellipsis {
