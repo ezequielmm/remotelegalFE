@@ -203,7 +203,7 @@ export const useExhibitAnnotation = () => {
         latestAnnotations,
         getAnnotationsPending,
         currentExhibitTabName,
-        currentExhibit.id,
+        currentExhibit,
         lastAnnotationId,
         dispatch,
     ]);
