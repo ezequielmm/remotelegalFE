@@ -2,6 +2,7 @@ import { Row, Space } from "antd";
 import moment from "moment-timezone";
 import React from "react";
 import { useHistory } from "react-router";
+import styled from "styled-components";
 import Button from "../../components/Button";
 import CardFetchError from "../../components/CardFetchError";
 import CardResult from "../../components/CardResult/CardResult";
@@ -12,8 +13,17 @@ import Title from "../../components/Typography/Title";
 import * as CONSTANTS from "../../constants/depositions";
 import { useFetchDepositions } from "../../hooks/depositions/hooks";
 import { useUserIsAdmin } from "../../hooks/users/hooks";
+import useWindowSize from "../../hooks/useWindowSize";
 import { DepositionStatus } from "../../models/deposition";
 import { Roles } from "../../models/participant";
+
+const StyledSpace = styled(Space)`
+    width: 100%;
+    height: 100%;
+    > *:last-child {
+        height: 100%;
+    }
+`;
 
 export interface MappedDeposition {
     id: string;
@@ -38,6 +48,9 @@ const parseDate = ({ startDate, endDate }): { date: string; time: string } => {
 const MyDepositions = () => {
     const { handleListChange, sortedField, sortDirection, error, data, loading, refreshList } = useFetchDepositions();
     const [checkIfUserIsAdmin, loadingUserIsAdmin, errorUserIsAdmin, userIsAdmin] = useUserIsAdmin();
+    const [, windowHeight] = useWindowSize();
+    const [tableScrollHeight, setTableScrollHeight] = React.useState<number>(0);
+    const tableRef = React.useRef(null);
 
     React.useEffect(() => {
         checkIfUserIsAdmin();
@@ -61,6 +74,18 @@ const MyDepositions = () => {
             }),
         [data]
     );
+
+    React.useEffect(() => {
+        if (userIsAdmin === undefined) return;
+        const tableWrapper: HTMLElement =
+            (tableRef.current?.getElementsByClassName("ant-table-wrapper")[0] as HTMLElement) || null;
+        const tableHeader: HTMLElement =
+            (tableRef.current?.getElementsByClassName("ant-table-header")[0] as HTMLElement) || null;
+        const wrapperHeight: number = tableWrapper?.offsetHeight || 0;
+        const headerHeight: number = tableHeader?.offsetHeight || 0;
+        const tableContentHeight: number = wrapperHeight && headerHeight ? wrapperHeight - headerHeight : 0;
+        setTableScrollHeight(tableContentHeight);
+    }, [userIsAdmin, data, windowHeight]);
 
     const handleRefresh = () => {
         if (error) refreshList();
@@ -88,14 +113,14 @@ const MyDepositions = () => {
                 !error &&
                 !errorUserIsAdmin &&
                 (mappedDepositions === undefined || mappedDepositions?.length > 0) && (
-                    <Space direction="vertical" size="large" style={{ width: "100%" }}>
+                    <StyledSpace direction="vertical" size="large">
                         <Row justify="space-between">
                             <Title level={4} noMargin weight="light">
                                 My Depositions
                             </Title>
                         </Row>
-
                         <Table
+                            ref={tableRef}
                             rowKey="id"
                             loading={loading}
                             dataSource={mappedDepositions || []}
@@ -103,8 +128,10 @@ const MyDepositions = () => {
                             onChange={handleListChange}
                             sortDirections={["descend", "ascend"]}
                             pagination={false}
+                            scroll={mappedDepositions ? { y: tableScrollHeight } : null}
+                            style={{ height: "100%" }}
                         />
-                    </Space>
+                    </StyledSpace>
                 )}
             {loadingUserIsAdmin && <Spinner height="100%" />}
             {(error || errorUserIsAdmin) && <CardFetchError onClick={handleRefresh} />}

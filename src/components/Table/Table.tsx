@@ -1,9 +1,13 @@
-import React from "react";
+import React, { forwardRef } from "react";
 import { Table } from "antd";
 import { DefaultRecordType } from "rc-table/lib/interface";
 import { TableProps } from "antd/lib/table/Table";
 import styled from "styled-components";
 import { getREM, hexToRGBA, getWeightNumber } from "../../constants/styles/utils";
+
+interface ITableProps extends TableProps<DefaultRecordType> {
+    ref?: React.MutableRefObject<any>;
+}
 
 const StyledTable = styled(Table)`
     ${({ theme }) => {
@@ -237,5 +241,11 @@ const StyledTable = styled(Table)`
     }}
 `;
 
-const table = (props: TableProps<DefaultRecordType>) => <StyledTable {...props} />;
+const table = forwardRef((props: ITableProps, ref: React.MutableRefObject<any>) => {
+    return (
+        <div ref={ref} style={{ height: "100%" }}>
+            <StyledTable {...props} />
+        </div>
+    );
+});
 export default table;

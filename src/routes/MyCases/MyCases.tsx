@@ -1,5 +1,6 @@
 import React from "react";
 import { Row, Space } from "antd";
+import styled from "styled-components";
 import Table from "../../components/Table";
 import Button from "../../components/Button";
 import CaseModal from "./CaseModal";
@@ -9,10 +10,33 @@ import * as CONSTANTS from "../../constants/cases";
 import CardFetchError from "../../components/CardFetchError";
 import CardResult from "../../components/CardResult/CardResult";
 import { CustomStatus } from "../../components/Result/Result";
+import useWindowSize from "../../hooks/useWindowSize";
+
+const StyledSpace = styled(Space)`
+    width: 100%;
+    height: 100%;
+    > *:last-child {
+        height: 100%;
+    }
+`;
 
 const MyCases = () => {
     const [openCaseModal, setOpenCaseModal] = React.useState(false);
     const { handleListChange, sortedField, sortDirection, error, data, loading, refreshList } = useFetchCases();
+    const [, windowHeight] = useWindowSize();
+    const [tableScrollHeight, setTableScrollHeight] = React.useState<number>(0);
+    const tableRef = React.useRef(null);
+
+    React.useEffect(() => {
+        const tableWrapper: HTMLElement =
+            (tableRef.current?.getElementsByClassName("ant-table-wrapper")[0] as HTMLElement) || null;
+        const tableHeader: HTMLElement =
+            (tableRef.current?.getElementsByClassName("ant-table-header")[0] as HTMLElement) || null;
+        const wrapperHeight: number = tableWrapper?.offsetHeight || 0;
+        const headerHeight: number = tableHeader?.offsetHeight || 0;
+        const tableContentHeight: number = wrapperHeight && headerHeight ? wrapperHeight - headerHeight : 0;
+        setTableScrollHeight(tableContentHeight);
+    }, [data, windowHeight]);
 
     const getCaseColumns = React.useCallback(
         () => [
@@ -49,7 +73,7 @@ const MyCases = () => {
                 open={openCaseModal}
             />
             {!error && (data === undefined || data?.length > 0) && (
-                <Space direction="vertical" size="large" style={{ width: "100%" }}>
+                <StyledSpace direction="vertical" size="large">
                     <Row justify="space-between">
                         <Title level={4} noMargin weight="light">
                             My Cases
@@ -64,6 +88,7 @@ const MyCases = () => {
                         </Button>
                     </Row>
                     <Table
+                        ref={tableRef}
                         rowKey="id"
                         loading={loading}
                         dataSource={data || []}
@@ -71,8 +96,10 @@ const MyCases = () => {
                         onChange={handleListChange}
                         sortDirections={["descend", "ascend"]}
                         pagination={false}
+                        scroll={data ? { y: tableScrollHeight } : null}
+                        style={{ height: "100%" }}
                     />
-                </Space>
+                </StyledSpace>
             )}
             {error && <CardFetchError onClick={refreshList} />}
             {!error && data?.length === 0 && (
