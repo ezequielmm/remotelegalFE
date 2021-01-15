@@ -13,12 +13,20 @@ const AspectRatio = require("../../../assets/in-depo/aspect-ratio-16-9.svg");
 const Participant = ({
     timeZone,
     participant,
+    isWitness,
 }: {
     timeZone?: TimeZones;
     participant: LocalParticipant | RemoteParticipant;
+    isWitness?: boolean;
 }) => {
     const { videoDisabled, videoRef, audioRef, dataTracks } = useParticipantTracks(participant);
+    const identity = participant && JSON.parse(participant.identity);
     useDataTrack(dataTracks);
+
+    const normalizedRoles = {
+        CourtReporter: "Court Reporter",
+        TechExpert: "Tech Expert",
+    };
 
     return (
         <StyledParticipantMask videoDisabled={videoDisabled}>
@@ -31,8 +39,18 @@ const Participant = ({
                 </StyledTimeBox>
             )}
             <StyledIdentityBox>
-                <Text size="default" weight="bold" state={ColorStatus.white}>
-                    {participant?.identity ? participant.identity : "waiting for witness"}
+                {isWitness && (
+                    <Text data-testid="witness-name" size="default" weight="bold" state={ColorStatus.white}>
+                        {isWitness && identity ? identity.name || "Guest" : "waiting for witness"}
+                    </Text>
+                )}
+                {!isWitness && (
+                    <Text data-testid="participant-name" size="default" weight="bold" state={ColorStatus.white}>
+                        {!isWitness ? identity?.name : "Guest"}
+                    </Text>
+                )}
+                <Text data-testid="participant-role" size="small" state={ColorStatus.white}>
+                    {identity && normalizedRoles[identity.role] ? normalizedRoles[identity.role] : identity?.role}
                 </Text>
             </StyledIdentityBox>
         </StyledParticipantMask>

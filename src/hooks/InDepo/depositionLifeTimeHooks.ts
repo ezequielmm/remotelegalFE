@@ -47,9 +47,9 @@ export const useJoinDeposition = () => {
         const dataTrack = new LocalDataTrack({ maxPacketLifeTime: null, maxRetransmits: null });
         const { permissions } = await getDepositionPermissions();
         const transcriptions = await getTranscriptions();
-        const { isOnTheRecord, timeZone, token, witnessEmail, isSharing }: any = await generateToken();
-        if(isSharing) {
-            fetchExhibitFileInfo(depositionID)
+        const { isOnTheRecord, timeZone, token, isSharing }: any = await generateToken();
+        if (isSharing) {
+            fetchExhibitFileInfo(depositionID);
         }
         const room = await createLocalTracks({ audio: true, video: { aspectRatio: 1.777777777777778 } }).then(
             (localTracks) => {
@@ -63,7 +63,6 @@ export const useJoinDeposition = () => {
         dispatch(actions.joinToRoom(room));
         dispatch(actions.setIsRecoding(isOnTheRecord));
         dispatch(actions.setPermissions(permissions));
-        dispatch(actions.addWitness(witnessEmail));
         dispatch(actions.setTranscriptions(transcriptions || []));
         dispatch(actions.setTimeZone(timeZone));
         dispatch(actions.addDataTrack(dataTrack));

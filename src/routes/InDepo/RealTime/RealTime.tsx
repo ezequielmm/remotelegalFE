@@ -58,7 +58,7 @@ const RealTime = ({
                                     <Space
                                         direction="vertical"
                                         size="small"
-                                        key={transcription.transcriptDateTime + transcription.userEmail}
+                                        key={transcription.transcriptDateTime + transcription.userName}
                                     >
                                         <Text
                                             state={ColorStatus.disabled}
@@ -69,7 +69,7 @@ const RealTime = ({
                                             dataTestId="transcription_title"
                                         >
                                             <>
-                                                {transcription.userEmail} |{" "}
+                                                {`${transcription.userName || "Guest"} `}
                                                 {moment(transcription.transcriptDateTime)
                                                     .tz(timeZone)
                                                     .format("hh:mm:ss A")}

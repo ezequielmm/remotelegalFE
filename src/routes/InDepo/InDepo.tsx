@@ -21,7 +21,7 @@ const InDepo = () => {
     const inDepoTheme = { ...theme, mode: "inDepo" };
     const { state, dispatch } = useContext(GlobalStateContext);
     const [joinDeposition, loading, error] = useJoinDeposition();
-    const { isRecording, message, currentRoom, witness, permissions, timeZone, dataTrack } = state.room;
+    const { isRecording, message, currentRoom, permissions, timeZone, dataTrack } = state.room;
     const { depositionID } = useParams<DepositionID>();
     const [realTimeOpen, togglerRealTime] = useState(false);
     const [exhibitsOpen, togglerExhibits] = useState(false);
@@ -89,7 +89,6 @@ const InDepo = () => {
                     <RealTime visible={realTimeOpen} timeZone={timeZone} />
                     <VideoConference
                         localParticipant={currentRoom.localParticipant}
-                        witnessID={witness}
                         timeZone={timeZone}
                         attendees={currentRoom.participants}
                         layoutSize={videoLayoutSize}

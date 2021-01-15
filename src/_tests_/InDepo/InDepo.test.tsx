@@ -68,7 +68,10 @@ jest.mock("twilio-video", () => ({
                 },
             }),
             on: jest.fn(),
-            identity: "test1234",
+            identity: JSON.stringify({
+                name: "test1234",
+                role: "Attorney",
+            }),
             removeAllListeners: jest.fn(),
         },
         participants: new Map().set("item1", {
@@ -100,7 +103,10 @@ jest.mock("twilio-video", () => ({
                 },
             }),
             on: jest.fn(),
-            identity: "test1234",
+            identity: JSON.stringify({
+                name: "test123",
+                role: "Witness",
+            }),
             removeAllListeners: jest.fn(),
         }),
     }),

@@ -3,7 +3,6 @@ import wrapper from "../mocks/wrapper";
 import state from "../mocks/state";
 import { useJoinDeposition } from "../../hooks/InDepo/depositionLifeTimeHooks";
 import actions from "../../state/InDepo/InDepoActions";
-import { JOIN_DEPOSITION_MOCK } from "../constants/InDepo";
 
 jest.mock("twilio-video", () => ({
     ...jest.requireActual("twilio-video"),
@@ -32,7 +31,7 @@ test("It calls dispatch with proper actions", async () => {
                 test: "1234",
             })
         );
-        expect(state.dispatch).toHaveBeenCalledWith(actions.addWitness(JOIN_DEPOSITION_MOCK.witnessEmail));
+
         expect(state.dispatch).toHaveBeenCalledWith(actions.joinToRoom("room"));
     });
 });

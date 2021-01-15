@@ -60,10 +60,6 @@ const actions = {
         type: ACTION_TYPE.IN_DEPO_ADD_PARTICIPANT,
         payload,
     }),
-    addWitness: (payload: string) => ({
-        type: ACTION_TYPE.ADD_WITNESS,
-        payload,
-    }),
     setTimeZone: (payload: TimeZones) => ({
         type: ACTION_TYPE.SET_TIMEZONE,
         payload,

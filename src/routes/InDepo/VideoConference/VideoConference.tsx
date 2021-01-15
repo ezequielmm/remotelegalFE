@@ -22,18 +22,17 @@ interface IVideoConferenceProps {
     attendees: Room["participants"];
     layoutSize: LayoutSize;
     timeZone: TimeZones;
-    witnessID: string;
     localParticipant: LocalParticipant;
 }
 
-const VideoConference = ({ attendees, timeZone, layoutSize, witnessID, localParticipant }: IVideoConferenceProps) => {
+const VideoConference = ({ attendees, timeZone, layoutSize, localParticipant }: IVideoConferenceProps) => {
     const [layoutClass, setLayoutClass] = useState<TLayoutClass>(null);
     const [attendeesHeight, setAttendeesHeight] = useState<string>("");
     const [witnessHeight, setWitnessHeight] = useState<string>("");
     const participantContainer = useRef<HTMLDivElement>(null);
     const videoConferenceContainer = useRef<HTMLDivElement>(null);
     const participants = [localParticipant, ...Array.from(attendees.values())];
-    const witness = participants.find((participant) => participant.identity === witnessID);
+    const witness = participants.find((participant) => JSON.parse(participant.identity).role === "Witness");
 
     const calculateAttendeesHeight = (participantRef: React.MutableRefObject<HTMLDivElement>): string => {
         if (!participantRef.current) return "";
@@ -86,11 +85,11 @@ const VideoConference = ({ attendees, timeZone, layoutSize, witnessID, localPart
     return (
         <StyledVideoConference className={layoutClass} ref={videoConferenceContainer}>
             <StyledDeponentContainer height={witnessHeight}>
-                <Participant timeZone={timeZone} participant={witness} />
+                <Participant timeZone={timeZone} participant={witness} isWitness />
             </StyledDeponentContainer>
             <StyledAttendeesContainer height={attendeesHeight}>
                 {participants
-                    .filter((participant) => participant.identity !== witnessID)
+                    .filter((participant) => JSON.parse(participant.identity).role !== "Witness")
                     .map((participant: RemoteParticipant, i) => (
                         <StyledParticipantContainer key={participant.sid} ref={i === 0 ? participantContainer : null}>
                             <Participant participant={participant} />

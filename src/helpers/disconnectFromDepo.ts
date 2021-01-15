@@ -13,7 +13,6 @@ const disconnectFromDepo = async (
         error: "",
         dataTrack: null,
         message: { module: "", value: "" },
-        witness: "",
     };
     const doesRoomExistAndIsParticipantConnected = room?.localParticipant?.state === "connected";
     if (killDepo && typeof killDepo === "function") {
