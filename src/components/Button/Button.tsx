@@ -25,7 +25,7 @@ const buttonDefault = ({ children, type, ...rest }: IButtonProps) => {
 const StyledButton = styled(buttonDefault)<IButtonProps>`
     ${({ size, type, width, icon, theme }) => {
         const { textColorInverse, fontSizes, spaces } = theme.default;
-        const { primary, secondary } = theme.colors;
+        const { primary, secondary, disabled } = theme.colors;
 
         const smallButtonStyle =
             size === "small"
@@ -69,8 +69,8 @@ const StyledButton = styled(buttonDefault)<IButtonProps>`
 
                     &[disabled],
                     &[disabled]:hover {
-                        color: ${primary[2]};
-                        border-color: ${primary[2]};
+                        color: ${theme.mode === "inDepo" ? disabled[9] : primary[2]};
+                        border-color: ${theme.mode === "inDepo" ? disabled[9] : primary[2]};
                         background-color: transparent;
                     }
                 `
