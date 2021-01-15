@@ -20,7 +20,7 @@ export interface ITextProps {
 
 const StyledText = styled.span<ITextProps>`
     ${({ height, size, weight, state, uppercase, ellipsis, block, font, align, theme }) => {
-        const { textColor, fontSizes, fontFamily, headerFontFamily, codeFontFamily } = theme.default;
+        const { textColor, fontSizes, fontFamilies, headerFontFamilies, codeFontFamily } = theme.default;
 
         const setFontSize = (textSize, sizes) => {
             switch (textSize) {
@@ -38,11 +38,11 @@ const StyledText = styled.span<ITextProps>`
         const setFontFamily = (fontType) => {
             switch (fontType) {
                 case "header":
-                    return headerFontFamily;
+                    return headerFontFamilies;
                 case "code":
                     return codeFontFamily;
                 default:
-                    return fontFamily;
+                    return fontFamilies;
             }
         };
 

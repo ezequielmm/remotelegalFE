@@ -1,21 +1,25 @@
-import React from "react";
+import React, { useContext } from "react";
 import ExhibitTabs from "./ExhibitTabs";
 import { TabPane, Tabs, ExhibitTabPaneContainer } from "./ExhibitTabs/styles";
 import { StyledLayoutCotainer, StyledLayoutContent, ContainerProps } from "../styles";
 import * as CONSTANTS from "../../../constants/exhibits";
 import { useExhibitTabs } from "../../../hooks/exhibits/hooks";
+import actions from "../../../state/InDepo/InDepoActions";
+import { GlobalStateContext } from "../../../state/GlobalState";
 
 const Exhibits = ({ visible }: ContainerProps) => {
     const { highlightKey, activeKey, setActivetKey } = useExhibitTabs();
+    const { dispatch } = useContext(GlobalStateContext);
     return (
         <StyledLayoutCotainer visible={visible}>
             <StyledLayoutContent>
                 <Tabs
                     activeKey={activeKey}
-                    renderTabBar={({ currentActiveKey, panes, onTabClick }) => {
+                    renderTabBar={({ panes, onTabClick }) => {
                         return (
                             <ExhibitTabs
                                 onTabClick={(tab) => {
+                                    dispatch(actions.setActiveTab(tab));
                                     setActivetKey(tab);
                                     onTabClick(tab);
                                 }}

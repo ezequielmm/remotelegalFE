@@ -1,5 +1,5 @@
 import { Col, Row } from "antd";
-import React, { ReactElement } from "react";
+import React, { ReactElement, useContext } from "react";
 import Icon from "../../../../components/Icon";
 import PDFTronViewer from "../../../../components/PDFTronViewer";
 import Result from "../../../../components/Result";
@@ -9,9 +9,14 @@ import { StyledExhibitViewerContainer } from "./styles";
 import ExhibitViewerHeader from "./ExhibitViewerHeader";
 import { ReactComponent as MyExhibitsIcon } from "../../../../assets/icons/EnteredExhibits-empty.svg";
 import { theme } from "../../../../constants/styles/theme";
-import { EXHIBIT_FILE_ERROR_TITLE, EXHIBIT_FILE_ERROR_SUBTITLE } from "../../../../constants/exhibits";
+import {
+    EXHIBIT_FILE_ERROR_TITLE,
+    EXHIBIT_FILE_ERROR_SUBTITLE,
+    LIVE_EXHIBIT_TAB,
+} from "../../../../constants/exhibits";
 import { ExhibitFile } from "../../../../types/ExhibitFile";
 import { PdfTronViewerProps } from "../../../../components/PDFTronViewer/PDFTronViewer";
+import { GlobalStateContext } from "../../../../state/GlobalState";
 
 interface Props extends PdfTronViewerProps {
     file: ExhibitFile;
@@ -28,7 +33,10 @@ export const ExhibitViewer = ({
     showCloseButtonOnHeader = false,
     showShareButtonOnHeader = false,
 }: Props): ReactElement => {
+    const { state } = useContext(GlobalStateContext);
+    const { exhibitTab } = state.room;
     const { pending, error, documentUrl } = useSignedUrl(file?.id, file?.preSignedUrl);
+
     return (
         <StyledExhibitViewerContainer>
             <ExhibitViewerHeader
@@ -39,7 +47,13 @@ export const ExhibitViewer = ({
                 showShareButton={showShareButtonOnHeader}
             />
             {pending && <Spinner />}
-            {documentUrl && <PDFTronViewer document={documentUrl} filename={file?.displayName} />}
+            {documentUrl && (
+                <PDFTronViewer
+                    canStamp={exhibitTab === LIVE_EXHIBIT_TAB}
+                    document={documentUrl}
+                    filename={file?.displayName}
+                />
+            )}
             {!!error && (
                 <Row justify="center" align="middle" style={{ height: "100%" }}>
                     <Col sm={18} lg={14} xl={13} xxl={9}>

@@ -1,12 +1,12 @@
 import { useCallback, useContext, useEffect, useState, Key } from "react";
 import { TablePaginationConfig } from "antd/lib/table";
+import { useParams } from "react-router";
 import uploadFile from "../../services/UploadService";
 import { GlobalStateContext } from "../../state/GlobalState";
 import { ExhibitFile } from "../../types/ExhibitFile";
 import useAsyncCallback from "../useAsyncCallback";
 import * as CONSTANTS from "../../constants/exhibits";
 import actions from "../../state/InDepo/InDepoActions";
-import { useParams } from "react-router";
 
 export const useUploadFile = (depositionID: string) => {
     const upload = useCallback(
@@ -99,11 +99,12 @@ export const useExhibitFileInfo = () => {
 };
 
 export const useExhibitTabs = () => {
-    const { state } = useContext(GlobalStateContext);
+    const { state, dispatch } = useContext(GlobalStateContext);
     const { depositionID } = useParams<{ depositionID: string }>();
     const { message } = state.room;
     const [highlightKey, setHighlightKey] = useState<number>(-1);
     const [activeKey, setActivetKey] = useState<string>(CONSTANTS.DEFAULT_ACTIVE_TAB);
+
     const [fetchExhibitFileInfo] = useExhibitFileInfo();
 
     useEffect(() => {
@@ -115,12 +116,13 @@ export const useExhibitTabs = () => {
     useEffect(() => {
         if (highlightKey !== -1 && state.room.currentExhibit && state.room.isCurrentExhibitOwner) {
             setActivetKey(CONSTANTS.EXHIBIT_TABS[highlightKey]);
+            dispatch(actions.setActiveTab(CONSTANTS.LIVE_EXHIBIT_TAB));
         }
-    }, [highlightKey, state.room.currentExhibit, state.room.isCurrentExhibitOwner]);
+    }, [highlightKey, state.room.currentExhibit, state.room.isCurrentExhibitOwner, dispatch]);
 
     useEffect(() => {
         if (message.module === "shareExhibit" && !!message.value) {
-            setHighlightKey(CONSTANTS.EXHIBIT_TABS_DATA.findIndex((tab) => tab.tabId === "liveExhibits"));
+            setHighlightKey(CONSTANTS.EXHIBIT_TABS_DATA.findIndex((tab) => tab.tabId === CONSTANTS.LIVE_EXHIBIT_TAB));
             fetchExhibitFileInfo(depositionID);
         }
     }, [message, depositionID, fetchExhibitFileInfo]);

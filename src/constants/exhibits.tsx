@@ -10,7 +10,11 @@ export enum EXHIBIT_TABS {
     "liveExhibits",
 }
 
-export const DEFAULT_ACTIVE_TAB = EXHIBIT_TABS[0];
+export type EXHIBIT_TAB = "myExhibits" | "enteredExhibits" | "liveExhibits";
+
+export const LIVE_EXHIBIT_TAB = "liveExhibits";
+
+export const DEFAULT_ACTIVE_TAB = "myExhibits";
 
 export const EXHIBIT_TABS_DATA = [
     {
@@ -60,8 +64,10 @@ export const MY_EXHIBITS_TIME_TO_CLOSE_AFTER_COMPLETE = 3000;
 export const MY_EXHIBITS_TIME_TO_CLOSE_AFTER_ERROR = 10000;
 export const MY_EXHIBITS_SHARE_MODAL_TITLE = "Share with all participants?";
 export const MY_EXHIBITS_SHARE_MODAL_TITLE_ERROR = "Cannot share exhibit";
-export const MY_EXHIBITS_SHARE_MODAL_SUBTITLE = "By accepting you’re going to share this document with all the participants in this deposition.";
-export const MY_EXHIBITS_SHARE_MODAL_SUBTITLE_ERROR = "You cannot share an exhibit when other participant is already sharing.";
+export const MY_EXHIBITS_SHARE_MODAL_SUBTITLE =
+    "By accepting you’re going to share this document with all the participants in this deposition.";
+export const MY_EXHIBITS_SHARE_MODAL_SUBTITLE_ERROR =
+    "You cannot share an exhibit when other participant is already sharing.";
 export const MY_EXHIBITS_SHARE_MODAL_NOT_SHOW_AGAIN_LABEL = "Don’t show this alert again in this deposition";
 export const MY_EXHIBITS_SHARE_MODAL_OK_BUTTON_LABEL = "YES, SHARE EXHIBIT";
 export const MY_EXHIBITS_SHARE_MODAL_OK_BUTTON_LABEL_ERROR = "OK";

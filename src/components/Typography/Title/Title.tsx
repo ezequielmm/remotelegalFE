@@ -18,7 +18,7 @@ const StyledHeader = styled.div<ITitleProps>`
     ${({ level, weight, ellipsis, noMargin, theme }) => {
         const {
             textColor,
-            headerFontFamily,
+            headerFontFamilies,
             fontSizes,
             lineHeightBase,
             typographyTitleFontWeight,
@@ -36,7 +36,7 @@ const StyledHeader = styled.div<ITitleProps>`
 
         const styles = `
             color: ${textColor};
-            font-family: ${headerFontFamily};
+            font-family: ${headerFontFamilies};
             font-size: ${getREM(fontSizes[level - 1])};
             font-weight: ${weight ? getWeightNumber(weight) : typographyTitleFontWeight};
             line-height: ${lineHeightBase};

@@ -15,7 +15,6 @@ import MyCases from "../routes/MyCases";
 import InDepo from "../routes/InDepo";
 import Authenticator from "./authenticator/authenticator";
 import RouteWithLayout from "./RouteWithLayout/RouteWithLayout";
-import Viewer from "./PDFTronViewer";
 import CreateDeposition from "../routes/CreateDeposition";
 import MyDepositions from "../routes/MyDepositions";
 import EndDepoScreen from "../routes/InDepo/components/EndDepoScreen";
@@ -50,7 +49,6 @@ function App() {
                     <Route exact path="/" component={Login} />
                     <Route path="/verifyUser" component={Login} />
                     <Route exact path="/sign-up" component={SignUp} />
-                    <Route exact path="/viewer" component={Viewer} />
                     <Authenticator>
                         <RouteWithLayout exact path="/dashboard" component={Dashboard} />
                         <RouteWithLayout exact path="/my-cases" component={MyCases} />

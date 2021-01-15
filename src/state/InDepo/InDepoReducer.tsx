@@ -6,6 +6,7 @@ import { TranscriptionModel } from "../../models";
 import { IAction, DataTrackMessage } from "../types";
 import { ACTION_TYPE } from "./InDepoActions";
 import { ExhibitFile } from "../../types/ExhibitFile";
+import { DEFAULT_ACTIVE_TAB, EXHIBIT_TAB } from "../../constants/exhibits";
 
 export interface IRoom {
     info?: object;
@@ -20,6 +21,7 @@ export interface IRoom {
     permissions?: string[];
     currentExhibit?: ExhibitFile;
     isCurrentExhibitOwner?: boolean;
+    exhibitTab?: EXHIBIT_TAB;
 }
 
 export const RoomReducerInitialState: IRoom = {
@@ -35,6 +37,7 @@ export const RoomReducerInitialState: IRoom = {
     permissions: [],
     currentExhibit: null,
     isCurrentExhibitOwner: false,
+    exhibitTab: DEFAULT_ACTIVE_TAB,
 };
 
 const RoomReducer: Reducer<IRoom, IAction> = (state: IRoom, action: IAction): IRoom => {
@@ -112,6 +115,12 @@ const RoomReducer: Reducer<IRoom, IAction> = (state: IRoom, action: IAction): IR
             return {
                 ...state,
                 isRecording: action.payload,
+            };
+
+        case ACTION_TYPE.CHANGE_EXHIBIT_TAB:
+            return {
+                ...state,
+                exhibitTab: action.payload,
             };
         case ACTION_TYPE.IN_DEPO_START_SHARE_EXHIBIT:
             return {

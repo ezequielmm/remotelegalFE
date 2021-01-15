@@ -11,7 +11,7 @@ export interface ICardProps extends CardProps {
 const StyledCard = styled(ANTDCard)`
     ${({ theme }) => {
         const { neutrals } = theme.colors;
-        const { spaces, fontSizes, headerFontFamily } = theme.default;
+        const { spaces, fontSizes, headerFontFamilies } = theme.default;
 
         const inDepoTheme =
             theme.mode === "inDepo"
@@ -26,7 +26,7 @@ const StyledCard = styled(ANTDCard)`
                 box-shadow: 0 ${getREM(spaces[5])} ${getREM(spaces[9])} 0 ${hexToRGBA(neutrals[2], 0.08)}
                 
                 .ant-card-head {
-                    font-family: ${headerFontFamily};
+                    font-family: ${headerFontFamilies};
                     padding: 0;
                     margin: 0 0 ${getREM(spaces[6])};
                     border: 0;

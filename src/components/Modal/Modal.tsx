@@ -8,9 +8,15 @@ import { getREM } from "../../constants/styles/utils";
 import { ReactComponent as CloseIcon } from "../../assets/icons/close.svg";
 import Icon from "../Icon";
 
+export enum ModalSize {
+    "default" = "default",
+    "small" = "small",
+}
+
 export interface IModalProps extends ModalProps {
     onlyBody?: boolean;
     children?: React.ReactNode;
+    size?: ModalSize;
 }
 
 const modalDefault = ({ children, ...rest }: IModalProps) => {
@@ -18,7 +24,7 @@ const modalDefault = ({ children, ...rest }: IModalProps) => {
 };
 
 const StyledModal = styled(modalDefault)<IModalProps>`
-    ${({ onlyBody, theme: styledTheme }) => {
+    ${({ onlyBody, size, theme: styledTheme }) => {
         const stylesOnlyBody = onlyBody
             ? `
             .ant-modal-body {
@@ -33,8 +39,18 @@ const StyledModal = styled(modalDefault)<IModalProps>`
             `
             : "";
 
+        const sizeStyles =
+            size === ModalSize.small
+                ? `
+                    .ant-modal-body {
+                        padding: ${getREM(theme.default.spaces[9] * 2)};
+                    }
+                `
+                : "";
+
         const styles = `
             ${stylesOnlyBody}
+            ${sizeStyles}
             `;
 
         return styles;
@@ -42,7 +58,7 @@ const StyledModal = styled(modalDefault)<IModalProps>`
 `;
 
 const modal = (props: IModalProps) => {
-    const { children, onlyBody, ...rest } = props;
+    const { children, onlyBody, width, size, ...rest } = props;
     const footer = onlyBody ? null : rest.footer;
     const closeIcon = <Icon icon={CloseIcon} />;
 
@@ -51,6 +67,7 @@ const modal = (props: IModalProps) => {
             onlyBody={onlyBody}
             footer={footer}
             closeIcon={closeIcon}
+            size={size}
             {...rest}
             width={theme.default.modalWidth.default}
         >

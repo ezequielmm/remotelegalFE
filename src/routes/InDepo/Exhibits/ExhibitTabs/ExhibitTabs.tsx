@@ -7,6 +7,7 @@ import ColorStatus from "../../../../types/ColorStatus";
 import { ExhibitTabContainer, ExhibitTabContainerText, ExhibitTabsContainer, Stick } from "./styles";
 import { theme } from "../../../../constants/styles/theme";
 import { getREM } from "../../../../constants/styles/utils";
+import { EXHIBIT_TAB } from "../../../../constants/exhibits";
 
 export interface ExhibitTabData {
     tabId: string;
@@ -21,9 +22,9 @@ export interface ExhibitTabData {
 interface ExhibitTabsProps {
     activeKey: string;
     highlightKey?: number | null;
-    panes: { props: { tab: string } }[];
+    panes: { props: { tab: EXHIBIT_TAB } }[];
     tabsTitles: ExhibitTabData[];
-    onTabClick: (tab: string) => void;
+    onTabClick: (tab: EXHIBIT_TAB) => void;
 }
 
 export default function ExhibitTabs({

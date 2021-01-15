@@ -66,7 +66,7 @@ const StyledResult = styled(resultDefault)<IResultProps>`
         const subTitleColorStyle = subTitleColor ? `.ant-result-subtitle{color: ${subTitleColor}}` : "";
         const styles = `
             .ant-result-title {
-                font-family: ${theme.default.headerFontFamily};
+                font-family: ${theme.default.headerFontFamilies};
                 font-weight: 300;
                 line-height: ${theme.default.lineHeightBase};
                 margin-bottom: ${getREM(theme.default.spaces[3])};
