@@ -1,22 +1,32 @@
-import React, { useRef, useEffect, useState, useContext } from "react";
+import React, { useRef, useEffect, useState, useCallback, useContext } from "react";
 import WebViewer, { Annotations, WebViewerInstance } from "@pdftron/webviewer";
 import * as CONSTANTS from "../../constants/PDFTronViewer";
 import { StyledPDFTronViewerContainer } from "./styles";
 import StampModal from "./components/StampModal";
 import Message from "../Message";
 import { GlobalStateContext } from "../../state/GlobalState";
+import { convertToXfdf } from "../../helpers/convertToXfdf";
+import { AnnotationAction, AnnotationActionType } from "../../types/Annotation";
+import { serializeToString } from "../../helpers/serializeToString";
 
+export type AnnotationPayload = {
+    action: string;
+    details: string;
+};
 export interface PdfTronViewerProps {
     document?: string | Blob | File;
     filename?: string;
     canStamp?: boolean;
+    annotations?: [];
+    onAnnotationChange?: (data: AnnotationPayload) => void;
 }
 
-const PDFTronViewer = ({ document, filename, canStamp }: PdfTronViewerProps) => {
+const PDFTronViewer = ({ document, filename, canStamp, annotations, onAnnotationChange }: PdfTronViewerProps) => {
     const { state } = useContext(GlobalStateContext);
     const { timeZone } = state.room;
     const [openStampModal, setStampModal] = useState(false);
     const viewerRef = useRef(null);
+    const [isDocumentLoaded, setIsDocumentLoaded] = useState(false);
     const [PDFTron, setPDFTron] = useState<WebViewerInstance>(null);
     const stampRef = useRef(null);
 
@@ -44,15 +54,59 @@ const PDFTronViewer = ({ document, filename, canStamp }: PdfTronViewerProps) => 
         }
     }, [PDFTron, canStamp]);
 
-    const resetRefOnStampDelete = (annotations: Annotations.Annotation[], action: string) => {
+    const sendAnnotationChange = useCallback(
+        (annotation, action: AnnotationActionType) => {
+            if (annotation.nodeType !== annotation.TEXT_NODE) {
+                const annotationString = serializeToString(annotation);
+                onAnnotationChange({
+                    action,
+                    details: convertToXfdf(annotationString, action),
+                });
+            }
+        },
+        [onAnnotationChange]
+    );
+
+    const onAnnotationChangeHandler = async (changedAnnotations: Annotations.Annotation[], action: string) => {
+        const { annotManager } = PDFTron;
+        const xfdfString = await annotManager.exportAnnotCommand();
+        const parser = new DOMParser();
+        const commandData = parser.parseFromString(xfdfString, "text/xml");
+        const addedAnnots = commandData.getElementsByTagName("add")[0];
+        const modifiedAnnots = commandData.getElementsByTagName("modify")[0];
+        const deletedAnnots = commandData.getElementsByTagName("delete")[0];
+
+        addedAnnots.childNodes.forEach((child) => {
+            sendAnnotationChange(child, AnnotationAction.Create);
+        });
+        modifiedAnnots.childNodes.forEach((child) => {
+            sendAnnotationChange(child, AnnotationAction.Modify);
+        });
+        deletedAnnots.childNodes.forEach((child) => {
+            sendAnnotationChange(child, AnnotationAction.Delete);
+        });
+
         if (action === "delete") {
-            annotations.forEach((annotation: Annotations.Annotation) => {
+            changedAnnotations.forEach((annotation: Annotations.Annotation) => {
                 if (annotation.getCustomData("STAMP")) {
                     stampRef.current = null;
                 }
             });
         }
     };
+
+    const onDocumentLoadedHandler = () => {
+        setIsDocumentLoaded(true);
+    };
+
+    useEffect(() => {
+        if (isDocumentLoaded) {
+            annotations?.forEach(async (row) => {
+                const annotations = await PDFTron?.annotManager.importAnnotCommand(row);
+                await PDFTron?.annotManager.drawAnnotationsFromList(annotations);
+            });
+        }
+    }, [annotations, isDocumentLoaded, PDFTron]);
 
     useEffect(() => {
         const startViewer = () => {
@@ -95,11 +149,14 @@ const PDFTronViewer = ({ document, filename, canStamp }: PdfTronViewerProps) => 
     useEffect(() => {
         if (PDFTron && document && filename) {
             stampRef.current = null;
-            PDFTron.annotManager.on("annotationChanged", resetRefOnStampDelete);
+            PDFTron.annotManager.on("annotationChanged", onAnnotationChangeHandler);
+            PDFTron.docViewer.on("documentLoaded", onDocumentLoadedHandler);
             PDFTron.loadDocument(document, { filename });
         }
-
-        return () => PDFTron?.annotManager.off("annotationChanged", resetRefOnStampDelete);
+        return () => {
+            PDFTron?.annotManager.off("annotationChanged", onAnnotationChangeHandler);
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [document, PDFTron, filename]);
 
     const stampDocument = async (stampImage: string) => {

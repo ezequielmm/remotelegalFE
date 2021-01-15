@@ -72,6 +72,7 @@ export const MY_EXHIBITS_SHARE_MODAL_NOT_SHOW_AGAIN_LABEL = "Don’t show this a
 export const MY_EXHIBITS_SHARE_MODAL_OK_BUTTON_LABEL = "YES, SHARE EXHIBIT";
 export const MY_EXHIBITS_SHARE_MODAL_OK_BUTTON_LABEL_ERROR = "OK";
 export const MY_EXHIBITS_SHARE_MODAL_CANCEL_BUTTON_LABEL = "NO, DON’T SHARE";
+export const MY_EXHIBITS_SYNC_ANNOTATION_POLLING_INTERVAL = 2000;
 
 export const EXHIBIT_FILE_ERROR_TITLE = "Exhibit can’t be displayed";
 export const EXHIBIT_FILE_ERROR_SUBTITLE = "Please try opening the Exhibit again.";

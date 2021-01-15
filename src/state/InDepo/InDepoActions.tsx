@@ -16,6 +16,8 @@ export enum ACTION_TYPE {
     IN_DEPO_START_SHARE_EXHIBIT = "IN_DEPO_START_SHARE_EXHIBIT",
     IN_DEPO_STOP_SHARE_EXHIBIT = "IN_DEPO_STOP_SHARE_EXHIBIT",
     IN_DEPO_SET_CURRENT_EXHIBIT_OWNER = "IN_DEPO_SET_CURRENT_EXHIBIT_OWNER",
+    IN_DEPO_SET_EXHIBIT_TAB_NAME = "IN_DEPO_SET_EXHIBIT_TAB_NAME",
+    IN_DEPO_SET_EXHIBIT_ANNOTATIONS = "IN_DEPO_SET_EXHIBIT_ANNOTATIONS",
     ADD_WITNESS = "IN_DEPO_ADD_WITNESS",
     SET_TIMEZONE = "IN_DEPO_SET_TIMEZONE",
     IN_DEPO_SET_PERMISSIONS = "IN_DEPO_SET_PERMISSIONS",
@@ -90,6 +92,14 @@ const actions = {
     }),
     setIsCurrentExhibitOwner: (payload: boolean) => ({
         type: ACTION_TYPE.IN_DEPO_SET_CURRENT_EXHIBIT_OWNER,
+        payload,
+    }),
+    setExhibitTabName: (payload: string) => ({
+        type: ACTION_TYPE.IN_DEPO_SET_EXHIBIT_TAB_NAME,
+        payload,
+    }),
+    setExhibitAnnotations: (payload) => ({
+        type: ACTION_TYPE.IN_DEPO_SET_EXHIBIT_ANNOTATIONS,
         payload,
     }),
 };

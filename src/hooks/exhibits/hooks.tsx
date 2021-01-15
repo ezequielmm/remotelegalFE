@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useState, Key } from "react";
+import { useCallback, useContext, useEffect, useState, Key, useMemo } from "react";
 import { TablePaginationConfig } from "antd/lib/table";
 import { useParams } from "react-router";
 import uploadFile from "../../services/UploadService";
@@ -121,6 +121,10 @@ export const useExhibitTabs = () => {
     }, [highlightKey, state.room.currentExhibit, state.room.isCurrentExhibitOwner, dispatch]);
 
     useEffect(() => {
+        dispatch(actions.setExhibitTabName(activeKey));
+    }, [activeKey, dispatch]);
+
+    useEffect(() => {
         if (message.module === "shareExhibit" && !!message.value) {
             setHighlightKey(CONSTANTS.EXHIBIT_TABS_DATA.findIndex((tab) => tab.tabId === CONSTANTS.LIVE_EXHIBIT_TAB));
             fetchExhibitFileInfo(depositionID);
@@ -159,5 +163,52 @@ export const useShareExhibitFile = () => {
         sharedExhibit: currentExhibit,
         shareExhibitPending,
         sharingExhibitFileError,
+    };
+};
+export const useExhibitAnnotation = () => {
+    const { state, deps, dispatch } = useContext(GlobalStateContext);
+    const { currentExhibit, currentExhibitTabName, annotations, lastAnnotationId } = state.room;
+
+    const [getAnnotations, getAnnotationsPending, , latestAnnotations] = useAsyncCallback(async (payload) => {
+        const annotations = await deps.apiService.getAnnotations(payload);
+        return annotations;
+    }, []);
+
+    const [sendAnnotation] = useAsyncCallback(async (payload) => {
+        const annotate = await deps.apiService.sendAnnotation({ documentId: payload?.id, ...payload });
+        return annotate;
+    }, []);
+
+    useEffect(() => {
+        if (currentExhibit && currentExhibitTabName === "liveExhibits") {
+            getAnnotations({ documentId: currentExhibit.id });
+        }
+    }, [currentExhibitTabName, getAnnotations, currentExhibit]);
+
+    useEffect(() => {
+        if (latestAnnotations && !getAnnotationsPending && currentExhibitTabName === "liveExhibits") {
+            setTimeout(() => {
+                getAnnotations({ documentId: currentExhibit.id, startingAnnotationId: lastAnnotationId });
+                if (latestAnnotations.length) {
+                    dispatch(
+                        actions.setExhibitAnnotations({
+                            annotations: latestAnnotations,
+                        })
+                    );
+                }
+            }, CONSTANTS.MY_EXHIBITS_SYNC_ANNOTATION_POLLING_INTERVAL);
+        }
+    }, [
+        getAnnotations,
+        latestAnnotations,
+        getAnnotationsPending,
+        currentExhibitTabName,
+        currentExhibit.id,
+        lastAnnotationId,
+        dispatch,
+    ]);
+    return {
+        sendAnnotation,
+        annotations: useMemo(() => annotations?.map((annotation) => annotation.details), [annotations]) as [],
     };
 };

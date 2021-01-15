@@ -19,6 +19,7 @@ import {
     useSignedUrl,
     useShareExhibitFile,
     useExhibitTabs,
+    useExhibitAnnotation,
 } from "../../hooks/exhibits/hooks";
 jest.mock("../../hooks/exhibits/hooks", () => ({
     useUploadFile: jest.fn(),
@@ -26,6 +27,7 @@ jest.mock("../../hooks/exhibits/hooks", () => ({
     useSignedUrl: jest.fn(),
     useShareExhibitFile: jest.fn(),
     useExhibitTabs: jest.fn(),
+    useExhibitAnnotation: jest.fn(),
 }));
 
 jest.mock("react-router-dom", () => ({
@@ -58,6 +60,10 @@ beforeEach(() => {
         pending: false,
         error: null,
         documentUrl: "",
+    }));
+    useExhibitAnnotation.mockImplementation(() => ({
+        sendAnnotation: jest.fn(),
+        annotations: [],
     }));
 });
 

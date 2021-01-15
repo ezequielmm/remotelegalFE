@@ -15,8 +15,8 @@ import {
     LIVE_EXHIBIT_TAB,
 } from "../../../../constants/exhibits";
 import { ExhibitFile } from "../../../../types/ExhibitFile";
-import { PdfTronViewerProps } from "../../../../components/PDFTronViewer/PDFTronViewer";
 import { GlobalStateContext } from "../../../../state/GlobalState";
+import { AnnotationPayload, PdfTronViewerProps } from "../../../../components/PDFTronViewer/PDFTronViewer";
 
 interface Props extends PdfTronViewerProps {
     file: ExhibitFile;
@@ -24,6 +24,8 @@ interface Props extends PdfTronViewerProps {
     showBackButtonOnHeader?: boolean;
     showCloseButtonOnHeader?: boolean;
     showShareButtonOnHeader?: boolean;
+    annotations?: [];
+    onAnnotationChange?: (data: AnnotationPayload) => void;
 }
 
 export const ExhibitViewer = ({
@@ -32,6 +34,8 @@ export const ExhibitViewer = ({
     showBackButtonOnHeader = true,
     showCloseButtonOnHeader = false,
     showShareButtonOnHeader = false,
+    annotations,
+    onAnnotationChange,
 }: Props): ReactElement => {
     const { state } = useContext(GlobalStateContext);
     const { exhibitTab } = state.room;
@@ -52,6 +56,8 @@ export const ExhibitViewer = ({
                     canStamp={exhibitTab === LIVE_EXHIBIT_TAB}
                     document={documentUrl}
                     filename={file?.displayName}
+                    annotations={annotations}
+                    onAnnotationChange={onAnnotationChange}
                 />
             )}
             {!!error && (

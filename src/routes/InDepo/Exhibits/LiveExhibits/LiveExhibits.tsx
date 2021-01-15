@@ -8,10 +8,11 @@ import { ReactComponent as LiveExhibitsIcon } from "../../../../assets/icons/Liv
 import { ExhibitTabPaneSpacer } from "../styles";
 import { theme } from "../../../../constants/styles/theme";
 import ExhibitViewer from "../ExhibitViewer";
-import { useShareExhibitFile } from "../../../../hooks/exhibits/hooks";
+import { useExhibitAnnotation, useShareExhibitFile } from "../../../../hooks/exhibits/hooks";
 
 export default function LiveExhibits() {
     const { sharedExhibit } = useShareExhibitFile();
+    const { sendAnnotation, annotations } = useExhibitAnnotation();
     return (
         <ExhibitTabPaneSpacer direction="vertical" size="large">
             {sharedExhibit && (
@@ -20,6 +21,8 @@ export default function LiveExhibits() {
                     showCloseButtonOnHeader={!!sharedExhibit}
                     file={sharedExhibit}
                     onClose={() => {}}
+                    annotations={annotations}
+                    onAnnotationChange={(data) => sendAnnotation({ documentId: sharedExhibit.id, ...data })}
                 />
             )}
             {!sharedExhibit && (
