@@ -32,12 +32,15 @@ export class ApiService {
     private httpStatusCodeRetryRegex = ENV.API.API_RETRY_REQUEST_STATUS_CODE_RANGES_REGEX;
 
     getTokenSet = async () => {
-        const session = await Auth.currentSession();
-        this.tokenSet = {
-            accessToken: session.getIdToken().getJwtToken(),
-            refreshToken: session.getRefreshToken().getToken(),
-            accessTokenExpiryTime: session.getIdToken().getExpiration(),
-        };
+        const currentTime = Math.round(+new Date() / 1000);
+        if (!this.tokenSet || this.tokenSet.accessTokenExpiryTime < currentTime) {
+            const session = await Auth.currentSession();
+            this.tokenSet = {
+                accessToken: session.getIdToken().getJwtToken(),
+                refreshToken: session.getRefreshToken().getToken(),
+                accessTokenExpiryTime: session.getIdToken().getExpiration(),
+            };
+        }
         return this.tokenSet.accessToken;
     };
 
@@ -207,7 +210,7 @@ export class ApiService {
         withContentType = true,
         formData = undefined,
     }: RequestParams): Promise<T> => {
-        if (withToken && !this.tokenSet) await this.getTokenSet();
+        if (withToken) await this.getTokenSet();
         const jwt = withToken ? `Bearer ${this.tokenSet.accessToken}` : undefined;
         const queryParams =
             Object.entries(payload).length &&
