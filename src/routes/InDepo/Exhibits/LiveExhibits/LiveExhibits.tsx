@@ -22,7 +22,7 @@ export default function LiveExhibits() {
                     file={sharedExhibit}
                     onClose={() => {}}
                     annotations={annotations}
-                    onAnnotationChange={(data) => sendAnnotation({ documentId: sharedExhibit.id, ...data })}
+                    onAnnotationChange={sendAnnotation}
                 />
             )}
             {!sharedExhibit && (
