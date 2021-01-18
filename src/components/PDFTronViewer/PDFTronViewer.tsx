@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useState, useCallback, useContext } from "react";
 import WebViewer, { Annotations, WebViewerInstance } from "@pdftron/webviewer";
+import { initializeVideoViewer, renderControlsToDOM } from "@pdftron/webviewer-video";
 import * as CONSTANTS from "../../constants/PDFTronViewer";
 import { StyledPDFTronViewerContainer } from "./styles";
 import StampModal from "./components/StampModal";
@@ -58,6 +59,7 @@ const PDFTronViewer = ({ document, filename, canStamp, annotations, onAnnotation
         (annotation, action: AnnotationActionType) => {
             if (annotation.nodeType !== annotation.TEXT_NODE) {
                 const annotationString = serializeToString(annotation);
+                if (!onAnnotationChange) return;
                 onAnnotationChange({
                     action,
                     details: convertToXfdf(annotationString, action),
@@ -146,12 +148,25 @@ const PDFTronViewer = ({ document, filename, canStamp, annotations, onAnnotation
         startViewer();
     }, []);
 
+    const loadPDFTronVideo = async (instance, video) => {
+        const { loadVideo } = await initializeVideoViewer(instance, "");
+        loadVideo(video);
+        instance.docViewer.on("documentLoaded", () => {
+            const customContainer = instance.iframeWindow.document.querySelector(".custom-container");
+            renderControlsToDOM(instance, customContainer);
+        });
+    };
+
     useEffect(() => {
         if (PDFTron && document && filename) {
             stampRef.current = null;
             PDFTron.annotManager.on("annotationChanged", onAnnotationChangeHandler);
             PDFTron.docViewer.on("documentLoaded", onDocumentLoadedHandler);
-            PDFTron.loadDocument(document, { filename });
+            if (filename.toLowerCase().includes(".mp4")) {
+                loadPDFTronVideo(PDFTron, document);
+            } else {
+                PDFTron.loadDocument(document, { filename });
+            }
         }
         return () => {
             PDFTron?.annotManager.off("annotationChanged", onAnnotationChangeHandler);
