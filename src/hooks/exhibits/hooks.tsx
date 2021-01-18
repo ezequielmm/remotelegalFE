@@ -167,28 +167,29 @@ export const useShareExhibitFile = () => {
 };
 export const useExhibitAnnotation = () => {
     const { state, deps, dispatch } = useContext(GlobalStateContext);
+    const { depositionID } = useParams<{ depositionID: string }>();
     const { currentExhibit, currentExhibitTabName, annotations, lastAnnotationId } = state.room;
 
     const [getAnnotations, getAnnotationsPending, , latestAnnotations] = useAsyncCallback(async (payload) => {
-        const annotations = await deps.apiService.getAnnotations(payload);
+        const annotations = await deps.apiService.getAnnotations({ depositionID, ...payload });
         return annotations;
     }, []);
 
     const [sendAnnotation] = useAsyncCallback(async (payload) => {
-        const annotate = await deps.apiService.sendAnnotation({ documentId: payload?.id, ...payload });
+        const annotate = await deps.apiService.sendAnnotation({ depositionID, ...payload });
         return annotate;
     }, []);
 
     useEffect(() => {
         if (currentExhibit && currentExhibitTabName === "liveExhibits") {
-            getAnnotations({ documentId: currentExhibit.id });
+            getAnnotations();
         }
     }, [currentExhibitTabName, getAnnotations, currentExhibit]);
 
     useEffect(() => {
         if (latestAnnotations && !getAnnotationsPending && currentExhibitTabName === "liveExhibits") {
             setTimeout(() => {
-                getAnnotations({ documentId: currentExhibit.id, startingAnnotationId: lastAnnotationId });
+                getAnnotations({ startingAnnotationId: lastAnnotationId });
                 if (latestAnnotations.length) {
                     dispatch(
                         actions.setExhibitAnnotations({

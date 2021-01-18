@@ -184,19 +184,19 @@ export class ApiService {
         });
     };
 
-    getAnnotations = async ({ documentId, ...payload }): Promise<boolean> => {
+    getAnnotations = async ({ depositionID, ...payload }): Promise<boolean> => {
         return this.request<boolean>({
-            path: `/api/documents/${documentId}/annotations`,
+            path: `/api/Depositions/${depositionID}/SharedDocument/annotations`,
             payload,
             withToken: true,
             method: HTTP_METHOD.GET,
         });
     };
 
-    sendAnnotation = async ({ documentId, ...payload }): Promise<boolean> => {
+    sendAnnotation = async ({ depositionID }): Promise<boolean> => {
         return this.request<boolean>({
-            path: `/api/documents/${documentId}/annotate`,
-            payload,
+            path: `/api/Depositions/${depositionID}/annotate`,
+            payload: {},
             withToken: true,
             method: HTTP_METHOD.POST,
         });
