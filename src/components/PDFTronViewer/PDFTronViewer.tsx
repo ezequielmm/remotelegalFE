@@ -106,6 +106,11 @@ const PDFTronViewer = ({ document, filename, canStamp, annotations, onAnnotation
             annotations?.forEach(async (row) => {
                 const annotations = await PDFTron?.annotManager.importAnnotCommand(row);
                 await PDFTron?.annotManager.drawAnnotationsFromList(annotations);
+                // TODO: Add BE integration
+                const stamp = PDFTron.annotManager.getAnnotationById("STAMP");
+                if (stamp) {
+                    stampRef.current = stamp;
+                }
             });
         }
     }, [annotations, isDocumentLoaded, PDFTron]);
@@ -180,6 +185,7 @@ const PDFTronViewer = ({ document, filename, canStamp, annotations, onAnnotation
         await stamp.setImageData(stampImage);
         stamp.LockedContents = true;
         stamp.setCustomData("STAMP", stampImage);
+        stamp.Id = "STAMP";
         stamp.PageNumber = 1;
         stamp.X = 440;
         stamp.Y = 2;
