@@ -48,10 +48,10 @@ export default function OtherParticipantsModal({
     };
 
     const initialValues = {
-        email: currentParticipant?.email || "",
-        name: currentParticipant?.name || "",
-        phone: currentParticipant?.phone || "",
-        role: currentParticipant?.role || null,
+        email: currentParticipant?.email,
+        name: currentParticipant?.name,
+        phone: currentParticipant?.phone,
+        role: currentParticipant?.role,
     };
 
     const { handleSubmit, control, errors } = useForm({
@@ -95,7 +95,7 @@ export default function OtherParticipantsModal({
                     <Space direction="vertical" size="small" style={{ width: "100%" }}>
                         <RHFInput
                             control={control}
-                            defaultValue={currentParticipant?.email}
+                            defaultValue={initialValues.email || ""}
                             errorMessage={errors.email?.message}
                             name="email"
                             label={CONSTANTS.OPTIONAL_EMAIL_LABEL}
@@ -104,7 +104,7 @@ export default function OtherParticipantsModal({
                         />
                         <RHFInput
                             control={control}
-                            defaultValue={currentParticipant?.name}
+                            defaultValue={initialValues.name || ""}
                             errorMessage={errors.name?.message}
                             name="name"
                             label={CONSTANTS.OPTIONAL_NAME_LABEL}
@@ -113,7 +113,7 @@ export default function OtherParticipantsModal({
                         />
                         <RHFInput
                             control={control}
-                            defaultValue={currentParticipant?.phone}
+                            defaultValue={initialValues.phone || ""}
                             errorMessage={errors.phone?.message}
                             name="phone"
                             label={CONSTANTS.OPTIONAL_PHONE_LABEL}
@@ -121,7 +121,7 @@ export default function OtherParticipantsModal({
                             noMargin
                         />
                         <RHFSelect
-                            defaultValue={currentParticipant?.role}
+                            defaultValue={initialValues.role || null}
                             label={CONSTANTS.ROLE_LABEL}
                             placeholder={CONSTANTS.ROLE_PLACEHOLDER}
                             name="role"
