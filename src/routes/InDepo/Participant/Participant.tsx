@@ -40,16 +40,28 @@ const Participant = ({
             )}
             <StyledIdentityBox>
                 {isWitness && (
-                    <Text data-testid="witness-name" size="default" weight="bold" state={ColorStatus.white}>
+                    <Text
+                        data-testid="witness-name"
+                        size="small"
+                        lineHeight={1.25}
+                        weight="bold"
+                        state={ColorStatus.white}
+                    >
                         {isWitness && identity ? identity.name || "Guest" : "waiting for witness"}
                     </Text>
                 )}
                 {!isWitness && (
-                    <Text data-testid="participant-name" size="default" weight="bold" state={ColorStatus.white}>
+                    <Text
+                        data-testid="participant-name"
+                        size="small"
+                        lineHeight={1.25}
+                        weight="bold"
+                        state={ColorStatus.white}
+                    >
                         {!isWitness ? identity?.name : "Guest"}
                     </Text>
                 )}
-                <Text data-testid="participant-role" size="small" state={ColorStatus.white}>
+                <Text data-testid="participant-role" size="small" lineHeight={1.25} state={ColorStatus.white}>
                     {identity && normalizedRoles[identity.role] ? normalizedRoles[identity.role] : identity?.role}
                 </Text>
             </StyledIdentityBox>

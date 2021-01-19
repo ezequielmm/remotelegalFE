@@ -15,11 +15,12 @@ export interface ITextProps {
     state?: ColorStatus;
     font?: "default" | "header" | "code";
     dataTestId?: string;
+    lineHeight?: number;
     children: React.ReactChild;
 }
 
 const StyledText = styled.span<ITextProps>`
-    ${({ height, size, weight, state, uppercase, ellipsis, block, font, align, theme }) => {
+    ${({ height, size, weight, state, uppercase, ellipsis, block, font, align, theme, lineHeight }) => {
         const { textColor, fontSizes, fontFamilies, headerFontFamilies, codeFontFamily } = theme.default;
 
         const setFontSize = (textSize, sizes) => {
@@ -71,7 +72,7 @@ const StyledText = styled.span<ITextProps>`
             font-family: ${setFontFamily(font)};
             font-size: ${setFontSize(size, fontSizes)};
             font-weight: ${getWeightNumber(weight || "normal")};
-            line-height: 1.5;
+            line-height: ${lineHeight || theme.default.lineHeightBase};
             ${stateStyle}
             ${uppercaseStyle}
             ${ellipsisStyle}
