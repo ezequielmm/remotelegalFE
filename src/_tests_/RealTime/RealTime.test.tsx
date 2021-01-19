@@ -12,6 +12,7 @@ jest.mock("audio-recorder-polyfill", () => {
         addEventListener: jest.fn(),
         removeEventListener: jest.fn(),
         stop: jest.fn(),
+        stream: { getTracks: () => [{ stop: () => {} }] },
     }));
 });
 

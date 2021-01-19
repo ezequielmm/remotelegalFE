@@ -6,15 +6,19 @@ export default () => {
     const [recorder, setRecorder] = useState(null);
     const transcriptAudio = useTranscriptAudio();
 
+    const stopMicrophone = useCallback(() => {
+        if (recorder) {
+            recorder.stop();
+        }
+    }, [recorder]);
+
     useEffect(() => {
         return () => {
-            if (recorder) recorder.stop();
+            if (recorder) {
+                recorder.stop();
+                recorder.stream.getTracks().forEach((track) => track.stop());
+            }
         };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-    const stopMicrophone = useCallback(() => {
-        if (recorder) recorder.stop();
     }, [recorder]);
 
     React.useEffect(() => {
@@ -40,6 +44,7 @@ export default () => {
     }, [recorder, transcriptAudio]);
 
     const getMicrophone = useCallback(async () => {
+        if (recorder) recorder.start(1000);
         const newAudio = await navigator.mediaDevices.getUserMedia({
             audio: true,
             video: false,
@@ -52,7 +57,7 @@ export default () => {
         setRecorder(newRecorder);
 
         // Start recording
-    }, []);
+    }, [recorder]);
 
     const toggleMicrophone = useCallback(
         (start) => {
