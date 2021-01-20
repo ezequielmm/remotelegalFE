@@ -15,6 +15,15 @@ REMOVE THIS LINE: Make sure you name your PR starting with the ticket number (ie
 ## Notes
   
 <Any additional notes that will help reviewers understand the PR.>
+
+## Checklist
+
+- [ ] I added Unit Tests
+- [ ] I added the `data-testId` attribute to new elemnents
+- [ ] I marked commented code with @todo or removed it
+- [ ] I Dev tested the new feature/bug
+- [ ] I Smoke tested the app
+- [ ] In case I modified .env file I also modified environment specific files (delete if unneeded)
  
 ## Demo
  
