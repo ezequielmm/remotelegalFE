@@ -42,10 +42,11 @@ export const StyledRecordPill = styled.span<IRecordPillPropsStyles>`
     border-radius: ${getREM(spaces[5])};
     text-transform: uppercase;
     padding: 0 ${getREM(spaces[3])};
-    width: ${getREM(spaces[12] * 3.6)};
+    width: ${getREM(spaces[12] * 3.65)};
     height: ${getREM(spaces[12] * 0.95)};
     box-shadow: 0 0 1px 0 ${hexToRGBA(neutrals[2], 0.5)};
     transition: background-color 400ms ease-in-out;
+    word-break: break-all;
 `;
 
 export const StyledIcon = styled(Icon)<IRecordPillPropsStyles>`
