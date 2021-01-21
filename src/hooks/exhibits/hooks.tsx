@@ -187,9 +187,10 @@ export const useExhibitAnnotation = () => {
     }, [currentExhibitTabName, getAnnotations, currentExhibit]);
 
     useEffect(() => {
+        let delay;
         if (latestAnnotations && !getAnnotationsPending && currentExhibitTabName === "liveExhibits") {
-            setTimeout(() => {
-                getAnnotations({ startingAnnotationId: lastAnnotationId });
+            delay = setTimeout(() => {
+                getAnnotations({ startingAnnotationId: lastAnnotationId || undefined });
                 if (latestAnnotations.length) {
                     dispatch(
                         actions.setExhibitAnnotations({
@@ -199,6 +200,7 @@ export const useExhibitAnnotation = () => {
                 }
             }, CONSTANTS.MY_EXHIBITS_SYNC_ANNOTATION_POLLING_INTERVAL);
         }
+        return () => clearTimeout(delay);
     }, [
         getAnnotations,
         latestAnnotations,
