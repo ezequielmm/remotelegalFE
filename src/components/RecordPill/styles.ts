@@ -28,8 +28,8 @@ const pulse = keyframes`
 
 export const StyledRecordPill = styled.span<IRecordPillPropsStyles>`
     position: absolute;
-    top: ${getREM(spaces[4])};
-    left: ${getREM(spaces[4])};
+    top: ${getREM(spaces[2])};
+    left: ${getREM(spaces[2])};
     z-index: 50;
     display: inline-flex;
     background-color: ${(props: IRecordPillPropsStyles) => (props.$on ? error[5] : neutrals[0])};

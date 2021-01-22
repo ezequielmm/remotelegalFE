@@ -1,7 +1,7 @@
 import { CustomIconComponentProps } from "@ant-design/icons/lib/components/Icon";
 import React from "react";
-import { Space } from "antd";
 import Icon from "../../../../components/Icon";
+import Space from "../../../../components/Space";
 import Text from "../../../../components/Typography/Text";
 import ColorStatus from "../../../../types/ColorStatus";
 import { ExhibitTabContainer, ExhibitTabContainerText, ExhibitTabsContainer, Stick } from "./styles";
@@ -58,18 +58,24 @@ export default function ExhibitTabs({
                     >
                         {!active && previousTabIsNotSelected && isNotFirstTab && <Stick />}
                         <ExhibitTabContainerText data-testid={active && `${tabTestId}_active`}>
-                            <Text
-                                uppercase
-                                state={highlight && !active ? ColorStatus.primary : ColorStatus.white}
-                                size="small"
-                            >
-                                <Space size="small">
-                                    {icon && (
-                                        <Icon icon={icon} style={{ fontSize: getREM(theme.default.fontSizes[4]) }} />
-                                    )}
+                            <Space size="small" align="center">
+                                {icon && (
+                                    <Icon
+                                        icon={icon}
+                                        style={{
+                                            fontSize: getREM(theme.default.spaces[7]),
+                                            color: highlight && !active ? ColorStatus.primary : ColorStatus.white,
+                                        }}
+                                    />
+                                )}
+                                <Text
+                                    uppercase
+                                    state={highlight && !active ? ColorStatus.primary : ColorStatus.white}
+                                    size="small"
+                                >
                                     {` ${title}`}
-                                </Space>
-                            </Text>
+                                </Text>
+                            </Space>
                             <Text state={subtitleState} size="small">
                                 {subTitle}
                             </Text>

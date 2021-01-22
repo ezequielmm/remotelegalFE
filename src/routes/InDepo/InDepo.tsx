@@ -23,9 +23,10 @@ const InDepo = () => {
     const [joinDeposition, loading, error] = useJoinDeposition();
     const { breakrooms, isRecording, message, currentRoom, permissions, timeZone, dataTrack } = state.room;
     const { depositionID } = useParams<DepositionID>();
-    const [realTimeOpen, togglerRealTime] = useState(false);
-    const [exhibitsOpen, togglerExhibits] = useState(false);
-    const [videoLayoutSize, setVideoLayoutSize] = useState(0);
+    const [realTimeOpen, togglerRealTime] = useState<boolean>(false);
+    const [exhibitsOpen, togglerExhibits] = useState<boolean>(false);
+    const [videoLayoutSize, setVideoLayoutSize] = useState<number>(0);
+    const [atendeesVisibility, setAtendeesVisibility] = useState<boolean>(true);
     const history = useHistory();
 
     useEffect(() => {
@@ -46,10 +47,11 @@ const InDepo = () => {
         }
     }, [depositionID, joinDeposition]);
 
-    useEffect(() => setVideoLayoutSize([realTimeOpen, exhibitsOpen].filter(Boolean).length), [
-        realTimeOpen,
-        exhibitsOpen,
-    ]);
+    useEffect(() => {
+        setAtendeesVisibility((prev) => !prev);
+        setVideoLayoutSize([realTimeOpen, exhibitsOpen].filter(Boolean).length);
+        setTimeout(() => setAtendeesVisibility((prev) => !prev), 300);
+    }, [realTimeOpen, exhibitsOpen]);
 
     useEffect(() => {
         if (message.module === "endDepo") {
@@ -92,6 +94,7 @@ const InDepo = () => {
                         timeZone={timeZone}
                         attendees={currentRoom.participants}
                         layoutSize={videoLayoutSize}
+                        atendeesVisibility={atendeesVisibility}
                     />
                 </StyledInDepoLayout>
                 <StyledRoomFooter>

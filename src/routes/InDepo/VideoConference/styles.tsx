@@ -1,100 +1,107 @@
 import styled from "styled-components";
 import { getPX, getREM } from "../../../constants/styles/utils";
 
-export const StyledVideoConference = styled.div`
+interface IVideoConferenceProps {
+    show: boolean;
+}
+
+export const StyledVideoConference = styled.div<IVideoConferenceProps>`
     height: 100%;
     display: flex;
     justify-content: center;
-    flex: 1 1 0%;
+    flex: 1;
+    opacity: 0;
+    transition: opacity 0ms ease;
+    will-change: opacity;
+    ${({ show }) =>
+        show
+            ? `
+                transition: opacity 150ms ease;
+                opacity: 1;
+            `
+            : ""}
     &.grid,
     &.vertical {
         flex-direction: column;
     }
     &.vertical {
-        flex: unset;
+        flex: 0.5;
     }
 `;
 
-export const StyledVideoChatContainer = styled.div`
-    display: flex;
+export const StyledDeponentContainer = styled.div<{ isUnique: boolean }>`
     height: 100%;
+    max-width: 100%;
+    display: flex;
+    flex: ${({ isUnique }) => (isUnique ? 0 : 3)};
+    ${StyledVideoConference}.grid &, ${StyledVideoConference}.vertical & {
+        flex: 1;
+        justify-content: center;
+    }
 `;
 
-interface VideoContainerProps {
-    height: string | undefined;
+interface IAtendeesContainerProps {
+    participantsLength: number;
 }
 
-export const StyledDeponentContainer = styled.div<VideoContainerProps>`
-    max-width: 100%;
-    height: ${({ height }) => height || "100%"};
-    padding-right: ${({ theme }) => getREM(theme.default.spaces[6])};
-    ${StyledVideoConference}.grid & {
-        display: flex;
-        justify-content: center;
-        & > div {
-            width: auto;
-        }
-        img {
-            width: auto;
-            height: 100%;
-        }
-    }
-    ${StyledVideoConference}.vertical & {
-        height: calc(20% - ${({ theme }) => getREM((theme.default.spaces[5] * 4) / 5)});
-    }
-`;
-
-export const StyledAttendeesContainer = styled.div<VideoContainerProps>`
+export const StyledAttendeesContainer = styled.div<IAtendeesContainerProps>`
+    height: 100%;
     width: auto;
-    height: ${({ height }) => height || "100%"};
-    padding-right: ${({ theme }) => getREM(theme.default.spaces[5])};
     overflow: auto;
-    scrollbar-color: ${({ theme }) => theme.colors.inDepoNeutrals[0]} ${({ theme }) => theme.colors.inDepoNeutrals[1]};
-    scrollbar-width: thin;
-    &::-webkit-scrollbar {
-        width: ${({ theme }) => getPX(theme.default.spaces[1])};
+    flex: 1;
+    display: grid;
+    grid-auto-rows: calc(25% - ${({ theme }) => getREM((theme.default.spaces[6] * 2) / 5)});
+    grid-gap: ${({ theme }) => getREM(theme.default.spaces[3])};
+    margin-left: ${({ theme }) => getREM(theme.default.spaces[3])};
+    ${({ participantsLength, theme }) => {
+        const scroll = `
+            padding-right: ${getREM(theme.default.spaces[3])};
+            scrollbar-color: ${theme.colors.inDepoNeutrals[9]} ${theme.colors.inDepoNeutrals[5]};
+            scrollbar-width: thin;
+            &::-webkit-scrollbar {
+                width: ${getPX(theme.default.spaces[2])};
+            }
+            &::-webkit-scrollbar-track {
+                background-color: ${theme.colors.inDepoNeutrals[5]};
+                border-radius: ${getPX(theme.default.spaces[7])};
+            }
+            &::-webkit-scrollbar-thumb {
+                border-radius: ${getPX(theme.default.spaces[7])};
+                background: ${theme.colors.inDepoNeutrals[9]};
+            }
+        `;
+        if (participantsLength > 6) {
+            return `
+                ${scroll}
+            `;
+        }
+        if (participantsLength > 4) {
+            return `
+                ${StyledVideoConference}:not(.grid) & {
+                    ${scroll}
+                }
+            `;
+        }
+    }}
+    ${StyledVideoConference}.grid & {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-auto-rows: calc(50% - ${({ theme }) => getREM(theme.default.spaces[2])});
+        grid-gap: ${({ theme }) => getREM(theme.default.spaces[3])};
+        margin-top: ${({ theme }) => getREM(theme.default.spaces[3])};
+        margin-left: 0;
     }
-    &::-webkit-scrollbar-track {
-        background-color: ${({ theme }) => theme.colors.inDepoNeutrals[1]};
-    }
-    &::-webkit-scrollbar-thumb {
-        border-radius: ${({ theme }) => getPX(theme.default.spaces[7])};
-        background: ${({ theme }) => theme.colors.inDepoNeutrals[0]};
-    }
-    ${StyledVideoConference}.grid &,
     ${StyledVideoConference}.vertical & {
-        margin-top: ${({ theme }) => getREM(theme.default.spaces[5])};
-    }
-    ${StyledVideoConference}.vertical & {
-        height: 80%;
+        margin-top: ${({ theme }) => getREM(theme.default.spaces[3])};
+        margin-left: 0;
+        flex: 4;
     }
 `;
 
-export const StyledParticipantContainer = styled.div<{ isUnique: boolean }>`
-    width: ${({ isUnique }) => (isUnique ? "100%" : "100%")};
-    height: ${({ isUnique, theme }) =>
-        isUnique ? "100%" : `calc(25% - ${getREM((theme.default.spaces[5] * 3) / 4)})`};
-    margin-top: ${({ theme }) => getREM(theme.default.spaces[5])};
-    &:first-child {
-        margin-top: 0;
-    }
+export const StyledParticipantContainer = styled.div`
+    position: relative;
+    overflow: hidden;
     ${StyledVideoConference}.grid & {
-        height: auto;
-        width: calc(33.3333% - ${({ theme }) => getREM((theme.default.spaces[5] * 2) / 3)});
-        margin-left: ${({ theme }) => getREM(theme.default.spaces[5])};
-        display: inline-flex;
-        &:nth-child(3n + 1) {
-            margin-left: 0;
-        }
-        &:nth-child(-n + 3) {
-            margin-top: 0;
-        }
-        img {
-            width: 100%;
-            height: auto;
-        }
-    }
-    ${StyledVideoConference}.vertical & {
-        height: calc(25% - ${({ theme }) => getREM((theme.default.spaces[5] * 4) / 5)});
+        max-height: 100%;
     }
 `;

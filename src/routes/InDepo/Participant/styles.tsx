@@ -1,28 +1,20 @@
 import styled from "styled-components";
-import spacing from "../../../constants/styles/spacing";
 import { getPX, getREM } from "../../../constants/styles/utils";
 
-export const StyledParticipantMask = styled.div<{ videoDisabled: boolean }>`
-    border-radius: ${({ theme }) => getPX(theme.default.borderRadiusBase, spacing.baseUnit)};
+export const StyledParticipantMask = styled.div`
+    border-radius: ${({ theme }) => getPX(theme.default.borderRadiusBase, theme.default.baseUnit)};
     overflow: hidden;
     transform: translateZ(0); // Fix Safari stacking context problem
     width: 100%;
     height: 100%;
-    background: ${({ videoDisabled, theme }) => (videoDisabled ? "#000" : theme.colors.neutrals[0])};
+    background: ${({ theme }) => theme.colors.inDepoNeutrals[6]};
     position: relative;
 
-    img {
-        height: 100%;
-        max-width: 100%;
-    }
-
     video {
+        width: 100%;
+        height: 100%;
         position: absolute;
-        top: 0;
-        left: 0;
-        width: 115%;
-        height: 115%;
-        margin: -5%;
+        object-fit: contain;
     }
 
     &:before {

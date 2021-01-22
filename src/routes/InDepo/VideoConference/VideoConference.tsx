@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import { LocalParticipant, RemoteParticipant, Room } from "twilio-video";
-import { theme } from "../../../constants/styles/theme";
 import { TimeZones } from "../../../models/general";
 import Participant from "../Participant";
 import {
@@ -24,38 +23,22 @@ interface IVideoConferenceProps {
     timeZone: TimeZones;
     isBreakroom?: boolean;
     localParticipant: LocalParticipant;
+    atendeesVisibility?: boolean;
 }
 
-const VideoConference = ({ isBreakroom, attendees, timeZone, layoutSize, localParticipant }: IVideoConferenceProps) => {
+const VideoConference = ({
+    isBreakroom,
+    attendees,
+    timeZone,
+    layoutSize,
+    localParticipant,
+    atendeesVisibility = true,
+}: IVideoConferenceProps) => {
     const [layoutClass, setLayoutClass] = useState<TLayoutClass>(null);
-    const [attendeesHeight, setAttendeesHeight] = useState<string>("");
-    const [witnessHeight, setWitnessHeight] = useState<string>("");
     const participantContainer = useRef<HTMLDivElement>(null);
     const videoConferenceContainer = useRef<HTMLDivElement>(null);
     const participants = [localParticipant, ...Array.from(attendees.values())];
     const witness = participants.find((participant) => JSON.parse(participant.identity).role === "Witness");
-
-    const calculateAttendeesHeight = (participantRef: React.MutableRefObject<HTMLDivElement>): string => {
-        if (!participantRef.current) return "";
-
-        let { height } = window.getComputedStyle(participantRef.current);
-        height = height.replace("px", ""); // remove "px" string
-
-        return `${Number(height) * 2 + theme.default.baseUnit}px`;
-    };
-
-    const calculateWitnessHeight = (
-        participantRef: React.MutableRefObject<HTMLDivElement>,
-        videoConferenceRef: React.MutableRefObject<HTMLDivElement>
-    ): string => {
-        if (!participantRef.current) return "";
-
-        const { height } = window.getComputedStyle(videoConferenceRef.current);
-        const videoConferenceHeight = Number(height.replace("px", ""));
-        const attendeesContainerHeight = Number(calculateAttendeesHeight(participantRef).replace("px", ""));
-
-        return `${videoConferenceHeight - attendeesContainerHeight - theme.default.baseUnit}px`;
-    };
 
     useEffect(() => {
         switch (layoutSize) {
@@ -69,28 +52,20 @@ const VideoConference = ({ isBreakroom, attendees, timeZone, layoutSize, localPa
                 setLayoutClass("default");
                 break;
         }
-
-        // Reset grid height
-        setAttendeesHeight("");
-        setWitnessHeight("");
     }, [layoutSize]);
 
-    useEffect(() => {
-        if (layoutClass === "grid") {
-            setAttendeesHeight(calculateAttendeesHeight(participantContainer));
-            setWitnessHeight(calculateWitnessHeight(participantContainer, videoConferenceContainer));
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [layoutClass]);
-
     return (
-        <StyledVideoConference className={layoutClass} ref={videoConferenceContainer}>
+        <StyledVideoConference className={layoutClass} ref={videoConferenceContainer} show={atendeesVisibility}>
             {(!isBreakroom || participants.length > 1) && (
-                <StyledDeponentContainer height={witnessHeight}>
+                <StyledDeponentContainer isUnique={isBreakroom && participants.length === 1}>
                     <Participant timeZone={timeZone} participant={isBreakroom ? participants[1] : witness} isWitness />
                 </StyledDeponentContainer>
             )}
-            <StyledAttendeesContainer height={attendeesHeight}>
+            <StyledAttendeesContainer
+                participantsLength={
+                    participants.filter((participant) => JSON.parse(participant.identity).role !== "Witness").length
+                }
+            >
                 {participants
                     .filter((participant) =>
                         isBreakroom
@@ -99,11 +74,7 @@ const VideoConference = ({ isBreakroom, attendees, timeZone, layoutSize, localPa
                             : JSON.parse(participant.identity).role !== "Witness"
                     )
                     .map((participant: RemoteParticipant, i) => (
-                        <StyledParticipantContainer
-                            isUnique={isBreakroom && participants.length === 1}
-                            key={participant.sid}
-                            ref={i === 0 ? participantContainer : null}
-                        >
+                        <StyledParticipantContainer key={participant.sid} ref={i === 0 ? participantContainer : null}>
                             <Participant participant={participant} />
                         </StyledParticipantContainer>
                     ))}

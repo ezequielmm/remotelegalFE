@@ -7,8 +7,7 @@ import Clock from "../../../components/Clock";
 import Text from "../../../components/Typography/Text";
 import { StyledIdentityBox, StyledParticipantMask, StyledTimeBox } from "./styles";
 import ColorStatus from "../../../types/ColorStatus";
-
-const AspectRatio = require("../../../assets/in-depo/aspect-ratio-16-9.svg");
+import { theme } from "../../../constants/styles/theme";
 
 const Participant = ({
     timeZone,
@@ -19,7 +18,7 @@ const Participant = ({
     participant: LocalParticipant | RemoteParticipant;
     isWitness?: boolean;
 }) => {
-    const { videoDisabled, videoRef, audioRef, dataTracks } = useParticipantTracks(participant);
+    const { videoRef, audioRef, dataTracks } = useParticipantTracks(participant);
     const identity = participant && JSON.parse(participant.identity);
     useDataTrack(dataTracks);
 
@@ -29,10 +28,9 @@ const Participant = ({
     };
 
     return (
-        <StyledParticipantMask videoDisabled={videoDisabled}>
+        <StyledParticipantMask>
             <video ref={videoRef} autoPlay />
             <audio ref={audioRef} autoPlay />
-            <img src={AspectRatio} alt="16/9" />
             {timeZone && (
                 <StyledTimeBox>
                     <Clock timeZone={timeZone} />
@@ -43,7 +41,7 @@ const Participant = ({
                     <Text
                         data-testid="witness-name"
                         size="small"
-                        lineHeight={1.25}
+                        lineHeight={theme.default.spaces[8]}
                         weight="bold"
                         state={ColorStatus.white}
                     >
@@ -54,14 +52,19 @@ const Participant = ({
                     <Text
                         data-testid="participant-name"
                         size="small"
-                        lineHeight={1.25}
+                        lineHeight={theme.default.spaces[8]}
                         weight="bold"
                         state={ColorStatus.white}
                     >
                         {!isWitness ? identity?.name : "Guest"}
                     </Text>
                 )}
-                <Text data-testid="participant-role" size="small" lineHeight={1.25} state={ColorStatus.white}>
+                <Text
+                    data-testid="participant-role"
+                    size="small"
+                    lineHeight={theme.default.spaces[8]}
+                    state={ColorStatus.white}
+                >
                     {identity && normalizedRoles[identity.role] ? normalizedRoles[identity.role] : identity?.role}
                 </Text>
             </StyledIdentityBox>

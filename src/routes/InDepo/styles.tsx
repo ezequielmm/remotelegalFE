@@ -10,17 +10,17 @@ export const StyledInDepoContainer = styled.div`
 `;
 
 export const StyledInDepoLayout = styled.div`
-    display: flex;
-    position: relative;
-    justify-content: center;
     height: calc(100% - ${({ theme }) => getREM(theme.default.spaces[9] * 3)});
+    position: relative;
+    display: flex;
+    justify-content: center;
     background: linear-gradient(
         to bottom,
         ${({ theme }) => theme.colors.inDepoNeutrals[2]} 0%,
         ${({ theme }) => theme.colors.inDepoNeutrals[2]} 60%,
         ${({ theme }) => theme.colors.inDepoNeutrals[5]} 100%
     );
-    padding: ${({ theme }) => getREM(theme.default.spaces[6])};
+    padding: ${({ theme }) => getREM(theme.default.spaces[3])};
 `;
 
 export const StyledRoomFooter = styled.div`
@@ -36,27 +36,31 @@ export interface ContainerProps {
 interface StyledLayoutCotainerProps extends Pick<ContainerProps, "visible"> {}
 
 export const StyledLayoutCotainer = styled.div<StyledLayoutCotainerProps>`
+    height: 100%;
+    width: 0;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
-    height: 100%;
-    flex: 1 1 0%;
-    padding: ${({ theme }) => `${getREM(theme.default.spaces[6])}`};
-    margin-right: ${({ theme }) => getREM(theme.default.spaces[6])};
-    border-radius: ${({ theme }) => getREM(theme.default.borderRadiusBase)};
-    overflow: hidden;
+    flex: 0;
+    opacity: 0;
     background: ${({ theme }) => theme.colors.inDepoNeutrals[6]};
-    ${({ visible }) => {
-        return `
-            visibility: ${visible ? "visible" : "hidden"};
-            position: ${visible ? "static" : "absolute"};
-            left: ${visible ? "0" : "-9999px"};
-        `;
+    border-radius: ${({ theme }) => getREM(theme.default.borderRadiusBase)};
+    transition: flex 150ms ease 300ms;
+    will-change: flex;
+    ${({ visible, theme }) => {
+        return visible
+            ? `
+                width: unset;
+                flex: 1;
+                opacity: 1;
+                padding: ${getREM(theme.default.spaces[6])};
+                margin-right: ${getREM(theme.default.spaces[3])};
+            `
+            : "";
     }}
 `;
 
 export const StyledLayoutContent = styled.div`
     height: 100%;
-    overflow: hidden;
-    padding: ${({ theme }) => `0 ${getREM(theme.default.spaces[3])}`};
     overflow: hidden;
 `;
