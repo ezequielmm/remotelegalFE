@@ -49,6 +49,9 @@ function isSizeType(size: string): size is keyof typeof SizeType {
 export interface ISpaceProps extends PropsWithChildren<SpaceProps> {
     size?: keyof typeof SizeType | range12Type | string;
     direction?: "horizontal" | "vertical";
+    justify?: "space-between" | "space-around" | "center" | "flex-start" | "flex-end";
+    align?: "center" | "flex-start" | "flex-end";
+    fullWidth?: boolean;
 }
 
 const spaceStyle = (props: SpaceProps): string => {
@@ -87,7 +90,7 @@ const StyledSpace = styled.div.attrs((props: ISpaceProps) => ({
     size: props.size,
 }))<ISpaceProps>`
     ${(props: ISpaceProps) => {
-        const { size, direction } = props;
+        const { size, direction, justify, align, fullWidth } = props;
 
         const sizeStyles = (): string => {
             if (size) {
@@ -108,6 +111,7 @@ const StyledSpace = styled.div.attrs((props: ISpaceProps) => ({
                         }
                     `;
                 }
+
                 if (typeof size === "number") {
                     return `
                         &:not(:last-child) {
@@ -122,25 +126,29 @@ const StyledSpace = styled.div.attrs((props: ISpaceProps) => ({
             return "";
         };
 
-        const directionStyles = `
+        const flexStyles = `
             display: flex;
             flex-direction: ${direction === "horizontal" ? "row" : "column"};
+            justify-content: ${justify};
+            align-items: ${align};
         `;
 
         const styles = `
-            ${directionStyles}
+            width: ${fullWidth ? "100%" : "unset"};
+            ${flexStyles}
             ${spaceStyle(props)}
 
             > * {
                 ${sizeStyles()}
             }
         `;
+
         return styles;
     }}
 `;
 
-const Space = ({ direction = "horizontal", ...rest }: ISpaceProps) => {
-    return <StyledSpace direction={direction} {...rest} />;
+const Space = ({ direction = "horizontal", justify = "flex-start", align = "flex-start", ...rest }: ISpaceProps) => {
+    return <StyledSpace direction={direction} justify={justify} align={align} {...rest} />;
 };
 
 export default Space;
