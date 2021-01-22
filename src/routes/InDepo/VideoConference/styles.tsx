@@ -70,9 +70,10 @@ export const StyledAttendeesContainer = styled.div<VideoContainerProps>`
     }
 `;
 
-export const StyledParticipantContainer = styled.div`
-    width: auto;
-    height: calc(25% - ${({ theme }) => getREM((theme.default.spaces[5] * 3) / 4)});
+export const StyledParticipantContainer = styled.div<{ isUnique: boolean }>`
+    width: ${({ isUnique }) => (isUnique ? "100%" : "100%")};
+    height: ${({ isUnique, theme }) =>
+        isUnique ? "100%" : `calc(25% - ${getREM((theme.default.spaces[5] * 3) / 4)})`};
     margin-top: ${({ theme }) => getREM(theme.default.spaces[5])};
     &:first-child {
         margin-top: 0;

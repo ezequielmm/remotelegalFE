@@ -14,11 +14,9 @@ jest.mock("audio-recorder-polyfill", () => {
     }));
 });
 
-Object.defineProperty(global.navigator, "mediaDevices", {
-    get: () => ({
-        getUserMedia: jest.fn().mockResolvedValue(true),
-    }),
-});
+(global.navigator as any).mediaDevices = {
+    getUserMedia: jest.fn().mockResolvedValue(true),
+};
 
 jest.mock("react-router", () => ({
     ...jest.requireActual("react-router"),

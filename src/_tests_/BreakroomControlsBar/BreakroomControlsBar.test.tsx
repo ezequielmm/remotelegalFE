@@ -29,7 +29,6 @@ beforeEach(() => {
         canEnd: false,
     };
 });
-
 (global.navigator as any).mediaDevices = {
     getUserMedia: jest.fn().mockResolvedValue(true),
 };

@@ -1,5 +1,5 @@
 import React, { ReactElement, useState } from "react";
-import { Dropdown, Menu } from "antd";
+import { Menu } from "antd";
 import { LocalAudioTrack, LocalParticipant, LocalVideoTrack } from "twilio-video";
 import useParticipantTracks from "../../hooks/InDepo/useParticipantTracks";
 import useRecording from "../../hooks/InDepo/useRecording";
@@ -29,11 +29,16 @@ import { ReactComponent as ArrowIcon } from "../../assets/general/Arrow.svg";
 import { ReactComponent as SummaryIcon } from "../../assets/in-depo/Summary.svg";
 import { ReactComponent as SupportIcon } from "../../assets/in-depo/Support.svg";
 import Control from "../Control/Control";
+import Dropdown from "../Dropdown";
+import List from "../List";
 import Logo from "../Logo";
 import useEndDepo from "../../hooks/InDepo/useEndDepo";
 import useStreamAudio from "../../hooks/useStreamAudio";
+import BreakroomListItem from "../BreakroomListItem";
+import { BreakroomModel } from "../../models";
 
 interface IControlsBar {
+    breakrooms?: BreakroomModel.Breakroom[];
     canRecord: boolean;
     canEnd: boolean;
     localParticipant: LocalParticipant;
@@ -42,9 +47,11 @@ interface IControlsBar {
     realTimeOpen: boolean;
     isRecording: boolean;
     togglerRealTime: React.Dispatch<React.SetStateAction<boolean>> | ((value: React.SetStateAction<boolean>) => void);
+    handleJoinBreakroom: (roomNumber: string) => void;
 }
 
 export default function ControlsBar({
+    breakrooms,
     localParticipant,
     exhibitsOpen,
     togglerExhibits,
@@ -53,6 +60,7 @@ export default function ControlsBar({
     isRecording,
     canEnd,
     canRecord,
+    handleJoinBreakroom,
 }: IControlsBar): ReactElement {
     const { videoTracks, audioTracks } = useParticipantTracks(localParticipant);
     const { isAudioEnabled, cameraEnabled, setAudioEnabled, setCameraEnabled } = useTracksStatus(
@@ -60,9 +68,9 @@ export default function ControlsBar({
         videoTracks as LocalVideoTrack[]
     );
     const startPauseRecording = useRecording(!isRecording);
-    const [breakroomsOpen, togglerBreakrooms] = useState(false);
     const [summaryOpen, togglerSummary] = useState(false);
     const [supportOpen, togglerSupport] = useState(false);
+    const [breakroomsOpen, togglerBreakrooms] = useState(false);
     const [modal, setModal] = useState(false);
     const { setEndDepo } = useEndDepo();
     const toggleMicrophone = useStreamAudio();
@@ -175,17 +183,43 @@ export default function ControlsBar({
                         label="Real Time"
                         icon={<Icon icon={RealTimeIcon} style={{ fontSize: "1.625rem" }} />}
                     />
-                    <Control
-                        data-testid="breakrooms"
-                        isToggled={breakroomsOpen}
-                        onClick={toggleBreakrooms}
-                        type="simple"
-                        label="Breakrooms"
-                        icon={composeBreakroomsIcon}
-                    />
+                    <Dropdown
+                        onVisibleChange={toggleBreakrooms}
+                        overlay={{
+                            component: List,
+                            props: {
+                                renderItem: (item, i) => (
+                                    <BreakroomListItem
+                                        joinBreakroom={handleJoinBreakroom}
+                                        id={item.id}
+                                        name={item.name}
+                                    />
+                                ),
+                                size: "large",
+                                dataSource: breakrooms,
+                            },
+                        }}
+                    >
+                        <Control
+                            data-testid="breakrooms"
+                            isToggled={breakroomsOpen}
+                            type="simple"
+                            label="Breakrooms"
+                            icon={composeBreakroomsIcon}
+                        />
+                    </Dropdown>
                 </StyledPrimaryControls>
                 <StyledSecondaryControls>
-                    <Dropdown overlay={Panel} placement="topRight" trigger={["click"]}>
+                    <Dropdown
+                        overlay={{
+                            component: Menu,
+                            props: {
+                                renderItem: () => Panel,
+                            },
+                        }}
+                        placement="topRight"
+                        trigger={["click"]}
+                    >
                         <Control
                             isToggled={summaryOpen}
                             onClick={toggleSummary}

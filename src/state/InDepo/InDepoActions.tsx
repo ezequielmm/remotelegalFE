@@ -1,17 +1,21 @@
 import { LocalDataTrack, Room } from "twilio-video";
 import { TimeZones } from "../../models/general";
 import { DataTrackMessage, DisconnectRoomState } from "../types";
-import { TranscriptionModel } from "../../models";
+import { TranscriptionModel, BreakroomModel } from "../../models";
 import { ExhibitFile } from "../../types/ExhibitFile";
 import { EXHIBIT_TAB } from "../../constants/exhibits";
 
 export enum ACTION_TYPE {
     SEND_MESSAGE = "SEND_MESSAGE",
     IN_DEPO_JOIN_TO_ROOM = "IN_DEPO_JOIN_TO_ROOM",
+    IN_DEPO_JOIN_TO_BREAKROOM = "IN_DEPO_JOIN_TO_BREAKROOM",
     IN_DEPO_DISCONNECT = "IN_DEPO_DISCONNECT",
     IN_DEPO_ADD_PARTICIPANT = "IN_DEPO_ADD_PARTICIPANT",
     IN_DEPO_REMOVE_PARTICIPANT = "IN_DEPO_REMOVE_PARTICIPANT",
+    IN_DEPO_ADD_PARTICIPANT_BREAKROOM = "IN_DEPO_ADD_PARTICIPANT_BREAKROOM",
+    IN_DEPO_REMOVE_PARTICIPANT_BREAKROOM = "IN_DEPO_REMOVE_PARTICIPANT_BREAKROOM",
     IN_DEPO_ADD_DATA_TRACK = "IN_DEPO_ADD_DATA_TRACK",
+    IN_DEPO_ADD_BREAKROOM_DATA_TRACK = "IN_DEPO_ADD_BREAKROOM_DATA_TRACK",
     IN_DEPO_ADD_TRANSCRIPTION = "IN_DEPO_ADD_TRANSCRIPTION",
     IN_DEPO_START_SHARE_EXHIBIT = "IN_DEPO_START_SHARE_EXHIBIT",
     IN_DEPO_STOP_SHARE_EXHIBIT = "IN_DEPO_STOP_SHARE_EXHIBIT",
@@ -22,6 +26,7 @@ export enum ACTION_TYPE {
     SET_TIMEZONE = "IN_DEPO_SET_TIMEZONE",
     IN_DEPO_SET_PERMISSIONS = "IN_DEPO_SET_PERMISSIONS",
     SET_TRANSCRIPTIONS = "IN_DEPO_SET_TRANSCRIPTIONS",
+    SET_BREAKROOMS = "IN_DEPO_SET_BREAKROOMS",
     SET_IS_RECORDING = "IN_DEPO_SET_IS_RECORDING",
     CHANGE_EXHIBIT_TAB = "CHANGE_EXHIBIT_TAB",
 }
@@ -32,6 +37,10 @@ const actions = {
         payload: dataTrack,
     }),
 
+    addBreakroomDataTrack: (dataTrack: LocalDataTrack) => ({
+        type: ACTION_TYPE.IN_DEPO_ADD_BREAKROOM_DATA_TRACK,
+        payload: dataTrack,
+    }),
     addTranscription: ({ text, userEmail, userName, transcriptDateTime }: TranscriptionModel.Transcription) => ({
         type: ACTION_TYPE.IN_DEPO_ADD_TRANSCRIPTION,
         payload: {
@@ -41,9 +50,12 @@ const actions = {
             transcriptDateTime,
         },
     }),
-
     joinToRoom: (payload: Room) => ({
         type: ACTION_TYPE.IN_DEPO_JOIN_TO_ROOM,
+        payload,
+    }),
+    joinToBreakroom: (payload: Room) => ({
+        type: ACTION_TYPE.IN_DEPO_JOIN_TO_BREAKROOM,
         payload,
     }),
     sendMessage: (payload: DataTrackMessage) => ({
@@ -62,6 +74,14 @@ const actions = {
         type: ACTION_TYPE.IN_DEPO_ADD_PARTICIPANT,
         payload,
     }),
+    addRemoteParticipantBreakroom: (payload: Room) => ({
+        type: ACTION_TYPE.IN_DEPO_ADD_PARTICIPANT_BREAKROOM,
+        payload,
+    }),
+    addWitness: (payload: string) => ({
+        type: ACTION_TYPE.ADD_WITNESS,
+        payload,
+    }),
     setTimeZone: (payload: TimeZones) => ({
         type: ACTION_TYPE.SET_TIMEZONE,
         payload,
@@ -72,6 +92,10 @@ const actions = {
     }),
     setTranscriptions: (payload: TranscriptionModel.Transcription[]) => ({
         type: ACTION_TYPE.SET_TRANSCRIPTIONS,
+        payload,
+    }),
+    setBreakrooms: (payload: BreakroomModel.Breakroom[]) => ({
+        type: ACTION_TYPE.SET_BREAKROOMS,
         payload,
     }),
     removeRemoteParticipant: (payload: Room) => ({
@@ -100,6 +124,10 @@ const actions = {
     }),
     setExhibitAnnotations: (payload) => ({
         type: ACTION_TYPE.IN_DEPO_SET_EXHIBIT_ANNOTATIONS,
+        payload,
+    }),
+    removeRemoteParticipantBreakroom: (payload: Room) => ({
+        type: ACTION_TYPE.IN_DEPO_REMOVE_PARTICIPANT_BREAKROOM,
         payload,
     }),
 };

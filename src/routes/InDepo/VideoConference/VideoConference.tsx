@@ -22,10 +22,11 @@ interface IVideoConferenceProps {
     attendees: Room["participants"];
     layoutSize: LayoutSize;
     timeZone: TimeZones;
+    isBreakroom?: boolean;
     localParticipant: LocalParticipant;
 }
 
-const VideoConference = ({ attendees, timeZone, layoutSize, localParticipant }: IVideoConferenceProps) => {
+const VideoConference = ({ isBreakroom, attendees, timeZone, layoutSize, localParticipant }: IVideoConferenceProps) => {
     const [layoutClass, setLayoutClass] = useState<TLayoutClass>(null);
     const [attendeesHeight, setAttendeesHeight] = useState<string>("");
     const [witnessHeight, setWitnessHeight] = useState<string>("");
@@ -84,14 +85,25 @@ const VideoConference = ({ attendees, timeZone, layoutSize, localParticipant }: 
 
     return (
         <StyledVideoConference className={layoutClass} ref={videoConferenceContainer}>
-            <StyledDeponentContainer height={witnessHeight}>
-                <Participant timeZone={timeZone} participant={witness} isWitness />
-            </StyledDeponentContainer>
+            {(!isBreakroom || participants.length > 1) && (
+                <StyledDeponentContainer height={witnessHeight}>
+                    <Participant timeZone={timeZone} participant={isBreakroom ? participants[1] : witness} isWitness />
+                </StyledDeponentContainer>
+            )}
             <StyledAttendeesContainer height={attendeesHeight}>
                 {participants
-                    .filter((participant) => JSON.parse(participant.identity).role !== "Witness")
+                    .filter((participant) =>
+                        isBreakroom
+                            ? participants.length === 1 ||
+                              JSON.parse(participants[1]?.identity)?.email !== JSON.parse(participant.identity).email
+                            : JSON.parse(participant.identity).role !== "Witness"
+                    )
                     .map((participant: RemoteParticipant, i) => (
-                        <StyledParticipantContainer key={participant.sid} ref={i === 0 ? participantContainer : null}>
+                        <StyledParticipantContainer
+                            isUnique={isBreakroom && participants.length === 1}
+                            key={participant.sid}
+                            ref={i === 0 ? participantContainer : null}
+                        >
                             <Participant participant={participant} />
                         </StyledParticipantContainer>
                     ))}

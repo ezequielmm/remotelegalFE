@@ -86,9 +86,26 @@ export class ApiService {
         });
     };
 
+    getDepositionBreakrooms = async (depositionID: string): Promise<DepositionModel.DepositionPermissions> => {
+        return this.request({
+            path: `/api/depositions/${depositionID}/breakrooms`,
+            method: HTTP_METHOD.GET,
+        });
+    };
+
     joinDeposition = async (depositionID: string): Promise<DepositionModel.DepositionPermissions> => {
         return this.request({
             path: `/api/depositions/${depositionID}/join`,
+            method: HTTP_METHOD.POST,
+        });
+    };
+
+    joinBreakroom = async (
+        depositionID: string,
+        breakroomId: string
+    ): Promise<DepositionModel.DepositionPermissions> => {
+        return this.request({
+            path: `/api/depositions/${depositionID}/breakrooms/${breakroomId}/join`,
             method: HTTP_METHOD.POST,
         });
     };

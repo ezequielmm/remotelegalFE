@@ -8,13 +8,16 @@ export const JOIN_DEPOSITION_MOCK = {
     timeZone,
     isOnTheRecord: false,
 };
+export const JOIN_BREAKROOM_MOCK = "1234";
 export const JOIN_DEPOSITION_MOCK_EMPTY_DEPOSITION = {
     ...JOIN_DEPOSITION_MOCK,
     transcriptions: [],
 };
 export const WAITING_FOR_WITNESS = "waiting for witness";
 export const ROUTE = "/deposition/join/:depositionID";
+export const BREAKROOM_ROUTE = "/deposition/join/:depositionID/breakroom/:breakroomID";
 export const TEST_ROUTE = "/deposition/join/test1234";
+export const TEST_BREAKROOM_ROUTE = "/deposition/join/test1234/breakroom/:breakroomID";
 export const OFF_PILL = "off the record";
 export const ON_PILL = "on the record";
 export const END_DEPO_MODAL_FIRST_TEXT = "End deposition for all participants?";

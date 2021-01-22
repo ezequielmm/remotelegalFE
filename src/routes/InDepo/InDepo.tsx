@@ -21,7 +21,7 @@ const InDepo = () => {
     const inDepoTheme = { ...theme, mode: "inDepo" };
     const { state, dispatch } = useContext(GlobalStateContext);
     const [joinDeposition, loading, error] = useJoinDeposition();
-    const { isRecording, message, currentRoom, permissions, timeZone, dataTrack } = state.room;
+    const { breakrooms, isRecording, message, currentRoom, permissions, timeZone, dataTrack } = state.room;
     const { depositionID } = useParams<DepositionID>();
     const [realTimeOpen, togglerRealTime] = useState(false);
     const [exhibitsOpen, togglerExhibits] = useState(false);
@@ -96,6 +96,10 @@ const InDepo = () => {
                 </StyledInDepoLayout>
                 <StyledRoomFooter>
                     <ControlsBar
+                        breakrooms={breakrooms}
+                        handleJoinBreakroom={(breakroomId) => {
+                            history.push(`/deposition/join/${depositionID}/breakroom/${breakroomId}`);
+                        }}
                         isRecording={isRecording}
                         canEnd={permissions.includes("EndDeposition")}
                         canRecord={permissions.includes("Recording")}

@@ -1,5 +1,5 @@
-import { useContext, useEffect, useRef } from "react";
-import { connect, createLocalTracks, LocalDataTrack } from "twilio-video";
+import { useContext, useEffect, useRef, useState } from "react";
+import { connect, createLocalTracks, LocalDataTrack, Room } from "twilio-video";
 import { useParams } from "react-router";
 import { GlobalStateContext } from "../../state/GlobalState";
 import configParticipantListeners from "../../helpers/configParticipantListeners";
@@ -10,6 +10,7 @@ import useDepositionPermissions from "./useDepositionPermissions";
 import { DepositionID } from "../../state/types";
 import useGetTranscriptions from "./useGetTranscriptions";
 import { useExhibitFileInfo } from "../exhibits/hooks";
+import useGetBreakrooms from "./useGetBreakrooms";
 
 export const useKillDepo = () => {
     const { deps } = useContext(GlobalStateContext);
@@ -20,7 +21,7 @@ export const useKillDepo = () => {
     }, [depositionID]);
 };
 
-const useGenerateToken = () => {
+const useGenerateDepositionToken = () => {
     const { deps } = useContext(GlobalStateContext);
     const { depositionID } = useParams<DepositionID>();
     return useAsyncCallback(async () => {
@@ -29,24 +30,87 @@ const useGenerateToken = () => {
     }, []);
 };
 
-export const useJoinDeposition = () => {
+const useGenerateBreakroomToken = () => {
+    const { deps } = useContext(GlobalStateContext);
+    const { depositionID, breakroomID } = useParams<{ depositionID: string; breakroomID: string }>();
+    return useAsyncCallback(() => deps.apiService.joinBreakroom(depositionID, breakroomID), []);
+};
+
+export const useJoinBreakroom = () => {
+    const [breakroom, setBreakroom] = useState<Room>(undefined);
     const { dispatch } = useContext(GlobalStateContext);
-    const [generateToken] = useGenerateToken();
-    const [fetchExhibitFileInfo] = useExhibitFileInfo();
+    const [generateBreakroomToken] = useGenerateBreakroomToken();
+    const [getBreakrooms] = useGetBreakrooms();
     const isMounted = useRef(true);
+
+    useEffect(() => {
+        return () => {
+            if (breakroom) return disconnectFromDepo(breakroom, dispatch);
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [breakroom]);
 
     useEffect(() => {
         return () => {
             isMounted.current = false;
         };
     }, []);
+
+    return useAsyncCallback(async (breakroomID: string) => {
+        const dataTrack = new LocalDataTrack({ maxPacketLifeTime: null, maxRetransmits: null });
+        const token: any = await generateBreakroomToken();
+        const room = await createLocalTracks({ audio: true, video: { aspectRatio: 1.777777777777778 } }).then(
+            (localTracks) => {
+                return connect(token, { name: breakroomID, tracks: [...localTracks, dataTrack] });
+            }
+        );
+        setBreakroom(room);
+
+        const breakrooms = await getBreakrooms();
+        dispatch(actions.setBreakrooms(breakrooms || []));
+
+        if (!isMounted.current) {
+            return disconnectFromDepo(room, dispatch);
+        }
+        dispatch(actions.joinToBreakroom(room));
+        dispatch(actions.addBreakroomDataTrack(dataTrack));
+        return configParticipantListeners(
+            room,
+            (callbackRoom) => dispatch(actions.addRemoteParticipantBreakroom(callbackRoom)),
+            (callbackRoom) => dispatch(actions.removeRemoteParticipantBreakroom(callbackRoom))
+        );
+    }, []);
+};
+
+export const useJoinDeposition = () => {
+    const [depoRoom, setDepoRoom] = useState<Room>(undefined);
+    const { dispatch } = useContext(GlobalStateContext);
+    const [generateToken] = useGenerateDepositionToken();
+    const [fetchExhibitFileInfo] = useExhibitFileInfo();
+    const isMounted = useRef(true);
+
+    useEffect(() => {
+        return () => {
+            if (depoRoom) return disconnectFromDepo(depoRoom, dispatch);
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [depoRoom]);
+
+    useEffect(() => {
+        return () => {
+            isMounted.current = false;
+        };
+    }, []);
+
     const [getDepositionPermissions] = useDepositionPermissions();
     const [getTranscriptions] = useGetTranscriptions();
+    const [getBreakrooms] = useGetBreakrooms();
 
     return useAsyncCallback(async (depositionID: string) => {
         const dataTrack = new LocalDataTrack({ maxPacketLifeTime: null, maxRetransmits: null });
         const { permissions } = await getDepositionPermissions();
         const transcriptions = await getTranscriptions();
+        const breakrooms = await getBreakrooms();
         const { isOnTheRecord, timeZone, token, isSharing }: any = await generateToken();
         if (isSharing) {
             fetchExhibitFileInfo(depositionID);
@@ -56,6 +120,7 @@ export const useJoinDeposition = () => {
                 return connect(token, { name: depositionID, tracks: [...localTracks, dataTrack] });
             }
         );
+        setDepoRoom(room);
 
         if (!isMounted.current) {
             return disconnectFromDepo(room, dispatch);
@@ -64,8 +129,13 @@ export const useJoinDeposition = () => {
         dispatch(actions.setIsRecoding(isOnTheRecord));
         dispatch(actions.setPermissions(permissions));
         dispatch(actions.setTranscriptions(transcriptions || []));
+        dispatch(actions.setBreakrooms(breakrooms || []));
         dispatch(actions.setTimeZone(timeZone));
         dispatch(actions.addDataTrack(dataTrack));
-        return configParticipantListeners(room, dispatch);
+        return configParticipantListeners(
+            room,
+            (callbackRoom) => dispatch(actions.addRemoteParticipant(callbackRoom)),
+            (callbackRoom) => dispatch(actions.removeRemoteParticipant(callbackRoom))
+        );
     }, []);
 };

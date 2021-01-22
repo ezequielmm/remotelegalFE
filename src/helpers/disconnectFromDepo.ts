@@ -10,8 +10,12 @@ const disconnectFromDepo = async (
     const initialState = {
         info: null,
         currentRoom: null,
+        currentBreakroom: null,
         error: "",
+        transcriptions: null,
         dataTrack: null,
+        breakroomDataTrack: null,
+        timeZone: null,
         message: { module: "", value: "" },
     };
     const doesRoomExistAndIsParticipantConnected = room?.localParticipant?.state === "connected";

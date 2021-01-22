@@ -2,7 +2,7 @@ import { Reducer } from "react";
 import moment from "moment-timezone";
 import { LocalDataTrack, Room } from "twilio-video";
 import { TimeZones } from "../../models/general";
-import { TranscriptionModel } from "../../models";
+import { BreakroomModel, TranscriptionModel } from "../../models";
 import { IAction, DataTrackMessage } from "../types";
 import { ACTION_TYPE } from "./InDepoActions";
 import { ExhibitFile } from "../../types/ExhibitFile";
@@ -11,12 +11,16 @@ import { DEFAULT_ACTIVE_TAB, EXHIBIT_TAB } from "../../constants/exhibits";
 export interface IRoom {
     info?: object;
     currentRoom?: Room;
+    currentBreakroom?: Room;
     error?: string;
     message?: DataTrackMessage;
     dataTrack?: LocalDataTrack | null;
+    breakroomDataTrack?: LocalDataTrack | null;
+    witness?: string;
     timeZone?: TimeZones;
     isRecording?: boolean;
     transcriptions?: TranscriptionModel.Transcription[];
+    breakrooms?: BreakroomModel.Breakroom[];
     permissions?: string[];
     currentExhibit?: ExhibitFile;
     isCurrentExhibitOwner?: boolean;
@@ -29,8 +33,10 @@ export interface IRoom {
 export const RoomReducerInitialState: IRoom = {
     info: null,
     currentRoom: null,
+    currentBreakroom: null,
     error: "",
     dataTrack: null,
+    breakroomDataTrack: null,
     message: { module: "", value: "" },
     isRecording: null,
     timeZone: null,
@@ -49,6 +55,11 @@ const RoomReducer: Reducer<IRoom, IAction> = (state: IRoom, action: IAction): IR
             return {
                 ...state,
                 dataTrack: action.payload,
+            };
+        case ACTION_TYPE.IN_DEPO_ADD_BREAKROOM_DATA_TRACK:
+            return {
+                ...state,
+                breakroomDataTrack: action.payload,
             };
         case ACTION_TYPE.IN_DEPO_ADD_TRANSCRIPTION: {
             const newTranscription = action.payload;
@@ -82,10 +93,25 @@ const RoomReducer: Reducer<IRoom, IAction> = (state: IRoom, action: IAction): IR
                 ...state,
                 transcriptions: action.payload,
             };
+        case ACTION_TYPE.SET_BREAKROOMS:
+            return {
+                ...state,
+                breakrooms: action.payload,
+            };
+        case ACTION_TYPE.ADD_WITNESS:
+            return {
+                ...state,
+                witness: action.payload,
+            };
         case ACTION_TYPE.IN_DEPO_JOIN_TO_ROOM:
             return {
                 ...state,
                 currentRoom: action.payload,
+            };
+        case ACTION_TYPE.IN_DEPO_JOIN_TO_BREAKROOM:
+            return {
+                ...state,
+                currentBreakroom: action.payload,
             };
         case ACTION_TYPE.SEND_MESSAGE:
             return {
@@ -103,6 +129,16 @@ const RoomReducer: Reducer<IRoom, IAction> = (state: IRoom, action: IAction): IR
             return {
                 ...state,
                 currentRoom: action.payload,
+            };
+        case ACTION_TYPE.IN_DEPO_ADD_PARTICIPANT_BREAKROOM:
+            return {
+                ...state,
+                currentBreakroom: action.payload,
+            };
+        case ACTION_TYPE.IN_DEPO_REMOVE_PARTICIPANT_BREAKROOM:
+            return {
+                ...state,
+                currentBreakroom: action.payload,
             };
         case ACTION_TYPE.SET_TIMEZONE:
             return {

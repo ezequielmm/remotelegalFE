@@ -16,11 +16,9 @@ jest.mock("audio-recorder-polyfill", () => {
     }));
 });
 
-Object.defineProperty(global.navigator, "mediaDevices", {
-    get: () => ({
-        getUserMedia: jest.fn().mockResolvedValue(true),
-    }),
-});
+(global.navigator as any).mediaDevices = {
+    getUserMedia: jest.fn().mockResolvedValue(true),
+};
 const transcription = getTranscription();
 describe("RealTime", () => {
     it("shows no transcriptions when transcriptions are empty", async () => {

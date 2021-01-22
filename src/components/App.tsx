@@ -13,6 +13,7 @@ import Login from "../routes/Login";
 import SignUp from "../routes/SignUp";
 import MyCases from "../routes/MyCases";
 import InDepo from "../routes/InDepo";
+import Breakroom from "../routes/InDepo/Breakroom";
 import Authenticator from "./authenticator/authenticator";
 import RouteWithLayout from "./RouteWithLayout/RouteWithLayout";
 import CreateDeposition from "../routes/CreateDeposition";
@@ -54,6 +55,11 @@ function App() {
                         <RouteWithLayout exact path="/my-cases" component={MyCases} />
                         <RouteWithLayout exact path="/deposition/new" component={CreateDeposition} />
                         <Route exact path="/deposition/join/:depositionID" component={InDepo} />
+                        <Route
+                            exact
+                            path="/deposition/join/:depositionID/breakroom/:breakroomID"
+                            component={Breakroom}
+                        />
                         <RouteWithLayout exact path="/my-depositions" component={MyDepositions} />
                         <RouteWithLayout exact path="/depositions" component={MyDepositions} />
                         <Route exact path="/deposition/end" component={EndDepoScreen} />

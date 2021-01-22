@@ -23,11 +23,9 @@ const customDeps = getMockDeps();
 const history = createMemoryHistory();
 // TODO: Find a better way to mock Twilio (eg, adding it to DI system)
 
-Object.defineProperty(global.navigator, "mediaDevices", {
-    get: () => ({
-        getUserMedia: jest.fn().mockResolvedValue(true),
-    }),
-});
+(global.navigator as any).mediaDevices = {
+    getUserMedia: jest.fn().mockResolvedValue(true),
+};
 
 //TODO: Find a better way to mock Twilio (eg, adding it to DI system)
 jest.mock("twilio-video", () => ({
