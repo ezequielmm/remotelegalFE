@@ -1,8 +1,9 @@
 import { ApiService } from "../../services/ApiService";
-import { HTTP_METHOD, ITokenSet } from "../../models/general";
+import { HTTP_METHOD } from "../../models/general";
 import ENV from "../../constants/env";
 import { wait } from "../../helpers/wait";
 import * as AUTH from "../mocks/Auth";
+import TEMP_TOKEN from "../../constants/ApiService";
 
 describe("ApiService", () => {
     let apiService: ApiService;
@@ -76,6 +77,11 @@ describe("ApiService", () => {
         expect((apiService as any).tokenSet).toBeFalsy();
         await apiService.getTokenSet();
         expect((apiService as any).tokenSet).toEqual(AUTH.TOKEN_SET);
+    });
+    it("should get the token from localStorage and set it into the token set", async () => {
+        localStorage.setItem(TEMP_TOKEN, "test123");
+        await apiService.getTokenSet();
+        expect((apiService as any).tokenSet.accessToken).toEqual("test123");
     });
     describe("retry logic", () => {
         it("should NOT retry if the server responds with a status code that does NOT exist in the range of status codes that need retry", async () => {

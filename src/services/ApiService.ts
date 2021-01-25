@@ -8,6 +8,7 @@
  * We will, however test methods and behaviors such as placing the token in each call, waiting for connection to be regained, etc when they are available.
  */
 import { Auth } from "aws-amplify";
+import TEMP_TOKEN from "../constants/ApiService";
 import ENV from "../constants/env";
 import { wait } from "../helpers/wait";
 import { CaseModel, DepositionModel, UserModel } from "../models";
@@ -33,6 +34,15 @@ export class ApiService {
 
     getTokenSet = async () => {
         const currentTime = Math.round(+new Date() / 1000);
+        const tempToken = localStorage.getItem(TEMP_TOKEN);
+        if (tempToken) {
+            this.tokenSet = {
+                accessToken: tempToken,
+                refreshToken: null,
+                accessTokenExpiryTime: null,
+            };
+            return this.tokenSet.accessToken;
+        }
         if (!this.tokenSet || this.tokenSet.accessTokenExpiryTime < currentTime) {
             const session = await Auth.currentSession();
             this.tokenSet = {
