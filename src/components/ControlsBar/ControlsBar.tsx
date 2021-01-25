@@ -1,10 +1,12 @@
 import React, { ReactElement, useState } from "react";
-import { Menu } from "antd";
 import { LocalAudioTrack, LocalParticipant, LocalVideoTrack } from "twilio-video";
 import useParticipantTracks from "../../hooks/InDepo/useParticipantTracks";
 import useRecording from "../../hooks/InDepo/useRecording";
 import useTracksStatus from "../../hooks/InDepo/useTracksStatus";
 import EndDepoModal from "./components/EndDepoModal";
+import CopyLink from "./components/CopyLink";
+import { theme } from "../../constants/styles/theme";
+
 import {
     StyledContainer,
     StyledLogo,
@@ -30,12 +32,15 @@ import { ReactComponent as SummaryIcon } from "../../assets/in-depo/Summary.svg"
 import { ReactComponent as SupportIcon } from "../../assets/in-depo/Support.svg";
 import Control from "../Control/Control";
 import Dropdown from "../Dropdown";
-import List from "../List";
+import Menu from "../Menu";
+import Button from "../Button";
+import Text from "../Typography/Text";
+import Space from "../Space";
 import Logo from "../Logo";
 import useEndDepo from "../../hooks/InDepo/useEndDepo";
 import useStreamAudio from "../../hooks/useStreamAudio";
-import BreakroomListItem from "../BreakroomListItem";
 import { BreakroomModel } from "../../models";
+import ColorStatus from "../../types/ColorStatus";
 
 interface IControlsBar {
     breakrooms?: BreakroomModel.Breakroom[];
@@ -81,12 +86,12 @@ export default function ControlsBar({
     const toggleExhibits = () => togglerExhibits((prevState) => !prevState);
     const toggleRealTime = () => togglerRealTime((prevState) => !prevState);
 
-    const Panel = <Menu>Panel</Menu>;
-
     React.useEffect(() => {
         toggleMicrophone(isAudioEnabled);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isAudioEnabled]);
+
+    const summaryTheme = { ...theme, mode: "default" };
 
     const composeBreakroomsIcon = (
         <StyledComposedIconContainer>
@@ -183,42 +188,52 @@ export default function ControlsBar({
                         label="Real Time"
                         icon={<Icon icon={RealTimeIcon} style={{ fontSize: "1.625rem" }} />}
                     />
-                    <Dropdown
-                        onVisibleChange={toggleBreakrooms}
-                        overlay={{
-                            component: List,
-                            props: {
-                                renderItem: (item, i) => (
-                                    <BreakroomListItem
-                                        joinBreakroom={handleJoinBreakroom}
-                                        id={item.id}
-                                        name={item.name}
-                                    />
-                                ),
-                                size: "large",
-                                dataSource: breakrooms,
-                            },
-                        }}
-                    >
-                        <Control
-                            data-testid="breakrooms"
-                            isToggled={breakroomsOpen}
-                            type="simple"
-                            label="Breakrooms"
-                            icon={composeBreakroomsIcon}
-                        />
-                    </Dropdown>
+                    {breakrooms && !!breakrooms.length && (
+                        <Dropdown
+                            onVisibleChange={toggleBreakrooms}
+                            overlay={
+                                <Menu>
+                                    {breakrooms.map((item, i) => (
+                                        <>
+                                            <Menu.Item>
+                                                <Space align="center" justify="space-between" size="large" fullWidth>
+                                                    <Text block state={ColorStatus.white}>
+                                                        {item.name}
+                                                    </Text>
+                                                    <Button onClick={() => handleJoinBreakroom(item.id)} type="link">
+                                                        JOIN
+                                                    </Button>
+                                                </Space>
+                                            </Menu.Item>
+                                            {breakrooms.length > i + 1 && <Menu.Divider />}
+                                        </>
+                                    ))}
+                                </Menu>
+                            }
+                            arrow
+                            styled
+                            placement="topCenter"
+                            trigger={["click"]}
+                        >
+                            <Control
+                                data-testid="breakrooms"
+                                isToggled={breakroomsOpen}
+                                type="simple"
+                                label="Breakrooms"
+                                icon={composeBreakroomsIcon}
+                            />
+                        </Dropdown>
+                    )}
                 </StyledPrimaryControls>
                 <StyledSecondaryControls>
                     <Dropdown
-                        overlay={{
-                            component: Menu,
-                            props: {
-                                renderItem: () => Panel,
-                            },
-                        }}
+                        overlay={<CopyLink closePopOver={toggleSummary} />}
                         placement="topRight"
+                        visible={summaryOpen}
                         trigger={["click"]}
+                        arrow
+                        styled
+                        theme={summaryTheme}
                     >
                         <Control
                             isToggled={summaryOpen}

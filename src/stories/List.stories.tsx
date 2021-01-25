@@ -37,7 +37,7 @@ PRList.args = {
 };
 
 export const PRListCard = (args) => (
-    <Card>
+    <Card noPadding>
         <List {...args} />
     </Card>
 );

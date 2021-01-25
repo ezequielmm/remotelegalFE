@@ -36,17 +36,12 @@ export const StyledRecordPill = styled.span<IRecordPillPropsStyles>`
     align-items: center;
     justify-content: center;
     color: ${textColorInverse};
-    font-size: ${getREM(fontSizes[6] * 0.625)};
-    line-height: 1;
-    font-weight: ${getWeightNumber("normal")};
     border-radius: ${getREM(spaces[5])};
-    text-transform: uppercase;
     padding: 0 ${getREM(spaces[3])};
     width: ${getREM(spaces[12] * 3.65)};
     height: ${getREM(spaces[12] * 0.95)};
     box-shadow: 0 0 1px 0 ${hexToRGBA(neutrals[2], 0.5)};
     transition: background-color 400ms ease-in-out;
-    word-break: break-all;
 `;
 
 export const StyledIcon = styled(Icon)<IRecordPillPropsStyles>`
@@ -56,4 +51,13 @@ export const StyledIcon = styled(Icon)<IRecordPillPropsStyles>`
     animation: ${pulse} 3.5s infinite;
     background: transparent;
     box-shadow: 0 0 0 0 ${hexToRGBA(neutrals[6], 0)};
+`;
+
+export const StyledText = styled.span`
+    color: ${textColorInverse};
+    font-size: ${getREM(fontSizes[6] * 0.625)};
+    line-height: 1;
+    font-weight: ${getWeightNumber("normal")};
+    text-transform: uppercase;
+    word-break: break-all;
 `;

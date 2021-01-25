@@ -5,7 +5,7 @@ import styled, { ThemeContext } from "styled-components";
 import Text from "../Typography/Text";
 import ColorStatus from "../../types/ColorStatus";
 
-export interface IListProps extends ListProps<ListItemProps> {}
+export interface IListProps extends ListProps<ListItemProps | any[]> {}
 
 const StyledList = styled(ANTList)<IListProps>`
     ${({ theme }) => {
@@ -15,15 +15,18 @@ const StyledList = styled(ANTList)<IListProps>`
                     color: ${theme.default.whiteColor};
                     .ant-list-item {
                         border-color: ${theme.colors.inDepoNeutrals[0]};
-                        
-                        &:not(:last-child) {
-                            margin-bottom: -1px;
-                        }
                     }
                 `
                 : "";
 
         const styles = `
+            .ant-list-item {
+                border-color: ${theme.colors.neutrals[3]};
+                
+                &:not(:last-child) {
+                    margin-bottom: -1px;
+                }
+            }
             ${inDepoTheme}
         `;
 

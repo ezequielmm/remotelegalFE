@@ -8,7 +8,7 @@ const flexAlignCenter = `
 
 const iconMargins = (theme) => `
     & > * {
-        margin: 0 ${getREM(theme.default.spaces[3] * theme.default.spaces[4])};
+        margin: 0 ${getREM(theme.default.spaces[3] * theme.default.spaces[4])}; // 0.375
 
         &:first-child {
             margin-left: 0;
@@ -52,8 +52,8 @@ export const StyledLogo = styled.div`
 
 export const BreakroomTitle = styled.div`
     border-left: 1px solid ${({ theme }) => theme.colors.inDepoNeutrals[0]};
-    padding-left: ${({ theme }) => getREM(theme.default.spaces[4] * theme.default.spaces[4])};
-    margin-left: ${({ theme }) => getREM(theme.default.spaces[3] * theme.default.spaces[4])};
+    padding-left: ${({ theme }) => getREM(theme.default.spaces[4] * theme.default.spaces[4])}; // 0.375
+    margin-left: ${({ theme }) => getREM(theme.default.spaces[3] * theme.default.spaces[4])}; // 0.375
 `;
 
 export const StyledLeftControls = styled.div`

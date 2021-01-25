@@ -15,7 +15,7 @@ import Title from "../../../../components/Typography/Title";
 import * as CONSTANTS from "../../../../constants/createDeposition";
 import { theme } from "../../../../constants/styles/theme";
 import { DeleteWitnessButton, SectionRow, WitnessTitleContainer } from "../../styles";
-import { ReactComponent as DeleteIcon } from "../../../../assets/general/Delete.svg";
+import { ReactComponent as DeleteIcon } from "../../../../assets/icons/delete.svg";
 import ColorStatus from "../../../../types/ColorStatus";
 
 interface WitnessItemProps {

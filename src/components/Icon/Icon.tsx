@@ -2,6 +2,7 @@ import Icon from "@ant-design/icons";
 import React from "react";
 import { IconComponentProps } from "@ant-design/icons/lib/components/Icon";
 import styled from "styled-components";
+
 interface CustomIconProps
     extends Pick<
         IconComponentProps,

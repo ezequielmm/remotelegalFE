@@ -25,7 +25,7 @@ const history = createMemoryHistory();
     getUserMedia: jest.fn().mockResolvedValue(true),
 };
 
-//TODO: Find a better way to mock Twilio (eg, adding it to DI system)
+// TODO: Find a better way to mock Twilio (eg, adding it to DI system)
 jest.mock("twilio-video", () => ({
     ...jest.requireActual("twilio-video"),
     LocalDataTrack: function dataTrack() {

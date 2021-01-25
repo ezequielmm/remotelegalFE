@@ -5,11 +5,11 @@ import { CardProps } from "antd/lib/card";
 import { getREM, hexToRGBA } from "../../constants/styles/utils";
 
 export interface ICardProps extends CardProps {
-    bordered?: boolean;
+    noPadding?: boolean;
 }
 
-const StyledCard = styled(ANTDCard)`
-    ${({ theme }) => {
+const StyledCard = styled(ANTDCard)<ICardProps>`
+    ${({ theme, noPadding }) => {
         const { neutrals } = theme.colors;
         const { spaces, fontSizes, headerFontFamilies } = theme.default;
 
@@ -22,7 +22,7 @@ const StyledCard = styled(ANTDCard)`
 
         const styles = `
             &.ant-card {
-                padding: ${getREM(spaces[12])};
+                padding: ${noPadding ? 0 : getREM(spaces[12])};
                 box-shadow: 0 ${getREM(spaces[5])} ${getREM(spaces[9])} 0 ${hexToRGBA(neutrals[2], 0.08)}
                 
                 .ant-card-head {
@@ -48,6 +48,6 @@ const StyledCard = styled(ANTDCard)`
     }}
 `;
 
-const Card = ({ bordered, ...props }: ICardProps) => <StyledCard bordered={bordered ? bordered : false} {...props} />;
+const Card = ({ bordered = false, ...props }: ICardProps) => <StyledCard bordered={bordered} {...props} />;
 
 export default Card;

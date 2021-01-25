@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { Dropdown, Menu, Space, Tooltip } from "antd";
+import { Tooltip } from "antd";
 import { TableProps } from "antd/lib/table";
 import { DefaultRecordType } from "rc-table/lib/interface";
 import Column from "antd/lib/table/Column";
@@ -8,6 +8,9 @@ import { getREM } from "../../../../../constants/styles/utils";
 import Button from "../../../../../components/Button";
 import Table from "../../../../../components/Table";
 import Text from "../../../../../components/Typography/Text";
+import Dropdown from "../../../../../components/Dropdown";
+import Menu from "../../../../../components/Menu";
+import Space from "../../../../../components/Space";
 import Icon from "../../../../../components/Icon";
 import FileIcon from "../FileIcon";
 import { ReactComponent as kebebIcon } from "../../../../../assets/icons/kebeb.svg";
@@ -38,21 +41,27 @@ const FileListTable = (props: IFileListTable) => {
         setConfirmModalIsOpen(true);
         setCurrentModalMode(mode);
     };
+
     const menu = (
         <Menu>
             <Menu.Item key="0">
                 <Button type="link" onClick={() => toggleModal("rename")}>
-                    <Space size="middle">
-                        <Icon icon={RenameIcon} style={{ fontSize: "1.4rem" }} />
-                        <span>Rename</span>
+                    <Space size="middle" align="center">
+                        <Icon icon={RenameIcon} style={{ fontSize: "1.25rem", color: "white" }} />
+                        <Text state={ColorStatus.white} size="small">
+                            Rename
+                        </Text>
                     </Space>
                 </Button>
             </Menu.Item>
+            <Menu.Divider />
             <Menu.Item key="1">
                 <Button type="link" onClick={() => toggleModal("delete")}>
-                    <Space size="middle">
-                        <Icon icon={DeleteIcon} style={{ fontSize: "1.4rem" }} />
-                        <span>Delete</span>
+                    <Space size="middle" align="center">
+                        <Icon icon={DeleteIcon} style={{ fontSize: "1.25rem", color: "white" }} />
+                        <Text state={ColorStatus.white} size="small">
+                            Delete
+                        </Text>
                     </Space>
                 </Button>
             </Menu.Item>
@@ -62,7 +71,7 @@ const FileListTable = (props: IFileListTable) => {
         setConfirmModalIsOpen(false);
     };
 
-    const onRenameOkHandler = (value: string) => {
+    const onRenameOkHandler = () => {
         setConfirmModalIsOpen(false);
     };
     const onDeleteOkHandler = () => {};
@@ -124,7 +133,7 @@ const FileListTable = (props: IFileListTable) => {
                     dataIndex="view"
                     key="view"
                     width={getREM(GlobalTheme.default.spaces[8] * 4)}
-                    render={(item, file: any, index) => (
+                    render={(item, file: any) => (
                         <Button
                             type="text"
                             size="small"
@@ -162,8 +171,8 @@ const FileListTable = (props: IFileListTable) => {
                     key="options"
                     className="file-list-options-button"
                     width={getREM(GlobalTheme.default.spaces[6] * 3)}
-                    render={(item) => (
-                        <Dropdown disabled overlay={menu} trigger={["click"]}>
+                    render={() => (
+                        <Dropdown disabled overlay={menu} trigger={["click"]} styled arrow placement="bottomRight">
                             <Icon icon={kebebIcon} style={{ fontSize: "24px" }} />
                         </Dropdown>
                     )}

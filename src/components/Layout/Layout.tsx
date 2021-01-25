@@ -1,10 +1,12 @@
 import React from "react";
 import { Auth } from "aws-amplify";
 import { useHistory, useLocation } from "react-router-dom";
-import { Layout, Menu, Dropdown, Row, Space } from "antd";
+import { Layout, Row, Space } from "antd";
 import Logo from "../Logo";
 import Icon from "../Icon";
 import Button from "../Button";
+import Dropdown from "../Dropdown";
+import Menu from "../Menu";
 import Text from "../Typography/Text";
 import Sider from "./Sider";
 import Content from "./Content";
@@ -50,7 +52,14 @@ const AppLayout = ({ children }: DashboardProps) => {
                         <Space size="large" align="start">
                             <Icon style={{ fontSize: "1.25rem" }} icon={Messages} />
                             <Icon style={{ fontSize: "1.25rem" }} icon={Bell} />
-                            <Dropdown data-testid="user_menu" overlay={menu} trigger={["click"]}>
+                            <Dropdown
+                                data-testid="user_menu"
+                                overlay={menu}
+                                trigger={["click"]}
+                                styled
+                                arrow
+                                placement="bottomRight"
+                            >
                                 <Space align="center" size={12}>
                                     <Text data-testid="user_option" ellipsis={false}>
                                         User Name
