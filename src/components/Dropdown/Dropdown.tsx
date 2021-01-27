@@ -48,6 +48,16 @@ const StyledDropdownOverlay = styledComponent.div`
                           spaces[3]
                       )} 0 ${hexToRGBA(neutrals[2], 0.08)}`
             };
+            .ant-menu-item {
+                padding: ${getREM(theme.default.spaces[2])} ${getREM(theme.default.spaces[6])};
+                line-height: ${getREM(theme.default.spaces[9])};
+                &:first-child {
+                    padding-top: ${getREM(theme.default.spaces[6])};
+                }
+                &:last-child {
+                    padding-bottom: ${getREM(theme.default.spaces[6])};
+                }
+            }
         `;
     }}
 `;

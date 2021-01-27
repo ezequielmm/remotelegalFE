@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Auth } from "aws-amplify";
 import { useHistory, useLocation } from "react-router-dom";
 import { Layout, Row, Space } from "antd";
@@ -15,6 +15,7 @@ import { ReactComponent as Messages } from "../../assets/layout/Messages.svg";
 import { ReactComponent as DropdownArrow } from "../../assets/layout/DropdownArrow.svg";
 import * as CONSTANTS from "../../constants/layout";
 import ColorStatus from "../../types/ColorStatus";
+import { ReactComponent as AddIcon } from "../../assets/general/Add.svg";
 
 const { Header } = Layout;
 
@@ -25,6 +26,8 @@ interface DashboardProps {
 const AppLayout = ({ children }: DashboardProps) => {
     const history = useHistory();
     const { pathname } = useLocation();
+
+    const [collapsed, setCollapsed] = useState<boolean>(false);
 
     const signOut = async () => {
         try {
@@ -42,6 +45,10 @@ const AppLayout = ({ children }: DashboardProps) => {
             <Menu.Item onClick={signOut}>Log Out</Menu.Item>
         </Menu>
     );
+
+    const onCollapse = () => {
+        setCollapsed(!collapsed);
+    };
 
     return (
         <Layout style={{ height: "100vh" }}>
@@ -75,7 +82,7 @@ const AppLayout = ({ children }: DashboardProps) => {
                 </Row>
             </Header>
             <Layout>
-                <Sider width="16%">
+                <Sider collapsible collapsed={collapsed} onCollapse={onCollapse}>
                     <div>
                         <Button
                             data-testid="schedule_deposition"
@@ -84,7 +91,7 @@ const AppLayout = ({ children }: DashboardProps) => {
                             block
                             onClick={() => history.push("/deposition/new")}
                         >
-                            Schedule deposition
+                            {collapsed ? <Icon icon={AddIcon} /> : "Schedule deposition"}
                         </Button>
                         <Menu
                             theme="dark"
@@ -110,7 +117,7 @@ const AppLayout = ({ children }: DashboardProps) => {
                             ))}
                         </Menu>
                     </div>
-                    <div>
+                    <div className="sider__copyright">
                         <Text state={ColorStatus.disabled} size="small" ellipsis={false}>
                             Remote Legal © 2021
                         </Text>

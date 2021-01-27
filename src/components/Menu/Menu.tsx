@@ -21,17 +21,6 @@ const StyledMenu = styled(DefaultMenu)<IDefaultMenuProps>`
             margin-bottom: 0;
         }
 
-        &.ant-menu .ant-menu-item {
-            padding: ${getREM(theme.default.spaces[3])} ${getREM(theme.default.spaces[6])};
-
-            &:first-child {
-                padding-top: ${getREM(theme.default.spaces[6])};
-            }
-            &:last-child {
-                padding-bottom: ${getREM(theme.default.spaces[6])};
-            }
-        }
-
         .ant-menu-item-divider {
             background-color: ${menuTheme === "dark" ? theme.colors.inDepoNeutrals[0] : theme.colors.neutrals[3]};
             margin: ${getREM(theme.default.spaces[3])} 0;
