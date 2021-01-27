@@ -1,6 +1,7 @@
 import { History } from "history";
 import React from "react";
 import Button from "../components/Button";
+import StatusPill from "../components/StatusPill";
 import { MappedDeposition } from "../routes/MyDepositions/MyDepositions";
 
 export interface TableColumn {
@@ -14,8 +15,8 @@ export interface TableColumn {
 export const STATUS_COLUMN = {
     title: "STATUS",
     field: "status",
-    render: (text) => <small>{text}</small>,
-    width: 95,
+    render: (text) => <StatusPill status={text} />,
+    width: 130,
 };
 export const REQUESTER_BY_COLUMN = {
     title: "REQUESTER",
@@ -73,7 +74,7 @@ export const getActionColumns = (history) => ({
         </Button>
     ),
     sorter: false,
-    width: 90,
+    width: 80,
 });
 
 export const getDepositionColumns = (history: History, isAdmin?: boolean) =>

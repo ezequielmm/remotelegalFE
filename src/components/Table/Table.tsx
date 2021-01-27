@@ -179,13 +179,11 @@ const StyledTable = styled(Table)`
                                 color: ${theme.mode === "inDepo" ? neutrals[6] : ""};
                                 border-bottom-color: ${theme.mode === "inDepo" ? disabled[9] : ""};
                                 &:first-child {
-                                    padding-left: ${getREM(spaces[9])};
                                     border-radius: ${
                                         theme.mode === "inDepo" ? `0` : `${getREM(spaces[5])} 0 0 ${getREM(spaces[5])}`
                                     };
                                 }
                                 &:last-child {
-                                    padding-right: ${getREM(spaces[9])};
                                     border-radius: ${
                                         theme.mode === "inDepo" ? `0` : `0 ${getREM(spaces[5])} ${getREM(spaces[5])} 0`
                                     };
