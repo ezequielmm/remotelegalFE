@@ -2,13 +2,9 @@ import React, { useEffect, useState } from "react";
 
 import { Story, Meta } from "@storybook/react/types-6-0";
 
-import { Form, Space } from "antd";
+import { Form } from "antd";
 import styled from "styled-components";
 import Wizard from "../components/Wizard";
-
-import { theme } from "../constants/styles/theme";
-
-import bg from "../assets/in-depo/In-depo-bg.png";
 
 // Join Depo demo imports
 import { InputWrapper } from "../components/Input/styles";
@@ -18,8 +14,6 @@ import isInvalidEMail from "../helpers/isInvalidEmail";
 import useInput from "../hooks/useInput";
 import ColorStatus from "../types/ColorStatus";
 import Text from "../components/Typography/Text";
-
-const inDepoTheme = { ...theme, mode: "inDepo" };
 
 export default {
     title: "Wizard",
@@ -170,9 +164,4 @@ export const PRWizard = Template.bind({});
 PRWizard.args = {
     title: "Join Deposition",
     text: "Please complete the information below to join the deposition",
-    theme: inDepoTheme,
-};
-
-PRWizard.parameters = {
-    backgrounds: { inDepoTheme: "inDepo" },
 };

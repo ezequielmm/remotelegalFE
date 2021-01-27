@@ -41,6 +41,7 @@ import useEndDepo from "../../hooks/InDepo/useEndDepo";
 import useStreamAudio from "../../hooks/useStreamAudio";
 import { BreakroomModel } from "../../models";
 import ColorStatus from "../../types/ColorStatus";
+import { ThemeMode } from "../../types/ThemeType";
 
 interface IControlsBar {
     breakrooms?: BreakroomModel.Breakroom[];
@@ -91,7 +92,7 @@ export default function ControlsBar({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isAudioEnabled]);
 
-    const summaryTheme = { ...theme, mode: "default" };
+    const summaryTheme = { ...theme, mode: ThemeMode.default };
 
     const composeBreakroomsIcon = (
         <StyledComposedIconContainer>

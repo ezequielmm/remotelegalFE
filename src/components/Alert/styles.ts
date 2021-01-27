@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { Alert as ANTDAlert } from "antd";
 import { getREM } from "../../constants/styles/utils";
 import { IAlertProps } from "./Alert";
+import { ThemeMode } from "../../types/ThemeType";
 
 const StyledAlert = styled(ANTDAlert)<IAlertProps>`
     ${({ theme, type, float }) => {
@@ -20,7 +21,7 @@ const StyledAlert = styled(ANTDAlert)<IAlertProps>`
                 `;
             };
 
-            return theme.mode === "inDepo" ? inDepoStyles() : "";
+            return theme.mode === ThemeMode.inDepo ? inDepoStyles() : "";
         };
 
         const floatStyles =

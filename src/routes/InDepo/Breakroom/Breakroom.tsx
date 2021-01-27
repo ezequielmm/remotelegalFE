@@ -10,11 +10,12 @@ import { theme } from "../../../constants/styles/theme";
 import disconnectFromDepo from "../../../helpers/disconnectFromDepo";
 import { useJoinBreakroom } from "../../../hooks/InDepo/depositionLifeTimeHooks";
 import { GlobalStateContext } from "../../../state/GlobalState";
+import { ThemeMode } from "../../../types/ThemeType";
 import { StyledInDepoContainer, StyledInDepoLayout, StyledRoomFooter } from "../styles";
 import VideoConference from "../VideoConference";
 
 const Breakroom = () => {
-    const inDepoTheme = { ...theme, mode: "inDepo" };
+    const inDepoTheme = { ...theme, mode: ThemeMode.inDepo };
     const { state, dispatch } = useContext(GlobalStateContext);
     const [joinBreakroom, loading, error] = useJoinBreakroom();
     const { breakrooms, currentBreakroom, timeZone, breakroomDataTrack } = state.room;

@@ -4,13 +4,14 @@ import { ListProps, ListItemProps } from "antd/lib/list/index";
 import styled, { ThemeContext } from "styled-components";
 import Text from "../Typography/Text";
 import ColorStatus from "../../types/ColorStatus";
+import { ThemeMode } from "../../types/ThemeType";
 
 export interface IListProps extends ListProps<ListItemProps | any[]> {}
 
 const StyledList = styled(ANTList)<IListProps>`
     ${({ theme }) => {
         const inDepoTheme =
-            theme.mode === "inDepo"
+            theme.mode === ThemeMode.inDepo
                 ? `
                     color: ${theme.default.whiteColor};
                     .ant-list-item {
@@ -36,7 +37,7 @@ const StyledList = styled(ANTList)<IListProps>`
 
 const List = (props: IListProps) => {
     const themeContext = useContext(ThemeContext);
-    const textColor = themeContext.mode === "inDepo" ? ColorStatus.white : null;
+    const textColor = themeContext.mode === ThemeMode.inDepo ? ColorStatus.white : null;
     const { renderItem, ...rest } = props;
     const defaultRenderItem = (item, i: number) => (
         <ANTList.Item>{renderItem ? renderItem(item, i) : <Text state={textColor}>{item}</Text>}</ANTList.Item>

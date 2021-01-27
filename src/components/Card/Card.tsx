@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { Card as ANTDCard } from "antd";
 import { CardProps } from "antd/lib/card";
 import { getREM, hexToRGBA } from "../../constants/styles/utils";
+import { ThemeMode } from "../../types/ThemeType";
 
 export interface ICardProps extends CardProps {
     noPadding?: boolean;
@@ -14,7 +15,7 @@ const StyledCard = styled(ANTDCard)<ICardProps>`
         const { spaces, fontSizes, headerFontFamilies } = theme.default;
 
         const inDepoTheme =
-            theme.mode === "inDepo"
+            theme.mode === ThemeMode.inDepo
                 ? `
                     background: ${theme.colors.inDepoNeutrals[4]};
                 `

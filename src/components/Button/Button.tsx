@@ -4,6 +4,7 @@ import { ButtonProps, ButtonType } from "antd/lib/button/button";
 
 import styled from "styled-components";
 import { getREM } from "../../constants/styles/utils";
+import { ThemeMode } from "../../types/ThemeType";
 
 export type ButtonTypeExtended = ButtonType | "secondary";
 
@@ -69,8 +70,8 @@ const StyledButton = styled(buttonDefault)<IButtonProps>`
 
                     &[disabled],
                     &[disabled]:hover {
-                        color: ${theme.mode === "inDepo" ? disabled[9] : primary[2]};
-                        border-color: ${theme.mode === "inDepo" ? disabled[9] : primary[2]};
+                        color: ${theme.mode === ThemeMode.inDepo ? disabled[9] : primary[2]};
+                        border-color: ${theme.mode === ThemeMode.inDepo ? disabled[9] : primary[2]};
                         background-color: transparent;
                     }
                 `

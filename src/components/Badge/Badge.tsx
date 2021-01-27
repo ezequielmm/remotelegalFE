@@ -3,6 +3,7 @@ import { Badge as AntDBadge } from "antd";
 import { BadgeProps } from "antd/lib/badge";
 import styled from "styled-components";
 import { getREM } from "../../constants/styles/utils";
+import { ThemeMode } from "../../types/ThemeType";
 
 export type BadgeSizeExtended = BadgeProps["size"] | "large";
 
@@ -19,7 +20,7 @@ const badgeDefault = ({ size, ...rest }: IBadgeProps) => {
 const StyledBadge = styled(badgeDefault)<IBadgeProps>`
     ${({ theme, size }) => {
         const inDepoTheme =
-            theme.mode === "inDepo"
+            theme.mode === ThemeMode.inDepo
                 ? `
                 background-color: ${theme.colors.inDepoNeutrals[7]}; 
                 color: ${theme.colors.inDepoNeutrals[8]};

@@ -4,6 +4,8 @@ import styled from "styled-components";
 import { TagProps } from "antd/lib/tag";
 import { getREM, getWeightNumber } from "../../constants/styles/utils";
 import ColorStatus from "../../types/ColorStatus";
+import { ThemeMode } from "../../types/ThemeType";
+
 export interface ITagProps extends Omit<TagProps, "color"> {
     pill?: boolean;
     color?: ColorStatus;
@@ -14,7 +16,7 @@ interface StyledTagProps extends Omit<ITagProps, "pill"> {
 const StyledTag = styled(AntTag)<StyledTagProps>`
     ${({ theme, $pill, color }) => {
         const inDepoTheme = !color
-            ? theme.mode === "inDepo"
+            ? theme.mode === ThemeMode.inDepo
                 ? `
                 background-color: ${theme.colors.inDepoNeutrals[9]};
                 `

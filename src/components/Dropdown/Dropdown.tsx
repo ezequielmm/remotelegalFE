@@ -4,7 +4,7 @@ import { Dropdown as ANTDropdown } from "antd";
 import { DropDownProps } from "antd/lib/dropdown/dropdown";
 import PopupContainer from "../PopupContainer";
 import { getREM, hexToRGBA } from "../../constants/styles/utils";
-import { Theme } from "../../types/ThemeType.d";
+import { Theme, ThemeMode } from "../../types/ThemeType";
 
 export interface IDropdownProps extends Omit<DropDownProps, "overlay"> {
     overlay: JSX.Element;
@@ -22,7 +22,7 @@ const StyledPopupContainer = styledComponent(PopupContainer)<{ $styled?: boolean
             $styled &&
             `
                 .ant-dropdown-arrow {
-                    border-color: ${theme.mode === "inDepo" ? secondary[5] : neutrals[6]};
+                    border-color: ${theme.mode === ThemeMode.inDepo ? secondary[5] : neutrals[6]};
                     width: ${spaces[4]};
                     height: ${spaces[4]};
                 }
@@ -37,12 +37,12 @@ const StyledDropdownOverlay = styledComponent.div`
         const { textColor, textColorInverse, spaces } = theme.default;
 
         return `
-            color: ${theme.mode === "inDepo" ? textColorInverse : textColor};
-            background-color: ${theme.mode === "inDepo" ? secondary[5] : neutrals[6]};
+            color: ${theme.mode === ThemeMode.inDepo ? textColorInverse : textColor};
+            background-color: ${theme.mode === ThemeMode.inDepo ? secondary[5] : neutrals[6]};
             border-radius: ${getREM(theme.default.borderRadiusBase)};
             overflow: hidden;
             box-shadow: ${
-                theme.mode === "inDepo"
+                theme.mode === ThemeMode.inDepo
                     ? `0 0 ${getREM(spaces[9])} 0 rgba(0, 0, 0, 0.2), 0 0 ${getREM(spaces[3])} 0 rgba(0, 0, 0, 0.08)`
                     : `0 0 ${getREM(spaces[9])} 0 ${hexToRGBA(neutrals[2], 0.2)}, 0 0 ${getREM(
                           spaces[3]

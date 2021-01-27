@@ -16,9 +16,10 @@ import { theme } from "../../constants/styles/theme";
 import RecordPill from "../../components/RecordPill";
 import { DepositionID } from "../../state/types";
 import actions from "../../state/InDepo/InDepoActions";
+import { ThemeMode } from "../../types/ThemeType";
 
 const InDepo = () => {
-    const inDepoTheme = { ...theme, mode: "inDepo" };
+    const inDepoTheme = { ...theme, mode: ThemeMode.inDepo };
     const { state, dispatch } = useContext(GlobalStateContext);
     const [joinDeposition, loading, error] = useJoinDeposition();
     const { breakrooms, isRecording, message, currentRoom, permissions, timeZone, dataTrack } = state.room;

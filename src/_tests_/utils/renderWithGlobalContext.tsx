@@ -7,6 +7,7 @@ import { theme } from "../../constants/styles/theme";
 import { Deps, IGlobalReducer } from "../../models/general";
 import { GlobalState, rootReducer as globalReducer } from "../../state/GlobalState";
 import getMockDeps from "./getMockDeps";
+import { ThemeMode } from "../../types/ThemeType";
 
 export default (
     children: JSX.Element,
@@ -16,7 +17,7 @@ export default (
 ) => {
     const history = createMemoryHistory();
     const renderAPI = render(
-        <ThemeProvider theme={theme}>
+        <ThemeProvider theme={{ ...theme, mode: ThemeMode[theme.mode] }}>
             <Router history={customHistory || history}>
                 <GlobalState deps={deps} rootReducer={rootReducer}>
                     {children}

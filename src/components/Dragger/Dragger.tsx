@@ -1,12 +1,13 @@
 import Dragger from "antd/lib/upload/Dragger";
 import styled from "styled-components";
+import { ThemeMode } from "../../types/ThemeType";
 
 const StyledDragger = styled(Dragger)`
     ${({ theme }) => {
         const { textColorInverse } = theme.default;
         const { primary } = theme.colors;
         const inDepoTheme =
-            theme.mode === "inDepo"
+            theme.mode === ThemeMode.inDepo
                 ? `
                 &.ant-upload.ant-upload-drag {
                   background: none;

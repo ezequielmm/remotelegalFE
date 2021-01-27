@@ -8,6 +8,7 @@ import Button from "../components/Button";
 
 import Table from "../components/Table";
 import { theme } from "../constants/styles/theme";
+import { ThemeMode } from "../types/ThemeType";
 
 const menu = (
     <Menu>
@@ -300,5 +301,5 @@ ExhibitsTable.args = {
     sortDirections: ["descend", "ascend"],
 };
 ExhibitsTable.parameters = {
-    backgrounds: { default: "inDepo" },
+    backgrounds: { default: ThemeMode.default },
 };

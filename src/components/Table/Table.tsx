@@ -4,6 +4,7 @@ import { DefaultRecordType } from "rc-table/lib/interface";
 import { TableProps } from "antd/lib/table/Table";
 import styled from "styled-components";
 import { getREM, hexToRGBA, getWeightNumber } from "../../constants/styles/utils";
+import { ThemeMode } from "../../types/ThemeType";
 
 interface ITableProps extends TableProps<DefaultRecordType> {
     ref?: React.MutableRefObject<any>;
@@ -17,7 +18,7 @@ const StyledTable = styled(Table)`
         const styles = `
             &.ant-table-wrapper {
                 ${
-                    theme.mode === "inDepo"
+                    theme.mode === ThemeMode.inDepo
                         ? `
                     .ant-spin-container {
                         background: ${hexToRGBA(inDepoNeutrals[6], 1)};
@@ -76,16 +77,16 @@ const StyledTable = styled(Table)`
                         tbody.ant-table-tbody {
                             > tr {
                                 > td.ant-table-cell:first-child {
-                                    border-radius: ${theme.mode === "inDepo" ? "" : `${getREM(spaces[5])}`};
-                                    box-shadow: ${theme.mode === "inDepo" ? "none" : ""};
+                                    border-radius: ${theme.mode === ThemeMode.inDepo ? "" : `${getREM(spaces[5])}`};
+                                    box-shadow: ${theme.mode === ThemeMode.inDepo ? "none" : ""};
                                     padding: ${getREM(spaces[9])} ${getREM(spaces[4])};
                                     &:hover {
-                                        ${theme.mode === "inDepo" ? `background: transparent;` : ""}
+                                        ${theme.mode === ThemeMode.inDepo ? `background: transparent;` : ""}
                                     }
                                 }
                             }
                             ${
-                                theme.mode === "inDepo"
+                                theme.mode === ThemeMode.inDepo
                                     ? `
                             .ant-empty-image {
                                 .ant-empty-img-simple-ellipse {
@@ -109,7 +110,7 @@ const StyledTable = styled(Table)`
                 }
                 table {
                     border-radius: 0;
-                    border-spacing: ${theme.mode === "inDepo" ? "" : `0 ${getREM(spaces[3])};`};
+                    border-spacing: ${theme.mode === ThemeMode.inDepo ? "" : `0 ${getREM(spaces[3])};`};
 
                     .ant-table-thead > tr > th:not(.ant-table-column-has-sorters), 
                     .ant-table tfoot > tr > th:not(.ant-table-column-has-sorters) {
@@ -124,7 +125,7 @@ const StyledTable = styled(Table)`
                                 font-size: ${getREM(fontSizes[8])};
                                 text-transform: uppercase;
                                 font-weight: ${getWeightNumber("bold")};
-                                border-bottom-color: ${theme.mode === "inDepo" ? disabled[9] : neutrals[3]};
+                                border-bottom-color: ${theme.mode === ThemeMode.inDepo ? disabled[9] : neutrals[3]};
                                 &:first-child {
                                     .ant-table-column-sorters {
                                         padding-left: ${getREM(spaces[9])};
@@ -138,10 +139,10 @@ const StyledTable = styled(Table)`
                                 .ant-table-column-sorters {
                                     padding: 10px 0 10px ${getREM(spaces[4])};
                                     .active {
-                                        color: ${theme.mode === "inDepo" ? inDepoBlue[4] : ""};
+                                        color: ${theme.mode === ThemeMode.inDepo ? inDepoBlue[4] : ""};
                                     }
                                     .ant-table-column-sorter {
-                                        color: ${theme.mode === "inDepo" ? neutrals[2] : neutrals[1]};
+                                        color: ${theme.mode === ThemeMode.inDepo ? neutrals[2] : neutrals[1]};
                                         margin-top: -0.4em;
                                         .ant-table-column-sorter-up,
                                         .ant-table-column-sorter-down {
@@ -155,9 +156,9 @@ const StyledTable = styled(Table)`
 
                     tbody.ant-table-tbody {
                         > tr {
-                            background-color: ${theme.mode === "inDepo" ? `transparent` : neutrals[6]};
+                            background-color: ${theme.mode === ThemeMode.inDepo ? `transparent` : neutrals[6]};
                             ${
-                                theme.mode === "inDepo"
+                                theme.mode === ThemeMode.inDepo
                                     ? `
                                 &.ant-table-row:hover > td {
                                     background: ${hexToRGBA(neutrals[1], 0.05)};
@@ -168,7 +169,7 @@ const StyledTable = styled(Table)`
 
                             > td.ant-table-cell {
                                 box-shadow: ${
-                                    theme.mode === "inDepo"
+                                    theme.mode === ThemeMode.inDepo
                                         ? `none`
                                         : `0 ${getREM(spaces[5])} ${getREM(spaces[9])} 0 ${hexToRGBA(
                                               neutrals[2],
@@ -176,16 +177,20 @@ const StyledTable = styled(Table)`
                                           )}`
                                 };
                                 padding: ${getREM(spaces[4])};
-                                color: ${theme.mode === "inDepo" ? neutrals[6] : ""};
-                                border-bottom-color: ${theme.mode === "inDepo" ? disabled[9] : ""};
+                                color: ${theme.mode === ThemeMode.inDepo ? neutrals[6] : ""};
+                                border-bottom-color: ${theme.mode === ThemeMode.inDepo ? disabled[9] : ""};
                                 &:first-child {
                                     border-radius: ${
-                                        theme.mode === "inDepo" ? `0` : `${getREM(spaces[5])} 0 0 ${getREM(spaces[5])}`
+                                        theme.mode === ThemeMode.inDepo
+                                            ? `0`
+                                            : `${getREM(spaces[5])} 0 0 ${getREM(spaces[5])}`
                                     };
                                 }
                                 &:last-child {
                                     border-radius: ${
-                                        theme.mode === "inDepo" ? `0` : `0 ${getREM(spaces[5])} ${getREM(spaces[5])} 0`
+                                        theme.mode === ThemeMode.inDepo
+                                            ? `0`
+                                            : `0 ${getREM(spaces[5])} ${getREM(spaces[5])} 0`
                                     };
                                 }
 
@@ -213,7 +218,7 @@ const StyledTable = styled(Table)`
                                 }
                             }
                             ${
-                                theme.mode === "inDepo"
+                                theme.mode === ThemeMode.inDepo
                                     ? `> td.ant-table-column-sort {
                                 background: ${hexToRGBA(neutrals[1], 0.05)};
                             }`

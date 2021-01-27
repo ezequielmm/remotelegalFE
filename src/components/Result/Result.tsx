@@ -7,6 +7,7 @@ import { ReactComponent as EmptyFolderIcon } from "../../assets/icons/empty-fold
 import { ReactComponent as SuccessCreateIcon } from "../../assets/icons/success-create.svg";
 import { ReactComponent as ErrorFetchIcon } from "../../assets/icons/error-fetch.svg";
 import { getREM } from "../../constants/styles/utils";
+import { ThemeMode } from "../../types/ThemeType";
 
 export enum CustomStatus {
     empty = "empty",
@@ -56,7 +57,7 @@ const resultDefault = ({ icon, status, ...rest }: IResultProps) => {
 const StyledResult = styled(resultDefault)<IResultProps>`
     ${({ theme, titleColor, subTitleColor }) => {
         const inDepoTheme =
-            theme.mode === "inDepo"
+            theme.mode === ThemeMode.inDepo
                 ? `
             color: ${theme.default.primaryColor};
         `

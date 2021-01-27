@@ -4,6 +4,7 @@ import { MenuProps } from "antd/lib/menu";
 import { MenuTheme } from "antd/lib/menu/MenuContext";
 import styled, { useTheme } from "styled-components";
 import { getREM } from "../../constants/styles/utils";
+import { ThemeMode } from "../../types/ThemeType";
 
 export interface IDefaultMenuProps extends Omit<MenuProps, "theme"> {
     menuTheme: MenuTheme;
@@ -41,7 +42,7 @@ const StyledMenu = styled(DefaultMenu)<IDefaultMenuProps>`
 const Menu = (props: IMenuProps) => {
     const { children, theme, ...rest } = props;
     const currentTheme = useTheme();
-    const defaultTheme: MenuTheme = theme || (currentTheme.mode === "default" ? "light" : "dark");
+    const defaultTheme: MenuTheme = theme || (currentTheme.mode === ThemeMode.default ? "light" : "dark");
 
     return (
         <StyledMenu menuTheme={defaultTheme} {...rest}>

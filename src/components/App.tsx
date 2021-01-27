@@ -20,6 +20,7 @@ import CreateDeposition from "../routes/CreateDeposition";
 import MyDepositions from "../routes/MyDepositions";
 import EndDepoScreen from "../routes/InDepo/components/EndDepoScreen";
 import ROUTES_WITH_GUEST_TOKEN from "../constants/authenticator";
+import { ThemeMode } from "../types/ThemeType";
 
 function App() {
     const tagManagerId = {
@@ -45,7 +46,7 @@ function App() {
     });
 
     return (
-        <ThemeProvider theme={theme}>
+        <ThemeProvider theme={{ ...theme, mode: ThemeMode[theme.mode] }}>
             <Router history={history}>
                 <Switch>
                     <Route exact path="/" component={Login} />
