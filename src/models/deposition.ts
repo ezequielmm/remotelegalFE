@@ -8,7 +8,17 @@ export enum DepositionStatus {
     canceled = "Canceled",
 }
 
-export type DepositionPermissions = ["Recording"?, "EndDeposition"?];
+export enum DepositionPermissionsTypes {
+    recording = "Recording",
+    endDeposition = "EndDeposition",
+    stampExhibit = "StampExhibit",
+}
+
+export type DepositionPermissions = [
+    DepositionPermissionsTypes.recording?,
+    DepositionPermissionsTypes.endDeposition?,
+    DepositionPermissionsTypes.stampExhibit?
+];
 
 export interface IDepositionPermissions {
     permissions: DepositionPermissions;
