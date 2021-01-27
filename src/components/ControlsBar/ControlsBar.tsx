@@ -41,6 +41,18 @@ import useEndDepo from "../../hooks/InDepo/useEndDepo";
 import useStreamAudio from "../../hooks/useStreamAudio";
 import { BreakroomModel } from "../../models";
 import ColorStatus from "../../types/ColorStatus";
+import useJoinDepositionLink from "../../hooks/InDepo/useJoinDepositionLink";
+import {
+    CONTROLS_BAR_OFF_THE_RECORD_LABEL,
+    CONTROLS_BAR_ON_THE_RECORD_LABEL,
+    CONTROLS_BAR_END_LABEL,
+    CONTROLS_BAR_EXHIBITS_LABEL,
+    CONTROLS_BAR_REAL_TIME_LABEL,
+    CONTROLS_BAR_BREAKROOMS_LABEL,
+    CONTROLS_BAR_SUMMARY_LABEL,
+    CONTROLS_BAR_SUPPORT_LABEL,
+    CONTROLS_BAR_JOIN_BUTTON,
+} from "../../constants/inDepo";
 import { ThemeMode } from "../../types/ThemeType";
 
 interface IControlsBar {
@@ -80,6 +92,7 @@ export default function ControlsBar({
     const [modal, setModal] = useState(false);
     const { setEndDepo } = useEndDepo();
     const toggleMicrophone = useStreamAudio();
+    const joinDepositionLink = useJoinDepositionLink();
 
     const toggleBreakrooms = () => togglerBreakrooms((prevState) => !prevState);
     const toggleSummary = () => togglerSummary((prevState) => !prevState);
@@ -147,7 +160,7 @@ export default function ControlsBar({
                         isToggled={isRecording}
                         onClick={startPauseRecording}
                         type="rounded"
-                        label={isRecording ? "Go off the record" : "Go on the record"}
+                        label={isRecording ? CONTROLS_BAR_OFF_THE_RECORD_LABEL : CONTROLS_BAR_ON_THE_RECORD_LABEL}
                         icon={
                             isRecording ? (
                                 <Icon icon={PauseIcon} style={{ fontSize: "1.625rem" }} />
@@ -166,7 +179,7 @@ export default function ControlsBar({
                         }}
                         type="rounded"
                         color="red"
-                        label="End Deposition"
+                        label={CONTROLS_BAR_END_LABEL}
                         icon={<Icon icon={EndCallIcon} style={{ fontSize: "1.625rem" }} />}
                     />
                 )}
@@ -178,7 +191,7 @@ export default function ControlsBar({
                         isToggled={exhibitsOpen}
                         onClick={toggleExhibits}
                         type="simple"
-                        label="Exhibits"
+                        label={CONTROLS_BAR_EXHIBITS_LABEL}
                         icon={<Icon icon={ExhibitsIcon} style={{ fontSize: "1.625rem" }} />}
                     />
                     <Control
@@ -186,7 +199,7 @@ export default function ControlsBar({
                         isToggled={realTimeOpen}
                         onClick={toggleRealTime}
                         type="simple"
-                        label="Real Time"
+                        label={CONTROLS_BAR_REAL_TIME_LABEL}
                         icon={<Icon icon={RealTimeIcon} style={{ fontSize: "1.625rem" }} />}
                     />
                     {breakrooms && !!breakrooms.length && (
@@ -202,7 +215,7 @@ export default function ControlsBar({
                                                         {item.name}
                                                     </Text>
                                                     <Button onClick={() => handleJoinBreakroom(item.id)} type="link">
-                                                        JOIN
+                                                        {CONTROLS_BAR_JOIN_BUTTON}
                                                     </Button>
                                                 </Space>
                                             </Menu.Item>
@@ -220,7 +233,7 @@ export default function ControlsBar({
                                 data-testid="breakrooms"
                                 isToggled={breakroomsOpen}
                                 type="simple"
-                                label="Breakrooms"
+                                label={CONTROLS_BAR_BREAKROOMS_LABEL}
                                 icon={composeBreakroomsIcon}
                             />
                         </Dropdown>
@@ -228,7 +241,7 @@ export default function ControlsBar({
                 </StyledPrimaryControls>
                 <StyledSecondaryControls>
                     <Dropdown
-                        overlay={<CopyLink closePopOver={toggleSummary} />}
+                        overlay={<CopyLink closePopOver={toggleSummary} link={joinDepositionLink} />}
                         placement="topRight"
                         visible={summaryOpen}
                         trigger={["click"]}
@@ -240,7 +253,7 @@ export default function ControlsBar({
                             isToggled={summaryOpen}
                             onClick={toggleSummary}
                             type="simple"
-                            label="Summary"
+                            label={CONTROLS_BAR_SUMMARY_LABEL}
                             icon={<Icon icon={SummaryIcon} style={{ fontSize: "1.625rem" }} />}
                         />
                     </Dropdown>
@@ -248,7 +261,7 @@ export default function ControlsBar({
                         isToggled={supportOpen}
                         onClick={toggleSupport}
                         type="simple"
-                        label="Support"
+                        label={CONTROLS_BAR_SUPPORT_LABEL}
                         icon={<Icon icon={SupportIcon} style={{ fontSize: "1.625rem" }} />}
                     />
                 </StyledSecondaryControls>

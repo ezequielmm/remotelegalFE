@@ -8,6 +8,9 @@ const spacing = {
         default: baseUnit * 38,
         small: baseUnit * 25,
     },
+    menuWith: {
+        default: 23.5,
+    },
 };
 
 module.exports = { spacing };

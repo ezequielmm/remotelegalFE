@@ -61,6 +61,7 @@ const theme = {
         fontWeights: fonts.fontWeights,
         breakpoints,
         modalWidth: spacing.modalWidth,
+        menuWith: spacing.menuWith,
     },
     mode: "default",
 };
