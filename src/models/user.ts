@@ -11,3 +11,16 @@ export interface IUser {
     creationDate?: DateLike;
     isAdmin?: boolean;
 }
+
+export type UserInfo = {
+    isUser: boolean;
+    participant: {
+        id: string;
+        creationDate: string;
+        name: string;
+        email: string;
+        phone: string;
+        role: string;
+        user: boolean;
+    } | null;
+};

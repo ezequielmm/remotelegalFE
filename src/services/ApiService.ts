@@ -8,11 +8,11 @@
  * We will, however test methods and behaviors such as placing the token in each call, waiting for connection to be regained, etc when they are available.
  */
 import { Auth } from "aws-amplify";
-import TEMP_TOKEN from "../constants/ApiService";
 import ENV from "../constants/env";
 import { wait } from "../helpers/wait";
 import { CaseModel, DepositionModel, UserModel } from "../models";
 import { HTTP_METHOD, ITokenSet } from "../models/general";
+import TEMP_TOKEN from "../constants/ApiService";
 
 interface RequestParams {
     path: string;
@@ -151,6 +151,23 @@ export class ApiService {
     verifyUser = async (payload): Promise<boolean> => {
         return this.request<boolean>({
             path: "/api/Users/verifyUser",
+            payload,
+            withToken: false,
+            method: HTTP_METHOD.POST,
+        });
+    };
+
+    checkUserDepoStatus = async (depositionID: string, email: string): Promise<UserModel.UserInfo> => {
+        return this.request({
+            path: `/api/Depositions/${depositionID}/checkParticipant?emailAddress=${email}`,
+            withToken: false,
+            method: HTTP_METHOD.GET,
+        });
+    };
+
+    registerDepoParticipant = async (depositionID: string, payload) => {
+        return this.request({
+            path: `/api/Depositions/${depositionID}/addParticipant`,
             payload,
             withToken: false,
             method: HTTP_METHOD.POST,

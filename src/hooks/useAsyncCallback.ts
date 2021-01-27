@@ -25,7 +25,7 @@ const useAsyncCallback = <E = any, T = any, F = (...args: any[]) => Promise<void
     const runAsync: unknown = useCallback(
         async (...args: any[]) => {
             try {
-                setState((s) => ({ ...s, isLoading: true }));
+                setState((s) => ({ ...s, isLoading: true, error: undefined }));
                 const r = await fn(...args);
                 if (isMounted.current) setState((s) => ({ ...s, error: undefined, response: r, isLoading: false }));
                 return r;

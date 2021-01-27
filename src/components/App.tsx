@@ -21,6 +21,7 @@ import MyDepositions from "../routes/MyDepositions";
 import EndDepoScreen from "../routes/InDepo/components/EndDepoScreen";
 import ROUTES_WITH_GUEST_TOKEN from "../constants/authenticator";
 import { ThemeMode } from "../types/ThemeType";
+import PreJoinDepo from "../routes/PreJoinDepo";
 
 function App() {
     const tagManagerId = {
@@ -52,19 +53,20 @@ function App() {
                     <Route exact path="/" component={Login} />
                     <Route path="/verifyUser" component={Login} />
                     <Route exact path="/sign-up" component={SignUp} />
+                    <Route exact path="/deposition/pre-join/:depositionID" component={PreJoinDepo} />
                     <Authenticator routesWithGuestToken={ROUTES_WITH_GUEST_TOKEN}>
                         <RouteWithLayout exact path="/dashboard" component={Dashboard} />
                         <RouteWithLayout exact path="/my-cases" component={MyCases} />
                         <RouteWithLayout exact path="/deposition/new" component={CreateDeposition} />
-                        <Route exact path="/deposition/join/:depositionID" component={InDepo} />
+                        <RouteWithLayout exact path="/my-depositions" component={MyDepositions} />
+                        <RouteWithLayout exact path="/depositions" component={MyDepositions} />
                         <Route
                             exact
                             path="/deposition/join/:depositionID/breakroom/:breakroomID"
                             component={Breakroom}
                         />
-                        <RouteWithLayout exact path="/my-depositions" component={MyDepositions} />
-                        <RouteWithLayout exact path="/depositions" component={MyDepositions} />
                         <Route exact path="/deposition/end" component={EndDepoScreen} />
+                        <Route exact path="/deposition/join/:depositionID" component={InDepo} />
                     </Authenticator>
                 </Switch>
             </Router>

@@ -37,7 +37,7 @@ const WizardActions = ({ children }: IWizardActionsProps) => {
 };
 
 const Wizard = ({ children, step = 0, totalSteps, title, text }: IWizard) => {
-    const stepText = `STEP ${step + 1} OF ${totalSteps}`;
+    const stepText = `STEP ${step} OF ${totalSteps}`;
 
     return (
         <Modal onlyBody destroyOnClose closable={false} visible centered mask={false}>

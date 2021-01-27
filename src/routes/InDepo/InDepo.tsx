@@ -17,6 +17,7 @@ import RecordPill from "../../components/RecordPill";
 import { DepositionID } from "../../state/types";
 import actions from "../../state/InDepo/InDepoActions";
 import { ThemeMode } from "../../types/ThemeType";
+import TEMP_TOKEN from "../../constants/ApiService";
 
 const InDepo = () => {
     const inDepoTheme = { ...theme, mode: ThemeMode.inDepo };
@@ -33,6 +34,7 @@ const InDepo = () => {
     useEffect(() => {
         const cleanUpFunction = () => {
             disconnectFromDepo(currentRoom, dispatch);
+            localStorage.removeItem(TEMP_TOKEN);
         };
         window.addEventListener("beforeunload", cleanUpFunction);
 
@@ -41,6 +43,12 @@ const InDepo = () => {
             window.removeEventListener("beforeunload", cleanUpFunction);
         };
     }, [currentRoom, dispatch]);
+
+    useEffect(() => {
+        return () => {
+            localStorage.removeItem(TEMP_TOKEN);
+        };
+    }, []);
 
     useEffect(() => {
         if (depositionID) {
