@@ -2,7 +2,13 @@ import React from "react";
 import { act } from "react-dom/test-utils";
 import RealTime from "../../routes/InDepo/RealTime";
 import { rootReducer } from "../../state/GlobalState";
-import { getTranscription, timeZone, transcriptionTimeESTFormatted } from "../mocks/transcription";
+import {
+    getTranscription,
+    getTranscriptionsWithPause,
+    getTranscriptionsWithPaused,
+    timeZone,
+    transcriptionTimeESTFormatted,
+} from "../mocks/transcription";
 import getMockDeps from "../utils/getMockDeps";
 import renderWithGlobalContext from "../utils/renderWithGlobalContext";
 
@@ -48,16 +54,29 @@ describe("RealTime", () => {
         act(() => expect(queryByTestId("transcription_text")).toBeTruthy());
         act(() => expect(queryByTestId("transcription_title")).toBeTruthy());
     });
-    test("shows well formatted date on transcription title", async () => {
+
+    test("shows transcriptions with pause message", async () => {
         const { queryByTestId } = renderWithGlobalContext(<RealTime visible timeZone={timeZone} />, getMockDeps(), {
             ...rootReducer,
             initialState: {
                 room: {
                     ...rootReducer.initialState.room,
-                    transcriptions: [transcription],
+                    transcriptions: getTranscriptionsWithPause(),
                 },
             },
         });
-        expect(queryByTestId("transcription_title").textContent.includes(transcriptionTimeESTFormatted)).toBeTruthy();
+        act(() => expect(queryByTestId("transcription_paused")).toBeTruthy());
+    });
+    test("shows transcriptions with paused message", async () => {
+        const { queryByTestId } = renderWithGlobalContext(<RealTime visible timeZone={timeZone} />, getMockDeps(), {
+            ...rootReducer,
+            initialState: {
+                room: {
+                    ...rootReducer.initialState.room,
+                    transcriptions: getTranscriptionsWithPaused(),
+                },
+            },
+        });
+        act(() => expect(queryByTestId("transcription_currently_paused")).toBeTruthy());
     });
 });

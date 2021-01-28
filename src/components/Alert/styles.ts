@@ -14,7 +14,7 @@ const StyledAlert = styled(ANTDAlert)<IAlertProps>`
                     background: ${typeColor};
                     border-color: ${typeColor};
                     color: ${theme.default.whiteColor};
-
+                    width: '100%';
                     .anticon, .ant-alert-message, .ant-alert-description, span {
                         color: ${theme.default.whiteColor};
                     }

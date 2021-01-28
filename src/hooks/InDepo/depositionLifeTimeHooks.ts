@@ -9,6 +9,7 @@ import disconnectFromDepo from "../../helpers/disconnectFromDepo";
 import useDepositionPermissions from "./useDepositionPermissions";
 import { DepositionID } from "../../state/types";
 import useGetTranscriptions from "./useGetTranscriptions";
+import useGetEvents from "./useGetEvents";
 import { useExhibitFileInfo } from "../exhibits/hooks";
 import useGetBreakrooms from "./useGetBreakrooms";
 
@@ -105,12 +106,14 @@ export const useJoinDeposition = () => {
     const [getDepositionPermissions] = useDepositionPermissions();
     const [getTranscriptions] = useGetTranscriptions();
     const [getBreakrooms] = useGetBreakrooms();
+    const [getDepositionEvents] = useGetEvents();
 
     return useAsyncCallback(async (depositionID: string) => {
         const dataTrack = new LocalDataTrack({ maxPacketLifeTime: null, maxRetransmits: null });
         const { permissions } = await getDepositionPermissions();
         const transcriptions = await getTranscriptions();
         const breakrooms = await getBreakrooms();
+        const events = await getDepositionEvents(depositionID);
         const { isOnTheRecord, timeZone, token, isSharing }: any = await generateToken();
         if (isSharing) {
             fetchExhibitFileInfo(depositionID);
@@ -126,10 +129,10 @@ export const useJoinDeposition = () => {
             return disconnectFromDepo(room, dispatch);
         }
         dispatch(actions.joinToRoom(room));
-        dispatch(actions.setIsRecoding(isOnTheRecord));
+        dispatch(actions.setIsRecording(isOnTheRecord));
         dispatch(actions.setPermissions(permissions));
-        dispatch(actions.setTranscriptions(transcriptions || []));
         dispatch(actions.setBreakrooms(breakrooms || []));
+        dispatch(actions.setTranscriptions({ transcriptions: transcriptions || [], events: events || [] }));
         dispatch(actions.setTimeZone(timeZone));
         dispatch(actions.addDataTrack(dataTrack));
         return configParticipantListeners(

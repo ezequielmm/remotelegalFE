@@ -6,3 +6,7 @@ export interface Transcription {
     userName?: string;
     transcriptDateTime?: DateLike;
 }
+export interface TranscriptionPause {
+    from: DateLike;
+    to: DateLike;
+}

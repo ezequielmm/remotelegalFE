@@ -18,6 +18,7 @@ import { DepositionID } from "../../state/types";
 import actions from "../../state/InDepo/InDepoActions";
 import { ThemeMode } from "../../types/ThemeType";
 import TEMP_TOKEN from "../../constants/ApiService";
+import { EventModel } from "../../models";
 
 const InDepo = () => {
     const inDepoTheme = { ...theme, mode: ThemeMode.inDepo };
@@ -67,7 +68,8 @@ const InDepo = () => {
             disconnectFromDepo(currentRoom, dispatch, history);
         }
         if (message.module === "recordDepo") {
-            dispatch(actions.setIsRecoding(message.value));
+            dispatch(actions.setIsRecording(message.value.eventType === EventModel.EventType.onTheRecord));
+            dispatch(actions.addTranscription(message.value));
         }
         if (message.module === "addTranscription") {
             dispatch(actions.addTranscription(message.value));

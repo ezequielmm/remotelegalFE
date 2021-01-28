@@ -1,6 +1,15 @@
+import moment from "moment-timezone";
+
 export const FETCH_ERROR_RESULT_TITLE = "Sorry! We couldn't connect to the deposition.";
 export const FETCH_ERROR_RESULT_BODY = "Something went wrong, please refresh the page to try again.";
 export const FETCH_ERROR_RESULT_BUTTON = "Refresh Page";
+
+export const TRANSCRIPTIONS_PAUSED =
+    "Transcription paused - Once the deposition is on the record, transcript will resume.";
+export const getPauseText = (from, to, timeZone) =>
+    `Transcript paused from ${moment(from).tz(timeZone).format("hh:mm:ss A")} to ${
+        to && moment(to).tz(timeZone).format("hh:mm:ss A")
+    }`;
 
 export const CLOCK_SECOND = 1000;
 

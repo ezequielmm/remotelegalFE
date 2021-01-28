@@ -1,5 +1,4 @@
 import { Reducer } from "react";
-import moment from "moment-timezone";
 import { LocalDataTrack, Room } from "twilio-video";
 import { TimeZones } from "../../models/general";
 import { BreakroomModel, TranscriptionModel } from "../../models";
@@ -7,6 +6,7 @@ import { IAction, DataTrackMessage } from "../types";
 import { ACTION_TYPE } from "./InDepoActions";
 import { ExhibitFile } from "../../types/ExhibitFile";
 import { DEFAULT_ACTIVE_TAB, EXHIBIT_TAB } from "../../constants/exhibits";
+import { addTranscriptionMessages, setTranscriptionMessages } from "../../helpers/formatTranscriptionsMessages";
 
 export interface IRoom {
     info?: object;
@@ -19,8 +19,8 @@ export interface IRoom {
     witness?: string;
     timeZone?: TimeZones;
     isRecording?: boolean;
-    transcriptions?: TranscriptionModel.Transcription[];
     breakrooms?: BreakroomModel.Breakroom[];
+    transcriptions?: (TranscriptionModel.Transcription & TranscriptionModel.TranscriptionPause)[];
     permissions?: string[];
     currentExhibit?: ExhibitFile;
     isCurrentExhibitOwner?: boolean;
@@ -62,25 +62,9 @@ const RoomReducer: Reducer<IRoom, IAction> = (state: IRoom, action: IAction): IR
                 breakroomDataTrack: action.payload,
             };
         case ACTION_TYPE.IN_DEPO_ADD_TRANSCRIPTION: {
-            const newTranscription = action.payload;
-            if (newTranscription.text === "") return state;
-            const laterTranscriptionIndex = state.transcriptions.findIndex((transcription) => {
-                return moment(newTranscription.transcriptDateTime).isBefore(
-                    moment(transcription.transcriptDateTime),
-                    "second"
-                );
-            });
-            const transcriptions =
-                laterTranscriptionIndex === -1
-                    ? [...state.transcriptions, newTranscription]
-                    : [
-                          ...state.transcriptions.slice(0, laterTranscriptionIndex),
-                          newTranscription,
-                          ...state.transcriptions.slice(laterTranscriptionIndex),
-                      ];
             return {
                 ...state,
-                transcriptions,
+                transcriptions: addTranscriptionMessages(action.payload, state.transcriptions),
             };
         }
         case ACTION_TYPE.IN_DEPO_SET_PERMISSIONS:
@@ -91,7 +75,7 @@ const RoomReducer: Reducer<IRoom, IAction> = (state: IRoom, action: IAction): IR
         case ACTION_TYPE.SET_TRANSCRIPTIONS:
             return {
                 ...state,
-                transcriptions: action.payload,
+                transcriptions: setTranscriptionMessages(action.payload.transcriptions, action.payload.events),
             };
         case ACTION_TYPE.SET_BREAKROOMS:
             return {

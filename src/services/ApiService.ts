@@ -10,7 +10,7 @@
 import { Auth } from "aws-amplify";
 import ENV from "../constants/env";
 import { wait } from "../helpers/wait";
-import { CaseModel, DepositionModel, UserModel } from "../models";
+import { EventModel, CaseModel, DepositionModel, UserModel } from "../models";
 import { HTTP_METHOD, ITokenSet } from "../models/general";
 import TEMP_TOKEN from "../constants/ApiService";
 
@@ -99,6 +99,13 @@ export class ApiService {
     getDepositionBreakrooms = async (depositionID: string): Promise<DepositionModel.DepositionPermissions> => {
         return this.request({
             path: `/api/depositions/${depositionID}/breakrooms`,
+            method: HTTP_METHOD.GET,
+        });
+    };
+
+    getDepositionEvents = async (depositionID: string) => {
+        return this.request<EventModel.IEvent>({
+            path: `/api/depositions/${depositionID}/events`,
             method: HTTP_METHOD.GET,
         });
     };

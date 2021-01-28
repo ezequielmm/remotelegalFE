@@ -25,14 +25,14 @@ const useWebSocket = (url: string, onMessage: (evt: MessageEvent) => void, withA
     );
 
     const [sendMessage] = useAsyncCallback(
-        async ({ audio, extraUrl }: { audio: ArrayBuffer | string; extraUrl: string }) => {
+        async ({ message, extraUrl }: { message: ArrayBuffer | string; extraUrl: string }) => {
             if (ws === null || ws.readyState === ws.CLOSED || ws.readyState === ws.CLOSED) {
                 const newWs: WebSocket = await connectWebSocket(extraUrl || "");
-                newWs.onopen = () => newWs.send(audio);
+                newWs.onopen = () => newWs.send(message);
                 setWs(newWs);
                 return;
             }
-            ws.send(audio);
+            ws.send(message);
         },
         [connectWebSocket, ws]
     );

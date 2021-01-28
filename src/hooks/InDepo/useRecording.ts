@@ -26,8 +26,9 @@ const useRecording = (recording: boolean) => {
 
     useEffect(() => {
         if (res) {
-            dispatch(actions.setIsRecoding(recording));
-            dataTrack.send(JSON.stringify({ module: "recordDepo", value: recording }));
+            dispatch(actions.setIsRecording(recording));
+            dispatch(actions.addTranscription(res));
+            dataTrack.send(JSON.stringify({ module: "recordDepo", value: res }));
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dataTrack, record, res]);

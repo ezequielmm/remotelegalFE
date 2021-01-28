@@ -1,10 +1,9 @@
-import { getTranscription, timeZone } from "../mocks/transcription";
+import { timeZone } from "../mocks/transcription";
 
 export const END_DEPO_DATATRACK_MESSAGE = JSON.stringify({ module: "endDepo", value: "" });
 export const JOIN_DEPOSITION_MOCK = {
     token: "1234",
     witnessEmail: "test@test.com",
-    transcriptions: [getTranscription()],
     timeZone,
     isOnTheRecord: false,
 };

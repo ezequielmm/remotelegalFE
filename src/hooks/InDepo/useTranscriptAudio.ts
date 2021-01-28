@@ -17,7 +17,7 @@ const useTranscriptAudio = () => {
             if (!text) return;
             const parsedTranscription = {
                 text,
-                userEmail: currentRoom?.localParticipant?.identity,
+                userName: JSON.parse(currentRoom?.localParticipant?.identity)?.name,
                 time: date,
             };
             dataTrack.send(
@@ -35,12 +35,22 @@ const useTranscriptAudio = () => {
 
     const [transcriptAudio] = useAsyncCallback(
         async (audio: ArrayBuffer | string, sampleRate: number) => {
-            sendMessage({ audio, extraUrl: `depositionId=${depositionID}&sampleRate=${sampleRate}` });
+            sendMessage({ message: audio, extraUrl: `depositionId=${depositionID}&sampleRate=${sampleRate}` });
         },
         [sendMessage]
     );
 
-    return transcriptAudio;
+    const [stopAudio] = useAsyncCallback(
+        async (sampleRate: number) => {
+            sendMessage({
+                message: JSON.stringify({ offRecord: true }),
+                extraUrl: `depositionId=${depositionID}&sampleRate=${sampleRate}`,
+            });
+        },
+        [sendMessage]
+    );
+
+    return [stopAudio, transcriptAudio];
 };
 
 export default useTranscriptAudio;

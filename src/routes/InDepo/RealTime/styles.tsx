@@ -1,3 +1,4 @@
+import { Space } from "antd";
 import styled from "styled-components";
 import { getREM, getPX, hexToRGBA } from "../../../constants/styles/utils";
 
@@ -47,4 +48,8 @@ export const RoughDraftContainer = styled.div`
     padding: ${({ theme }) => `${getREM(theme.default.spaces[2] / 2)} ${getREM(theme.default.spaces[2])}`};
     margin: ${({ theme }) => `${getREM(theme.default.spaces[8])} auto ${getREM(theme.default.spaces[5])}`};
     border-radius: ${({ theme }) => getPX(theme.default.borderRadiusBase, theme.default.baseUnit)};
+`;
+
+export const TranscriptionsContainer = styled(Space)`
+    width: 100%;
 `;

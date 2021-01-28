@@ -101,9 +101,9 @@ export default function ControlsBar({
     const toggleRealTime = () => togglerRealTime((prevState) => !prevState);
 
     React.useEffect(() => {
-        toggleMicrophone(isAudioEnabled);
+        toggleMicrophone(isRecording && isAudioEnabled);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isAudioEnabled]);
+    }, [isRecording, isAudioEnabled]);
 
     const summaryTheme = { ...theme, mode: ThemeMode.default };
 

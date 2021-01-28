@@ -4,13 +4,17 @@ import useTranscriptAudio from "./InDepo/useTranscriptAudio";
 
 export default () => {
     const [recorder, setRecorder] = useState(null);
-    const transcriptAudio = useTranscriptAudio();
+    const [sampleRate, setSampleRate] = useState<number>(undefined);
+    const [stopAudio, transcriptAudio] = useTranscriptAudio();
 
     const stopMicrophone = useCallback(() => {
         if (recorder) {
             recorder.stop();
+            if (sampleRate) {
+                setTimeout(() => stopAudio(sampleRate), 500);
+            }
         }
-    }, [recorder]);
+    }, [stopAudio, sampleRate, recorder]);
 
     useEffect(() => {
         return () => {
@@ -29,8 +33,9 @@ export default () => {
                 fileReader.onload = (event) => {
                     const buffer: ArrayBuffer =
                         typeof event.target.result !== "string" ? event.target.result : new ArrayBuffer(0);
-                    const sampleRate = new Int32Array(buffer.slice(24, 28))[0];
-                    transcriptAudio(buffer, sampleRate);
+                    const newSampleRate = new Int32Array(buffer.slice(24, 28))[0];
+                    if (newSampleRate !== sampleRate) setSampleRate(newSampleRate);
+                    transcriptAudio(buffer, newSampleRate);
                 };
                 fileReader.readAsArrayBuffer(e.data);
             };
@@ -41,7 +46,7 @@ export default () => {
                 recorder.removeEventListener("dataavailable", dataAvailableHandler);
             }
         };
-    }, [recorder, transcriptAudio]);
+    }, [sampleRate, recorder, transcriptAudio]);
 
     const getMicrophone = useCallback(async () => {
         if (recorder) recorder.start(1000);

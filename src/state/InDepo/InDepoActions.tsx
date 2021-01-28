@@ -1,7 +1,7 @@
 import { LocalDataTrack, Room } from "twilio-video";
 import { TimeZones } from "../../models/general";
 import { DataTrackMessage, DisconnectRoomState } from "../types";
-import { TranscriptionModel, BreakroomModel } from "../../models";
+import { EventModel, TranscriptionModel, BreakroomModel } from "../../models";
 import { ExhibitFile } from "../../types/ExhibitFile";
 import { EXHIBIT_TAB } from "../../constants/exhibits";
 
@@ -41,14 +41,9 @@ const actions = {
         type: ACTION_TYPE.IN_DEPO_ADD_BREAKROOM_DATA_TRACK,
         payload: dataTrack,
     }),
-    addTranscription: ({ text, userEmail, userName, transcriptDateTime }: TranscriptionModel.Transcription) => ({
+    addTranscription: (transcription: TranscriptionModel.Transcription | EventModel.IEvent) => ({
         type: ACTION_TYPE.IN_DEPO_ADD_TRANSCRIPTION,
-        payload: {
-            text,
-            userEmail,
-            userName,
-            transcriptDateTime,
-        },
+        payload: transcription,
     }),
     joinToRoom: (payload: Room) => ({
         type: ACTION_TYPE.IN_DEPO_JOIN_TO_ROOM,
@@ -86,11 +81,14 @@ const actions = {
         type: ACTION_TYPE.SET_TIMEZONE,
         payload,
     }),
-    setIsRecoding: (payload: boolean) => ({
+    setIsRecording: (payload: boolean) => ({
         type: ACTION_TYPE.SET_IS_RECORDING,
         payload,
     }),
-    setTranscriptions: (payload: TranscriptionModel.Transcription[]) => ({
+    setTranscriptions: (payload: {
+        transcriptions: TranscriptionModel.Transcription[];
+        events: EventModel.IEvent[];
+    }) => ({
         type: ACTION_TYPE.SET_TRANSCRIPTIONS,
         payload,
     }),

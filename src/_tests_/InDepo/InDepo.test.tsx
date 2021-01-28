@@ -5,6 +5,7 @@ import { act } from "react-dom/test-utils";
 import { Route } from "react-router-dom";
 import * as MODULE_CONSTANTS from "../../constants/inDepo";
 import InDepo from "../../routes/InDepo";
+import * as TRANSCRIPTIONS_MOCKS from "../mocks/transcription";
 import * as TESTS_CONSTANTS from "../constants/InDepo";
 import getMockDeps from "../utils/getMockDeps";
 import renderWithGlobalContext from "../utils/renderWithGlobalContext";
@@ -299,9 +300,37 @@ describe("InDepo -> RealTime", () => {
         act(() => expect(queryByTestId("transcription_text")).toBeTruthy());
         act(() => expect(queryByTestId("transcription_title")).toBeTruthy());
     });
+    it("shows transcriptions with pause", async () => {
+        const { getByTestId, queryByTestId } = renderWithGlobalContext(
+            <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,
+            customDeps,
+            undefined,
+            history
+        );
+        history.push(TESTS_CONSTANTS.TEST_ROUTE);
+        await waitForDomChange();
+        fireEvent.click(await waitForElement(() => getByTestId("realtime")));
+        act(() => expect(queryByTestId("transcription_paused")).toBeTruthy());
+    });
+    it("shows transcriptions with paused", async () => {
+        customDeps.apiService.getDepositionEvents = jest
+            .fn()
+            .mockResolvedValue([TRANSCRIPTIONS_MOCKS.getEvent(17, false)]);
+        const { getByTestId, queryByTestId } = renderWithGlobalContext(
+            <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,
+            customDeps,
+            undefined,
+            history
+        );
+        history.push(TESTS_CONSTANTS.TEST_ROUTE);
+        await waitForDomChange();
+        fireEvent.click(await waitForElement(() => getByTestId("realtime")));
+        act(() => expect(queryByTestId("transcription_currently_paused")).toBeTruthy());
+    });
 
     it("shows no transcriptions when when joinDeposition returns a transcriptions empty", async () => {
         customDeps.apiService.getDepositionTranscriptions = jest.fn().mockResolvedValue([]);
+        customDeps.apiService.getDepositionEvents = jest.fn().mockResolvedValue([]);
         const { getByTestId, queryByTestId } = renderWithGlobalContext(
             <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,
             customDeps,
