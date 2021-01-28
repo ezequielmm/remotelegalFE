@@ -59,5 +59,5 @@ export const StyledText = styled.span`
     line-height: 1;
     font-weight: ${getWeightNumber("normal")};
     text-transform: uppercase;
-    word-break: break-all;
+    white-space: nowrap;
 `;
