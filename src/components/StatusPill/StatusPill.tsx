@@ -12,7 +12,7 @@ export interface IStatusPillProps {
 }
 
 const StyledPill = styled.span`
-    display: flex;
+    display: inline-flex;
     align-items: center;
     line-height: ${getREM(theme.default.spaces[9] + theme.default.spaces[1])};
     padding: 0 ${getREM(theme.default.spaces[3])};

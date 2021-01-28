@@ -16,7 +16,7 @@ export const STATUS_COLUMN = {
     title: "STATUS",
     field: "status",
     render: (text) => <StatusPill status={text} />,
-    width: 130,
+    width: 120,
 };
 export const REQUESTER_BY_COLUMN = {
     title: "REQUESTER",
