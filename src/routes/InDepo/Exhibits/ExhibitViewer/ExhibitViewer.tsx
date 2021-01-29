@@ -9,7 +9,11 @@ import { StyledExhibitViewerContainer } from "./styles";
 import ExhibitViewerHeader from "./ExhibitViewerHeader";
 import { ReactComponent as MyExhibitsIcon } from "../../../../assets/icons/EnteredExhibits-empty.svg";
 import { theme } from "../../../../constants/styles/theme";
-import { EXHIBIT_FILE_ERROR_TITLE, EXHIBIT_FILE_ERROR_SUBTITLE } from "../../../../constants/exhibits";
+import {
+    EXHIBIT_FILE_ERROR_TITLE,
+    EXHIBIT_FILE_ERROR_SUBTITLE,
+    LIVE_EXHIBIT_TAB,
+} from "../../../../constants/exhibits";
 import { ExhibitFile } from "../../../../types/ExhibitFile";
 import { GlobalStateContext } from "../../../../state/GlobalState";
 import { AnnotationPayload, PdfTronViewerProps } from "../../../../components/PDFTronViewer/PDFTronViewer";
@@ -35,7 +39,7 @@ export const ExhibitViewer = ({
     onAnnotationChange,
 }: Props): ReactElement => {
     const { state } = useContext(GlobalStateContext);
-    const { permissions } = state.room;
+    const { exhibitTab, permissions } = state.room;
     const { pending, error, documentUrl } = useSignedUrl(file?.id, file?.preSignedUrl);
 
     return (
@@ -50,7 +54,10 @@ export const ExhibitViewer = ({
             {pending && <Spinner />}
             {documentUrl && (
                 <PDFTronViewer
-                    canStamp={permissions.includes(DepositionModel.DepositionPermissionsTypes.stampExhibit)}
+                    canStamp={
+                        exhibitTab === LIVE_EXHIBIT_TAB &&
+                        permissions.includes(DepositionModel.DepositionPermissionsTypes.stampExhibit)
+                    }
                     document={documentUrl}
                     filename={file?.displayName}
                     annotations={annotations}
