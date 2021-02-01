@@ -30,6 +30,7 @@ const PDFTronViewer = ({ document, filename, canStamp, annotations, onAnnotation
     const [isDocumentLoaded, setIsDocumentLoaded] = useState(false);
     const [PDFTron, setPDFTron] = useState<WebViewerInstance>(null);
     const stampRef = useRef(null);
+    const shouldToastAppear = useRef(true);
 
     useEffect(() => {
         if (!canStamp && PDFTron) {
@@ -40,15 +41,18 @@ const PDFTronViewer = ({ document, filename, canStamp, annotations, onAnnotation
                 header.get("customFullScreenButton").insertAfter({
                     ...CONSTANTS.OPEN_STAMP_MODAL_BUTTON,
                     onClick() {
-                        if (stampRef.current) {
+                        if (stampRef.current && shouldToastAppear.current) {
+                            shouldToastAppear.current = false;
                             return Message({
                                 content: "Please delete the existing stamp and try again",
                                 type: "error",
                                 duration: 3,
                             });
                         }
-
-                        return setStampModal(true);
+                        if (!stampRef.current) {
+                            shouldToastAppear.current = true;
+                            return setStampModal(true);
+                        }
                     },
                 });
             });
