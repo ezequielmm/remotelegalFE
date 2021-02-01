@@ -34,10 +34,10 @@ export const StyledRealTimeContainer = styled.div`
 
 export const RealTimeHeader = styled.div`
     text-align: center;
-    padding: ${({ theme }) => `${getREM(theme.default.spaces[3] * 4)} 0`};
+    padding: ${({ theme }) => `${getREM(theme.default.spaces[6] * 6)} 0`};
 `;
 
-export const RoughDraftContainer = styled.div`
+export const RoughDraftPill = styled.div`
     width: fit-content;
     color: ${({ theme }) => theme.default.whiteColor};
     text-align: center;
@@ -45,8 +45,8 @@ export const RoughDraftContainer = styled.div`
     font-family: ${({ theme }) => theme.default.codeFontFamily};
     text-transform: uppercase;
     background-color: ${({ theme }) => hexToRGBA(theme.colors.inDepoBlue[6], 0.5)};
-    padding: ${({ theme }) => `${getREM(theme.default.spaces[2] / 2)} ${getREM(theme.default.spaces[2])}`};
-    margin: ${({ theme }) => `${getREM(theme.default.spaces[8])} auto ${getREM(theme.default.spaces[5])}`};
+    padding: ${({ theme }) => `${getREM(theme.default.spaces[3])} ${getREM(theme.default.spaces[4])}`};
+    margin: ${({ theme }) => `${getREM(theme.default.spaces[12])} auto`};
     border-radius: ${({ theme }) => getPX(theme.default.borderRadiusBase, theme.default.baseUnit)};
 `;
 

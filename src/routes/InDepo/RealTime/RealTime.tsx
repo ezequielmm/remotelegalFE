@@ -3,7 +3,7 @@ import { Space } from "antd";
 import Text from "../../../components/Typography/Text";
 import { GlobalStateContext } from "../../../state/GlobalState";
 import { ContainerProps, StyledLayoutContent, StyledLayoutCotainer } from "../styles";
-import { RealTimeHeader, RoughDraftContainer, StyledRealTimeContainer, TranscriptionsContainer } from "./styles";
+import { RealTimeHeader, RoughDraftPill, StyledRealTimeContainer } from "./styles";
 import { TimeZones } from "../../../models/general";
 import ColorStatus from "../../../types/ColorStatus";
 import Alert from "../../../components/Alert";
@@ -53,8 +53,8 @@ const RealTime = ({
                             </RealTimeHeader>
                         </div>
                         <div>
-                            <RoughDraftContainer>ROUGH DRAFT: NOT FOR OFFICIAL USE</RoughDraftContainer>
-                            <TranscriptionsContainer direction="vertical" size="middle">
+                            <RoughDraftPill>ROUGH DRAFT: NOT FOR OFFICIAL USE</RoughDraftPill>
+                            <Space direction="vertical" size="middle">
                                 {transcriptions.map(
                                     (transcription) =>
                                         (transcription.from || transcription.text) &&
@@ -108,7 +108,7 @@ const RealTime = ({
                                             </Space>
                                         ))
                                 )}
-                            </TranscriptionsContainer>
+                            </Space>
                         </div>
                     </div>
                 </StyledRealTimeContainer>
