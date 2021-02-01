@@ -147,9 +147,11 @@ const PDFTronViewer = ({ document, filename, canStamp, annotations, onAnnotation
                         );
                     header.update(newItems);
                 });
+                instance.setToolbarGroup("toolbarGroup-View", true);
                 setPDFTron(instance);
             });
         };
+
         startViewer();
     }, []);
 
@@ -167,6 +169,7 @@ const PDFTronViewer = ({ document, filename, canStamp, annotations, onAnnotation
             stampRef.current = null;
             PDFTron.annotManager.on("annotationChanged", onAnnotationChangeHandler);
             PDFTron.docViewer.on("documentLoaded", onDocumentLoadedHandler);
+            PDFTron.setToolbarGroup("toolbarGroup-View", true);
             if (filename.toLowerCase().includes(".mp4")) {
                 loadPDFTronVideo(PDFTron, document);
             } else {
