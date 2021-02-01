@@ -109,8 +109,8 @@ export default function ControlsBar({
 
     const composeBreakroomsIcon = (
         <StyledComposedIconContainer>
-            <Icon icon={BreakroomsIcon} style={{ fontSize: "1.625rem" }} />
-            <Icon icon={ArrowIcon} rotate={180} style={{ fontSize: "1.625rem" }} />
+            <Icon icon={BreakroomsIcon} fontSize="1.625rem" />
+            <Icon icon={ArrowIcon} rotate={180} fontSize="1.625rem" />
         </StyledComposedIconContainer>
     );
 
@@ -135,9 +135,9 @@ export default function ControlsBar({
                     isToggled={!isAudioEnabled}
                     icon={
                         isAudioEnabled ? (
-                            <Icon data-testid="unmuted" icon={UnmuteIcon} style={{ fontSize: "1.625rem" }} />
+                            <Icon data-testid="unmuted" icon={UnmuteIcon} fontSize="1.625rem" />
                         ) : (
-                            <Icon data-testid="muted" icon={MuteIcon} style={{ fontSize: "1.625rem" }} />
+                            <Icon data-testid="muted" icon={MuteIcon} fontSize="1.625rem" />
                         )
                     }
                 />
@@ -148,9 +148,9 @@ export default function ControlsBar({
                     isToggled={!cameraEnabled}
                     icon={
                         cameraEnabled ? (
-                            <Icon data-testid="camerashown" icon={CameraOnIcon} style={{ fontSize: "1.625rem" }} />
+                            <Icon data-testid="camerashown" icon={CameraOnIcon} fontSize="1.625rem" />
                         ) : (
-                            <Icon data-testid="camerahidden" icon={CameraOffIcon} style={{ fontSize: "1.625rem" }} />
+                            <Icon data-testid="camerahidden" icon={CameraOffIcon} fontSize="1.625rem" />
                         )
                     }
                 />
@@ -163,9 +163,9 @@ export default function ControlsBar({
                         label={isRecording ? CONTROLS_BAR_OFF_THE_RECORD_LABEL : CONTROLS_BAR_ON_THE_RECORD_LABEL}
                         icon={
                             isRecording ? (
-                                <Icon icon={PauseIcon} style={{ fontSize: "1.625rem" }} />
+                                <Icon icon={PauseIcon} fontSize="1.625rem" />
                             ) : (
-                                <Icon icon={RecordIcon} style={{ fontSize: "1.625rem" }} />
+                                <Icon icon={RecordIcon} fontSize="1.625rem" />
                             )
                         }
                     />
@@ -180,7 +180,7 @@ export default function ControlsBar({
                         type="rounded"
                         color="red"
                         label={CONTROLS_BAR_END_LABEL}
-                        icon={<Icon icon={EndCallIcon} style={{ fontSize: "1.625rem" }} />}
+                        icon={<Icon icon={EndCallIcon} fontSize="1.625rem" />}
                     />
                 )}
             </StyledVideoControls>
@@ -192,7 +192,7 @@ export default function ControlsBar({
                         onClick={toggleExhibits}
                         type="simple"
                         label={CONTROLS_BAR_EXHIBITS_LABEL}
-                        icon={<Icon icon={ExhibitsIcon} style={{ fontSize: "1.625rem" }} />}
+                        icon={<Icon icon={ExhibitsIcon} fontSize="1.625rem" />}
                     />
                     <Control
                         data-testid="realtime"
@@ -200,7 +200,7 @@ export default function ControlsBar({
                         onClick={toggleRealTime}
                         type="simple"
                         label={CONTROLS_BAR_REAL_TIME_LABEL}
-                        icon={<Icon icon={RealTimeIcon} style={{ fontSize: "1.625rem" }} />}
+                        icon={<Icon icon={RealTimeIcon} fontSize="1.625rem" />}
                     />
                     {breakrooms && !!breakrooms.length && (
                         <Dropdown
@@ -254,7 +254,7 @@ export default function ControlsBar({
                             onClick={toggleSummary}
                             type="simple"
                             label={CONTROLS_BAR_SUMMARY_LABEL}
-                            icon={<Icon icon={SummaryIcon} style={{ fontSize: "1.625rem" }} />}
+                            icon={<Icon icon={SummaryIcon} fontSize="1.625rem" />}
                         />
                     </Dropdown>
                     <Control
@@ -262,7 +262,7 @@ export default function ControlsBar({
                         onClick={toggleSupport}
                         type="simple"
                         label={CONTROLS_BAR_SUPPORT_LABEL}
-                        icon={<Icon icon={SupportIcon} style={{ fontSize: "1.625rem" }} />}
+                        icon={<Icon icon={SupportIcon} fontSize="1.625rem" />}
                     />
                 </StyledSecondaryControls>
             </StyledGeneralControls>

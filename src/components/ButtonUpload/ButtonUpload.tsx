@@ -6,6 +6,7 @@ import ColorStatus from "../../types/ColorStatus";
 import { ReactComponent as UploadCloudIcon } from "../../assets/icons/upload-cloud.svg";
 import { ReactComponent as AttachClipIcon } from "../../assets/icons/attach-clip.svg";
 import { ReactComponent as CloseIcon } from "../../assets/icons/close.svg";
+
 export interface IUploadButton {
     fileName?: string;
     label: string;
@@ -13,7 +14,7 @@ export interface IUploadButton {
 }
 const UploadButton = ({ fileName, label, removeFile }: IUploadButton) => {
     return fileName ? (
-        <StyledAttachButton icon={<Icon style={{ fontSize: "20px" }} icon={AttachClipIcon} />} tabIndex={-1}>
+        <StyledAttachButton icon={<Icon fontSize={8} icon={AttachClipIcon} />} tabIndex={-1}>
             <Text state={ColorStatus.primary}>{fileName}</Text>
             <Icon
                 icon={CloseIcon}
@@ -26,7 +27,7 @@ const UploadButton = ({ fileName, label, removeFile }: IUploadButton) => {
     ) : (
         <StyledUploadButton
             data-testid="caption_input"
-            icon={<Icon style={{ fontSize: "24px" }} icon={UploadCloudIcon} />}
+            icon={<Icon fontSize={9} icon={UploadCloudIcon} />}
             tabIndex={-1}
         >
             {label}

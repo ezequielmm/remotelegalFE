@@ -57,8 +57,8 @@ const AppLayout = ({ children }: DashboardProps) => {
                     <Logo />
                     <Row align="middle">
                         <Space size="large" align="start">
-                            <Icon style={{ fontSize: "1.25rem" }} icon={Messages} />
-                            <Icon style={{ fontSize: "1.25rem" }} icon={Bell} />
+                            <Icon fontSize={8} icon={Messages} />
+                            <Icon fontSize={8} icon={Bell} />
                             <Dropdown
                                 data-testid="user_menu"
                                 overlay={menu}
@@ -71,10 +71,7 @@ const AppLayout = ({ children }: DashboardProps) => {
                                     <Text data-testid="user_option" ellipsis={false}>
                                         User Name
                                     </Text>
-                                    <Icon
-                                        style={{ fontSize: "0.625rem", marginLeft: "0.25rem" }}
-                                        icon={DropdownArrow}
-                                    />
+                                    <Icon fontSize="0.625rem" style={{ marginLeft: "0.25rem" }} icon={DropdownArrow} />
                                 </Space>
                             </Dropdown>
                         </Space>

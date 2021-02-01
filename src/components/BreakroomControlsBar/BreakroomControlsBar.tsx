@@ -52,9 +52,9 @@ export default function BreakroomControlsBar({ breakroomName, localParticipant }
                     onClick={() => setAudioEnabled(!isAudioEnabled)}
                     icon={
                         isAudioEnabled ? (
-                            <Icon data-testid="unmuted" icon={UnmuteIcon} style={{ fontSize: "1.625rem" }} />
+                            <Icon data-testid="unmuted" icon={UnmuteIcon} fontSize="1.625rem" />
                         ) : (
-                            <Icon data-testid="muted" icon={MuteIcon} style={{ fontSize: "1.625rem" }} />
+                            <Icon data-testid="muted" icon={MuteIcon} fontSize="1.625rem" />
                         )
                     }
                 />
@@ -65,9 +65,9 @@ export default function BreakroomControlsBar({ breakroomName, localParticipant }
                     isToggled={cameraEnabled}
                     icon={
                         cameraEnabled ? (
-                            <Icon data-testid="camerashown" icon={CameraOnIcon} style={{ fontSize: "1.625rem" }} />
+                            <Icon data-testid="camerashown" icon={CameraOnIcon} fontSize="1.625rem" />
                         ) : (
-                            <Icon data-testid="camerahidden" icon={CameraOffIcon} style={{ fontSize: "1.625rem" }} />
+                            <Icon data-testid="camerahidden" icon={CameraOffIcon} fontSize="1.625rem" />
                         )
                     }
                 />
@@ -80,7 +80,7 @@ export default function BreakroomControlsBar({ breakroomName, localParticipant }
                         type="rounded"
                         color="red"
                         label="Leave Breakroom"
-                        icon={<Icon icon={EndCallIcon} style={{ fontSize: "1.625rem" }} />}
+                        icon={<Icon icon={EndCallIcon} fontSize="1.625rem" />}
                     />
                 </StyledPrimaryControls>
             </StyledGeneralControls>
