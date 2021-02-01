@@ -82,7 +82,9 @@ const PDFTronViewer = ({ document, filename, canStamp, annotations, onAnnotation
             sendAnnotationChange(child, AnnotationAction.Create);
         });
         modifiedAnnots.childNodes.forEach((child) => {
-            sendAnnotationChange(child, AnnotationAction.Modify);
+            if (child.nodeName !== "stamp" || (child.nodeName === "stamp" && canStamp)) {
+                sendAnnotationChange(child, AnnotationAction.Modify);
+            }
         });
         deletedAnnots.childNodes.forEach((child) => {
             sendAnnotationChange(child, AnnotationAction.Delete);
@@ -105,15 +107,20 @@ const PDFTronViewer = ({ document, filename, canStamp, annotations, onAnnotation
         if (isDocumentLoaded) {
             annotations?.forEach(async (row) => {
                 const annotations = await PDFTron?.annotManager.importAnnotCommand(row);
-                await PDFTron?.annotManager.drawAnnotationsFromList(annotations);
-                // TODO: Add BE integration
                 const stamp = PDFTron.annotManager.getAnnotationById("STAMP");
                 if (stamp) {
+                    if (!canStamp) {
+                        stamp.NoDelete = true;
+                        stamp.NoResize = true;
+                        stamp.NoMove = true;
+                    }
                     stampRef.current = stamp;
                 }
+                await PDFTron?.annotManager.drawAnnotationsFromList(annotations);
+                // TODO: Add BE integration
             });
         }
-    }, [annotations, isDocumentLoaded, PDFTron]);
+    }, [annotations, canStamp, isDocumentLoaded, PDFTron]);
 
     useEffect(() => {
         const startViewer = () => {
@@ -180,7 +187,7 @@ const PDFTronViewer = ({ document, filename, canStamp, annotations, onAnnotation
             PDFTron?.annotManager.off("annotationChanged", onAnnotationChangeHandler);
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [document, PDFTron, filename]);
+    }, [canStamp, document, PDFTron, filename]);
 
     const stampDocument = async (stampImage: string) => {
         const { annotManager, Annotations } = PDFTron;

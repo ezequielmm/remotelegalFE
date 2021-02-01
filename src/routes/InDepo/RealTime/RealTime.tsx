@@ -65,6 +65,7 @@ const RealTime = ({
                                                         ? "transcription_paused"
                                                         : "transcription_currently_paused"
                                                 }
+                                                key={transcription.from + transcription.to}
                                                 message={
                                                     transcription.to
                                                         ? CONSTANTS.getPauseText(

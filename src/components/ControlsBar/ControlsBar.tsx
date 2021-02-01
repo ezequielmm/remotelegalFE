@@ -115,6 +115,28 @@ export default function ControlsBar({
         </StyledComposedIconContainer>
     );
 
+    const renderBreakrooms = () => {
+        const menuItems = [];
+
+        breakrooms.forEach((item, i) => {
+            menuItems.push(
+                <Menu.Item key={item.id}>
+                    <Space align="center" justify="space-between" size="large" fullWidth>
+                        <Text block state={ColorStatus.white}>
+                            {item.name}
+                        </Text>
+                        <Button onClick={() => handleJoinBreakroom(item.id)} type="link">
+                            {CONTROLS_BAR_JOIN_BUTTON}
+                        </Button>
+                    </Space>
+                </Menu.Item>
+            );
+            if (breakrooms.length > i + 1) menuItems.push(<Menu.Divider key={`${item.id}divider`} />);
+        });
+
+        return menuItems;
+    };
+
     return (
         <StyledContainer>
             <EndDepoModal
@@ -206,25 +228,7 @@ export default function ControlsBar({
                     {breakrooms && !!breakrooms.length && (
                         <Dropdown
                             onVisibleChange={toggleBreakrooms}
-                            overlay={
-                                <Menu>
-                                    {breakrooms.map((item, i) => (
-                                        <>
-                                            <Menu.Item>
-                                                <Space align="center" justify="space-between" size="large" fullWidth>
-                                                    <Text block state={ColorStatus.white}>
-                                                        {item.name}
-                                                    </Text>
-                                                    <Button onClick={() => handleJoinBreakroom(item.id)} type="link">
-                                                        {CONTROLS_BAR_JOIN_BUTTON}
-                                                    </Button>
-                                                </Space>
-                                            </Menu.Item>
-                                            {breakrooms.length > i + 1 && <Menu.Divider />}
-                                        </>
-                                    ))}
-                                </Menu>
-                            }
+                            overlay={<Menu>{renderBreakrooms()}</Menu>}
                             arrow
                             styled
                             placement="topCenter"

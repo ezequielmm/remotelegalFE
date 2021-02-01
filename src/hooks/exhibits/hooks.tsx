@@ -175,7 +175,7 @@ export const useExhibitAnnotation = () => {
         return annotations;
     }, []);
 
-    const [sendAnnotation] = useAsyncCallback(async (payload) => {
+    const [sendAnnotation, sending] = useAsyncCallback(async (payload) => {
         const annotate = await deps.apiService.sendAnnotation({ depositionID, ...payload });
         return annotate;
     }, []);
@@ -188,7 +188,7 @@ export const useExhibitAnnotation = () => {
 
     useEffect(() => {
         let delay;
-        if (latestAnnotations && !getAnnotationsPending && currentExhibitTabName === "liveExhibits") {
+        if (!sending && latestAnnotations && !getAnnotationsPending && currentExhibitTabName === "liveExhibits") {
             delay = setTimeout(() => {
                 getAnnotations({ startingAnnotationId: lastAnnotationId || undefined });
                 if (latestAnnotations.length) {
@@ -209,6 +209,7 @@ export const useExhibitAnnotation = () => {
         currentExhibit,
         lastAnnotationId,
         dispatch,
+        sending,
     ]);
     return {
         sendAnnotation,
