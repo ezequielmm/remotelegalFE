@@ -32,6 +32,8 @@ const theme = {
         disabledBg: colors.cloudGray[5],
         whiteColor: colors.neutrals[6],
         blackColor: colors.neutrals[0],
+        inDepoColor: colors.inDepoNeutrals[4],
+        inDepoBg: colors.inDepoNeutrals[6],
         // Font
         textColor: colors.neutrals[0],
         textColorInverse: colors.neutrals[6],

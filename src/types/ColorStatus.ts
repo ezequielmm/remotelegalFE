@@ -7,6 +7,7 @@ enum ColorStatus {
     success = "success",
     info = "info",
     white = "white",
+    inDepo = "inDepo",
 }
 
 export default ColorStatus;

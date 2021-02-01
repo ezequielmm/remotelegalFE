@@ -27,10 +27,10 @@ beforeEach(() => {
     getUserMedia: jest.fn().mockResolvedValue(true),
 };
 
-test("Hidden textarea should be populated with the link prop", async () => {
+test("Hidden input should be populated with the link prop", async () => {
     const { findByTestId } = renderWithGlobalContext(<CopyLink {...props} />);
-    const textarea = await findByTestId("hidden-textarea");
-    expect(textarea.value).toEqual("link-to-depo");
+    const input = await findByTestId("hidden-input");
+    expect(input.value).toEqual("link-to-depo");
 });
 
 test("Alerts should not appear until the copy button is clicked", async () => {

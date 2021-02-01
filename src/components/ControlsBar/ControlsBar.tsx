@@ -54,6 +54,7 @@ import {
     CONTROLS_BAR_JOIN_BUTTON,
 } from "../../constants/inDepo";
 import { ThemeMode } from "../../types/ThemeType";
+import { getREM } from "../../constants/styles/utils";
 
 interface IControlsBar {
     breakrooms?: BreakroomModel.Breakroom[];
@@ -247,6 +248,7 @@ export default function ControlsBar({
                         trigger={["click"]}
                         arrow
                         styled
+                        overlayStyle={{ width: getREM(theme.default.spaces[6] * 23) }}
                         theme={summaryTheme}
                     >
                         <Control

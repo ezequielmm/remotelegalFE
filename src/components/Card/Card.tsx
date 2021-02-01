@@ -1,31 +1,26 @@
-import React from "react";
-import styled from "styled-components";
+import React, { useContext } from "react";
+import styled, { ThemeContext } from "styled-components";
 import { Card as ANTDCard } from "antd";
 import { CardProps } from "antd/lib/card";
-import { getREM, hexToRGBA } from "../../constants/styles/utils";
+import { getREM } from "../../constants/styles/utils";
 import { ThemeMode } from "../../types/ThemeType";
+import ColorStatus from "../../types/ColorStatus";
 
 export interface ICardProps extends CardProps {
+    bg?: ColorStatus;
     noPadding?: boolean;
 }
 
 const StyledCard = styled(ANTDCard)<ICardProps>`
-    ${({ theme, noPadding }) => {
-        const { neutrals } = theme.colors;
+    ${({ theme, noPadding, bg }) => {
         const { spaces, fontSizes, headerFontFamilies } = theme.default;
-
-        const inDepoTheme =
-            theme.mode === ThemeMode.inDepo
-                ? `
-                    background: ${theme.colors.inDepoNeutrals[4]};
-                `
-                : "";
 
         const styles = `
             &.ant-card {
                 padding: ${noPadding ? 0 : getREM(spaces[12])};
-                box-shadow: 0 ${getREM(spaces[5])} ${getREM(spaces[9])} 0 ${hexToRGBA(neutrals[2], 0.08)}
-                
+                box-shadow: 0 ${getREM(spaces[5])} ${getREM(spaces[9])} 0 rgba(0, 0, 0, 0.08);
+                background: ${theme.default[`${bg}Color`]};
+
                 .ant-card-head {
                     font-family: ${headerFontFamilies};
                     padding: 0;
@@ -43,12 +38,16 @@ const StyledCard = styled(ANTDCard)<ICardProps>`
                     padding: 0;
                 }
             }
-            ${inDepoTheme}
         `;
         return styles;
     }}
 `;
 
-const Card = ({ bordered = false, ...props }: ICardProps) => <StyledCard bordered={bordered} {...props} />;
+const Card = ({ bordered = false, bg, ...props }: ICardProps) => {
+    const themeContext = useContext(ThemeContext);
+    const defaultBg = bg || (themeContext.mode === ThemeMode.inDepo ? ColorStatus.inDepo : ColorStatus.white);
+
+    return <StyledCard bordered={bordered} bg={defaultBg} {...props} />;
+};
 
 export default Card;
