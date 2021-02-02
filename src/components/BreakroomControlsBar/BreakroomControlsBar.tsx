@@ -19,20 +19,31 @@ import { ReactComponent as UnmuteIcon } from "../../assets/in-depo/Unmute.svg";
 import { ReactComponent as CameraOnIcon } from "../../assets/in-depo/Camera.on.svg";
 import { ReactComponent as CameraOffIcon } from "../../assets/in-depo/Camera.off.svg";
 import { ReactComponent as EndCallIcon } from "../../assets/in-depo/End.call.svg";
+import { ReactComponent as ExhibitsIcon } from "../../assets/in-depo/Exhibits.svg";
 import Control from "../Control/Control";
 import Logo from "../Logo";
+import { StyledSecondaryControls } from "../ControlsBar/styles";
+import { CONTROLS_BAR_EXHIBITS_LABEL } from "../../constants/inDepo";
 
 interface IBreakroomControlsBar {
     localParticipant: LocalParticipant;
     breakroomName: string;
+    exhibitsOpen: boolean;
+    togglerExhibits: React.Dispatch<React.SetStateAction<boolean>> | ((value: React.SetStateAction<boolean>) => void);
 }
 
-export default function BreakroomControlsBar({ breakroomName, localParticipant }: IBreakroomControlsBar): ReactElement {
+export default function BreakroomControlsBar({
+    breakroomName,
+    localParticipant,
+    exhibitsOpen,
+    togglerExhibits,
+}: IBreakroomControlsBar): ReactElement {
     const { videoTracks, audioTracks } = useParticipantTracks(localParticipant);
     const { isAudioEnabled, cameraEnabled, setAudioEnabled, setCameraEnabled } = useTracksStatus(
         audioTracks as LocalAudioTrack[],
         videoTracks as LocalVideoTrack[]
     );
+    const toggleExhibits = () => togglerExhibits((prevState) => !prevState);
 
     return (
         <StyledContainer>
@@ -75,6 +86,16 @@ export default function BreakroomControlsBar({ breakroomName, localParticipant }
             <StyledGeneralControls>
                 <StyledPrimaryControls>
                     <Control
+                        data-testid="exhibits"
+                        isToggled={exhibitsOpen}
+                        onClick={toggleExhibits}
+                        type="simple"
+                        label={CONTROLS_BAR_EXHIBITS_LABEL}
+                        icon={<Icon icon={ExhibitsIcon} fontSize="1.625rem" />}
+                    />
+                </StyledPrimaryControls>
+                <StyledSecondaryControls>
+                    <Control
                         data-testid="end"
                         onClick={() => {}}
                         type="rounded"
@@ -82,7 +103,7 @@ export default function BreakroomControlsBar({ breakroomName, localParticipant }
                         label="Leave Breakroom"
                         icon={<Icon icon={EndCallIcon} fontSize="1.625rem" />}
                     />
-                </StyledPrimaryControls>
+                </StyledSecondaryControls>
             </StyledGeneralControls>
         </StyledContainer>
     );

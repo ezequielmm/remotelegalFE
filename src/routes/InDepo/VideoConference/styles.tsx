@@ -96,6 +96,14 @@ export const StyledAttendeesContainer = styled.div<IAtendeesContainerProps>`
         margin-left: 0;
         flex: 4;
     }
+    ${StyledVideoConference}.breakrooms & {
+        grid-template-columns: repeat(auto-fit, minmax(30%, 1fr));
+        grid-auto-rows: minmax(calc(33% - ${({ theme }) => getREM(theme.default.spaces[2])}), 1fr);
+    }
+    ${StyledVideoConference}.breakrooms.grid & {
+        margin-top: 0;
+        grid-auto-rows: minmax(calc(25% - ${({ theme }) => getREM(theme.default.spaces[3])}), 1fr);
+    }
 `;
 
 export const StyledParticipantContainer = styled.div`

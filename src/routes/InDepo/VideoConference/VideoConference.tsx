@@ -55,8 +55,12 @@ const VideoConference = ({
     }, [layoutSize]);
 
     return (
-        <StyledVideoConference className={layoutClass} ref={videoConferenceContainer} show={atendeesVisibility}>
-            {(!isBreakroom || participants.length > 1) && (
+        <StyledVideoConference
+            className={`${layoutClass} ${isBreakroom && "breakrooms"}`}
+            ref={videoConferenceContainer}
+            show={atendeesVisibility}
+        >
+            {!isBreakroom && (
                 <StyledDeponentContainer isUnique={isBreakroom && participants.length === 1}>
                     <Participant timeZone={timeZone} participant={isBreakroom ? participants[1] : witness} isWitness />
                 </StyledDeponentContainer>
@@ -67,12 +71,7 @@ const VideoConference = ({
                 }
             >
                 {participants
-                    .filter((participant) =>
-                        isBreakroom
-                            ? participants.length === 1 ||
-                              JSON.parse(participants[1]?.identity)?.email !== JSON.parse(participant.identity).email
-                            : JSON.parse(participant.identity).role !== "Witness"
-                    )
+                    .filter((participant) => isBreakroom || JSON.parse(participant.identity).role !== "Witness")
                     .map((participant: RemoteParticipant, i) => (
                         <StyledParticipantContainer key={participant.sid} ref={i === 0 ? participantContainer : null}>
                             <Participant participant={participant} />

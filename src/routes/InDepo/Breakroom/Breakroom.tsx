@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 import BreakroomControlsBar from "../../../components/BreakroomControlsBar";
@@ -11,6 +11,7 @@ import disconnectFromDepo from "../../../helpers/disconnectFromDepo";
 import { useJoinBreakroom } from "../../../hooks/InDepo/depositionLifeTimeHooks";
 import { GlobalStateContext } from "../../../state/GlobalState";
 import { ThemeMode } from "../../../types/ThemeType";
+import Exhibits from "../Exhibits";
 import { StyledInDepoContainer, StyledInDepoLayout, StyledRoomFooter } from "../styles";
 import VideoConference from "../VideoConference";
 
@@ -21,6 +22,15 @@ const Breakroom = () => {
     const { breakrooms, currentBreakroom, timeZone, breakroomDataTrack } = state.room;
     const { breakroomID } = useParams<{ depositionID: string; breakroomID: string }>();
     const currentBreakroomData = breakrooms?.find((breakroom) => breakroom.id === breakroomID);
+    const [exhibitsOpen, togglerExhibits] = useState<boolean>(false);
+    const [videoLayoutSize, setVideoLayoutSize] = useState<number>(0);
+    const [atendeesVisibility, setAtendeesVisibility] = useState<boolean>(true);
+
+    useEffect(() => {
+        setAtendeesVisibility((prev) => !prev);
+        setVideoLayoutSize([exhibitsOpen].filter(Boolean).length);
+        setTimeout(() => setAtendeesVisibility((prev) => !prev), 300);
+    }, [exhibitsOpen]);
 
     useEffect(() => {
         const cleanUpFunction = () => {
@@ -61,18 +71,22 @@ const Breakroom = () => {
             <StyledInDepoContainer data-testid="videoconference">
                 <StyledInDepoLayout>
                     <RecordPill on={false} />
+                    <Exhibits visible={exhibitsOpen} />
                     <VideoConference
                         isBreakroom
                         localParticipant={currentBreakroom.localParticipant}
                         timeZone={timeZone}
                         attendees={currentBreakroom.participants}
-                        layoutSize={0}
+                        layoutSize={videoLayoutSize}
+                        atendeesVisibility={atendeesVisibility}
                     />
                 </StyledInDepoLayout>
                 <StyledRoomFooter>
                     <BreakroomControlsBar
                         breakroomName={currentBreakroomData?.name || ""}
                         localParticipant={currentBreakroom.localParticipant}
+                        exhibitsOpen={exhibitsOpen}
+                        togglerExhibits={togglerExhibits}
                     />
                 </StyledRoomFooter>
             </StyledInDepoContainer>
