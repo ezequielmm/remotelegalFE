@@ -29,6 +29,15 @@ const StyledCloseIcon = styled(Icon)`
     color: ${({ theme }) => theme.colors.secondary[5]};
 `;
 
+const StyledHiddenInput = styled.input`
+    opacity: 0;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    position: absolute;
+    z-index: -1;
+`;
+
 const CopyLink = ({ closePopOver, link }: { closePopOver: () => void; link: string }) => {
     const themeContext = useContext(ThemeContext);
     const refHiddenInput = useRef(null);
@@ -67,7 +76,7 @@ const CopyLink = ({ closePopOver, link }: { closePopOver: () => void; link: stri
             >
                 {COPY_LINK_BUTTON}
             </Button>
-            <input ref={refHiddenInput} value={link} readOnly type="hidden" data-testid="hidden-input" />
+            <StyledHiddenInput ref={refHiddenInput} value={link} readOnly data-testid="hidden-input" />
             {copyDone && !copyError && (
                 <Alert
                     message={COPY_LINK_SUCCESS_MSG}
