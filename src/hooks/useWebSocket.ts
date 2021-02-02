@@ -1,10 +1,12 @@
-import { Auth } from "aws-amplify";
 import { useEffect, useState } from "react";
 import ENV from "../constants/env";
 import useAsyncCallback from "./useAsyncCallback";
+import React from "react";
+import { GlobalStateContext } from "../state/GlobalState";
 
 const useWebSocket = (url: string, onMessage: (evt: MessageEvent) => void, withAuth?: boolean) => {
     const [ws, setWs] = useState<WebSocket>(null);
+    const { deps } = React.useContext(GlobalStateContext);
 
     useEffect(() => {
         return () => {
@@ -15,7 +17,7 @@ const useWebSocket = (url: string, onMessage: (evt: MessageEvent) => void, withA
 
     const [connectWebSocket] = useAsyncCallback<any, any, (...args: any[]) => Promise<WebSocket>>(
         async (extraUrl: string = "") => {
-            const auth = withAuth ? `token=${(await Auth.currentSession()).getIdToken().getJwtToken()}&` : "";
+            const auth = withAuth ? `token=${await deps.apiService.getTokenSet()}&` : "";
             const newWs = new WebSocket(`${ENV.API.WS_URL}${url}?${auth}${extraUrl}`);
             newWs.binaryType = "arraybuffer";
             newWs.onmessage = onMessage;
