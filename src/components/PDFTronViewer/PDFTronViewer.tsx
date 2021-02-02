@@ -104,6 +104,8 @@ const PDFTronViewer = ({ document, filename, canStamp, annotations, onAnnotation
     };
 
     const onDocumentLoadedHandler = () => {
+        const { FitMode } = PDFTron;
+        PDFTron.setFitMode(FitMode.FitWidth);
         setIsDocumentLoaded(true);
     };
 
@@ -137,9 +139,7 @@ const PDFTronViewer = ({ document, filename, canStamp, annotations, onAnnotation
                 },
                 viewerRef.current
             ).then((instance) => {
-                const { FitMode } = instance;
                 instance.setTheme("dark");
-                instance.setFitMode(FitMode.FitWidth);
                 instance.setHeaderItems((header) => {
                     header
                         .get("panToolButton")
@@ -201,8 +201,8 @@ const PDFTronViewer = ({ document, filename, canStamp, annotations, onAnnotation
         stamp.setCustomData("STAMP", stampImage);
         stamp.Id = "STAMP";
         stamp.PageNumber = 1;
-        stamp.X = 440;
-        stamp.Y = 2;
+        stamp.setX(0);
+        stamp.setY(0);
         stamp.Width = 150;
         stamp.Height = 60;
         stamp.MaintainAspectRatio = true;
