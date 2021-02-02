@@ -6,22 +6,20 @@ import Card from "../components/Card";
 export default {
     title: "Card",
     component: Card,
+    argTypes: {
+        bg: {
+            control: {
+                type: "text",
+            },
+        },
+    },
 } as Meta;
 
-const Template: Story = () => {
+const Template: Story = (args) => {
     return (
-        <>
-            <div style={{ backgroundColor: "lightgray", padding: "32px" }}>
-                <Card title="Select or add a case">
-                    <p>To select or add a case please complete the information below.</p>
-                </Card>
-            </div>
-            <div style={{ backgroundColor: "lightgray", padding: "32px" }}>
-                <Card title="Select or add a case" bordered>
-                    <p>To select or add a case please complete the information below.</p>
-                </Card>
-            </div>
-        </>
+        <Card title="Select or add a case" {...args}>
+            <p>To select or add a case please complete the information below.</p>
+        </Card>
     );
 };
 

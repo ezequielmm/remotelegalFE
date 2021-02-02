@@ -7,7 +7,7 @@ import { ThemeMode } from "../../types/ThemeType";
 import ColorStatus from "../../types/ColorStatus";
 
 export interface ICardProps extends CardProps {
-    bg?: ColorStatus;
+    bg?: ColorStatus | string;
     noPadding?: boolean;
 }
 
