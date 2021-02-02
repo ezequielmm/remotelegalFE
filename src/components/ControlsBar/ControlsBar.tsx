@@ -248,6 +248,9 @@ export default function ControlsBar({
                     <Dropdown
                         overlay={<CopyLink closePopOver={toggleSummary} link={joinDepositionLink} />}
                         placement="topRight"
+                        onVisibleChange={(visible) => {
+                            if (!visible) toggleSummary();
+                        }}
                         visible={summaryOpen}
                         trigger={["click"]}
                         arrow
