@@ -1,5 +1,6 @@
 import React, { useRef, useState } from "react";
-import { Space, Row, Form } from "antd";
+import { Row, Form } from "antd";
+import Space from "../../Space";
 import { InputWrapper } from "../../Input/styles";
 import Input from "../../Input";
 import Title from "../../Typography/Title";
@@ -42,7 +43,7 @@ const StampModal = ({ open, handleClose, onConfirm, timeZone }: IModalProps) => 
             size={ModalSize.small}
         >
             <div ref={elementRef} tabIndex={-1} onKeyDown={handleKeyDownEvent}>
-                <Space direction="vertical" size="large" style={{ width: "100%" }}>
+                <Space direction="vertical" size="large" fullWidth>
                     <Title level={4} weight="light" noMargin>
                         {CONSTANTS.MODAL_TITLE}
                     </Title>
@@ -59,6 +60,7 @@ const StampModal = ({ open, handleClose, onConfirm, timeZone }: IModalProps) => 
                             handleOnConfirm();
                         }}
                         layout="vertical"
+                        style={{ width: "100%" }}
                     >
                         <Form.Item label="label" htmlFor="stamp-title">
                             <InputWrapper>

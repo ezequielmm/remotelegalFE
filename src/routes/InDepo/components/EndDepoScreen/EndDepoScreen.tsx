@@ -1,5 +1,6 @@
 import React from "react";
-import { Row, Col, Layout, Space } from "antd";
+import { Row, Col, Layout } from "antd";
+import Space from "../../../../components/Space";
 import Card from "../../../../components/Card";
 import Logo from "../../../../components/Logo";
 import Title from "../../../../components/Typography/Title";
@@ -14,14 +15,14 @@ const EndDepoScreen = () => (
             <Col xs={22} sm={20} lg={16} xl={10} xxl={8}>
                 <Card style={{ padding: getREM(theme.default.spaces[10] * 4) }}>
                     <Row justify="center" align="middle">
-                        <Space direction="vertical" size="large" style={{ textAlign: "center" }}>
+                        <Space direction="vertical" size="large" justify="center" align="center" fullWidth>
                             <Logo version="dark" height={getREM(theme.default.spaces[8] * 2)} />
-                            <div>
+                            <Space.Item fullWidth style={{ textAlign: "center" }}>
                                 <Title level={4} weight="light">
                                     This deposition has ended
                                 </Title>
                                 <Text state={ColorStatus.disabled}>Thanks for using Remote Legal.</Text>
-                            </div>
+                            </Space.Item>
                         </Space>
                     </Row>
                 </Card>

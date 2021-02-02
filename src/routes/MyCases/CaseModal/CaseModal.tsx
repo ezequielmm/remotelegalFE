@@ -1,8 +1,9 @@
 import React, { useEffect, useRef } from "react";
-import { Space, Row, Form } from "antd";
+import { Row, Form } from "antd";
 import useInput from "../../../hooks/useInput";
 import isInputEmpty from "../../../helpers/isInputEmpty";
 import { InputWrapper } from "../../../components/Input/styles";
+import Space from "../../../components/Space";
 import Input from "../../../components/Input";
 import Alert from "../../../components/Alert";
 import Title from "../../../components/Typography/Title";
@@ -83,17 +84,17 @@ const CaseModal = ({ open, handleClose, fetchCases }: IModalProps) => {
                         ]}
                     />
                 ) : (
-                    <Space direction="vertical" size="large" style={{ width: "100%" }}>
-                        <div>
+                    <Space direction="vertical" size="large" fullWidth>
+                        <Space.Item fullWidth>
                             <Title level={4} weight="light" noMargin>
                                 Add case
                             </Title>
                             <Text state={ColorStatus.disabled} ellipsis={false}>
                                 Please complete the information below.
                             </Text>
-                        </div>
+                        </Space.Item>
                         {error && <Alert message={NETWORK_ERROR} type="error" />}
-                        <div>
+                        <Space.Item fullWidth>
                             <Form onFinish={() => createCase(caseNameValue, caseNumber)} layout="vertical">
                                 <Form.Item label="Name" htmlFor="case-name">
                                     <InputWrapper>
@@ -130,7 +131,7 @@ const CaseModal = ({ open, handleClose, fetchCases }: IModalProps) => {
                                     </Space>
                                 </Row>
                             </Form>
-                        </div>
+                        </Space.Item>
                     </Space>
                 )}
             </div>

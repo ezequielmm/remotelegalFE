@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { Auth } from "aws-amplify";
 import { useHistory, useLocation } from "react-router-dom";
-import { Layout, Row, Space } from "antd";
+import { Layout, Row } from "antd";
+import Space from "../Space";
 import Logo from "../Logo";
 import Icon from "../Icon";
 import Button from "../Button";
@@ -56,7 +57,7 @@ const AppLayout = ({ children }: DashboardProps) => {
                 <Row justify="space-between" align="middle">
                     <Logo />
                     <Row align="middle">
-                        <Space size="large" align="start">
+                        <Space size="large" align="flex-start">
                             <Icon fontSize={8} icon={Messages} />
                             <Icon fontSize={8} icon={Bell} />
                             <Dropdown
@@ -67,11 +68,13 @@ const AppLayout = ({ children }: DashboardProps) => {
                                 arrow
                                 placement="bottomRight"
                             >
-                                <Space align="center" size={12}>
+                                <Space align="center" size={4}>
                                     <Text data-testid="user_option" ellipsis={false}>
                                         User Name
                                     </Text>
-                                    <Icon fontSize="0.625rem" style={{ marginLeft: "0.25rem" }} icon={DropdownArrow} />
+                                    <Space.Item>
+                                        <Icon fontSize="0.625rem" icon={DropdownArrow} />
+                                    </Space.Item>
                                 </Space>
                             </Dropdown>
                         </Space>

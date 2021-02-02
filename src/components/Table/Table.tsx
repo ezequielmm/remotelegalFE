@@ -246,7 +246,7 @@ const StyledTable = styled(Table)`
 
 const table = forwardRef((props: ITableProps, ref: React.MutableRefObject<any>) => {
     return (
-        <div ref={ref} style={{ height: "100%" }}>
+        <div ref={ref} style={{ height: "100%", width: "100%" }}>
             <StyledTable {...props} />
         </div>
     );

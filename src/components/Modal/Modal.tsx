@@ -57,8 +57,7 @@ const StyledModal = styled(modalDefault)<IModalProps>`
     }}
 `;
 
-const modal = (props: IModalProps) => {
-    const { children, onlyBody, width, size, ...rest } = props;
+const modal = ({ children, onlyBody, width, size = ModalSize.default, ...rest }: IModalProps) => {
     const footer = onlyBody ? null : rest.footer;
     const closeIcon = <Icon icon={CloseIcon} />;
 
@@ -69,7 +68,7 @@ const modal = (props: IModalProps) => {
             closeIcon={closeIcon}
             size={size}
             {...rest}
-            width={theme.default.modalWidth.default}
+            width={width || theme.default.modalWidth[size]}
         >
             {children}
         </StyledModal>

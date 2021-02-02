@@ -58,7 +58,7 @@ export default function ExhibitTabs({
                     >
                         {!active && previousTabIsNotSelected && isNotFirstTab && <Stick />}
                         <ExhibitTabContainerText data-testid={active && `${tabTestId}_active`}>
-                            <Space size="small" align="center">
+                            <Space align="center">
                                 {icon && (
                                     <Icon
                                         icon={icon}

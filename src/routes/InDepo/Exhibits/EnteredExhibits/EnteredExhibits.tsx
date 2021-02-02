@@ -1,5 +1,6 @@
 import React from "react";
-import { Space, Row, Col } from "antd";
+import { Row, Col } from "antd";
+import Space from "../../../../components/Space";
 import Result from "../../../../components/Result";
 import Icon from "../../../../components/Icon";
 import Badge from "../../../../components/Badge";

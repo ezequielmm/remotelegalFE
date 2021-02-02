@@ -1,5 +1,5 @@
 import React, { ReactElement } from "react";
-import { Space } from "antd";
+import Space from "../Space";
 import Text from "../Typography/Text";
 import Icon from "../Icon";
 import Button from "../Button";

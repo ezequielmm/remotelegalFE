@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import { Space } from "antd";
 
+import Space from "../Space";
 import Modal from "../Modal";
 import Title from "../Typography/Title";
 import Text from "../Typography/Text";
@@ -41,8 +41,8 @@ const Wizard = ({ children, step = 0, totalSteps, title, text }: IWizard) => {
 
     return (
         <Modal onlyBody destroyOnClose closable={false} visible centered mask={false}>
-            <Space direction="vertical" size="large" style={{ width: "100%" }}>
-                <div>
+            <Space direction="vertical" size="large" fullWidth>
+                <Space.Item>
                     <Text state={ColorStatus.primary} weight="bold">
                         {stepText}
                     </Text>
@@ -50,8 +50,8 @@ const Wizard = ({ children, step = 0, totalSteps, title, text }: IWizard) => {
                         {title}
                     </Title>
                     <Text state={ColorStatus.disabled}>{text}</Text>
-                </div>
-                <div>{children}</div>
+                </Space.Item>
+                <Space.Item>{children}</Space.Item>
             </Space>
         </Modal>
     );

@@ -1,5 +1,5 @@
 import React from "react";
-import { Col } from "antd";
+import { Divider } from "antd";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import Button from "../../../components/Button";
 import Icon from "../../../components/Icon";
@@ -19,26 +19,27 @@ const WitnessesSection = () => {
     };
 
     return (
-        <Card>
+        <Card fullWidth>
             {fields.map((field, index) => (
-                <WitnessItem
-                    removeWitness={() => remove(index)}
-                    key={field.id}
-                    deposition={field}
-                    witnessNumber={index}
-                />
+                <>
+                    <WitnessItem
+                        removeWitness={() => remove(index)}
+                        key={field.id}
+                        deposition={field}
+                        witnessNumber={index}
+                    />
+                    {fields.length > index + 1 && <Divider />}
+                </>
             ))}
-            <Col xs={24}>
-                <Button
-                    data-testid="add_witness_button"
-                    disabled={fields.length === CONSTANTS.WITNESSES_LIMIT}
-                    onClick={handleAddDeposition}
-                    type="ghost"
-                    icon={<Icon icon={AddIcon} style={{ fontSize: "1.225rem" }} />}
-                >
-                    Add Witness
-                </Button>
-            </Col>
+            <Button
+                data-testid="add_witness_button"
+                disabled={fields.length === CONSTANTS.WITNESSES_LIMIT}
+                onClick={handleAddDeposition}
+                type="ghost"
+                icon={<Icon icon={AddIcon} style={{ fontSize: "1.225rem" }} />}
+            >
+                Add Witness
+            </Button>
         </Card>
     );
 };

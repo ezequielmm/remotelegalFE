@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { Checkbox, Col, Form, Row, Space } from "antd";
+import { Checkbox, Col, Form, Row } from "antd";
 import { Redirect, Link } from "react-router-dom";
 import useInput from "../../hooks/useInput";
+import Space from "../../components/Space";
 import Container from "../../components/Container";
 import Alert from "../../components/Alert";
 import Button from "../../components/Button";
@@ -125,17 +126,17 @@ const SignUp = () => {
             <Row justify="center" align="middle">
                 <Col xs={20} sm={16} lg={14} xxl={12}>
                     <Form layout="vertical">
-                        <Space direction="vertical" size="large" style={{ width: "100%" }}>
+                        <Space direction="vertical" size="large" fullWidth>
                             {data ? (
                                 <CodeSent email={emailValue} />
                             ) : (
                                 <>
-                                    <div>
+                                    <Space.Item>
                                         <Title level={3} weight="light" noMargin>
                                             Welcome
                                         </Title>
                                         <Text size="large">Create your account</Text>
-                                    </div>
+                                    </Space.Item>
                                     {(networkError || SignUpErrorMessage) && (
                                         <Alert
                                             data-testid={networkError || SignUpErrorMessage}
@@ -143,7 +144,7 @@ const SignUp = () => {
                                             type="error"
                                         />
                                     )}
-                                    <div>
+                                    <Space.Item>
                                         <Row gutter={16}>
                                             <Col span={12}>
                                                 <Form.Item label="First name" htmlFor="firstname">
@@ -287,7 +288,7 @@ const SignUp = () => {
                                         >
                                             I agree to Remote Legal Terms of Use
                                         </Checkbox>
-                                    </div>
+                                    </Space.Item>
                                     <Button
                                         data-testid="sign_up_create_account"
                                         type="primary"
@@ -298,7 +299,7 @@ const SignUp = () => {
                                     >
                                         Create account
                                     </Button>
-                                    <Space size="small" style={{ width: "100%" }}>
+                                    <Space fullWidth align="center">
                                         <Text>Have an account?</Text>
                                         <Link tabIndex={-1} to="/">
                                             <Button data-testid="sign_up_login_link" type="link">

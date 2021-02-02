@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { Space, Row, Col } from "antd";
+import { Row, Col } from "antd";
 import { useParams } from "react-router-dom";
 import { useFileList, useUploadFile } from "../../../../hooks/exhibits/hooks";
 import { MY_EXHIBITS_RESULT_SUBTITLE, MY_EXHIBITS_RESULT_TITLE } from "../../../../constants/exhibits";
+import Space from "../../../../components/Space";
 import Result from "../../../../components/Result";
 import { CustomStatus } from "../../../../components/Result/Result";
 import Icon from "../../../../components/Icon";
@@ -28,7 +29,7 @@ export default function MyExhibits() {
         <ExhibitTabPaneSpacer direction="vertical" size="large">
             {!selectedFile && (
                 <>
-                    <Space size="middle">
+                    <Space size="middle" align="center">
                         <Text size="large" state={ColorStatus.white}>
                             My Exhibits
                         </Text>

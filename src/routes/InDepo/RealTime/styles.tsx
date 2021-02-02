@@ -25,16 +25,10 @@ export const StyledRealTimeContainer = styled.div`
         }
 
         & > :not(:last-child) {
-            padding-bottom: ${({ theme }) => `${getREM(theme.default.spaces[5])}`};
-            margin-bottom: ${({ theme }) => `${getREM(theme.default.spaces[5])}`};
+            margin-bottom: ${({ theme }) => `${getREM(theme.default.spaces[6])}`};
             border-bottom: ${({ theme }) => `1px dashed ${theme.colors.inDepoBlue[2]}`};
         }
     }
-`;
-
-export const RealTimeHeader = styled.div`
-    text-align: center;
-    padding: ${({ theme }) => `${getREM(theme.default.spaces[6] * 6)} 0`};
 `;
 
 export const RoughDraftPill = styled.div`

@@ -1,7 +1,8 @@
 import React, { ReactElement } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Space, Form, Row } from "antd";
+import { Form, Row } from "antd";
 import { useForm, useFormContext } from "react-hook-form";
+import Space from "../../../../components/Space";
 import Modal from "../../../../components/Modal";
 import Confirm from "../../../../components/Confirm";
 import Button from "../../../../components/Button";
@@ -77,22 +78,17 @@ export default function OtherParticipantsModal({
 
     const modalForm = (
         <Modal destroyOnClose visible={open} centered onlyBody onCancel={handleCloseModal}>
-            <Space
-                direction="vertical"
-                size="large"
-                style={{ width: "100%" }}
-                data-testid="add_participants_modal_form"
-            >
-                <div>
+            <Space direction="vertical" size="large" fullWidth data-testid="add_participants_modal_form">
+                <Space.Item fullWidth>
                     <Title level={4} weight="light">
                         {CONSTANTS.OTHER_PARTICIPANTS_MODAL_TITLE}
                     </Title>
                     <Text state={ColorStatus.disabled} ellipsis={false} height={2}>
                         {CONSTANTS.OTHER_PARTICIPANTS_MODAL_SUBTITLE}
                     </Text>
-                </div>
+                </Space.Item>
                 <Form name="basic" onFinish={handleSubmit(onSubmit)} layout="vertical" preserve={false}>
-                    <Space direction="vertical" size="small" style={{ width: "100%" }}>
+                    <Space direction="vertical" size="small" fullWidth>
                         <RHFInput
                             control={control}
                             defaultValue={initialValues.email || ""}

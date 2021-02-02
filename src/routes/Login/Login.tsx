@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { Redirect, Link } from "react-router-dom";
-import { Col, Row, Form, Space } from "antd";
+import { Col, Row, Form } from "antd";
 import { InputWrapper } from "../../components/Input/styles";
+import Space from "../../components/Space";
 import Container from "../../components/Container";
 import Alert from "../../components/Alert";
 import Button from "../../components/Button";
@@ -50,18 +51,18 @@ const Login = ({ location }: LoginProps) => {
             <Row justify="center" align="middle">
                 <Col xs={20} sm={16} lg={14} xxl={12}>
                     <Form onFinish={handleSubmit} layout="vertical">
-                        <Space direction="vertical" size="large" style={{ width: "100%" }}>
-                            <div>
+                        <Space direction="vertical" size="large" fullWidth>
+                            <Space.Item fullWidth>
                                 <Title level={3} weight="light" noMargin>
                                     Welcome
                                 </Title>
                                 <Text size="large">Log in into your account</Text>
-                            </div>
+                            </Space.Item>
                             {data && <Alert message="Your email has been verified successfully" type="success" />}
                             {error && error !== 409 && <Alert message={ERRORS.NETWORK_ERROR} type="error" />}
                             {error === 409 && <Alert message={ERRORS.INVALID_CODE_ERROR} type="error" />}
                             {submitError && <Alert message={submitError} type="error" />}
-                            <div>
+                            <Space.Item fullWidth>
                                 <Form.Item label="Email" htmlFor="email">
                                     <InputWrapper>
                                         <Input
@@ -120,8 +121,8 @@ const Login = ({ location }: LoginProps) => {
                                 <Button disabled={loading} type="primary" block htmlType="submit">
                                     Log In
                                 </Button>
-                            </div>
-                            <Space size="small" style={{ width: "100%" }}>
+                            </Space.Item>
+                            <Space align="center" fullWidth>
                                 <Text>New user? </Text>
                                 <Link tabIndex={-1} to="/sign-up">
                                     <Button tabIndex={1} type="link">

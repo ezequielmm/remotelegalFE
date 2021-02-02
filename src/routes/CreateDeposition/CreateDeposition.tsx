@@ -1,8 +1,9 @@
 import React from "react";
-import { Form, Row, Space } from "antd";
+import { Form } from "antd";
 import { useHistory } from "react-router";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { FormProvider, useForm } from "react-hook-form";
+import Space from "../../components/Space";
 import Button from "../../components/Button";
 import Title from "../../components/Typography/Title";
 import CaseSection from "./CaseSection";
@@ -82,7 +83,7 @@ const CreateDeposition = () => {
     ) : (
         <FormProvider {...methods}>
             <Form onFinish={methods.handleSubmit(submitDepositions)} layout="vertical">
-                <Space direction="vertical" size="large" style={{ width: "100%" }}>
+                <Space direction="vertical" size="large">
                     <Title level={4} noMargin weight="light">
                         Schedule Deposition
                     </Title>
@@ -91,30 +92,28 @@ const CreateDeposition = () => {
                     <OtherParticipantsSection />
                     <DetailsSection />
                     <RequesterSection invalidRequester={error === 404 && "Invalid email"} />
-                    <Row justify="end">
-                        <Space size="large">
-                            <Button
-                                type="text"
-                                onClick={() => {
-                                    if (history.length === 2) {
-                                        return history.push("/dashboard");
-                                    }
-                                    return history.goBack();
-                                }}
-                            >
-                                Cancel
-                            </Button>
-                            <Button
-                                data-testid="create_deposition_button"
-                                loading={loading}
-                                htmlType="submit"
-                                onClick={methods.handleSubmit(submitDepositions)}
-                                type="primary"
-                            >
-                                {CONSTANTS.SCHEDULE_DEPOSITION}
-                            </Button>
-                        </Space>
-                    </Row>
+                    <Space size="large" justify="flex-end" fullWidth>
+                        <Button
+                            type="text"
+                            onClick={() => {
+                                if (history.length === 2) {
+                                    return history.push("/dashboard");
+                                }
+                                return history.goBack();
+                            }}
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            data-testid="create_deposition_button"
+                            loading={loading}
+                            htmlType="submit"
+                            onClick={methods.handleSubmit(submitDepositions)}
+                            type="primary"
+                        >
+                            {CONSTANTS.SCHEDULE_DEPOSITION}
+                        </Button>
+                    </Space>
                 </Space>
             </Form>
         </FormProvider>

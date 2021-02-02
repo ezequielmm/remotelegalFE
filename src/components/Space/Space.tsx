@@ -147,8 +147,20 @@ const StyledSpace = styled.div.attrs((props: ISpaceProps) => ({
     }}
 `;
 
-const Space = ({ direction = "horizontal", justify = "flex-start", align = "flex-start", ...rest }: ISpaceProps) => {
-    return <StyledSpace direction={direction} justify={justify} align={align} {...rest} />;
+const StyledSpaceItem = styled.div<{ fullWidth?: boolean }>`
+    width: ${({ fullWidth }) => (fullWidth ? "100%" : "unset")};
+`;
+
+const Space = ({
+    direction = "horizontal",
+    justify = "flex-start",
+    align = "flex-start",
+    size = "small",
+    ...rest
+}: ISpaceProps) => {
+    return <StyledSpace direction={direction} justify={justify} align={align} size={size} {...rest} />;
 };
+
+Space.Item = StyledSpaceItem;
 
 export default Space;

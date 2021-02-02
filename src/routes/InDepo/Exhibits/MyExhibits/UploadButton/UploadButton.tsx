@@ -1,6 +1,6 @@
 import React, { ReactElement, useState } from "react";
 import { RcCustomRequestOptions } from "antd/lib/upload/interface";
-import { Space } from "antd";
+import Space from "../../../../../components/Space";
 import Icon from "../../../../../components/Icon";
 import Text from "../../../../../components/Typography/Text";
 import Dragger from "../../../../../components/Dragger";
@@ -35,7 +35,7 @@ export default function UploadButton({ onUpload, onUploadCompleted }: IUploadBut
             progress={{ strokeWidth: 8, showInfo: false, className: "progress" }}
             itemRender={(n, f) => <ProgressBarRender errors={f?.error} percent={f.percent} status={f.status} />}
         >
-            <Space size="middle">
+            <Space size="middle" justify="center" align="center" fullWidth>
                 <Icon icon={uploadIcon} style={{ fontSize: "2.6rem" }} />
                 <Text state={ColorStatus.white}>UPLOAD FILES</Text>
             </Space>

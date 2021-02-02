@@ -1,6 +1,7 @@
 import React from "react";
-import { Row, Col, Space } from "antd";
+import { Row, Col } from "antd";
 import { useFormContext } from "react-hook-form";
+import Space from "../../../components/Space";
 import RHFInput from "../../../components/RHFInput";
 import Card from "../../../components/Card";
 import Title from "../../../components/Typography/Title";
@@ -14,13 +15,11 @@ interface RequesterSectionProps {
 const RequesterSection = ({ invalidRequester }: RequesterSectionProps) => {
     const { control, errors } = useFormContext();
     return (
-        <Card>
-            <Space direction="vertical" size="large" style={{ width: "100%" }}>
-                <Col xs={24}>
-                    <Title level={5} weight="regular" noMargin>
-                        {CONSTANTS.REQUESTER_TITLE}
-                    </Title>
-                </Col>
+        <Card fullWidth>
+            <Space direction="vertical" size="large" fullWidth>
+                <Title level={5} weight="regular" noMargin>
+                    {CONSTANTS.REQUESTER_TITLE}
+                </Title>
                 <Row gutter={theme.default.baseUnit * theme.default.spaces[9]} style={{ width: "100%" }}>
                     <Col xs={8}>
                         <RHFInput

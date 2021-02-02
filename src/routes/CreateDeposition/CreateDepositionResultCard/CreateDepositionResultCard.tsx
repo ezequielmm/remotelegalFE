@@ -1,5 +1,6 @@
 import React from "react";
-import { Col, Row, Space } from "antd";
+import { Col, Row } from "antd";
+import Space from "../../../components/Space";
 import Button from "../../../components/Button";
 import * as CONSTANTS from "../../../constants/createDeposition";
 import CardFetchError from "../../../components/CardFetchError";
@@ -33,7 +34,7 @@ export default function CreateDepositionResultCard({
             icon={<Icon icon={SuccessCreateIcon} />}
             extra={
                 <Row>
-                    <Space direction="vertical" size="small" style={{ width: "100%" }}>
+                    <Space direction="vertical" size="small" justify="center" align="center" fullWidth>
                         <Col sm={24}>
                             <Button
                                 data-testid="schedule_new_deposition_button"

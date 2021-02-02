@@ -1,13 +1,16 @@
 import React, { useContext, useEffect, useRef } from "react";
-import { Space } from "antd";
+import moment from "moment-timezone";
+import Space from "../../../components/Space";
 import Text from "../../../components/Typography/Text";
+import Alert from "../../../components/Alert";
 import { GlobalStateContext } from "../../../state/GlobalState";
 import { ContainerProps, StyledLayoutContent, StyledLayoutCotainer } from "../styles";
-import { RealTimeHeader, RoughDraftPill, StyledRealTimeContainer } from "./styles";
-import { TimeZones } from "../../../models/general";
-import ColorStatus from "../../../types/ColorStatus";
-import Alert from "../../../components/Alert";
+import { RoughDraftPill, StyledRealTimeContainer } from "./styles";
 import * as CONSTANTS from "../../../constants/inDepo";
+import ColorStatus from "../../../types/ColorStatus";
+import { TimeZones } from "../../../models/general";
+import { theme } from "../../../constants/styles/theme";
+import { getREM } from "../../../constants/styles/utils";
 
 const RealTime = ({
     visible,
@@ -33,25 +36,19 @@ const RealTime = ({
             <StyledLayoutContent>
                 <StyledRealTimeContainer>
                     <div ref={scrollableRef}>
-                        <div>
-                            <RealTimeHeader>
-                                <Space direction="vertical" size="small">
-                                    <Text
-                                        state={ColorStatus.primary}
-                                        font="code"
-                                        size="small"
-                                        weight="bold"
-                                        block
-                                        uppercase
-                                    >
-                                        KOREMATSU V. UNITED STATES
-                                    </Text>
-                                    <Text state={ColorStatus.disabled} font="code" size="small" block>
-                                        Case No. 123-45214
-                                    </Text>
-                                </Space>
-                            </RealTimeHeader>
-                        </div>
+                        <Space
+                            direction="vertical"
+                            justify="center"
+                            align="center"
+                            py={`${getREM(theme.default.spaces[6] * 6)}`}
+                        >
+                            <Text state={ColorStatus.primary} font="code" size="small" weight="bold" block uppercase>
+                                KOREMATSU V. UNITED STATES
+                            </Text>
+                            <Text state={ColorStatus.disabled} font="code" size="small" block>
+                                Case No. 123-45214
+                            </Text>
+                        </Space>
                         <div>
                             <RoughDraftPill>ROUGH DRAFT: NOT FOR OFFICIAL USE</RoughDraftPill>
                             <Space direction="vertical" size="middle">
@@ -80,7 +77,6 @@ const RealTime = ({
                                         ) : (
                                             <Space
                                                 direction="vertical"
-                                                size="small"
                                                 key={
                                                     transcription.from
                                                         ? transcription.from + transcription.to
@@ -95,7 +91,12 @@ const RealTime = ({
                                                     block
                                                     dataTestId="transcription_title"
                                                 >
-                                                    {`${transcription.userName || "Guest"} `}
+                                                    <>
+                                                        {`${transcription.userName || "Guest"} `}
+                                                        {moment(transcription.transcriptDateTime)
+                                                            .tz(timeZone)
+                                                            .format("hh:mm:ss A")}
+                                                    </>
                                                 </Text>
                                                 <Text
                                                     font="code"
