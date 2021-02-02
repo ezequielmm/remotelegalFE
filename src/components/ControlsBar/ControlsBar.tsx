@@ -120,7 +120,7 @@ export default function ControlsBar({
 
         breakrooms.forEach((item, i) => {
             menuItems.push(
-                <Menu.Item key={item.id}>
+                <Menu.Item disabled unsetDisabledCursor key={item.id}>
                     <Space align="center" justify="space-between" size="large" fullWidth>
                         <Text block state={ColorStatus.white}>
                             {item.name}

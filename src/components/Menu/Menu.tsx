@@ -40,7 +40,13 @@ const Menu = (props: IMenuProps) => {
     );
 };
 
-Menu.Item = ANTMenu.Item;
+const MenuItem = styled(ANTMenu.Item)<{ unsetDisabledCursor?: boolean }>`
+    &.ant-menu-item-disabled {
+        cursor: ${({ unsetDisabledCursor }) => unsetDisabledCursor && "unset !important"};
+    }
+`;
+
+Menu.Item = MenuItem;
 Menu.Divider = ANTMenu.Divider;
 Menu.ItemGroup = ANTMenu.ItemGroup;
 Menu.SubMenu = ANTMenu.SubMenu;
