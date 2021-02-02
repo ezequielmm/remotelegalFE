@@ -54,10 +54,8 @@ export const ExhibitViewer = ({
             {pending && <Spinner />}
             {documentUrl && (
                 <PDFTronViewer
-                    canStamp={
-                        exhibitTab === LIVE_EXHIBIT_TAB &&
-                        permissions.includes(DepositionModel.DepositionPermissionsTypes.stampExhibit)
-                    }
+                    canStamp={permissions.includes(DepositionModel.DepositionPermissionsTypes.stampExhibit)}
+                    showStamp={exhibitTab === LIVE_EXHIBIT_TAB}
                     document={documentUrl}
                     filename={file?.displayName}
                     annotations={annotations}

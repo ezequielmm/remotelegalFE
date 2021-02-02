@@ -18,11 +18,19 @@ export interface PdfTronViewerProps {
     document?: string | Blob | File;
     filename?: string;
     canStamp?: boolean;
+    showStamp?: boolean;
     annotations?: [];
     onAnnotationChange?: (data: AnnotationPayload) => void;
 }
 
-const PDFTronViewer = ({ document, filename, canStamp, annotations, onAnnotationChange }: PdfTronViewerProps) => {
+const PDFTronViewer = ({
+    document,
+    filename,
+    canStamp,
+    showStamp,
+    annotations,
+    onAnnotationChange,
+}: PdfTronViewerProps) => {
     const { state } = useContext(GlobalStateContext);
     const { timeZone } = state.room;
     const [openStampModal, setStampModal] = useState(false);
@@ -33,10 +41,10 @@ const PDFTronViewer = ({ document, filename, canStamp, annotations, onAnnotation
     const shouldToastAppear = useRef(true);
 
     useEffect(() => {
-        if (!canStamp && PDFTron) {
+        if (!(showStamp && canStamp) && PDFTron) {
             PDFTron.setHeaderItems((header) => header.delete("rubberStampToolGroupButton"));
         }
-        if (canStamp && PDFTron) {
+        if (showStamp && canStamp && PDFTron) {
             PDFTron.setHeaderItems((header) => {
                 header.get("customFullScreenButton").insertAfter({
                     ...CONSTANTS.OPEN_STAMP_MODAL_BUTTON,
@@ -57,7 +65,7 @@ const PDFTronViewer = ({ document, filename, canStamp, annotations, onAnnotation
                 });
             });
         }
-    }, [PDFTron, canStamp]);
+    }, [PDFTron, showStamp, canStamp]);
 
     const sendAnnotationChange = useCallback(
         (annotation, action: AnnotationActionType) => {
