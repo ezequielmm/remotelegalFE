@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { GlobalStateContext } from "../../state/GlobalState";
 import { DepositionID } from "../../state/types";
@@ -10,11 +10,22 @@ const useRecording = (recording: boolean) => {
     const { dataTrack } = state.room;
     const { deps } = useContext(GlobalStateContext);
     const { depositionID } = useParams<DepositionID>();
+    const [loadingStartPauseRecording, setLoadingStartPauseRecording] = useState<boolean>(false);
 
     const [record, loading, , res] = useAsyncCallback(async (id: string, onRecord: boolean) => {
         const response = await deps.apiService.recordDeposition(id, onRecord);
         return response;
     }, []);
+
+    useEffect(() => {
+        let delay;
+        if (loading) {
+            setLoadingStartPauseRecording(true);
+        } else {
+            delay = setTimeout(() => setLoadingStartPauseRecording(false), 1000);
+        }
+        return () => clearTimeout(delay);
+    }, [loading]);
 
     const startPauseRecording = useCallback(() => {
         if (loading) {
@@ -33,6 +44,6 @@ const useRecording = (recording: boolean) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dataTrack, record, res]);
 
-    return startPauseRecording;
+    return { startPauseRecording, loadingStartPauseRecording };
 };
 export default useRecording;

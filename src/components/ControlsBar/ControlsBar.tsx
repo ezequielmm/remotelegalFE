@@ -86,7 +86,7 @@ export default function ControlsBar({
         audioTracks as LocalAudioTrack[],
         videoTracks as LocalVideoTrack[]
     );
-    const startPauseRecording = useRecording(!isRecording);
+    const { startPauseRecording, loadingStartPauseRecording } = useRecording(!isRecording);
     const [summaryOpen, togglerSummary] = useState(false);
     const [supportOpen, togglerSupport] = useState(false);
     const [breakroomsOpen, togglerBreakrooms] = useState(false);
@@ -179,6 +179,7 @@ export default function ControlsBar({
                 />
                 {canRecord && (
                     <Control
+                        disabled={loadingStartPauseRecording}
                         data-testid="record"
                         isToggled={isRecording}
                         onClick={startPauseRecording}
