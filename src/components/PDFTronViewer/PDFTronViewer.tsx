@@ -41,7 +41,7 @@ const PDFTronViewer = ({
     const shouldToastAppear = useRef(true);
 
     useEffect(() => {
-        if (!(showStamp && canStamp) && PDFTron) {
+        if (!showStamp && PDFTron) {
             PDFTron.setHeaderItems((header) => header.delete("rubberStampToolGroupButton"));
         }
         if (showStamp && canStamp && PDFTron) {
@@ -94,7 +94,7 @@ const PDFTronViewer = ({
             sendAnnotationChange(child, AnnotationAction.Create);
         });
         modifiedAnnots.childNodes.forEach((child) => {
-            if (child.nodeName !== "stamp" || (child.nodeName === "stamp" && canStamp)) {
+            if (child.nodeName !== "stamp" || canStamp) {
                 sendAnnotationChange(child, AnnotationAction.Modify);
             }
         });
@@ -124,9 +124,7 @@ const PDFTronViewer = ({
                 const stamp = PDFTron.annotManager.getAnnotationById("STAMP");
                 if (stamp) {
                     if (!canStamp) {
-                        stamp.NoDelete = true;
-                        stamp.NoResize = true;
-                        stamp.NoMove = true;
+                        stamp.ReadOnly = true;
                     }
                     stampRef.current = stamp;
                 }
