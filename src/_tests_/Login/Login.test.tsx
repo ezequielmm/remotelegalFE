@@ -2,6 +2,7 @@ import { fireEvent, waitForDomChange, waitForElement } from "@testing-library/re
 import Amplify, { Auth } from "aws-amplify";
 import React from "react";
 import { Route, Switch } from "react-router-dom";
+import TEMP_TOKEN from "../../constants/ApiService";
 import * as ERRORS from "../../constants/login";
 import Login from "../../routes/Login";
 import * as CONSTANTS from "../constants/login";
@@ -11,6 +12,8 @@ import renderWithGlobalContext from "../utils/renderWithGlobalContext";
 Amplify.configure({
     Auth: CONSTANTS.AMPLIFY_CONFIG,
 });
+
+Storage.prototype.removeItem = jest.fn();
 
 const Dashboard = () => {
     return <div>Login Successfully</div>;
@@ -68,8 +71,8 @@ describe("Login", () => {
 
     it("should call auth with the right parameters and button should be disabled", async () => {
         Auth.signIn = jest.fn().mockImplementation(() => {
-            return new Promise(() => {
-                return "";
+            return new Promise((resolve) => {
+                resolve("");
             });
         });
         const { getByPlaceholderText, getByRole } = renderWithGlobalContext(<Login />);
@@ -83,6 +86,7 @@ describe("Login", () => {
         await waitForDomChange();
         expect(button).toBeDisabled();
         expect(Auth.signIn).toHaveBeenCalledWith("test1@gmail.com", "aaaa");
+        expect(localStorage.removeItem).toHaveBeenCalledWith(TEMP_TOKEN);
     });
 
     it("should display the correct error message when credentials are invalid", async () => {

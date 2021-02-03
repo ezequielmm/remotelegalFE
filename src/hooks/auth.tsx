@@ -2,6 +2,7 @@
 import { Auth } from "aws-amplify";
 import { useContext, useEffect, useRef, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
+import TEMP_TOKEN from "../constants/ApiService";
 import * as ERRORS from "../constants/login";
 import { GlobalStateContext } from "../state/GlobalState";
 import useAsyncCallback from "./useAsyncCallback";
@@ -37,6 +38,7 @@ export const useSignIn = (location, emailValue, passwordValue) => {
         setLoading(true);
         try {
             await Auth.signIn(emailValue.trim(), passwordValue);
+            localStorage.removeItem(TEMP_TOKEN);
             return history.push(params || "/dashboard");
         } catch (e) {
             setLoading(false);
