@@ -14,22 +14,12 @@ export interface IUploadButton {
 }
 const UploadButton = ({ fileName, label, removeFile }: IUploadButton) => {
     return fileName ? (
-        <StyledAttachButton icon={<Icon fontSize={8} icon={AttachClipIcon} />} tabIndex={-1}>
+        <StyledAttachButton icon={<Icon size={8} icon={AttachClipIcon} />} tabIndex={-1}>
             <Text state={ColorStatus.primary}>{fileName}</Text>
-            <Icon
-                icon={CloseIcon}
-                onClick={removeFile}
-                className="close-icon"
-                style={{ fontSize: "16px" }}
-                tabIndex={0}
-            />
+            <Icon icon={CloseIcon} onClick={removeFile} className="close-icon" size={6} tabIndex={0} />
         </StyledAttachButton>
     ) : (
-        <StyledUploadButton
-            data-testid="caption_input"
-            icon={<Icon fontSize={9} icon={UploadCloudIcon} />}
-            tabIndex={-1}
-        >
+        <StyledUploadButton data-testid="caption_input" icon={<Icon size={9} icon={UploadCloudIcon} />} tabIndex={-1}>
             {label}
         </StyledUploadButton>
     );

@@ -63,9 +63,9 @@ export default function BreakroomControlsBar({
                     onClick={() => setAudioEnabled(!isAudioEnabled)}
                     icon={
                         isAudioEnabled ? (
-                            <Icon data-testid="unmuted" icon={UnmuteIcon} fontSize="1.625rem" />
+                            <Icon data-testid="unmuted" icon={UnmuteIcon} size="1.625rem" />
                         ) : (
-                            <Icon data-testid="muted" icon={MuteIcon} fontSize="1.625rem" />
+                            <Icon data-testid="muted" icon={MuteIcon} size="1.625rem" />
                         )
                     }
                 />
@@ -76,9 +76,9 @@ export default function BreakroomControlsBar({
                     isToggled={cameraEnabled}
                     icon={
                         cameraEnabled ? (
-                            <Icon data-testid="camerashown" icon={CameraOnIcon} fontSize="1.625rem" />
+                            <Icon data-testid="camerashown" icon={CameraOnIcon} size="1.625rem" />
                         ) : (
-                            <Icon data-testid="camerahidden" icon={CameraOffIcon} fontSize="1.625rem" />
+                            <Icon data-testid="camerahidden" icon={CameraOffIcon} size="1.625rem" />
                         )
                     }
                 />
@@ -91,7 +91,7 @@ export default function BreakroomControlsBar({
                         onClick={toggleExhibits}
                         type="simple"
                         label={CONTROLS_BAR_EXHIBITS_LABEL}
-                        icon={<Icon icon={ExhibitsIcon} fontSize="1.625rem" />}
+                        icon={<Icon icon={ExhibitsIcon} size="1.625rem" />}
                     />
                 </StyledPrimaryControls>
                 <StyledSecondaryControls>
@@ -101,7 +101,7 @@ export default function BreakroomControlsBar({
                         type="rounded"
                         color="red"
                         label="Leave Breakroom"
-                        icon={<Icon icon={EndCallIcon} fontSize="1.625rem" />}
+                        icon={<Icon icon={EndCallIcon} size="1.625rem" />}
                     />
                 </StyledSecondaryControls>
             </StyledGeneralControls>

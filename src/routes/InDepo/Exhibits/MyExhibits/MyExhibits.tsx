@@ -52,7 +52,7 @@ export default function MyExhibits() {
                             <Row justify="center" align="middle" style={{ height: "100%" }}>
                                 <Col sm={18} lg={14} xl={13} xxl={9}>
                                     <Result
-                                        icon={<Icon icon={MyExhibitsIcon} style={{ fontSize: "6rem" }} />}
+                                        icon={<Icon icon={MyExhibitsIcon} size="6rem" />}
                                         title={MY_EXHIBITS_RESULT_TITLE}
                                         subTitle={MY_EXHIBITS_RESULT_SUBTITLE}
                                         status={CustomStatus.empty}

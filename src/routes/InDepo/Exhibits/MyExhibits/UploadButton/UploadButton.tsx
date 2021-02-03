@@ -36,7 +36,7 @@ export default function UploadButton({ onUpload, onUploadCompleted }: IUploadBut
             itemRender={(n, f) => <ProgressBarRender errors={f?.error} percent={f.percent} status={f.status} />}
         >
             <Space size="middle" justify="center" align="center" fullWidth>
-                <Icon icon={uploadIcon} style={{ fontSize: "2.6rem" }} />
+                <Icon icon={uploadIcon} size="2.5rem" />
                 <Text state={ColorStatus.white}>UPLOAD FILES</Text>
             </Space>
         </Dragger>

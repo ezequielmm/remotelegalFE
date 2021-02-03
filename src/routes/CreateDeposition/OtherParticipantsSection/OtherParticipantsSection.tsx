@@ -114,14 +114,14 @@ export default function OtherParticipantsSection(): ReactElement {
                                             data-testid="other_participant_section_edit_button"
                                             onClick={() => onEditOtherParticipant(item, index)}
                                         >
-                                            <Icon icon={EditIcon} style={{ fontSize: "1.4rem" }} />
+                                            <Icon icon={EditIcon} size={8} />
                                         </Button>
                                         <Button
                                             type="link"
                                             onClick={() => onRemoveParticipant(index)}
                                             data-testid="delete_participants_modal_prompt"
                                         >
-                                            <Icon icon={DeleteIcon} style={{ fontSize: "1.4rem" }} />
+                                            <Icon icon={DeleteIcon} size={8} />
                                         </Button>
                                     </Space>
                                 );

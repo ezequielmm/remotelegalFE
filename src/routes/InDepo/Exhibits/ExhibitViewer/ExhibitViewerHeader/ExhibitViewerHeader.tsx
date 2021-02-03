@@ -49,12 +49,7 @@ export default function ExhibitViewerHeader({
             <Col md={6} xxl={4}>
                 {showBackButton && (
                     <Text state={ColorStatus.white}>
-                        <Icon
-                            data-testid="view-document-back-button"
-                            icon={backIcon}
-                            style={{ fontSize: "16px" }}
-                            onClick={onClose}
-                        />
+                        <Icon data-testid="view-document-back-button" icon={backIcon} size={6} onClick={onClose} />
                     </Text>
                 )}
             </Col>

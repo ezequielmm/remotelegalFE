@@ -36,7 +36,7 @@ const WitnessesSection = () => {
                 disabled={fields.length === CONSTANTS.WITNESSES_LIMIT}
                 onClick={handleAddDeposition}
                 type="ghost"
-                icon={<Icon icon={AddIcon} style={{ fontSize: "1.225rem" }} />}
+                icon={<Icon icon={AddIcon} size={8} />}
             >
                 Add Witness
             </Button>

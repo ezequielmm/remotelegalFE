@@ -10,7 +10,7 @@ export default function OtherParticipantsEmptySection(): ReactElement {
     return (
         <Space direction="vertical" align="center" data-testid="empty_data_section">
             {/* TODO add size property to Icon component */}
-            <Icon data-testid="remove" style={{ fontSize: "2.8rem" }} icon={ParticipantsIcon} />
+            <Icon data-testid="remove" size="2.75rem" icon={ParticipantsIcon} />
             <Text size="extralarge" weight="light" ellipsis={false} state={ColorStatus.disabled} font="header">
                 {CONSTANTS.EMPTY_STATE_TITLE}
             </Text>

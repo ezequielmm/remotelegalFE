@@ -58,14 +58,7 @@ export default function RHFUploadFile({
                         />
                     ) : (
                         <Row>
-                            <Button
-                                icon={
-                                    <Icon
-                                        icon={fileList[0] ? PaperClipOutlined : UploadOutlined}
-                                        style={{ fontSize: "1.225rem" }}
-                                    />
-                                }
-                            >
+                            <Button icon={<Icon icon={fileList[0] ? PaperClipOutlined : UploadOutlined} size={8} />}>
                                 {fileList[0] ? fileList[0].name : placeholder || wrapperProps.label}
                                 {fileList[0] && <CloseOutlined onClick={(ev) => removeFile(ev, onChange)} />}
                             </Button>

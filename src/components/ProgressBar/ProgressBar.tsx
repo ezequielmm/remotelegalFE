@@ -22,7 +22,7 @@ export default function ProgressBar({ statusText = "", percent, errors = [], onC
             {errors.length === 0 && (
                 <Text state={ColorStatus.white} size="small">
                     <Space>
-                        <Icon icon={attachIcon} style={{ fontSize: "16px" }} />
+                        <Icon icon={attachIcon} size={6} />
                         {statusText}
                     </Space>
                 </Text>
@@ -30,7 +30,7 @@ export default function ProgressBar({ statusText = "", percent, errors = [], onC
             {errors.map((error) => (
                 <Text key={error} state={ColorStatus.white} size="small" ellipsis>
                     <Space>
-                        <Icon icon={attachIcon} style={{ fontSize: "16px" }} />
+                        <Icon icon={attachIcon} size={6} />
                         {error}
                     </Space>
                 </Text>
@@ -47,7 +47,7 @@ export default function ProgressBar({ statusText = "", percent, errors = [], onC
                 {errors.length > 0 && (
                     <Button type="link" onClick={onClose}>
                         <Text state={ColorStatus.white}>
-                            <Icon data-testid="progress-bar-close-icon" icon={closeIcon} style={{ fontSize: "12px" }} />
+                            <Icon data-testid="progress-bar-close-icon" icon={closeIcon} size={4} />
                         </Text>
                     </Button>
                 )}

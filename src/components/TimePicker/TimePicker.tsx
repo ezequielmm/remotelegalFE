@@ -123,7 +123,7 @@ const TimePicker = (props: ITimePickerProps) => (
     <StyledPopupContainer>
         <StyledTimePicker
             getPopupContainer={(trigger) => trigger.parentElement}
-            suffixIcon={<Icon icon={TimeIcon} style={{ fontSize: "24px" }} />}
+            suffixIcon={<Icon icon={TimeIcon} size={9} />}
             // eslint-disable-next-line react/jsx-props-no-spreading
             {...props}
         />

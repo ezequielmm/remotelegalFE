@@ -86,7 +86,7 @@ const datepicker = ({ ...props }: IDatePickerProps) => (
             // eslint-disable-next-line react/jsx-props-no-spreading
             {...props}
             getPopupContainer={(trigger) => trigger.parentElement}
-            suffixIcon={<Icon fontSize={9} icon={CalendarIcon} />}
+            suffixIcon={<Icon size={9} icon={CalendarIcon} />}
         />
     </StyledPopupContainer>
 );

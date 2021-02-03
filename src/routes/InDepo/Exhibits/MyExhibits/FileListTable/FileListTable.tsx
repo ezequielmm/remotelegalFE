@@ -47,7 +47,7 @@ const FileListTable = (props: IFileListTable) => {
             <Menu.Item key="0">
                 <Button type="link" onClick={() => toggleModal("rename")}>
                     <Space size="middle" align="center">
-                        <Icon icon={RenameIcon} style={{ fontSize: "1.25rem", color: "white" }} />
+                        <Icon icon={RenameIcon} size={8} style={{ color: "white" }} />
                         <Text state={ColorStatus.white} size="small">
                             Rename
                         </Text>
@@ -58,7 +58,7 @@ const FileListTable = (props: IFileListTable) => {
             <Menu.Item key="1">
                 <Button type="link" onClick={() => toggleModal("delete")}>
                     <Space size="middle" align="center">
-                        <Icon icon={DeleteIcon} style={{ fontSize: "1.25rem", color: "white" }} />
+                        <Icon icon={DeleteIcon} size={8} style={{ color: "white" }} />
                         <Text state={ColorStatus.white} size="small">
                             Delete
                         </Text>
@@ -173,7 +173,7 @@ const FileListTable = (props: IFileListTable) => {
                     width={getREM(GlobalTheme.default.spaces[6] * 3)}
                     render={() => (
                         <Dropdown disabled overlay={menu} trigger={["click"]} styled arrow placement="bottomRight">
-                            <Icon icon={kebebIcon} style={{ fontSize: "24px" }} />
+                            <Icon icon={kebebIcon} size={9} />
                         </Dropdown>
                     )}
                 />

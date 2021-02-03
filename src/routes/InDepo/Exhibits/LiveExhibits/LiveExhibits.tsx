@@ -29,7 +29,7 @@ export default function LiveExhibits() {
                 <Row justify="center" align="middle" style={{ height: "100%" }}>
                     <Col sm={18} lg={14} xl={13} xxl={9}>
                         <Result
-                            icon={<Icon icon={LiveExhibitsIcon} style={{ fontSize: "6.1rem" }} />}
+                            icon={<Icon icon={LiveExhibitsIcon} size="6rem" />}
                             title={LIVE_EXHIBITS_TITLE}
                             subTitle={LIVE_EXHIBITS_SUBTITLE}
                             status={CustomStatus.successCreate}

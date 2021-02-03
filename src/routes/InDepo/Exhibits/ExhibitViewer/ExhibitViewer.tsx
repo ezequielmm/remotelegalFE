@@ -66,7 +66,7 @@ export const ExhibitViewer = ({
                 <Row justify="center" align="middle" style={{ height: "100%" }}>
                     <Col sm={18} lg={14} xl={13} xxl={9}>
                         <Result
-                            icon={<Icon icon={MyExhibitsIcon} style={{ fontSize: "6rem" }} />}
+                            icon={<Icon icon={MyExhibitsIcon} size="6rem" />}
                             title={EXHIBIT_FILE_ERROR_TITLE}
                             subTitle={EXHIBIT_FILE_ERROR_SUBTITLE}
                             status="error"

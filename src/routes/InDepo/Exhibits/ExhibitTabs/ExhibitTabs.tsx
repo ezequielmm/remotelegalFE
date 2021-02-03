@@ -5,8 +5,6 @@ import Space from "../../../../components/Space";
 import Text from "../../../../components/Typography/Text";
 import ColorStatus from "../../../../types/ColorStatus";
 import { ExhibitTabContainer, ExhibitTabContainerText, ExhibitTabsContainer, Stick } from "./styles";
-import { theme } from "../../../../constants/styles/theme";
-import { getREM } from "../../../../constants/styles/utils";
 import { EXHIBIT_TAB } from "../../../../constants/exhibits";
 
 export interface ExhibitTabData {
@@ -62,8 +60,8 @@ export default function ExhibitTabs({
                                 {icon && (
                                     <Icon
                                         icon={icon}
+                                        size={7}
                                         style={{
-                                            fontSize: getREM(theme.default.spaces[7]),
                                             color: highlight && !active ? ColorStatus.primary : ColorStatus.white,
                                         }}
                                     />

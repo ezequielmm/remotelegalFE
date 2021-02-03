@@ -14,25 +14,25 @@ interface CustomIconProps
         "component" | "style" | "spin" | "rotate" | "className" | "height" | "width" | "onClick" | "tabIndex"
     > {
     icon: React.ComponentType;
-    fontSize?: range12Type | string;
+    size?: range12Type | string;
 }
 
 interface StyledIconProps extends IconComponentProps {
-    $fontSize?: range12Type | string;
+    $size?: range12Type | string;
 }
 
 const StyledCustomIcon = styled(Icon)<StyledIconProps>`
-    ${({ $fontSize }) => {
-        const rangeSize = theme.default.spaces[$fontSize];
+    ${({ $size }) => {
+        const rangeSize = theme.default.spaces[$size];
         return `
-        font-size: ${typeof $fontSize === "string" ? $fontSize : getREM(rangeSize)};
+        font-size: ${typeof $size === "string" ? $size : getREM(rangeSize)};
         `;
     }}
     &:focus {
         outline-color: ${({ theme }) => theme.default.primaryColor};
     }
 `;
-const CustomIcon = ({ icon, fontSize, ...props }: CustomIconProps) => {
-    return <StyledCustomIcon $fontSize={fontSize} component={icon} {...props} />;
+const CustomIcon = ({ icon, size, ...props }: CustomIconProps) => {
+    return <StyledCustomIcon $size={size} component={icon} {...props} />;
 };
 export default CustomIcon;

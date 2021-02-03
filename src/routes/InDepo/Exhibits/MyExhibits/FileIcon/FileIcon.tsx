@@ -24,5 +24,5 @@ export default function FileIcon({ type }: Props): ReactElement {
         png: imgIcon,
         mp4: videoIcon,
     };
-    return <Icon icon={icons[type]} style={{ fontSize: "24px" }} className="attach-icon" />;
+    return <Icon icon={icons[type]} size={9} className="attach-icon" />;
 }

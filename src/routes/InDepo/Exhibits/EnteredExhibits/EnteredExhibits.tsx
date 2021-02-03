@@ -24,7 +24,7 @@ export default function EnteredExhibits() {
             <Row justify="center" align="middle" style={{ height: "100%" }}>
                 <Col sm={18} lg={14} xl={13} xxl={9}>
                     <Result
-                        icon={<Icon icon={EnteredExhibitsIcon} style={{ fontSize: "6.1rem" }} />}
+                        icon={<Icon icon={EnteredExhibitsIcon} size="6rem" />}
                         title={ENTERED_EXHIBITS_TITLE}
                         subTitle={ENTERED_EXHIBITS_SUBTITLE}
                         status={CustomStatus.errorFetch}

@@ -62,7 +62,7 @@ const WitnessItem = ({ deposition, removeWitness, witnessNumber }: WitnessItemPr
                             type="link"
                             onClick={removeWitness}
                             data-testid="witness_delete_button"
-                            icon={<Icon icon={DeleteIcon} style={{ fontSize: "1.225rem" }} />}
+                            icon={<Icon icon={DeleteIcon} size={8} />}
                         >
                             Delete witness
                         </DeleteWitnessButton>
