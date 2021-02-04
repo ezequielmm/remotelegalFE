@@ -16,5 +16,7 @@ export const STEP_1_BUTTON_ID = "submit-email-button";
 export const STEP_2_BUTTON_ID = "join-deposition-button";
 export const NAME_INPUT_ID = "name";
 export const ROLE_INPUT = "Select your Role";
+export const ENABLED_ROLE_INPUT_ID = "role_select";
+export const DISABLED_ROLE_INPUT_ID = "role_select_disabled";
 export const BACK_BUTTON_ID = "back-button";
 export const DEPOSITION_ROUTE = "/deposition/join/";

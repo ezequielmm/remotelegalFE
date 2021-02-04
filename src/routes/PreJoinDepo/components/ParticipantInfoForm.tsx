@@ -1,26 +1,26 @@
 import { Form } from "antd";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import Select from "../../../components/Select";
-import Input from "../../../components/Input";
+import UserInfoPanel from "./UserInfoPanel";
 import Text from "../../../components/Typography/Text";
 import Button from "../../../components/Button";
 import Wizard from "../../../components/Wizard";
-import { InputWrapper } from "../../../components/Input/styles";
 import isInputEmpty from "../../../helpers/isInputEmpty";
 import ColorStatus from "../../../types/ColorStatus";
 import * as CONSTANTS from "../../../constants/preJoinDepo";
+import { InputState } from "../../../types/PreJoinDepo";
 
 interface IParticipantForm {
     nameInput: boolean;
     roleInput: boolean;
-    email?: string;
-    backButton?: boolean;
+    defaultRole?: string;
+    defaultName?: string;
+    email: string;
     loading?: boolean;
+    disableRoleSelect?: boolean;
     returnFunc?: () => void;
     joinDeposition?: (name?: string, role?: string) => void;
 }
-
 const StyledEmailContainer = styled.div`
     margin-bottom: 24px;
 `;
@@ -29,112 +29,76 @@ const ParticipantInfoForm = ({
     nameInput,
     roleInput,
     email,
-    backButton,
     loading,
+    defaultName,
+    defaultRole,
     returnFunc,
     joinDeposition,
+    disableRoleSelect,
 }: IParticipantForm) => {
-    const [name, setName] = useState("");
-    const [nameInvalid, setNameInvalid] = useState(false);
-    const [roleInvalid, setRoleInvalid] = useState(false);
-    const [role, setRole] = useState<string | null>(null);
+    const [name, setName] = useState<InputState>({
+        value: "",
+        invalid: false,
+    });
+    const [role, setRole] = useState<InputState>({ value: null, invalid: false });
 
-    const handleRoleChange = (value: string) => {
-        if (roleInvalid) {
-            setRoleInvalid(false);
+    useEffect(() => {
+        if (defaultName) {
+            setName((oldName) => ({ ...oldName, value: defaultName }));
         }
-        setRole(value);
-    };
+        if (defaultRole) {
+            setRole((oldRole) => ({ ...oldRole, value: defaultRole }));
+        }
+    }, [defaultName, defaultRole]);
 
     const handleSubmit = () => {
+        const { value: nameValue } = name;
+        const { value: roleValue } = role;
         // TODO: Modify this function to handle different scenarios
-        const nameInputInvalid = nameInput && isInputEmpty(name);
-        const roleInputInvalid = roleInput && role === null;
+        const nameInputInvalid = nameInput ? isInputEmpty(nameValue) : false;
+        const roleInputInvalid = roleInput ? roleValue === null : false;
 
         if (nameInputInvalid) {
-            setNameInvalid(true);
+            setName({ ...name, invalid: true });
         }
+
         if (roleInputInvalid) {
-            setRoleInvalid(true);
+            setRole({ ...role, invalid: true });
         }
         if (!nameInputInvalid && !roleInputInvalid) {
-            return joinDeposition(name, role);
+            return joinDeposition(nameValue, roleValue);
         }
         return null;
     };
     return (
         <Form layout="vertical" onFinish={handleSubmit}>
-            {email && (
-                <StyledEmailContainer>
-                    <Text uppercase state={ColorStatus.disabled} size="small" block>
-                        {CONSTANTS.EMAIL_TEXT}
-                    </Text>
-                    <Text block>{email}</Text>
-                </StyledEmailContainer>
-            )}
-            {nameInput && (
-                <Form.Item label="Full Name" htmlFor="name">
-                    <InputWrapper>
-                        <Input
-                            onChange={(e) => {
-                                if (nameInvalid) {
-                                    setNameInvalid(false);
-                                }
-                                setName(e.target.value);
-                            }}
-                            invalid={nameInvalid}
-                            maxLength={50}
-                            value={name}
-                            name="name"
-                            placeholder={CONSTANTS.NAME_PLACEHOLDER}
-                            data-testid={CONSTANTS.NAME_INPUT_ID}
-                        />
-                    </InputWrapper>
-                    {nameInvalid && (
-                        <Text size="small" state={ColorStatus.error}>
-                            {CONSTANTS.INVALID_NAME_MESSAGE}
-                        </Text>
-                    )}
-                </Form.Item>
-            )}
-            {roleInput && (
-                <Form.Item label="Role" htmlFor="role">
-                    <InputWrapper>
-                        <Select
-                            aria-label="role"
-                            invalid={roleInvalid}
-                            data-testid="role-select"
-                            value={role}
-                            placeholder={CONSTANTS.ROLE_INPUT}
-                            onChange={handleRoleChange}
-                        >
-                            {CONSTANTS.ROLES.map((item) => (
-                                <Select.Option data-testid={item} value={item} key={item}>
-                                    {item}
-                                </Select.Option>
-                            ))}
-                        </Select>
-                    </InputWrapper>
-                    {roleInvalid && (
-                        <Text size="small" state={ColorStatus.error}>
-                            {CONSTANTS.INVALID_ROLE_MESSAGE}
-                        </Text>
-                    )}
-                </Form.Item>
-            )}
+            <StyledEmailContainer>
+                <Text uppercase state={ColorStatus.disabled} size="small" block>
+                    {CONSTANTS.EMAIL_TEXT}
+                </Text>
+                <Text block>{email}</Text>
+            </StyledEmailContainer>
+
+            <UserInfoPanel
+                nameInput={nameInput}
+                roleInput={roleInput}
+                role={role}
+                disableRoleSelect={disableRoleSelect}
+                setName={setName}
+                name={name}
+                setRole={setRole}
+            />
+
             <Wizard.Actions>
-                {backButton && (
-                    <Button
-                        style={{ textTransform: "uppercase" }}
-                        data-testid={CONSTANTS.BACK_BUTTON_ID}
-                        onClick={returnFunc}
-                        disabled={loading}
-                        type="link"
-                        htmlType="submit"
-                    >
-                        {CONSTANTS.PREVIOUS_BUTTON}
-                    </Button>
-                )}
+                <Button
+                    style={{ textTransform: "uppercase" }}
+                    data-testid={CONSTANTS.BACK_BUTTON_ID}
+                    onClick={returnFunc}
+                    disabled={loading}
+                    type="link"
+                >
+                    {CONSTANTS.PREVIOUS_BUTTON}
+                </Button>
                 <Button
                     loading={loading}
                     data-testid={CONSTANTS.STEP_2_BUTTON_ID}

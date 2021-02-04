@@ -91,14 +91,16 @@ const PreJoinDepo = () => {
                         defaultEmailValue={emailRef.current}
                     />
                 )}
-                {step === 2 && userStatus && !userStatus.isUser && !userStatus.participant && (
+                {step === 2 && userStatus && !userStatus.isUser && (
                     <ParticipantInfoForm
                         email={emailRef.current}
                         nameInput
                         roleInput
                         joinDeposition={joinDeposition}
-                        backButton
+                        defaultRole={userStatus.participant?.role}
                         loading={registerParticipantLoading}
+                        defaultName={userStatus.participant?.name}
+                        disableRoleSelect={userStatus.participant}
                         returnFunc={() => setStep(step - 1)}
                     />
                 )}
