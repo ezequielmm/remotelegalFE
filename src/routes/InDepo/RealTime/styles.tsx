@@ -44,6 +44,19 @@ export const RoughDraftPill = styled.div`
     border-radius: ${({ theme }) => getPX(theme.default.borderRadiusBase, theme.default.baseUnit)};
 `;
 
+export const RoughDraftDetailDepoPill = styled.div`
+    width: fit-content;
+    color: ${({ theme }) => theme.default.whiteColor};
+    text-align: center;
+    font-size: 0.625rem;
+    text-transform: uppercase;
+    background-color: ${({ theme }) => hexToRGBA(theme.colors.inDepoRed[6], 0.6)};
+    padding: ${({ theme }) => `${getREM(theme.default.spaces[3])} ${getREM(theme.default.spaces[4])}`};
+    margin: ${({ theme }) => `${getREM(theme.default.spaces[12])} auto`};
+    border-radius: ${({ theme }) => getPX(theme.default.borderRadiusBase, theme.default.baseUnit)};
+    line-height: 1;
+`;
+
 export const TranscriptionsContainer = styled(Space)`
     width: 100%;
 `;
