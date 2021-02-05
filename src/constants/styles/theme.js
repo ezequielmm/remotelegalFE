@@ -137,6 +137,11 @@ const modifiedVariables = {
     "@list-item-padding": `${getREM(theme.default.spaces[6])}`,
     "@list-item-padding-sm": `${getREM(theme.default.spaces[4])} ${getREM(theme.default.spaces[6])}`,
     "@list-item-padding-lg": `${getREM(theme.default.spaces[6])} ${getREM(theme.default.spaces[9])}`,
+    "@tabs-title-font-size": `${getREM(theme.default.fontSizes[8])}`,
+    "@tabs-horizontal-margin": "0",
+    "@tabs-highlight-color": theme.default.textColor,
+    "@tabs-horizontal-padding": `0 ${getREM(theme.default.spaces[7])} ${getREM(theme.default.spaces[6])} `,
+    "@tabs-bar-margin": `0 0 ${getREM(theme.default.spaces[4])} 0`,
 };
 
 module.exports = { theme, modifiedVariables };
