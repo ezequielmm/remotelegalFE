@@ -1,4 +1,4 @@
-import React, { ReactElement } from "react";
+import React, { ReactElement, useState } from "react";
 import { LocalAudioTrack, LocalParticipant, LocalVideoTrack } from "twilio-video";
 import useParticipantTracks from "../../hooks/InDepo/useParticipantTracks";
 import useTracksStatus from "../../hooks/InDepo/useTracksStatus";
@@ -24,6 +24,15 @@ import Control from "../Control/Control";
 import Logo from "../Logo";
 import { StyledSecondaryControls } from "../ControlsBar/styles";
 import { CONTROLS_BAR_EXHIBITS_LABEL } from "../../constants/inDepo";
+import Modal from "../Modal";
+import Result from "../Result";
+import Button from "../Button";
+import {
+    LEAVE_BREAKROOM_TITLE,
+    LEAVE_BREAKROOM_SUBTITLE,
+    LEAVE_BREAKROOM_STAY,
+    LEAVE_BREAKROOM_LEAVE,
+} from "../../constants/inBreakroom";
 
 interface IBreakroomControlsBar {
     localParticipant: LocalParticipant;
@@ -38,53 +47,80 @@ export default function BreakroomControlsBar({
     exhibitsOpen,
     togglerExhibits,
 }: IBreakroomControlsBar): ReactElement {
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const { videoTracks, audioTracks } = useParticipantTracks(localParticipant);
     const { isAudioEnabled, cameraEnabled, setAudioEnabled, setCameraEnabled } = useTracksStatus(
         audioTracks as LocalAudioTrack[],
         videoTracks as LocalVideoTrack[]
     );
     const toggleExhibits = () => togglerExhibits((prevState) => !prevState);
+    // eslint-disable-next-line no-unused-vars
+    const handleCloseModal = (isLeaving: boolean) => {
+        setIsModalOpen(!isModalOpen);
+    };
 
     return (
-        <StyledContainer>
-            <StyledLeftControls>
-                <StyledLogo>
-                    <Logo version="light" height="100%" />
-                </StyledLogo>
-                <BreakroomTitle>
-                    <BreakroomBadge>{breakroomName}</BreakroomBadge>
-                    <BreakroomDisclaimer>Not recorded - Everything you say will remain private.</BreakroomDisclaimer>
-                </BreakroomTitle>
-            </StyledLeftControls>
-            <StyledVideoControls>
-                <Control
-                    data-testid="audio"
-                    type="circle"
-                    onClick={() => setAudioEnabled(!isAudioEnabled)}
-                    icon={
-                        isAudioEnabled ? (
-                            <Icon data-testid="unmuted" icon={UnmuteIcon} size="1.625rem" />
-                        ) : (
-                            <Icon data-testid="muted" icon={MuteIcon} size="1.625rem" />
-                        )
-                    }
+        <>
+            <Modal
+                onlyBody
+                destroyOnClose
+                visible={isModalOpen}
+                onCancel={() => handleCloseModal(false)}
+                data-testid="modal"
+            >
+                <Result
+                    title={LEAVE_BREAKROOM_TITLE}
+                    subTitle={LEAVE_BREAKROOM_SUBTITLE}
+                    extra={[
+                        <Button type="text" onClick={() => handleCloseModal(false)}>
+                            {LEAVE_BREAKROOM_STAY}
+                        </Button>,
+                        <Button type="primary" onClick={() => handleCloseModal(true)}>
+                            {LEAVE_BREAKROOM_LEAVE}
+                        </Button>,
+                    ]}
                 />
-                <Control
-                    data-testid="camera"
-                    type="circle"
-                    onClick={() => setCameraEnabled(!cameraEnabled)}
-                    isToggled={cameraEnabled}
-                    icon={
-                        cameraEnabled ? (
-                            <Icon data-testid="camerashown" icon={CameraOnIcon} size="1.625rem" />
-                        ) : (
-                            <Icon data-testid="camerahidden" icon={CameraOffIcon} size="1.625rem" />
-                        )
-                    }
-                />
-            </StyledVideoControls>
-            <StyledGeneralControls>
-                {false && (
+            </Modal>
+            <StyledContainer>
+                <StyledLeftControls>
+                    <StyledLogo>
+                        <Logo version="light" height="100%" />
+                    </StyledLogo>
+                    <BreakroomTitle>
+                        <BreakroomBadge>{breakroomName}</BreakroomBadge>
+                        <BreakroomDisclaimer>
+                            Not recorded - Everything you say will remain private.
+                        </BreakroomDisclaimer>
+                    </BreakroomTitle>
+                </StyledLeftControls>
+                <StyledVideoControls>
+                    <Control
+                        data-testid="audio"
+                        type="circle"
+                        onClick={() => setAudioEnabled(!isAudioEnabled)}
+                        icon={
+                            isAudioEnabled ? (
+                                <Icon data-testid="unmuted" icon={UnmuteIcon} size="1.625rem" />
+                            ) : (
+                                <Icon data-testid="muted" icon={MuteIcon} size="1.625rem" />
+                            )
+                        }
+                    />
+                    <Control
+                        data-testid="camera"
+                        type="circle"
+                        onClick={() => setCameraEnabled(!cameraEnabled)}
+                        isToggled={cameraEnabled}
+                        icon={
+                            cameraEnabled ? (
+                                <Icon data-testid="camerashown" icon={CameraOnIcon} size="1.625rem" />
+                            ) : (
+                                <Icon data-testid="camerahidden" icon={CameraOffIcon} size="1.625rem" />
+                            )
+                        }
+                    />
+                </StyledVideoControls>
+                <StyledGeneralControls>
                     <StyledPrimaryControls>
                         <Control
                             data-testid="exhibits"
@@ -95,18 +131,18 @@ export default function BreakroomControlsBar({
                             icon={<Icon icon={ExhibitsIcon} size="1.625rem" />}
                         />
                     </StyledPrimaryControls>
-                )}
-                <StyledSecondaryControls>
-                    <Control
-                        data-testid="end"
-                        onClick={() => {}}
-                        type="rounded"
-                        color="red"
-                        label="Leave Breakroom"
-                        icon={<Icon icon={EndCallIcon} size="1.625rem" />}
-                    />
-                </StyledSecondaryControls>
-            </StyledGeneralControls>
-        </StyledContainer>
+                    <StyledSecondaryControls>
+                        <Control
+                            data-testid="end"
+                            onClick={() => setIsModalOpen(!isModalOpen)}
+                            type="rounded"
+                            color="red"
+                            label="Leave Breakroom"
+                            icon={<Icon icon={EndCallIcon} size="1.625rem" />}
+                        />
+                    </StyledSecondaryControls>
+                </StyledGeneralControls>
+            </StyledContainer>
+        </>
     );
 }
