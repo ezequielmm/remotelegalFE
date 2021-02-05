@@ -122,16 +122,18 @@ export default function BreakroomControlsBar({
                     />
                 </StyledVideoControls>
                 <StyledGeneralControls>
-                    <StyledPrimaryControls>
-                        <Control
-                            data-testid="exhibits"
-                            isToggled={exhibitsOpen}
-                            onClick={toggleExhibits}
-                            type="simple"
-                            label={CONTROLS_BAR_EXHIBITS_LABEL}
-                            icon={<Icon icon={ExhibitsIcon} size="1.625rem" />}
-                        />
-                    </StyledPrimaryControls>
+                    {false && (
+                        <StyledPrimaryControls>
+                            <Control
+                                data-testid="exhibits"
+                                isToggled={exhibitsOpen}
+                                onClick={toggleExhibits}
+                                type="simple"
+                                label={CONTROLS_BAR_EXHIBITS_LABEL}
+                                icon={<Icon icon={ExhibitsIcon} size="1.625rem" />}
+                            />
+                        </StyledPrimaryControls>
+                    )}
                     <StyledSecondaryControls>
                         <Control
                             data-testid="end"
