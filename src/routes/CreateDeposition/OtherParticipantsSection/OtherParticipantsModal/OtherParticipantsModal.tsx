@@ -87,73 +87,79 @@ export default function OtherParticipantsModal({
                         {CONSTANTS.OTHER_PARTICIPANTS_MODAL_SUBTITLE}
                     </Text>
                 </Space.Item>
-                <Form name="basic" onFinish={handleSubmit(onSubmit)} layout="vertical" preserve={false}>
-                    <Space direction="vertical" size="small" fullWidth>
-                        <RHFInput
-                            control={control}
-                            defaultValue={initialValues.email || ""}
-                            errorMessage={errors.email?.message}
-                            name="email"
-                            label={CONSTANTS.OPTIONAL_EMAIL_LABEL}
-                            placeholder={CONSTANTS.EMAIL_PLACEHOLDER}
-                            noMargin
-                        />
-                        <RHFInput
-                            control={control}
-                            defaultValue={initialValues.name || ""}
-                            errorMessage={errors.name?.message}
-                            name="name"
-                            label={CONSTANTS.OPTIONAL_NAME_LABEL}
-                            placeholder={CONSTANTS.NAME_PLACEHOLDER}
-                            noMargin
-                        />
-                        <RHFInput
-                            control={control}
-                            defaultValue={initialValues.phone || ""}
-                            errorMessage={errors.phone?.message}
-                            name="phone"
-                            label={CONSTANTS.OPTIONAL_PHONE_LABEL}
-                            placeholder={CONSTANTS.PHONE_PLACEHOLDER}
-                            noMargin
-                        />
-                        <RHFSelect
-                            defaultValue={initialValues.role || null}
-                            label={CONSTANTS.ROLE_LABEL}
-                            placeholder={CONSTANTS.ROLE_PLACEHOLDER}
-                            name="role"
-                            control={control}
-                            errorMessage={errors.role?.message}
-                            items={
-                                isCourtReporterAlreadyAdded
-                                    ? CONSTANTS.OTHER_PARTICIPANTS_ROLES.filter(
-                                          (participant) => participant !== CONSTANTS.COURT_REPORTER_ROLE
-                                      )
-                                    : CONSTANTS.OTHER_PARTICIPANTS_ROLES
-                            }
-                            renderItem={(item) => (
-                                <Select.Option key={item.id} value={item.id}>
-                                    {item.name}
-                                </Select.Option>
-                            )}
-                        />
-                    </Space>
-                    <Row justify="end">
-                        <Space size="large">
-                            <Button
-                                data-testid="add_participants_close_modal_button"
-                                type="text"
-                                onClick={handleCloseModal}
-                            >
-                                {CONSTANTS.OTHER_PARTICIPANTS_CANCEL_BUTTON_LABEL}
-                            </Button>
-                            <Button data-testid="add_participants_add_modal_button" type="primary" htmlType="submit">
-                                {editMode
-                                    ? CONSTANTS.OTHER_PARTICIPANTS_EDIT_BUTTON_LABEL
-                                    : CONSTANTS.OTHER_PARTICIPANTS_ADD_BUTTON_LABEL}
-                            </Button>
+                <Space.Item fullWidth>
+                    <Form name="basic" onFinish={handleSubmit(onSubmit)} layout="vertical" preserve={false}>
+                        <Space direction="vertical" size="small" fullWidth>
+                            <RHFInput
+                                control={control}
+                                defaultValue={initialValues.email || ""}
+                                errorMessage={errors.email?.message}
+                                name="email"
+                                label={CONSTANTS.OPTIONAL_EMAIL_LABEL}
+                                placeholder={CONSTANTS.EMAIL_PLACEHOLDER}
+                                noMargin
+                            />
+                            <RHFInput
+                                control={control}
+                                defaultValue={initialValues.name || ""}
+                                errorMessage={errors.name?.message}
+                                name="name"
+                                label={CONSTANTS.OPTIONAL_NAME_LABEL}
+                                placeholder={CONSTANTS.NAME_PLACEHOLDER}
+                                noMargin
+                            />
+                            <RHFInput
+                                control={control}
+                                defaultValue={initialValues.phone || ""}
+                                errorMessage={errors.phone?.message}
+                                name="phone"
+                                label={CONSTANTS.OPTIONAL_PHONE_LABEL}
+                                placeholder={CONSTANTS.PHONE_PLACEHOLDER}
+                                noMargin
+                            />
+                            <RHFSelect
+                                defaultValue={initialValues.role || null}
+                                label={CONSTANTS.ROLE_LABEL}
+                                placeholder={CONSTANTS.ROLE_PLACEHOLDER}
+                                name="role"
+                                control={control}
+                                errorMessage={errors.role?.message}
+                                items={
+                                    isCourtReporterAlreadyAdded
+                                        ? CONSTANTS.OTHER_PARTICIPANTS_ROLES.filter(
+                                              (participant) => participant !== CONSTANTS.COURT_REPORTER_ROLE
+                                          )
+                                        : CONSTANTS.OTHER_PARTICIPANTS_ROLES
+                                }
+                                renderItem={(item) => (
+                                    <Select.Option key={item.id} value={item.id}>
+                                        {item.name}
+                                    </Select.Option>
+                                )}
+                            />
                         </Space>
-                    </Row>
-                </Form>
+                        <Row justify="end">
+                            <Space size="large">
+                                <Button
+                                    data-testid="add_participants_close_modal_button"
+                                    type="text"
+                                    onClick={handleCloseModal}
+                                >
+                                    {CONSTANTS.OTHER_PARTICIPANTS_CANCEL_BUTTON_LABEL}
+                                </Button>
+                                <Button
+                                    data-testid="add_participants_add_modal_button"
+                                    type="primary"
+                                    htmlType="submit"
+                                >
+                                    {editMode
+                                        ? CONSTANTS.OTHER_PARTICIPANTS_EDIT_BUTTON_LABEL
+                                        : CONSTANTS.OTHER_PARTICIPANTS_ADD_BUTTON_LABEL}
+                                </Button>
+                            </Space>
+                        </Row>
+                    </Form>
+                </Space.Item>
             </Space>
         </Modal>
     );

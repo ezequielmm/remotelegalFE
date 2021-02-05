@@ -98,6 +98,7 @@ export default function BreakroomControlsBar({
                         data-testid="audio"
                         type="circle"
                         onClick={() => setAudioEnabled(!isAudioEnabled)}
+                        isToggled={!isAudioEnabled}
                         icon={
                             isAudioEnabled ? (
                                 <Icon data-testid="unmuted" icon={UnmuteIcon} size="1.625rem" />
@@ -110,7 +111,7 @@ export default function BreakroomControlsBar({
                         data-testid="camera"
                         type="circle"
                         onClick={() => setCameraEnabled(!cameraEnabled)}
-                        isToggled={cameraEnabled}
+                        isToggled={!cameraEnabled}
                         icon={
                             cameraEnabled ? (
                                 <Icon data-testid="camerashown" icon={CameraOnIcon} size="1.625rem" />

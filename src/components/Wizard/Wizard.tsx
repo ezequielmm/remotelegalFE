@@ -42,7 +42,7 @@ const Wizard = ({ children, step = 0, totalSteps, title, text }: IWizard) => {
     return (
         <Modal onlyBody destroyOnClose closable={false} visible centered mask={false}>
             <Space direction="vertical" size="large" fullWidth>
-                <Space.Item>
+                <Space.Item fullWidth>
                     <Text state={ColorStatus.primary} weight="bold">
                         {stepText}
                     </Text>
@@ -51,7 +51,7 @@ const Wizard = ({ children, step = 0, totalSteps, title, text }: IWizard) => {
                     </Title>
                     <Text state={ColorStatus.disabled}>{text}</Text>
                 </Space.Item>
-                <Space.Item>{children}</Space.Item>
+                <Space.Item fullWidth>{children}</Space.Item>
             </Space>
         </Modal>
     );

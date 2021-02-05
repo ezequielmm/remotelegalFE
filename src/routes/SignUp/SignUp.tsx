@@ -131,7 +131,7 @@ const SignUp = () => {
                                 <CodeSent email={emailValue} />
                             ) : (
                                 <>
-                                    <Space.Item>
+                                    <Space.Item fullWidth>
                                         <Title level={3} weight="light" noMargin>
                                             Welcome
                                         </Title>
@@ -144,7 +144,7 @@ const SignUp = () => {
                                             type="error"
                                         />
                                     )}
-                                    <Space.Item>
+                                    <Space.Item fullWidth>
                                         <Row gutter={16}>
                                             <Col span={12}>
                                                 <Form.Item label="First name" htmlFor="firstname">

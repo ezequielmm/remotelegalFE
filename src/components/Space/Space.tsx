@@ -134,7 +134,7 @@ const StyledSpace = styled.div.attrs((props: ISpaceProps) => ({
         `;
 
         const styles = `
-            width: ${fullWidth ? "100%" : "unset"};
+            ${fullWidth ? "width: 100%;" : ""}
             ${flexStyles}
             ${spaceStyle(props)}
 
@@ -148,7 +148,7 @@ const StyledSpace = styled.div.attrs((props: ISpaceProps) => ({
 `;
 
 const StyledSpaceItem = styled.div<{ fullWidth?: boolean }>`
-    width: ${({ fullWidth }) => (fullWidth ? "100%" : "unset")};
+    ${({ fullWidth }) => (fullWidth ? "width: 100%;" : "")}
 `;
 
 const Space = ({
