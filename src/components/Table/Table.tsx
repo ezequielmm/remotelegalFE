@@ -3,7 +3,7 @@ import { Table } from "antd";
 import { DefaultRecordType } from "rc-table/lib/interface";
 import { TableProps } from "antd/lib/table/Table";
 import styled from "styled-components";
-import { getREM, hexToRGBA, getWeightNumber } from "../../constants/styles/utils";
+import { getREM, hexToRGBA, getWeightNumber, getPX } from "../../constants/styles/utils";
 import { ThemeMode } from "../../types/ThemeType";
 
 interface ITableProps extends TableProps<DefaultRecordType> {
@@ -11,7 +11,7 @@ interface ITableProps extends TableProps<DefaultRecordType> {
 }
 
 const StyledTable = styled(Table)`
-    ${({ theme }) => {
+    ${({ theme, scroll }) => {
         const { fontSizes, spaces, borderRadiusBase } = theme.default;
         const { neutrals, disabled, primary, inDepoBlue, inDepoNeutrals } = theme.colors;
 
@@ -108,6 +108,32 @@ const StyledTable = styled(Table)`
                         }
                     }
                 }
+
+                .ant-table-body {
+                    overflow-y: auto !important;
+
+                    ${
+                        scroll
+                            ? `
+                                padding-right: ${getREM(theme.default.spaces[6])}; 
+                                scrollbar-color: ${`${theme.colors.disabled[7]} ${theme.default.disabledBg}`};
+                                scrollbar-width: thin;
+                                &::-webkit-scrollbar {
+                                    width: ${getPX(theme.default.spaces[3])};
+                                    height: ${getPX(theme.default.spaces[3])};
+                                }
+                                &::-webkit-scrollbar-track {
+                                    background-color: ${theme.default.disabledBg};
+                                }
+                                &::-webkit-scrollbar-thumb {
+                                    border-radius: ${getPX(theme.default.spaces[5])};
+                                    background: ${theme.colors.disabled[7]};
+                                }
+                            `
+                            : ""
+                    }
+                }
+
                 table {
                     border-radius: 0;
                     border-spacing: ${theme.mode === ThemeMode.inDepo ? "" : `0 ${getREM(spaces[3])};`};
