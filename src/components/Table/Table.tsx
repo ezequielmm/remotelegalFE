@@ -117,6 +117,24 @@ const StyledTable = styled(Table)`
                         padding: 10px 0 10px ${getREM(spaces[4])};
                     }
 
+                    thead.ant-table-thead > tr > th.ant-table-cell.ant-table-selection-column,
+                    tbody.ant-table-tbody > tr > td.ant-table-cell.ant-table-selection-column {
+                        text-align: center;
+                        padding-left: ${getREM(spaces[8])};
+                        padding-right: ${getREM(spaces[6])};
+
+                        .ant-checkbox-wrapper {
+                            .ant-checkbox {
+                                .ant-checkbox-inner {
+                                    border-radius:  ${getREM(spaces[2])};
+                                    &:after {
+                                        display: block;
+                                    }
+                                }
+                            }
+                        }                        
+                    }
+
                     thead.ant-table-thead {
                         > tr {
                             > th {
@@ -166,6 +184,10 @@ const StyledTable = styled(Table)`
                             `
                                     : ""
                             };
+
+                            &.ant-table-row-selected > td {
+                                background-color: transparent;
+                            }
 
                             > td.ant-table-cell {
                                 box-shadow: ${

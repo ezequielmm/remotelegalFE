@@ -299,6 +299,7 @@ ExhibitsTable.args = {
     dataSource: exhibits,
     columns: exhibitsColumns,
     sortDirections: ["descend", "ascend"],
+    rowSelection: { type: "checkbox" },
 };
 ExhibitsTable.parameters = {
     backgrounds: { default: ThemeMode.default },
