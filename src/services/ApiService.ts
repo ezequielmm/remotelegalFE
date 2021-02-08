@@ -235,6 +235,27 @@ export class ApiService {
         });
     };
 
+    closeStampedExhibit = async ({ depositionID, stampLabel, blob }): Promise<boolean> => {
+        const formData = new FormData();
+        formData.append("blob", blob as Blob);
+        formData.set("json", JSON.stringify({ stampLabel }));
+        return this.request<boolean>({
+            path: `/api/Depositions/${depositionID}/SharedDocument/CloseStamped`,
+            formData,
+            withContentType: false,
+            method: HTTP_METHOD.POST,
+        });
+    };
+
+    closeExhibit = async ({ depositionID, ...payload }): Promise<boolean> => {
+        return this.request<boolean>({
+            path: `/api/Depositions/${depositionID}/SharedDocument/Close`,
+            payload,
+            withToken: true,
+            method: HTTP_METHOD.POST,
+        });
+    };
+
     getAnnotations = async ({ depositionID, ...payload }): Promise<boolean> => {
         return this.request<boolean>({
             path: `/api/Depositions/${depositionID}/SharedDocument/annotations`,
@@ -250,6 +271,15 @@ export class ApiService {
             payload,
             withToken: true,
             method: HTTP_METHOD.POST,
+        });
+    };
+
+    getEnteredExhibits = async ({ depositionID, ...payload }): Promise<boolean> => {
+        return this.request<boolean>({
+            path: `/api/Depositions/${depositionID}/EnteredExhibits`,
+            payload,
+            withToken: true,
+            method: HTTP_METHOD.GET,
         });
     };
 

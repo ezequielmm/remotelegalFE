@@ -11,16 +11,18 @@ import ExhibitViewer from "../ExhibitViewer";
 import { useExhibitAnnotation, useShareExhibitFile } from "../../../../hooks/exhibits/hooks";
 
 export default function LiveExhibits() {
-    const { sharedExhibit } = useShareExhibitFile();
+    const { sharedExhibit, closeSharedExhibit } = useShareExhibitFile();
     const { sendAnnotation, annotations } = useExhibitAnnotation();
+
     return (
         <ExhibitTabPaneSpacer direction="vertical" size="large">
             {sharedExhibit && (
                 <ExhibitViewer
+                    showShareButtonOnHeader={!sharedExhibit}
                     showBackButtonOnHeader={false}
-                    showCloseButtonOnHeader={!!sharedExhibit}
+                    showCloseButtonOnHeader={sharedExhibit?.close}
                     file={sharedExhibit}
-                    onClose={() => {}}
+                    onClose={closeSharedExhibit}
                     annotations={annotations}
                     onAnnotationChange={sendAnnotation}
                 />

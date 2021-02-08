@@ -14,7 +14,7 @@ import { ModalSize } from "../../Modal/Modal";
 interface IModalProps {
     open: boolean;
     handleClose: (boolean: boolean) => void;
-    onConfirm: (value: string) => void;
+    onConfirm: (value: string, label?: string) => void;
     timeZone: TimeZones;
 }
 
@@ -25,7 +25,7 @@ const StampModal = ({ open, handleClose, onConfirm, timeZone }: IModalProps) => 
 
     const handleOnConfirm = async () => {
         const stampImage = canvasRef?.current.toDataURL();
-        onConfirm(stampImage);
+        onConfirm(stampImage, stampTitle);
     };
 
     const handleKeyDownEvent = (e) => {

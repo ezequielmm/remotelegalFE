@@ -7,6 +7,12 @@ import { ExhibitFile } from "../../types/ExhibitFile";
 import useAsyncCallback from "../useAsyncCallback";
 import * as CONSTANTS from "../../constants/exhibits";
 import actions from "../../state/InDepo/InDepoActions";
+import { CoreControls } from "@pdftron/webviewer";
+import { SortOrder } from "antd/lib/table/interface";
+interface HandleFetchFilesSorterType {
+    field?: Key | Key[];
+    order?: SortOrder;
+}
 
 export const useUploadFile = (depositionID: string) => {
     const upload = useCallback(
@@ -29,9 +35,9 @@ export const useFileList = (
     depositionID: string
 ): {
     handleFetchFiles: (
-        pagination: TablePaginationConfig,
-        filters: Record<string, Key[] | null>,
-        sorter: Record<string, any>
+        pagination?: TablePaginationConfig,
+        filters?: Record<string, Key[] | null>,
+        sorter?: HandleFetchFilesSorterType
     ) => void;
     loading: boolean;
     errorFetchFiles;
@@ -51,6 +57,7 @@ export const useFileList = (
 
     const handleFetchFiles = useCallback(
         (pagination, filters, sorter) => {
+            if (!sorter) return fetchFiles({});
             const newSortedField = sorter.field;
             const newSortDirection = sorter.order;
             setSortedField(newSortedField);
@@ -91,6 +98,7 @@ export const useExhibitFileInfo = () => {
         const exhibitFile: ExhibitFile = await deps.apiService.getSharedExhibit(depositionID);
         if (exhibitFile) {
             const user = await deps.apiService.currentUser();
+            dispatch(actions.setCurrentUser(user));
             dispatch(actions.setSharedExhibit(exhibitFile));
             dispatch(actions.setIsCurrentExhibitOwner(user?.id && user?.id === exhibitFile?.addedBy?.id));
         }
@@ -103,19 +111,21 @@ export const useExhibitTabs = () => {
     const { depositionID } = useParams<{ depositionID: string }>();
     const { message } = state.room;
     const [highlightKey, setHighlightKey] = useState<number>(-1);
-    const [activeKey, setActivetKey] = useState<string>(CONSTANTS.DEFAULT_ACTIVE_TAB);
+    const [activeKey, setActiveKey] = useState<string>(CONSTANTS.DEFAULT_ACTIVE_TAB);
 
     const [fetchExhibitFileInfo] = useExhibitFileInfo();
 
     useEffect(() => {
         setHighlightKey(
-            CONSTANTS.EXHIBIT_TABS_DATA.findIndex((tab) => tab.tabId === "liveExhibits" && state.room.currentExhibit)
+            CONSTANTS.EXHIBIT_TABS_DATA.findIndex(
+                (tab) => tab.tabId === CONSTANTS.LIVE_EXHIBIT_TAB && state.room.currentExhibit
+            )
         );
     }, [state]);
 
     useEffect(() => {
         if (highlightKey !== -1 && state.room.currentExhibit && state.room.isCurrentExhibitOwner) {
-            setActivetKey(CONSTANTS.EXHIBIT_TABS[highlightKey]);
+            setActiveKey(CONSTANTS.LIVE_EXHIBIT_TAB);
             dispatch(actions.setActiveTab(CONSTANTS.LIVE_EXHIBIT_TAB));
         }
     }, [highlightKey, state.room.currentExhibit, state.room.isCurrentExhibitOwner, dispatch]);
@@ -131,14 +141,14 @@ export const useExhibitTabs = () => {
         }
     }, [message, depositionID, fetchExhibitFileInfo]);
 
-    return { highlightKey, activeKey, setActivetKey };
+    return { highlightKey, activeKey, setActiveKey: setActiveKey };
 };
 
 export const useShareExhibitFile = () => {
     const { state, deps, dispatch } = useContext(GlobalStateContext);
     const { depositionID } = useParams<{ depositionID: string }>();
     const [fetchExhibitFileInfo] = useExhibitFileInfo();
-    const { dataTrack, message, currentExhibit } = state.room;
+    const { dataTrack, message, currentExhibit, exhibitDocument, stampLabel, rawAnnotations } = state.room;
     const [shareExhibit, shareExhibitPending, sharingExhibitFileError, sharedExhibit] = useAsyncCallback(
         async (exhibitFile: ExhibitFile) => {
             const isShared = (await deps.apiService.shareExhibit(exhibitFile.id)) !== undefined;
@@ -157,12 +167,36 @@ export const useShareExhibitFile = () => {
         if (message.module === "shareExhibit" && message.value) {
             dispatch(actions.setSharedExhibit(message.value));
         }
+        if (message.module === "closeSharedExhibit") {
+            dispatch(actions.stopShareExhibit());
+        }
     }, [message, dispatch]);
+
+    const [closeSharedExhibit, pendingCloseSharedExhibit] = useAsyncCallback(async () => {
+        if (stampLabel) {
+            const exhibitDocumentData = await (exhibitDocument as CoreControls.Document)?.getFileData({
+                xfdfString: rawAnnotations,
+                flatten: true,
+            });
+            const arrData = new Uint8Array(exhibitDocumentData);
+            const blob = new Blob([arrData]);
+            await deps.apiService.closeStampedExhibit({ depositionID, stampLabel, blob });
+        } else {
+            await deps.apiService.closeExhibit({ depositionID });
+        }
+        dispatch(actions.stopShareExhibit());
+        if (currentExhibit && dataTrack) {
+            dataTrack.send(JSON.stringify({ module: "closeSharedExhibit", value: currentExhibit }));
+        }
+    }, [exhibitDocument, stampLabel, dataTrack, rawAnnotations]);
+
     return {
         shareExhibit,
-        sharedExhibit: currentExhibit,
+        sharedExhibit: currentExhibit as ExhibitFile,
         shareExhibitPending,
         sharingExhibitFileError,
+        closeSharedExhibit,
+        pendingCloseSharedExhibit,
     };
 };
 export const useExhibitAnnotation = () => {
@@ -170,7 +204,7 @@ export const useExhibitAnnotation = () => {
     const { depositionID } = useParams<{ depositionID: string }>();
     const { currentExhibit, currentExhibitTabName, annotations, lastAnnotationId } = state.room;
 
-    const [getAnnotations, getAnnotationsPending, , latestAnnotations] = useAsyncCallback(async (payload) => {
+    const [getAnnotations] = useAsyncCallback(async (payload) => {
         const annotations = await deps.apiService.getAnnotations({ depositionID, ...payload });
         return annotations;
     }, []);
@@ -181,38 +215,76 @@ export const useExhibitAnnotation = () => {
     }, []);
 
     useEffect(() => {
-        if (currentExhibit && currentExhibitTabName === "liveExhibits") {
+        if (currentExhibit && currentExhibitTabName === CONSTANTS.LIVE_EXHIBIT_TAB) {
             getAnnotations();
         }
     }, [currentExhibitTabName, getAnnotations, currentExhibit]);
 
-    useEffect(() => {
-        let delay;
-        if (!sending && latestAnnotations && !getAnnotationsPending && currentExhibitTabName === "liveExhibits") {
-            delay = setTimeout(() => {
-                getAnnotations({ startingAnnotationId: lastAnnotationId || undefined });
-                if (latestAnnotations.length) {
+    useEffect(
+        () => {
+            const delay = setInterval(async () => {
+                if (sending) return;
+                const annotationsResult = await deps.apiService.getAnnotations({
+                    depositionID,
+                    startingAnnotationId: lastAnnotationId || undefined,
+                });
+
+                if (annotationsResult.length) {
                     dispatch(
                         actions.setExhibitAnnotations({
-                            annotations: latestAnnotations,
+                            annotations: annotationsResult,
                         })
                     );
                 }
-            }, CONSTANTS.MY_EXHIBITS_SYNC_ANNOTATION_POLLING_INTERVAL);
-        }
-        return () => clearTimeout(delay);
-    }, [
-        getAnnotations,
-        latestAnnotations,
-        getAnnotationsPending,
-        currentExhibitTabName,
-        currentExhibit,
-        lastAnnotationId,
-        dispatch,
-        sending,
-    ]);
+            }, CONSTANTS.EXHIBITS_SYNC_ANNOTATION_POLLING_INTERVAL);
+            if (currentExhibitTabName !== CONSTANTS.LIVE_EXHIBIT_TAB) {
+                clearTimeout(delay);
+            }
+            return () => clearTimeout(delay);
+        },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [lastAnnotationId, currentExhibitTabName, sending]
+    );
     return {
         sendAnnotation,
         annotations: useMemo(() => annotations?.map((annotation) => annotation.details), [annotations]) as [],
     };
+};
+
+export const useEnteredExhibit = (): {
+    handleFetchFiles: (
+        pagination?: TablePaginationConfig,
+        filters?: Record<string, Key[] | null>,
+        sorter?: HandleFetchFilesSorterType
+    ) => void;
+    enteredExhibitsPending: boolean;
+    enteredExhibitsError;
+    enteredExhibits;
+} => {
+    const { deps } = useContext(GlobalStateContext);
+    const { depositionID } = useParams<{ depositionID: string }>();
+    const [getEnteredExhibits, enteredExhibitsPending, enteredExhibitsError, enteredExhibits] = useAsyncCallback(
+        async (payload) => {
+            const enteredExhibits = await deps.apiService.getEnteredExhibits({ depositionID, ...payload });
+            return enteredExhibits;
+        },
+        []
+    );
+
+    const handleFetchFiles = useCallback(
+        (pagination, filters, sorter) => {
+            if (!sorter) return getEnteredExhibits({});
+            const enteredExhibitsSortedFields = {
+                addedBy: "owner",
+                displayName: "name",
+            };
+            const newSortedField = enteredExhibitsSortedFields[sorter.field] ?? sorter.field;
+            const newSortDirection = sorter.order;
+            const urlParams =
+                newSortDirection === undefined ? {} : { sortedField: newSortedField, sortDirection: newSortDirection };
+            getEnteredExhibits(urlParams);
+        },
+        [getEnteredExhibits]
+    );
+    return { handleFetchFiles, enteredExhibitsPending, enteredExhibitsError, enteredExhibits };
 };

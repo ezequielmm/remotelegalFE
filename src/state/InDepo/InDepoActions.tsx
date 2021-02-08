@@ -4,6 +4,7 @@ import { DataTrackMessage, DisconnectRoomState } from "../types";
 import { EventModel, TranscriptionModel, BreakroomModel } from "../../models";
 import { ExhibitFile } from "../../types/ExhibitFile";
 import { EXHIBIT_TAB } from "../../constants/exhibits";
+import { CoreControls } from "@pdftron/webviewer";
 
 export enum ACTION_TYPE {
     SEND_MESSAGE = "SEND_MESSAGE",
@@ -22,6 +23,9 @@ export enum ACTION_TYPE {
     IN_DEPO_SET_CURRENT_EXHIBIT_OWNER = "IN_DEPO_SET_CURRENT_EXHIBIT_OWNER",
     IN_DEPO_SET_EXHIBIT_TAB_NAME = "IN_DEPO_SET_EXHIBIT_TAB_NAME",
     IN_DEPO_SET_EXHIBIT_ANNOTATIONS = "IN_DEPO_SET_EXHIBIT_ANNOTATIONS",
+    IN_DEPO_SET_CURRENT_USER = "IN_DEPO_SET_CURRENT_USER",
+    IN_DEPO_SET_STAMP_LABEL = "IN_DEPO_SET_STAMP_LABEL",
+    IN_DEPO_SET_EXHIBIT_DOCUMENT_INSTANCE = "IN_DEPO_SET_EXHIBIT_DOCUMENT_INSTANCE",
     ADD_WITNESS = "IN_DEPO_ADD_WITNESS",
     SET_TIMEZONE = "IN_DEPO_SET_TIMEZONE",
     IN_DEPO_SET_PERMISSIONS = "IN_DEPO_SET_PERMISSIONS",
@@ -127,6 +131,18 @@ const actions = {
     removeRemoteParticipantBreakroom: (payload: Room) => ({
         type: ACTION_TYPE.IN_DEPO_REMOVE_PARTICIPANT_BREAKROOM,
         payload,
+    }),
+    setCurrentUser: (payload) => ({
+        type: ACTION_TYPE.IN_DEPO_SET_CURRENT_USER,
+        payload,
+    }),
+    setStampLabel: (label: string) => ({
+        type: ACTION_TYPE.IN_DEPO_SET_STAMP_LABEL,
+        payload: label,
+    }),
+    setExhibitDocument: (exhibitDocument: CoreControls.Document, rawAnnotations: string) => ({
+        type: ACTION_TYPE.IN_DEPO_SET_EXHIBIT_DOCUMENT_INSTANCE,
+        payload: { exhibitDocument, rawAnnotations },
     }),
 };
 

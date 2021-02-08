@@ -8,7 +8,7 @@ import actions from "../../../state/InDepo/InDepoActions";
 import { GlobalStateContext } from "../../../state/GlobalState";
 
 const Exhibits = ({ visible }: ContainerProps) => {
-    const { highlightKey, activeKey, setActivetKey } = useExhibitTabs();
+    const { highlightKey, activeKey, setActiveKey } = useExhibitTabs();
     const { dispatch } = useContext(GlobalStateContext);
     return (
         <StyledLayoutCotainer visible={visible}>
@@ -20,7 +20,7 @@ const Exhibits = ({ visible }: ContainerProps) => {
                             <ExhibitTabs
                                 onTabClick={(tab) => {
                                     dispatch(actions.setActiveTab(tab));
-                                    setActivetKey(tab);
+                                    setActiveKey(tab);
                                     onTabClick(tab);
                                 }}
                                 activeKey={activeKey}

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Row, Col } from "antd";
 import { useParams } from "react-router-dom";
 import { useFileList, useUploadFile } from "../../../../hooks/exhibits/hooks";
@@ -18,12 +18,21 @@ import ExhibitViewer from "../ExhibitViewer";
 import { theme } from "../../../../constants/styles/theme";
 import { ExhibitFile } from "../../../../types/ExhibitFile";
 import ColorStatus from "../../../../types/ColorStatus";
+import { GlobalStateContext } from "../../../../state/GlobalState";
+import { EXHIBIT_TABS } from "../../../../constants/exhibits";
 
 export default function MyExhibits() {
     const { depositionID } = useParams<{ depositionID: string }>();
     const { upload } = useUploadFile(depositionID);
     const { handleFetchFiles, loading, errorFetchFiles, files, refreshList } = useFileList(depositionID);
     const [selectedFile, setSelectedFile] = useState<ExhibitFile>(null);
+    const { state } = useContext(GlobalStateContext);
+    const { currentExhibitTabName } = state.room;
+    useEffect(() => {
+        if (currentExhibitTabName === EXHIBIT_TABS.myExhibits) {
+            handleFetchFiles();
+        }
+    }, [handleFetchFiles, currentExhibitTabName]);
 
     return (
         <ExhibitTabPaneSpacer direction="vertical" size="large">

@@ -10,6 +10,9 @@ import { ExhibitFile } from "../../../../../types/ExhibitFile";
 import { useShareExhibitFile } from "../../../../../hooks/exhibits/hooks";
 import ColorStatus from "../../../../../types/ColorStatus";
 import { GlobalStateContext } from "../../../../../state/GlobalState";
+import { StyledCloseButton } from "./styles";
+import ExhibitClosingModal from "../ExhibitClosingModal";
+import * as CONSTANTS from "../../../../../constants/exhibits";
 
 interface Props {
     file: ExhibitFile;
@@ -23,28 +26,42 @@ export default function ExhibitViewerHeader({
     file,
     onClose,
     showBackButton = true,
-    showCloseButton = false,
+    showCloseButton = true,
     showShareButton = false,
 }: Props): ReactElement {
-    const [exhibitSharingModalOpen, setExhibitSharingModalOpen] = useState(false);
-    const { shareExhibit, shareExhibitPending } = useShareExhibitFile();
+    const [sharingModalOpen, setSharingModalOpen] = useState(false);
+    const [closingModalOpen, setClosingModalOpen] = useState(false);
+    const { shareExhibit, shareExhibitPending, closeSharedExhibit, pendingCloseSharedExhibit } = useShareExhibitFile();
     const { state } = useContext(GlobalStateContext);
-    const { isRecording } = state.room;
+    const { isRecording, stampLabel } = state.room;
 
     const onShareOkHandler = () => {
         shareExhibit(file);
-        setExhibitSharingModalOpen(false);
+        setSharingModalOpen(false);
     };
     const onShareCancel = () => {
-        setExhibitSharingModalOpen(false);
+        setSharingModalOpen(false);
     };
+
+    const onCloseSharedExhibitHandler = () => {
+        closeSharedExhibit();
+    };
+
     return (
         <StyledExhibitViewerHeader align="middle" data-testid="view-document-header">
             <ExhibitSharingModal
                 file={file}
-                visible={exhibitSharingModalOpen}
+                visible={sharingModalOpen}
                 onShareOk={onShareOkHandler}
                 onShareCancel={onShareCancel}
+            />
+            <ExhibitClosingModal
+                file={file}
+                isStamped={!!stampLabel}
+                visible={closingModalOpen}
+                loading={pendingCloseSharedExhibit}
+                onKeepSharedExhibit={() => setClosingModalOpen(false)}
+                onCloseSharedExhibit={onCloseSharedExhibitHandler}
             />
             <Col md={6} xxl={4}>
                 {showBackButton && (
@@ -61,16 +78,26 @@ export default function ExhibitViewerHeader({
                 </Tooltip>
             </Col>
             <Col md={6} xxl={4} style={{ textAlign: "right" }}>
+                {showCloseButton && (
+                    <StyledCloseButton
+                        onClick={() => setClosingModalOpen(true)}
+                        type="primary"
+                        size="small"
+                        data-testid="close_document_button"
+                    >
+                        {CONSTANTS.CLOSE_SHARED_EXHIBIT_BUTTON_LABEL}
+                    </StyledCloseButton>
+                )}
                 {showShareButton && (
                     <Button
-                        onClick={() => setExhibitSharingModalOpen(!exhibitSharingModalOpen)}
+                        onClick={() => setSharingModalOpen(!sharingModalOpen)}
                         disabled={!isRecording}
                         type="primary"
                         size="small"
                         loading={shareExhibitPending}
-                        data-testid="view-document-share-button"
+                        data-testid="view_document_share_button"
                     >
-                        Share with all
+                        {CONSTANTS.SHARE_EXHIBIT_BUTTON_LABEL}
                     </Button>
                 )}
             </Col>

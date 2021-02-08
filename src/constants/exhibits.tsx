@@ -5,20 +5,20 @@ import LiveExhibits from "../routes/InDepo/Exhibits/LiveExhibits";
 import MyExhibits from "../routes/InDepo/Exhibits/MyExhibits";
 
 export enum EXHIBIT_TABS {
-    "myExhibits",
-    "enteredExhibits",
-    "liveExhibits",
+    myExhibits = "myExhibits",
+    enteredExhibits = "enteredExhibits",
+    liveExhibits = "liveExhibits",
 }
 
-export type EXHIBIT_TAB = "myExhibits" | "enteredExhibits" | "liveExhibits";
+export type EXHIBIT_TAB = EXHIBIT_TABS.myExhibits | EXHIBIT_TABS.enteredExhibits | EXHIBIT_TABS.liveExhibits;
 
-export const LIVE_EXHIBIT_TAB = "liveExhibits";
+export const LIVE_EXHIBIT_TAB = EXHIBIT_TABS.liveExhibits;
 
-export const DEFAULT_ACTIVE_TAB = "myExhibits";
+export const DEFAULT_ACTIVE_TAB = EXHIBIT_TABS.myExhibits;
 
 export const EXHIBIT_TABS_DATA = [
     {
-        tabId: EXHIBIT_TABS[0],
+        tabId: EXHIBIT_TABS.myExhibits,
         tabTestId: "my_exhibits_tab",
         title: "MY EXHIBITS",
         subTitle: "Only I can see this",
@@ -26,15 +26,15 @@ export const EXHIBIT_TABS_DATA = [
         tabPaneTestId: "my_exhibits_tab_pane",
     },
     {
-        tabId: EXHIBIT_TABS[1],
+        tabId: EXHIBIT_TABS.enteredExhibits,
         tabTestId: "entered_exhibits_tab",
         title: "ENTERED EXHIBITS",
-        subTitle: "Exibits used in this deposition",
+        subTitle: "Exhibits used in this deposition",
         ExhibitComponent: EnteredExhibits,
         tabPaneTestId: "entered_exhibits_tab_pane",
     },
     {
-        tabId: EXHIBIT_TABS[2],
+        tabId: EXHIBIT_TABS.liveExhibits,
         tabTestId: "live_exhibits_tab",
         title: "LIVE EXHIBITS",
         subTitle: "Shared with everyone live",
@@ -72,14 +72,27 @@ export const MY_EXHIBITS_SHARE_MODAL_NOT_SHOW_AGAIN_LABEL = "Don’t show this a
 export const MY_EXHIBITS_SHARE_MODAL_OK_BUTTON_LABEL = "YES, SHARE EXHIBIT";
 export const MY_EXHIBITS_SHARE_MODAL_OK_BUTTON_LABEL_ERROR = "OK";
 export const MY_EXHIBITS_SHARE_MODAL_CANCEL_BUTTON_LABEL = "NO, DON’T SHARE";
-export const MY_EXHIBITS_SYNC_ANNOTATION_POLLING_INTERVAL = 2000;
+export const MY_EXHIBITS_CLOSE_MODAL_TITLE = "Close for all?";
+export const MY_EXHIBITS_CLOSE_MODAL_SUBTITLE = "Are you sure you want to close the exhibit for all participants?";
+export const MY_EXHIBITS_CLOSE_NOT_STAMPED_MODAL_TITLE = "Close without stamping?";
+export const MY_EXHIBITS_CLOSE_NOT_STAMPED_MODAL_SUBTITLE =
+    "The exhibit you are about to close is not stamped yet. Are you sure you want to close for all without stamping?";
+export const MY_EXHIBITS_CLOSE_MODAL_OK_BUTTON_LABEL = "YES, CLOSE EXHIBIT";
+export const MY_EXHIBITS_CLOSE_MODAL_CANCEL_BUTTON_LABEL = "NO, KEEP IT OPEN";
+
+export const EXHIBITS_SYNC_ANNOTATION_POLLING_INTERVAL = 2000;
 
 export const EXHIBIT_FILE_ERROR_TITLE = "Exhibit can’t be displayed";
 export const EXHIBIT_FILE_ERROR_SUBTITLE = "Please try opening the Exhibit again.";
 
-export const ENTERED_EXHIBITS_TITLE = "No exhibits added yet";
-export const ENTERED_EXHIBITS_SUBTITLE = "Once someone enters an exhibit to this deposition, we will show it here";
+export const ENTERED_EXHIBITS_TITLE = "Entered exhibits";
+export const ENTERED_EXHIBITS_EMPTY_STATE_TITLE = "No exhibits entered yet";
+export const ENTERED_EXHIBITS_EMPTY_STATE_SUBTITLE =
+    "Once someone enters an exhibit to this deposition, we will show it here";
 
 export const LIVE_EXHIBITS_TITLE = "Nobody is showing an exhibit at the moment";
 export const LIVE_EXHIBITS_SUBTITLE = "Once someone is sharing an exhibit you will see it here.";
 export const LIVE_EXHIBITS_SHARE_ERROR_409 = "Can't share document while another document is being shared.";
+
+export const CLOSE_SHARED_EXHIBIT_BUTTON_LABEL = "Close for all";
+export const SHARE_EXHIBIT_BUTTON_LABEL = "Share with all";

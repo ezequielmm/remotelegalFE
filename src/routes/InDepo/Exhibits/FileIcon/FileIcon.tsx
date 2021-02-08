@@ -1,10 +1,10 @@
 import React, { ReactElement } from "react";
-import Icon from "../../../../../components/Icon";
-import { ReactComponent as pdfIcon } from "../../../../../assets/general/Acrobat.svg";
-import { ReactComponent as docIcon } from "../../../../../assets/general/Document.svg";
-import { ReactComponent as imgIcon } from "../../../../../assets/general/Image.svg";
-import { ReactComponent as videoIcon } from "../../../../../assets/general/Video.svg";
-import { FileTypes } from "../../../../../types/FileTypes";
+import Icon from "../../../../components/Icon";
+import { ReactComponent as pdfIcon } from "../../../../assets/general/Acrobat.svg";
+import { ReactComponent as docIcon } from "../../../../assets/general/Document.svg";
+import { ReactComponent as imgIcon } from "../../../../assets/general/Image.svg";
+import { ReactComponent as videoIcon } from "../../../../assets/general/Video.svg";
+import { FileTypes } from "../../../../types/FileTypes";
 
 interface Props {
     type: FileTypes;

@@ -11,8 +11,7 @@ import MyExhibits from "../../routes/InDepo/Exhibits/MyExhibits";
 import renderWithGlobalContext from "../utils/renderWithGlobalContext";
 import { rootReducer } from "../../state/GlobalState";
 import getMockDeps from "../utils/getMockDeps";
-import state from "../mocks/state";
-import actions from "../../state/InDepo/InDepoActions";
+
 import {
     useUploadFile,
     useFileList,
@@ -20,7 +19,10 @@ import {
     useShareExhibitFile,
     useExhibitTabs,
     useExhibitAnnotation,
+    useEnteredExhibit,
 } from "../../hooks/exhibits/hooks";
+import LiveExhibits from "../../routes/InDepo/Exhibits/LiveExhibits";
+import EnteredExhibits from "../../routes/InDepo/Exhibits/EnteredExhibits";
 jest.mock("../../hooks/exhibits/hooks", () => ({
     useUploadFile: jest.fn(),
     useFileList: jest.fn(),
@@ -28,6 +30,7 @@ jest.mock("../../hooks/exhibits/hooks", () => ({
     useShareExhibitFile: jest.fn(),
     useExhibitTabs: jest.fn(),
     useExhibitAnnotation: jest.fn(),
+    useEnteredExhibit: jest.fn(),
 }));
 
 jest.mock("react-router-dom", () => ({
@@ -36,6 +39,16 @@ jest.mock("react-router-dom", () => ({
         depositionID: "depositionIDXXXX",
     }),
 }));
+
+jest.mock("moment-timezone", () => {
+    return jest.fn().mockImplementation(() => ({
+        tz: jest.fn((dtz: string) => {
+            return {
+                format: jest.fn((df) => "06:30 AM"),
+            };
+        }),
+    }));
+});
 
 beforeEach(() => {
     useUploadFile.mockImplementation(() => ({
@@ -54,7 +67,7 @@ beforeEach(() => {
     useExhibitTabs.mockImplementation(() => ({
         highlightKey: 0,
         activeKey: CONSTANTS.DEFAULT_ACTIVE_TAB,
-        setActivetKey: jest.fn(),
+        setActiveKey: jest.fn(),
     }));
     useSignedUrl.mockImplementation(() => ({
         pending: false,
@@ -64,6 +77,11 @@ beforeEach(() => {
     useExhibitAnnotation.mockImplementation(() => ({
         sendAnnotation: jest.fn(),
         annotations: [],
+    }));
+    useEnteredExhibit.mockImplementation(() => ({
+        getEnteredExhibits: jest.fn(),
+        enteredExhibits: [],
+        enteredExhibitsPending: false,
     }));
 });
 
@@ -91,7 +109,7 @@ describe("Exhibits", () => {
             useExhibitTabs.mockImplementation(() => ({
                 highlightKey: key,
                 activeKey: tabId,
-                setActivetKey: jest.fn(),
+                setActiveKey: jest.fn(),
             }));
             const { queryByTestId } = renderWithGlobalContext(
                 <ThemeProvider theme={theme}>
@@ -111,7 +129,7 @@ describe("Exhibits", () => {
             useExhibitTabs.mockImplementation(() => ({
                 highlightKey: key,
                 activeKey: tabId,
-                setActivetKey: jest.fn(),
+                setActiveKey: jest.fn(),
             }));
             const { getByTestId } = renderWithGlobalContext(
                 <ThemeProvider theme={theme}>
@@ -198,7 +216,7 @@ describe("Exhibits", () => {
                 <MyExhibits />
             </ThemeProvider>
         );
-        const fileViewButton = queryByTestId("file-list-view-button");
+        const fileViewButton = queryByTestId("file_list_view_button");
         expect(fileViewButton).toBeInTheDocument();
         const exhibitViewerHeader = queryByTestId("view-document-header");
         expect(exhibitViewerHeader).not.toBeInTheDocument();
@@ -216,7 +234,7 @@ describe("Exhibits", () => {
                 <MyExhibits />
             </ThemeProvider>
         );
-        const fileViewButton = queryByTestId("file-list-view-button");
+        const fileViewButton = queryByTestId("file_list_view_button");
         expect(fileViewButton).toBeInTheDocument();
         fireEvent.click(fileViewButton);
         const exhibitViewerHeader = queryByTestId("view-document-header");
@@ -235,7 +253,7 @@ describe("Exhibits", () => {
                 <MyExhibits />
             </ThemeProvider>
         );
-        const fileViewButton = queryByTestId("file-list-view-button");
+        const fileViewButton = queryByTestId("file_list_view_button");
         expect(fileViewButton).toBeInTheDocument();
         fireEvent.click(fileViewButton);
         const exhibitViewerHeader = queryByTestId("view-document-header");
@@ -256,7 +274,7 @@ describe("Exhibits", () => {
                 <MyExhibits />
             </ThemeProvider>
         );
-        const fileViewButton = queryByTestId("file-list-view-button");
+        const fileViewButton = queryByTestId("file_list_view_button");
         expect(fileViewButton).toBeInTheDocument();
         fireEvent.click(fileViewButton);
         const exhibitViewerHeader = queryByTestId("view-document-header");
@@ -266,7 +284,7 @@ describe("Exhibits", () => {
         expect(backButton).toBeInTheDocument();
         fireEvent.click(backButton);
         expect(exhibitViewerHeader).not.toBeInTheDocument();
-        expect(queryByTestId("file-list-view-button")).toBeInTheDocument();
+        expect(queryByTestId("file_list_view_button")).toBeInTheDocument();
     });
 
     it("should display the share document component when click on a file share button", () => {
@@ -292,7 +310,7 @@ describe("Exhibits", () => {
                 },
             }
         );
-        const ShareFileButton = queryByTestId("file-list-share-button");
+        const ShareFileButton = queryByTestId("file_list_share_button");
         expect(ShareFileButton).toBeInTheDocument();
         fireEvent.click(ShareFileButton);
         const sharedExhibitModal = queryByTestId("share_document_modal");
@@ -320,7 +338,7 @@ describe("Exhibits", () => {
                 },
             }
         );
-        const ShareFileButton = queryByTestId("file-list-share-button");
+        const ShareFileButton = queryByTestId("file_list_share_button");
         expect(ShareFileButton).toBeDisabled();
     });
     it("should display the share exhibit button enabled when isRecording is true", () => {
@@ -346,7 +364,7 @@ describe("Exhibits", () => {
                 },
             }
         );
-        const ShareFileButton = queryByTestId("file-list-share-button");
+        const ShareFileButton = queryByTestId("file_list_share_button");
         expect(ShareFileButton).not.toBeDisabled();
     });
     it("should display the share exhibit button on exhibit viewer disabled when isRecording is false", () => {
@@ -371,13 +389,13 @@ describe("Exhibits", () => {
                 },
             }
         );
-        const fileViewButton = queryByTestId("file-list-view-button");
+        const fileViewButton = queryByTestId("file_list_view_button");
         expect(fileViewButton).toBeInTheDocument();
         fireEvent.click(fileViewButton);
         const exhibitViewerHeader = queryByTestId("view-document-header");
         expect(exhibitViewerHeader).toBeInTheDocument();
         expect(fileViewButton).not.toBeInTheDocument();
-        const shareButton = getByTestId("view-document-share-button");
+        const shareButton = getByTestId("view_document_share_button");
         expect(shareButton).toBeDisabled();
     });
     it("should display the share exhibit button on exhibit viewer enabled when isRecording is true", () => {
@@ -403,13 +421,244 @@ describe("Exhibits", () => {
                 },
             }
         );
-        const fileViewButton = queryByTestId("file-list-view-button");
+        const fileViewButton = queryByTestId("file_list_view_button");
         expect(fileViewButton).toBeInTheDocument();
         fireEvent.click(fileViewButton);
         const exhibitViewerHeader = queryByTestId("view-document-header");
         expect(exhibitViewerHeader).toBeInTheDocument();
         expect(fileViewButton).not.toBeInTheDocument();
-        const shareButton = getByTestId("view-document-share-button");
+        const shareButton = getByTestId("view_document_share_button");
         expect(shareButton).not.toBeDisabled();
+    });
+
+    it("should display the close shared exhibit docuent when has the allowed permissions", () => {
+        useShareExhibitFile.mockImplementation(() => ({
+            sharedExhibit: { displayName: "fileName.jpg", preSignedURL: "preSignedURL", id: "documentId", close: true },
+            closeSharedExhibit: jest.fn(),
+        }));
+        useExhibitAnnotation.mockImplementation(() => ({
+            sendAnnotation: jest.fn(),
+            annotations: [],
+        }));
+        const { queryByTestId } = renderWithGlobalContext(
+            <ThemeProvider theme={theme}>
+                <LiveExhibits />
+            </ThemeProvider>
+        );
+        const fileViewButton = queryByTestId("close_document_button");
+        expect(fileViewButton).toBeInTheDocument();
+    });
+    it("should not display the close shared exhibit document when has not the allowed permissions", () => {
+        useShareExhibitFile.mockImplementation(() => ({
+            sharedExhibit: { displayName: "fileName.jpg", preSignedURL: "preSignedURL", id: "documentId" },
+            closeSharedExhibit: jest.fn(),
+        }));
+        useExhibitAnnotation.mockImplementation(() => ({
+            sendAnnotation: jest.fn(),
+            annotations: [],
+        }));
+        const { queryByTestId } = renderWithGlobalContext(
+            <ThemeProvider theme={theme}>
+                <LiveExhibits />
+            </ThemeProvider>
+        );
+        const fileViewButton = queryByTestId("close_document_button");
+        expect(fileViewButton).not.toBeInTheDocument();
+    });
+    it("should display the close shared exhibit docuent modal when after click the button", () => {
+        useShareExhibitFile.mockImplementation(() => ({
+            sharedExhibit: { displayName: "fileName.jpg", preSignedURL: "preSignedURL", id: "documentId", close: true },
+            closeSharedExhibit: jest.fn(),
+        }));
+        useExhibitAnnotation.mockImplementation(() => ({
+            sendAnnotation: jest.fn(),
+            annotations: [],
+        }));
+        const { queryByTestId, queryByText } = renderWithGlobalContext(
+            <ThemeProvider theme={theme}>
+                <LiveExhibits />
+            </ThemeProvider>
+        );
+        const closeButton = queryByTestId("close_document_button");
+        expect(closeButton).toBeInTheDocument();
+        fireEvent.click(closeButton);
+        const closeSharedExhibitModal = queryByTestId("close_shared_exhibit_modal");
+        expect(closeSharedExhibitModal).toBeInTheDocument();
+    });
+    it("should display the close shared exhibit document modal with stamped exhibit texts when is stamped", () => {
+        useShareExhibitFile.mockImplementation(() => ({
+            sharedExhibit: { displayName: "fileName.jpg", preSignedURL: "preSignedURL", id: "documentId", close: true },
+            closeSharedExhibit: jest.fn(),
+        }));
+        useExhibitAnnotation.mockImplementation(() => ({
+            sendAnnotation: jest.fn(),
+            annotations: [],
+        }));
+        const { queryByTestId, queryByText } = renderWithGlobalContext(
+            <ThemeProvider theme={theme}>
+                <LiveExhibits />
+            </ThemeProvider>,
+            getMockDeps(),
+            {
+                ...rootReducer,
+                initialState: {
+                    room: {
+                        ...rootReducer.initialState.room,
+                        isRecording: true,
+                        stampLabel: "Stamp Label",
+                    },
+                },
+            }
+        );
+        const closeButton = queryByTestId("close_document_button");
+        expect(closeButton).toBeInTheDocument();
+        fireEvent.click(closeButton);
+        const closeSharedExhibitModal = queryByTestId("close_shared_exhibit_modal");
+        expect(closeSharedExhibitModal).toBeInTheDocument();
+        const closeSharedStampedButtonTitle = queryByText(CONSTANTS.MY_EXHIBITS_CLOSE_MODAL_TITLE);
+        expect(closeSharedStampedButtonTitle).toBeInTheDocument();
+        const closeSharedStampedButtonSubtitle = queryByText(CONSTANTS.MY_EXHIBITS_CLOSE_MODAL_SUBTITLE);
+        expect(closeSharedStampedButtonSubtitle).toBeInTheDocument();
+        const closeSharedStampedPositiveButton = queryByText(CONSTANTS.MY_EXHIBITS_CLOSE_MODAL_OK_BUTTON_LABEL);
+        expect(closeSharedStampedPositiveButton).toBeInTheDocument();
+        const closeSharedStampedNegativeButton = queryByText(CONSTANTS.MY_EXHIBITS_CLOSE_MODAL_CANCEL_BUTTON_LABEL);
+        expect(closeSharedStampedNegativeButton).toBeInTheDocument();
+    });
+    it("should display the close shared exhibit document modal with not stamped exhibit texts when is not stamped", () => {
+        useShareExhibitFile.mockImplementation(() => ({
+            sharedExhibit: { displayName: "fileName.jpg", preSignedURL: "preSignedURL", id: "documentId", close: true },
+            closeSharedExhibit: jest.fn(),
+        }));
+        useExhibitAnnotation.mockImplementation(() => ({
+            sendAnnotation: jest.fn(),
+            annotations: [],
+        }));
+        const { queryByTestId, queryByText } = renderWithGlobalContext(
+            <ThemeProvider theme={theme}>
+                <LiveExhibits />
+            </ThemeProvider>,
+            getMockDeps(),
+            {
+                ...rootReducer,
+                initialState: {
+                    room: {
+                        ...rootReducer.initialState.room,
+                        isRecording: true,
+                        stampLabel: "",
+                    },
+                },
+            }
+        );
+        const closeButton = queryByTestId("close_document_button");
+        expect(closeButton).toBeInTheDocument();
+        fireEvent.click(closeButton);
+        const closeSharedExhibitModal = queryByTestId("close_shared_exhibit_modal");
+        expect(closeSharedExhibitModal).toBeInTheDocument();
+        const closeSharedStampedButtonTitle = queryByText(CONSTANTS.MY_EXHIBITS_CLOSE_NOT_STAMPED_MODAL_TITLE);
+        expect(closeSharedStampedButtonTitle).toBeInTheDocument();
+        const closeSharedStampedButtonSubtitle = queryByText(CONSTANTS.MY_EXHIBITS_CLOSE_NOT_STAMPED_MODAL_SUBTITLE);
+        expect(closeSharedStampedButtonSubtitle).toBeInTheDocument();
+        const closeSharedStampedPositiveButton = queryByText(CONSTANTS.MY_EXHIBITS_CLOSE_MODAL_CANCEL_BUTTON_LABEL);
+        expect(closeSharedStampedPositiveButton).toBeInTheDocument();
+        const closeSharedStampedNegativeButton = queryByText(CONSTANTS.MY_EXHIBITS_CLOSE_MODAL_OK_BUTTON_LABEL);
+        expect(closeSharedStampedNegativeButton).toBeInTheDocument();
+    });
+
+    it("Should be display the Entered exhibits tab with an empty state when has no entered exhibits", () => {
+        const handleFetchFiles = jest.fn();
+        useEnteredExhibit.mockImplementation(() => ({
+            handleFetchFiles,
+            enteredExhibits: [],
+            enteredExhibitsPending: false,
+        }));
+        const { queryByText } = renderWithGlobalContext(
+            <ThemeProvider theme={theme}>
+                <EnteredExhibits />
+            </ThemeProvider>,
+            getMockDeps(),
+            {
+                ...rootReducer,
+                initialState: {
+                    room: {
+                        ...rootReducer.initialState.room,
+                        isRecording: true,
+                        currentExhibitTabName: "enteredExhibits",
+                    },
+                },
+            }
+        );
+        expect(handleFetchFiles).toBeCalled();
+        const enteredExhibitsEmptyStateTitle = queryByText(CONSTANTS.ENTERED_EXHIBITS_EMPTY_STATE_TITLE);
+        expect(enteredExhibitsEmptyStateTitle).toBeInTheDocument();
+    });
+    it("Should be display the Entered exhibits tab with an empty state when has an error", () => {
+        const handleFetchFiles = jest.fn();
+        useEnteredExhibit.mockImplementation(() => ({
+            handleFetchFiles,
+            enteredExhibits: [],
+            enteredExhibitsPending: false,
+            enteredExhibitsError: "error",
+        }));
+        const { queryByText } = renderWithGlobalContext(
+            <ThemeProvider theme={theme}>
+                <EnteredExhibits />
+            </ThemeProvider>,
+            getMockDeps(),
+            {
+                ...rootReducer,
+                initialState: {
+                    room: {
+                        ...rootReducer.initialState.room,
+                        isRecording: true,
+                        currentExhibitTabName: "enteredExhibits",
+                    },
+                },
+            }
+        );
+        expect(handleFetchFiles).toBeCalled();
+        const enteredExhibitsEmptyStateTitle = queryByText(CONSTANTS.ENTERED_EXHIBITS_EMPTY_STATE_TITLE);
+        expect(enteredExhibitsEmptyStateTitle).toBeInTheDocument();
+    });
+    it("Should be display the Entered exhibits tab with a list of entered exhibits", () => {
+        const enteredExhibits = [
+            {
+                name: "enteredDoc.pdf",
+                displayName: "enteredDoc.pdf",
+                addedBy: {
+                    firstName: "John",
+                    LastName: "Doe",
+                },
+            },
+        ];
+        const handleFetchFiles = jest.fn(() => enteredExhibits);
+        useEnteredExhibit.mockImplementation(() => ({
+            handleFetchFiles,
+            enteredExhibits,
+            enteredExhibitsPending: false,
+        }));
+        const { queryByTestId, queryByText } = renderWithGlobalContext(
+            <ThemeProvider theme={theme}>
+                <EnteredExhibits />
+            </ThemeProvider>,
+            getMockDeps(),
+            {
+                ...rootReducer,
+                initialState: {
+                    room: {
+                        ...rootReducer.initialState.room,
+                        isRecording: true,
+                        currentExhibitTabName: "enteredExhibits",
+                    },
+                },
+            }
+        );
+        expect(handleFetchFiles).toBeCalled();
+        expect(handleFetchFiles).toHaveReturnedWith(enteredExhibits);
+        const enteredExhibitsEmptyStateTitle = queryByText(CONSTANTS.ENTERED_EXHIBITS_EMPTY_STATE_TITLE);
+        expect(enteredExhibitsEmptyStateTitle).not.toBeInTheDocument();
+        const enteredExhibitsTable = queryByTestId("entered_exhibits_table");
+        expect(enteredExhibitsTable).toBeInTheDocument();
+        const enteredExhibitDisplayName = queryByTestId("entered_exhibit_display_name");
+        expect(enteredExhibitDisplayName).toBeInTheDocument();
     });
 });

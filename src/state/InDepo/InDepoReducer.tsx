@@ -7,6 +7,8 @@ import { ACTION_TYPE } from "./InDepoActions";
 import { ExhibitFile } from "../../types/ExhibitFile";
 import { DEFAULT_ACTIVE_TAB, EXHIBIT_TAB } from "../../constants/exhibits";
 import { addTranscriptionMessages, setTranscriptionMessages } from "../../helpers/formatTranscriptionsMessages";
+import { IUser } from "../../models/user";
+import { CoreControls } from "@pdftron/webviewer";
 
 export interface IRoom {
     info?: object;
@@ -27,7 +29,11 @@ export interface IRoom {
     exhibitTab?: EXHIBIT_TAB;
     currentExhibitTabName?: string;
     annotations?: [];
+    rawAnnotations?: string;
     lastAnnotationId?: string;
+    currentUser?: IUser;
+    stampLabel?: string;
+    exhibitDocument?: CoreControls.Document;
 }
 
 export const RoomReducerInitialState: IRoom = {
@@ -46,7 +52,11 @@ export const RoomReducerInitialState: IRoom = {
     isCurrentExhibitOwner: false,
     exhibitTab: DEFAULT_ACTIVE_TAB,
     currentExhibitTabName: "",
+    annotations: [],
     lastAnnotationId: "",
+    currentUser: null,
+    stampLabel: "",
+    exhibitDocument: null,
 };
 
 const RoomReducer: Reducer<IRoom, IAction> = (state: IRoom, action: IAction): IRoom => {
@@ -149,6 +159,10 @@ const RoomReducer: Reducer<IRoom, IAction> = (state: IRoom, action: IAction): IR
             return {
                 ...state,
                 currentExhibit: null,
+                exhibitDocument: null,
+                stampLabel: "",
+                annotations: [],
+                lastAnnotationId: "",
             };
         case ACTION_TYPE.IN_DEPO_SET_CURRENT_EXHIBIT_OWNER:
             return {
@@ -168,6 +182,22 @@ const RoomReducer: Reducer<IRoom, IAction> = (state: IRoom, action: IAction): IR
                 ...state,
                 annotations: action.payload.annotations,
                 lastAnnotationId,
+            };
+        case ACTION_TYPE.IN_DEPO_SET_CURRENT_USER:
+            return {
+                ...state,
+                currentUser: action.payload,
+            };
+        case ACTION_TYPE.IN_DEPO_SET_STAMP_LABEL:
+            return {
+                ...state,
+                stampLabel: action.payload,
+            };
+        case ACTION_TYPE.IN_DEPO_SET_EXHIBIT_DOCUMENT_INSTANCE:
+            return {
+                ...state,
+                exhibitDocument: action.payload.exhibitDocument,
+                rawAnnotations: action.payload.rawAnnotations ?? state.rawAnnotations,
             };
 
         default:

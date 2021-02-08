@@ -12,7 +12,7 @@ import Dropdown from "../../../../../components/Dropdown";
 import Menu from "../../../../../components/Menu";
 import Space from "../../../../../components/Space";
 import Icon from "../../../../../components/Icon";
-import FileIcon from "../FileIcon";
+import FileIcon from "../../FileIcon";
 import { ReactComponent as kebebIcon } from "../../../../../assets/icons/kebeb.svg";
 import { ReactComponent as DeleteIcon } from "../../../../../assets/icons/delete.svg";
 import { ReactComponent as RenameIcon } from "../../../../../assets/icons/edit.svg";
@@ -137,7 +137,7 @@ const FileListTable = (props: IFileListTable) => {
                         <Button
                             type="text"
                             size="small"
-                            data-testid="file-list-view-button"
+                            data-testid="file_list_view_button"
                             onClick={() => props.onClickViewFile(file)}
                         >
                             View
@@ -154,7 +154,7 @@ const FileListTable = (props: IFileListTable) => {
                                 disabled={!isRecording}
                                 size="small"
                                 type="ghost"
-                                data-testid="file-list-share-button"
+                                data-testid="file_list_share_button"
                                 onClick={() => {
                                     setSelectedSharedExhibitFile(file);
                                     setExhibitSharingModalOpen(true);

@@ -15,8 +15,11 @@ export interface IConfirmProps extends IModalProps {
     subTitle?: string;
     positiveLabel?: string;
     negativeLabel?: string;
+    onCancelClick?: () => void;
     onNegativeClick?: () => void;
     onPositiveClick?: () => void;
+    positiveLoading?: boolean;
+    negativeLoading?: boolean;
 }
 
 const ConfirmModal = styled(Modal)<IConfirmProps>`
@@ -48,15 +51,17 @@ const confirm = (props: IConfirmProps) => {
     const {
         title,
         subTitle,
+        onCancelClick,
         onNegativeClick,
         onPositiveClick,
         negativeLabel,
         positiveLabel,
         children,
+        positiveLoading,
+        negativeLoading,
         ...rest
     } = props;
     const closeIcon = <Icon icon={CloseIcon} />;
-
     return (
         <ConfirmModal
             closeIcon={closeIcon}
@@ -68,22 +73,34 @@ const confirm = (props: IConfirmProps) => {
             footer={
                 <>
                     {!!negativeLabel && (
-                        <Button type="text" onClick={onNegativeClick}>
+                        <Button
+                            data-testid="confirm_nagative_button"
+                            type="text"
+                            loading={negativeLoading}
+                            disabled={positiveLoading}
+                            onClick={onNegativeClick}
+                        >
                             {negativeLabel}
                         </Button>
                     )}
                     {positiveLabel && (
-                        <Button type="primary" onClick={onPositiveClick}>
+                        <Button
+                            data-testid="confirm_positive_button"
+                            type="primary"
+                            loading={positiveLoading}
+                            disabled={negativeLoading}
+                            onClick={onPositiveClick}
+                        >
                             {positiveLabel}
                         </Button>
                     )}
                 </>
             }
         >
-            <Title level={4} weight="light">
+            <Title level={4} weight="light" data-testid="confirm_title">
                 {title}
             </Title>
-            <Text state={ColorStatus.disabled} ellipsis={false}>
+            <Text state={ColorStatus.disabled} ellipsis={false} data-testid="confirm-subtitle">
                 {subTitle}
             </Text>
             {children}
