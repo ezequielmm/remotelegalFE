@@ -10,4 +10,8 @@ enum ColorStatus {
     inDepo = "inDepo",
 }
 
+export const isColorStatusType = (color: string): color is keyof typeof ColorStatus => {
+    return Object.keys(ColorStatus).includes(String(color as string));
+};
+
 export default ColorStatus;

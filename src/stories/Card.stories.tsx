@@ -2,6 +2,7 @@ import React from "react";
 // also exported from '@storybook/react' if you can deal with breaking changes in 6.1
 import { Story, Meta } from "@storybook/react/types-6-0";
 import Card from "../components/Card";
+import ColorStatus from "../types/ColorStatus";
 
 export default {
     title: "Card",
@@ -9,7 +10,8 @@ export default {
     argTypes: {
         bg: {
             control: {
-                type: "text",
+                type: "select",
+                options: ColorStatus,
             },
         },
     },
@@ -17,10 +19,13 @@ export default {
 
 const Template: Story = (args) => {
     return (
-        <Card title="Select or add a case" {...args}>
+        <Card {...args}>
             <p>To select or add a case please complete the information below.</p>
         </Card>
     );
 };
 
 export const StyledCard = Template.bind({});
+StyledCard.args = {
+    title: "Select or add a case",
+};

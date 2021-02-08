@@ -4,25 +4,29 @@ import { Card as ANTDCard } from "antd";
 import { CardProps } from "antd/lib/card";
 import { getREM } from "../../constants/styles/utils";
 import { ThemeMode } from "../../types/ThemeType";
-import ColorStatus from "../../types/ColorStatus";
+import ColorStatus, { isColorStatusType } from "../../types/ColorStatus";
 
 export interface ICardProps extends CardProps {
     bg?: ColorStatus | string;
-    noPadding?: boolean;
+    hasPadding?: boolean;
+    hasShaddow?: boolean;
     fullWidth?: boolean;
+    hasBorder?: boolean;
 }
 
-const StyledCard = styled(ANTDCard)<ICardProps>`
-    ${({ theme, noPadding, fullWidth, bg }) => {
+export const StyledCard = styled(ANTDCard)<ICardProps>`
+    ${({ theme, hasPadding, hasShaddow, fullWidth, bg }) => {
         const { spaces, fontSizes, headerFontFamilies } = theme.default;
 
         const styles = `
             &.ant-card {
                 width: ${fullWidth ? "100%" : "unset"};
-                padding: ${noPadding ? 0 : getREM(spaces[12])};
-                box-shadow: 0 ${getREM(spaces[5])} ${getREM(spaces[9])} 0 rgba(0, 0, 0, 0.08);
-                background: ${theme.default[`${bg}Color`]};
-
+                padding: ${hasPadding ? getREM(spaces[12]) : 0};
+                box-shadow: ${
+                    hasShaddow ? `0 ${getREM(spaces[5])} ${getREM(spaces[9])} 0 rgba(0, 0, 0, 0.08)` : "unset"
+                };
+                background: ${isColorStatusType(bg) ? theme.default[`${bg}Color`] : bg};
+  
                 .ant-card-head {
                     font-family: ${headerFontFamilies};
                     padding: 0;
@@ -45,11 +49,27 @@ const StyledCard = styled(ANTDCard)<ICardProps>`
     }}
 `;
 
-const Card = ({ bordered = false, fullWidth = false, bg, ...props }: ICardProps) => {
+const Card = ({
+    hasBorder = false,
+    hasPadding = true,
+    hasShaddow = true,
+    bg,
+    fullWidth = false,
+    ...props
+}: ICardProps) => {
     const themeContext = useContext(ThemeContext);
     const defaultBg = bg || (themeContext.mode === ThemeMode.inDepo ? ColorStatus.inDepo : ColorStatus.white);
 
-    return <StyledCard bordered={bordered} fullWidth={fullWidth} bg={defaultBg} {...props} />;
+    return (
+        <StyledCard
+            bordered={hasBorder}
+            hasPadding={hasPadding}
+            hasShaddow={hasShaddow}
+            fullWidth={fullWidth}
+            bg={defaultBg}
+            {...props}
+        />
+    );
 };
 
 export default Card;
