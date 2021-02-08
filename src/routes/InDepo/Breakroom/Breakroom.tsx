@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 import BreakroomControlsBar from "../../../components/BreakroomControlsBar";
 import ErrorScreen from "../../../components/ErrorScreen";
@@ -8,7 +8,7 @@ import Spinner from "../../../components/Spinner";
 import * as CONSTANTS from "../../../constants/inDepo";
 import { theme } from "../../../constants/styles/theme";
 import disconnectFromDepo from "../../../helpers/disconnectFromDepo";
-import { useJoinBreakroom } from "../../../hooks/InDepo/depositionLifeTimeHooks";
+import { useJoinBreakroom, useJoinDeposition } from "../../../hooks/InDepo/depositionLifeTimeHooks";
 import { GlobalStateContext } from "../../../state/GlobalState";
 import { ThemeMode } from "../../../types/ThemeType";
 import Exhibits from "../Exhibits";
@@ -20,11 +20,13 @@ const Breakroom = () => {
     const { state, dispatch } = useContext(GlobalStateContext);
     const [joinBreakroom, loading, error] = useJoinBreakroom();
     const { breakrooms, currentBreakroom, timeZone, breakroomDataTrack } = state.room;
-    const { breakroomID } = useParams<{ depositionID: string; breakroomID: string }>();
+    const { breakroomID, depositionID } = useParams<{ depositionID: string; breakroomID: string }>();
     const currentBreakroomData = breakrooms?.find((breakroom) => breakroom.id === breakroomID);
     const [exhibitsOpen, togglerExhibits] = useState<boolean>(false);
     const [videoLayoutSize, setVideoLayoutSize] = useState<number>(0);
     const [atendeesVisibility, setAtendeesVisibility] = useState<boolean>(true);
+    const [joinDeposition] = useJoinDeposition();
+    const history = useHistory();
 
     useEffect(() => {
         setAtendeesVisibility((prev) => !prev);
@@ -49,6 +51,13 @@ const Breakroom = () => {
             joinBreakroom(breakroomID);
         }
     }, [breakroomID, joinBreakroom]);
+
+    const handleRejoinDepo = () => {
+        if (depositionID) {
+            joinDeposition(depositionID);
+            history.push(`/deposition/join/${depositionID}`);
+        }
+    };
 
     if (loading) {
         return <Spinner />;
@@ -87,6 +96,7 @@ const Breakroom = () => {
                         localParticipant={currentBreakroom.localParticipant}
                         exhibitsOpen={exhibitsOpen}
                         togglerExhibits={togglerExhibits}
+                        rejoinDepo={handleRejoinDepo}
                     />
                 </StyledRoomFooter>
             </StyledInDepoContainer>

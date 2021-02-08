@@ -24,9 +24,7 @@ import Control from "../Control/Control";
 import Logo from "../Logo";
 import { StyledSecondaryControls } from "../ControlsBar/styles";
 import { CONTROLS_BAR_EXHIBITS_LABEL } from "../../constants/inDepo";
-import Modal from "../Modal";
-import Result from "../Result";
-import Button from "../Button";
+import Confirm from "../Confirm";
 import {
     LEAVE_BREAKROOM_TITLE,
     LEAVE_BREAKROOM_SUBTITLE,
@@ -39,6 +37,7 @@ interface IBreakroomControlsBar {
     breakroomName: string;
     exhibitsOpen: boolean;
     togglerExhibits: React.Dispatch<React.SetStateAction<boolean>> | ((value: React.SetStateAction<boolean>) => void);
+    rejoinDepo: () => void;
 }
 
 export default function BreakroomControlsBar({
@@ -46,6 +45,7 @@ export default function BreakroomControlsBar({
     localParticipant,
     exhibitsOpen,
     togglerExhibits,
+    rejoinDepo,
 }: IBreakroomControlsBar): ReactElement {
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const { videoTracks, audioTracks } = useParticipantTracks(localParticipant);
@@ -54,33 +54,26 @@ export default function BreakroomControlsBar({
         videoTracks as LocalVideoTrack[]
     );
     const toggleExhibits = () => togglerExhibits((prevState) => !prevState);
-    // eslint-disable-next-line no-unused-vars
     const handleCloseModal = (isLeaving: boolean) => {
         setIsModalOpen(!isModalOpen);
+        if (isLeaving) {
+            rejoinDepo();
+        }
     };
 
     return (
         <>
-            <Modal
-                onlyBody
-                destroyOnClose
+            <Confirm
+                title={LEAVE_BREAKROOM_TITLE}
+                subTitle={LEAVE_BREAKROOM_SUBTITLE}
+                negativeLabel={LEAVE_BREAKROOM_STAY}
+                positiveLabel={LEAVE_BREAKROOM_LEAVE}
                 visible={isModalOpen}
-                onCancel={() => handleCloseModal(false)}
-                data-testid="modal"
-            >
-                <Result
-                    title={LEAVE_BREAKROOM_TITLE}
-                    subTitle={LEAVE_BREAKROOM_SUBTITLE}
-                    extra={[
-                        <Button type="text" onClick={() => handleCloseModal(false)}>
-                            {LEAVE_BREAKROOM_STAY}
-                        </Button>,
-                        <Button type="primary" onClick={() => handleCloseModal(true)}>
-                            {LEAVE_BREAKROOM_LEAVE}
-                        </Button>,
-                    ]}
-                />
-            </Modal>
+                onPositiveClick={() => handleCloseModal(true)}
+                onNegativeClick={() => handleCloseModal(false)}
+                data-testid="modalconfirm"
+            />
+
             <StyledContainer>
                 <StyledLeftControls>
                     <StyledLogo>
