@@ -1,6 +1,7 @@
 import { History } from "history";
 import React from "react";
 import Button from "../components/Button";
+import Space from "../components/Space";
 import StatusPill from "../components/StatusPill";
 import { MappedDeposition } from "../routes/MyDepositions/MyDepositions";
 
@@ -37,7 +38,7 @@ export const CASE_COLUMN = {
     field: "caseName",
     ellipsis: true,
     render: (text) => <small>{text}</small>,
-    width: 170,
+    width: "13%",
 };
 export const DATE_COLUMN = {
     title: "DATE AND TIME",
@@ -59,6 +60,7 @@ export const WITNESS_COLUMN = {
             <b>{text || "-"}</b>
         </small>
     ),
+    width: "12%",
 };
 export const COURT_REPORTER_COLUMN = {
     title: "COURT REPORTER",
@@ -69,12 +71,14 @@ export const COURT_REPORTER_COLUMN = {
 export const JOB_COLUMN = { title: "JOB#", field: "details", render: (text) => text || "-", width: "6.5%" };
 export const getActionColumns = (history) => ({
     render: ({ id }: MappedDeposition) => (
-        <Button onClick={() => history.push(`/deposition/join/${id}`)} type="primary" size="small" width="75px">
-            JOIN
-        </Button>
+        <Space justify="flex-end">
+            <Button onClick={() => history.push(`/deposition/join/${id}`)} type="primary" size="small" width="75px">
+                JOIN
+            </Button>
+        </Space>
     ),
     sorter: false,
-    width: 80,
+    width: 60,
 });
 
 export const getDepositionColumns = (history: History, isAdmin?: boolean) =>
