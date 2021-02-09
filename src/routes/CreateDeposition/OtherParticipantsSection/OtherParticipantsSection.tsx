@@ -99,12 +99,33 @@ export default function OtherParticipantsSection(): ReactElement {
                         dataSource={fields}
                         pagination={false}
                     >
-                        <Column title={CONSTANTS.OTHER_PARTICIPANTS_COLUMNS_TITLES[0]} dataIndex="email" key="email" />
-                        <Column title={CONSTANTS.OTHER_PARTICIPANTS_COLUMNS_TITLES[1]} dataIndex="name" key="name" />
-                        <Column title={CONSTANTS.OTHER_PARTICIPANTS_COLUMNS_TITLES[2]} dataIndex="phone" key="phone" />
-                        <Column title={CONSTANTS.OTHER_PARTICIPANTS_COLUMNS_TITLES[3]} dataIndex="role" key="role" />
+                        <Column
+                            width="23%"
+                            title={CONSTANTS.OTHER_PARTICIPANTS_COLUMNS_TITLES[0]}
+                            dataIndex="email"
+                            key="email"
+                        />
+                        <Column
+                            width="25%"
+                            title={CONSTANTS.OTHER_PARTICIPANTS_COLUMNS_TITLES[1]}
+                            dataIndex="name"
+                            key="name"
+                        />
+                        <Column
+                            width="20%"
+                            title={CONSTANTS.OTHER_PARTICIPANTS_COLUMNS_TITLES[2]}
+                            dataIndex="phone"
+                            key="phone"
+                        />
+                        <Column
+                            width="20%"
+                            title={CONSTANTS.OTHER_PARTICIPANTS_COLUMNS_TITLES[3]}
+                            dataIndex="role"
+                            key="role"
+                        />
                         <Column
                             align="right"
+                            width="12%"
                             render={(item, data, index) => {
                                 return (
                                     <Space size="large">
