@@ -57,6 +57,24 @@ export const StyledRoundedControl = styled(roundButton)`
             isToggled ? theme.colors.inDepoNeutrals[5] : theme.colors.inDepoBlue[6]};
     }
 
+    ${({ color, theme }) =>
+        color === "red"
+            ? `
+                &,
+                &:focus {
+                    background-color: ${theme.colors.inDepoRed[5]};
+                }
+
+                &:hover {
+                    background-color: ${theme.colors.inDepoRed[4]};
+                }
+
+                &:active {
+                    background-color: ${theme.colors.inDepoRed[6]};
+                }
+            `
+            : ""}
+
     path {
         fill: ${({ isToggled, theme }) => (isToggled ? theme.default.primaryColor : theme.default.whiteColor)};
     }
@@ -103,19 +121,25 @@ export const StyledRoundedButton = styled(StyledRoundedControl)`
         margin-bottom: 0;
         margin-left: 0;
     }
-`;
 
-export const StyledRoundedControlInRed = styled(StyledRoundedControl)`
-    &,
-    &:focus {
-        background-color: ${({ theme }) => theme.colors.inDepoRed[5]};
-    }
+    ${({ color, theme }) =>
+        color === "red"
+            ? `
+                &,
+                &:focus {
+                    border: unset;
+                    background-color: ${theme.colors.inDepoRed[5]};
+                }
 
-    &:hover {
-        background-color: ${({ theme }) => theme.colors.inDepoRed[4]};
-    }
+                &:hover {
+                    border: unset;
+                    background-color: ${theme.colors.inDepoRed[4]};
+                }
 
-    &:active {
-        background-color: ${({ theme }) => theme.colors.inDepoRed[6]};
-    }
+                &:active {
+                    border: unset;
+                    background-color: ${theme.colors.inDepoRed[6]};
+                }
+            `
+            : ""}
 `;

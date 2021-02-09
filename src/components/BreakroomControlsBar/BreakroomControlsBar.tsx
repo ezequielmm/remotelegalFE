@@ -18,11 +18,10 @@ import { ReactComponent as MuteIcon } from "../../assets/in-depo/Mute.svg";
 import { ReactComponent as UnmuteIcon } from "../../assets/in-depo/Unmute.svg";
 import { ReactComponent as CameraOnIcon } from "../../assets/in-depo/Camera.on.svg";
 import { ReactComponent as CameraOffIcon } from "../../assets/in-depo/Camera.off.svg";
-import { ReactComponent as EndCallIcon } from "../../assets/in-depo/End.call.svg";
+import { ReactComponent as BreakroomsIcon } from "../../assets/in-depo/Breakrooms.svg";
 import { ReactComponent as ExhibitsIcon } from "../../assets/in-depo/Exhibits.svg";
 import Control from "../Control/Control";
 import Logo from "../Logo";
-import { StyledSecondaryControls } from "../ControlsBar/styles";
 import { CONTROLS_BAR_EXHIBITS_LABEL } from "../../constants/inDepo";
 import Confirm from "../Confirm";
 import {
@@ -116,8 +115,8 @@ export default function BreakroomControlsBar({
                     />
                 </StyledVideoControls>
                 <StyledGeneralControls>
-                    {false && (
-                        <StyledPrimaryControls>
+                    <StyledPrimaryControls>
+                        {false && (
                             <Control
                                 data-testid="exhibits"
                                 isToggled={exhibitsOpen}
@@ -126,18 +125,16 @@ export default function BreakroomControlsBar({
                                 label={CONTROLS_BAR_EXHIBITS_LABEL}
                                 icon={<Icon icon={ExhibitsIcon} size="1.625rem" />}
                             />
-                        </StyledPrimaryControls>
-                    )}
-                    <StyledSecondaryControls>
+                        )}
                         <Control
                             data-testid="end"
                             onClick={() => setIsModalOpen(!isModalOpen)}
-                            type="rounded"
+                            type="simple"
                             color="red"
                             label="Leave Breakroom"
-                            icon={<Icon icon={EndCallIcon} size="1.625rem" />}
+                            icon={<Icon icon={BreakroomsIcon} size="1.625rem" />}
                         />
-                    </StyledSecondaryControls>
+                    </StyledPrimaryControls>
                 </StyledGeneralControls>
             </StyledContainer>
         </>

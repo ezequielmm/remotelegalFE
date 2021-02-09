@@ -1,7 +1,7 @@
 import React from "react";
 import { ButtonProps, ButtonType } from "antd/lib/button";
 import Text from "../Typography/Text";
-import { StyledRoundedControl, StyledCircleControl, StyledRoundedControlInRed, StyledRoundedButton } from "./styles";
+import { StyledRoundedControl, StyledCircleControl, StyledRoundedButton } from "./styles";
 import ColorStatus from "../../types/ColorStatus";
 
 export enum Types {
@@ -19,22 +19,19 @@ export interface IButtonProps extends Omit<ButtonProps, "type" | "children"> {
     color?: "blue" | "red";
 }
 
-export default function Control({ isToggled, type, label, icon, color, ...rest }: IButtonProps) {
+export default function Control({ isToggled, type, label, icon, color, size, ...rest }: IButtonProps) {
     let Button;
 
     if (type === Types.CIRCLE) {
         Button = StyledCircleControl;
     } else if (type === Types.ROUNDED) {
         Button = StyledRoundedControl;
-        if (color === "red") {
-            Button = StyledRoundedControlInRed;
-        }
     } else if (type === Types.SIMPLE) {
         Button = StyledRoundedButton;
     }
 
     return (
-        <Button {...rest} isToggled={isToggled}>
+        <Button {...rest} color={color} isToggled={isToggled}>
             {icon}
             {label && (
                 <Text size="small" state={isToggled && color !== "red" ? ColorStatus.primary : ColorStatus.white}>
