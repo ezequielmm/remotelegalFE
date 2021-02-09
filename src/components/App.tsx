@@ -18,7 +18,7 @@ import Authenticator from "./authenticator/authenticator";
 import RouteWithLayout from "./RouteWithLayout/RouteWithLayout";
 import CreateDeposition from "../routes/CreateDeposition";
 import MyDepositions from "../routes/MyDepositions";
-import EndDepoScreen from "../routes/InDepo/components/EndDepoScreen";
+import EndDepoScreen from "../routes/PostDepo/EndDepoScreen";
 import ROUTES_WITH_GUEST_TOKEN from "../constants/authenticator";
 import { ThemeMode } from "../types/ThemeType";
 import PreJoinDepo from "../routes/PreJoinDepo";

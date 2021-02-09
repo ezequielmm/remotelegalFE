@@ -29,3 +29,6 @@ export const getUserNotAdmin = () => ({
     phoneNumber: "3333333333",
     isAdmin: false,
 });
+
+export const MOCKED_EMAIL = "test@test.com";
+export const MOCKED_LOCATION = { state: { email: MOCKED_EMAIL } };

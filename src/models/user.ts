@@ -10,6 +10,7 @@ export interface IUser {
     phoneNumber?: string;
     creationDate?: DateLike;
     isAdmin?: boolean;
+    isGuest?: boolean;
 }
 
 export type UserInfo = {

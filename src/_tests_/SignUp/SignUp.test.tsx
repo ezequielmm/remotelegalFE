@@ -291,4 +291,20 @@ describe("SignUp", () => {
         });
         await waitForElement(() => getByText(ERRORS.WAITING_FOR_CODE));
     });
+    it("it should pre-fill the email field with the passed email by parameter", async () => {
+        customDeps.apiService.signUp = jest.fn().mockRejectedValue(409);
+        const { getByPlaceholderText } = renderWithGlobalContext(
+            <SignUp location={CONSTANTS.MOCKED_LOCATION} />,
+            customDeps
+        );
+        const emailInput = getByPlaceholderText(CONSTANTS.EMAIL_PLACEHOLDER);
+        expect(emailInput.value).toEqual(CONSTANTS.MOCKED_EMAIL);
+    });
+
+    it("it should pre-fill the email field with an empty space if haven't any passed email by parameter", async () => {
+        customDeps.apiService.signUp = jest.fn().mockRejectedValue(409);
+        const { getByPlaceholderText } = renderWithGlobalContext(<SignUp />, customDeps);
+        const emailInput = getByPlaceholderText(CONSTANTS.EMAIL_PLACEHOLDER);
+        expect(emailInput.value).toEqual("");
+    });
 });

@@ -36,15 +36,15 @@ const Breakroom = () => {
 
     useEffect(() => {
         const cleanUpFunction = () => {
-            disconnectFromDepo(currentBreakroom, dispatch);
+            disconnectFromDepo(currentBreakroom, dispatch, null, null, depositionID);
         };
         window.addEventListener("beforeunload", cleanUpFunction);
 
         return () => {
-            disconnectFromDepo(currentBreakroom, dispatch);
+            disconnectFromDepo(currentBreakroom, dispatch, null, null, depositionID);
             window.removeEventListener("beforeunload", cleanUpFunction);
         };
-    }, [currentBreakroom, dispatch]);
+    }, [currentBreakroom, dispatch, depositionID]);
 
     useEffect(() => {
         if (breakroomID) {

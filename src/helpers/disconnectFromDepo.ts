@@ -5,7 +5,8 @@ const disconnectFromDepo = async (
     room: Room,
     dispatch: React.SetStateAction<any>,
     history?,
-    killDepo?: () => Promise<void>
+    killDepo?: () => Promise<void>,
+    depositionID?: string
 ) => {
     const initialState = {
         info: null,
@@ -32,6 +33,6 @@ const disconnectFromDepo = async (
         room.disconnect();
         dispatch(actions.disconnect(initialState));
     }
-    return history?.push("/deposition/end");
+    return history?.push("/deposition/end", { depositionID });
 };
 export default disconnectFromDepo;

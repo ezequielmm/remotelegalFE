@@ -33,15 +33,15 @@ const InDepo = () => {
 
     useEffect(() => {
         const cleanUpFunction = () => {
-            disconnectFromDepo(currentRoom, dispatch);
+            disconnectFromDepo(currentRoom, dispatch, null, null, depositionID);
         };
         window.addEventListener("beforeunload", cleanUpFunction);
 
         return () => {
-            disconnectFromDepo(currentRoom, dispatch);
+            disconnectFromDepo(currentRoom, dispatch, null, null, depositionID);
             window.removeEventListener("beforeunload", cleanUpFunction);
         };
-    }, [currentRoom, dispatch]);
+    }, [currentRoom, dispatch, depositionID]);
 
     useEffect(() => {
         if (depositionID) {
@@ -57,7 +57,7 @@ const InDepo = () => {
 
     useEffect(() => {
         if (message.module === "endDepo") {
-            disconnectFromDepo(currentRoom, dispatch, history);
+            disconnectFromDepo(currentRoom, dispatch, history, null, depositionID);
         }
         if (message.module === "recordDepo") {
             dispatch(actions.setIsRecording(message.value.eventType === EventModel.EventType.onTheRecord));
@@ -66,7 +66,7 @@ const InDepo = () => {
         if (message.module === "addTranscription") {
             dispatch(actions.addTranscription(message.value));
         }
-    }, [message, currentRoom, dispatch, history]);
+    }, [message, currentRoom, dispatch, history, depositionID]);
 
     if (loading) {
         return <Spinner />;

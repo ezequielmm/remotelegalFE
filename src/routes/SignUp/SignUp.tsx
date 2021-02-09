@@ -18,7 +18,7 @@ import Text from "../../components/Typography/Text";
 import { InputWrapper } from "../../components/Input/styles";
 import ColorStatus from "../../types/ColorStatus";
 
-const SignUp = () => {
+const SignUp = ({ location }) => {
     const { isAuthenticated } = useAuthentication();
     const [checked, setChecked] = useState(false);
     const { inputValue: nameValue, input: nameInput, invalid: nameInvalid } = useInput(isInputEmpty, {
@@ -31,10 +31,13 @@ const SignUp = () => {
         placeholder: "Enter last name",
         maxLength: 50,
     });
-    const { inputValue: emailValue, input: emailInput, invalid: emailInvalid } = useInput(isInvalidEMail, {
-        name: "email",
-        placeholder: "Enter your email",
-    });
+    const { inputValue: emailValue, input: emailInput, invalid: emailInvalid, setValue: setEmailValue } = useInput(
+        isInvalidEMail,
+        {
+            name: "email",
+            placeholder: "Enter your email",
+        }
+    );
     const { input: companyNameInput, invalid: companyNameInvalid, inputValue: companyNameValue } = useInput(
         isInputEmpty,
         {
@@ -83,6 +86,10 @@ const SignUp = () => {
             setConfirmPasswordInvalid(true);
         }
     }, [confirmPasswordTouched, passwordValue, confirmPasswordValue, setConfirmPasswordInvalid]);
+
+    React.useEffect(() => {
+        setEmailValue(location?.state?.email || "");
+    }, [location, setEmailValue]);
 
     const { error, data, loading, signUp } = useSignUp({
         firstName: nameValue,
