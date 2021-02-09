@@ -15,6 +15,7 @@ interface HandleFetchFilesSorterType {
 }
 
 export const useUploadFile = (depositionID: string) => {
+    const { deps } = useContext(GlobalStateContext);
     const upload = useCallback(
         async ({ onSuccess, onError, file, onProgress }) => {
             uploadFile(
@@ -22,10 +23,11 @@ export const useUploadFile = (depositionID: string) => {
                 file,
                 (event) => onProgress({ percent: (event.loaded / event.total) * 100 }),
                 onSuccess,
-                onError
+                onError,
+                deps
             );
         },
-        [depositionID]
+        [depositionID, deps]
     );
 
     return { upload };
