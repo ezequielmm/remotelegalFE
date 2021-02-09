@@ -3,6 +3,9 @@ import moment from "moment-timezone";
 import Space from "../../../components/Space";
 import Text from "../../../components/Typography/Text";
 import Alert from "../../../components/Alert";
+import Icon from "../../../components/Icon";
+import { ReactComponent as TimeIcon } from "../../../assets/icons/time.svg";
+import { ReactComponent as InfoIcon } from "../../../assets/icons/information.svg";
 import { GlobalStateContext } from "../../../state/GlobalState";
 import { ContainerProps, StyledLayoutContent, StyledLayoutCotainer } from "../styles";
 import { RoughDraftPill, StyledRealTimeContainer } from "./styles";
@@ -73,6 +76,8 @@ const RealTime = ({
                                                         : CONSTANTS.TRANSCRIPTIONS_PAUSED
                                                 }
                                                 type={transcription.to ? "info" : "warning"}
+                                                icon={<Icon icon={transcription.to ? TimeIcon : InfoIcon} />}
+                                                style={{ width: "100%" }}
                                             />
                                         ) : (
                                             <Space
