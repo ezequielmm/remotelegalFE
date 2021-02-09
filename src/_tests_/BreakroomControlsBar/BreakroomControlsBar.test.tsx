@@ -1,6 +1,7 @@
 import { fireEvent } from "@testing-library/react";
 import React from "react";
 import ControlsBar from "../../components/ControlsBar";
+import BreakroomControlsBar from "../../components/BreakroomControlsBar";
 import getParticipant from "../mocks/participant";
 import renderWithGlobalContext from "../utils/renderWithGlobalContext";
 
@@ -89,4 +90,10 @@ test("End depo button shows if prop is true", () => {
 test("Record button shows if prop is true", () => {
     const { queryByTestId } = renderWithGlobalContext(<ControlsBar {...props} canRecord />);
     expect(queryByTestId("record")).toBeTruthy();
+});
+
+test("Confirm modal exists when end button is clicked", async () => {
+    const { findByTestId, queryByTestId } = renderWithGlobalContext(<BreakroomControlsBar {...props} />);
+    fireEvent.click(await findByTestId("end"));
+    expect(queryByTestId("modalconfirm")).toBeInTheDocument();
 });

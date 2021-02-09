@@ -71,8 +71,9 @@ export default function BreakroomControlsBar({
                 visible={isModalOpen}
                 onPositiveClick={() => handleCloseModal(true)}
                 onNegativeClick={() => handleCloseModal(false)}
-                data-testid="modalconfirm"
-            />
+            >
+                <span data-testid="modalconfirm" />
+            </Confirm>
 
             <StyledContainer>
                 <StyledLeftControls>
