@@ -61,7 +61,7 @@ const confirm = (props: IConfirmProps) => {
         negativeLoading,
         ...rest
     } = props;
-    const closeIcon = <Icon icon={CloseIcon} />;
+    const closeIcon = <Icon icon={CloseIcon} size={9} />;
     return (
         <ConfirmModal
             closeIcon={closeIcon}

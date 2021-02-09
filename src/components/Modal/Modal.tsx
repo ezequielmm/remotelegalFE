@@ -59,7 +59,7 @@ const StyledModal = styled(modalDefault)<IModalProps>`
 
 const modal = ({ children, onlyBody, width, size = ModalSize.default, ...rest }: IModalProps) => {
     const footer = onlyBody ? null : rest.footer;
-    const closeIcon = <Icon icon={CloseIcon} />;
+    const closeIcon = <Icon icon={CloseIcon} size={9} />;
 
     return (
         <StyledModal
