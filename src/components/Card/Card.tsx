@@ -6,7 +6,7 @@ import { getREM } from "../../constants/styles/utils";
 import { ThemeMode } from "../../types/ThemeType";
 import ColorStatus, { isColorStatusType } from "../../types/ColorStatus";
 
-export interface ICardProps extends CardProps {
+export interface ICardProps extends Omit<CardProps, "title"> {
     bg?: ColorStatus | string;
     hasPadding?: boolean;
     hasShaddow?: boolean;
@@ -16,7 +16,7 @@ export interface ICardProps extends CardProps {
 
 export const StyledCard = styled(ANTDCard)<ICardProps>`
     ${({ theme, hasPadding, hasShaddow, fullWidth, bg }) => {
-        const { spaces, fontSizes, headerFontFamilies } = theme.default;
+        const { spaces, fontSizes } = theme.default;
 
         const styles = `
             &.ant-card {
@@ -28,7 +28,6 @@ export const StyledCard = styled(ANTDCard)<ICardProps>`
                 background: ${isColorStatusType(bg) ? theme.default[`${bg}Color`] : bg};
   
                 .ant-card-head {
-                    font-family: ${headerFontFamilies};
                     padding: 0;
                     margin: 0 0 ${getREM(spaces[6])};
                     border: 0;
@@ -42,6 +41,13 @@ export const StyledCard = styled(ANTDCard)<ICardProps>`
                 
                 .ant-card-body {
                     padding: 0;
+                }
+                
+                .ant-card-extra{
+                    position: absolute;
+                    top: 0;
+                    right: 0;
+                    padding: ${getREM(spaces[8])} ${getREM(spaces[9])};
                 }
             }
         `;
