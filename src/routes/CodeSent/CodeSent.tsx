@@ -1,5 +1,4 @@
 import React from "react";
-import { Col, Row } from "antd";
 import { NETWORK_ERROR } from "../../constants/codeSent";
 import { useVerifyEmail } from "../../hooks/auth";
 import Space from "../../components/Space";
@@ -24,27 +23,25 @@ const CodeSent = ({ email }: CodeSentProps) => {
         verifyEmail();
     };
     return (
-        <Row justify="center">
-            <Space direction="vertical" size={`${getREM(theme.default.spaces[6] * 4)}`}>
-                {error && <Alert data-testid={error} message={NETWORK_ERROR} type="error" />}
-                <Col style={{ textAlign: "center" }}>
-                    <Title dataTestId="code_sent_title" level={3} weight="light" noMargin>
-                        Check your mailbox
-                    </Title>
-                    <Title dataTestId="code_sent_mail" level={4} weight="light">
-                        {email}
-                    </Title>
-                </Col>
-                <Space size="small" align="flex-start">
-                    <Text size="extralarge" state={ColorStatus.disabled}>
-                        Didn’t get the email?
-                    </Text>
-                    <StyledButtonLink data-testid="code_sent_resend_link" type="link" onClick={handleLinkFetch}>
-                        Click here to resend it
-                    </StyledButtonLink>
-                </Space>
+        <Space direction="vertical" justify="center" size={`${getREM(theme.default.spaces[6] * 4)}`}>
+            {error && <Alert data-testid={error} message={NETWORK_ERROR} type="error" />}
+            <Space justify="center">
+                <Title dataTestId="code_sent_title" level={3} weight="light" noMargin>
+                    Check your mailbox
+                </Title>
+                <Title dataTestId="code_sent_mail" level={4} weight="light">
+                    {email}
+                </Title>
             </Space>
-        </Row>
+            <Space size="small" align="flex-start">
+                <Text size="extralarge" state={ColorStatus.disabled}>
+                    Didn’t get the email?
+                </Text>
+                <StyledButtonLink data-testid="code_sent_resend_link" type="link" onClick={handleLinkFetch}>
+                    Click here to resend it
+                </StyledButtonLink>
+            </Space>
+        </Space>
     );
 };
 export default CodeSent;

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Auth } from "aws-amplify";
 import { useHistory, useLocation } from "react-router-dom";
-import { Layout, Row } from "antd";
+import { Layout } from "antd";
 import Space from "../Space";
 import Logo from "../Logo";
 import Icon from "../Icon";
@@ -54,32 +54,30 @@ const AppLayout = ({ children }: DashboardProps) => {
     return (
         <Layout style={{ height: "100vh" }}>
             <Header>
-                <Row justify="space-between" align="middle">
-                    <Logo />
-                    <Row align="middle">
-                        <Space size="large" align="flex-start">
-                            <Icon size={8} icon={Messages} />
-                            <Icon size={8} icon={Bell} />
-                            <Dropdown
-                                data-testid="user_menu"
-                                overlay={menu}
-                                trigger={["click"]}
-                                styled
-                                arrow
-                                placement="bottomRight"
-                            >
-                                <Space align="center" size={4}>
-                                    <Text data-testid="user_option" ellipsis={false}>
-                                        User Name
-                                    </Text>
-                                    <Space.Item>
-                                        <Icon size="0.625rem" icon={DropdownArrow} />
-                                    </Space.Item>
-                                </Space>
-                            </Dropdown>
-                        </Space>
-                    </Row>
-                </Row>
+                <Space justify="space-between" align="center">
+                    <Logo height="2.25rem" />
+                    <Space size="large" align="flex-start">
+                        <Icon size={8} icon={Messages} />
+                        <Icon size={8} icon={Bell} />
+                        <Dropdown
+                            data-testid="user_menu"
+                            overlay={menu}
+                            trigger={["click"]}
+                            styled
+                            arrow
+                            placement="bottomRight"
+                        >
+                            <Space align="center" size={4}>
+                                <Text data-testid="user_option" ellipsis={false}>
+                                    User Name
+                                </Text>
+                                <Space.Item>
+                                    <Icon size="0.625rem" icon={DropdownArrow} />
+                                </Space.Item>
+                            </Space>
+                        </Dropdown>
+                    </Space>
+                </Space>
             </Header>
             <Layout>
                 <Sider collapsible collapsed={collapsed} onCollapse={onCollapse}>

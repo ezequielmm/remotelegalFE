@@ -1,5 +1,4 @@
 import React from "react";
-import { Col, Row } from "antd";
 import Space from "../../../components/Space";
 import Button from "../../../components/Button";
 import * as CONSTANTS from "../../../constants/createDeposition";
@@ -33,30 +32,24 @@ export default function CreateDepositionResultCard({
             status={CustomStatus.successCreate}
             icon={<Icon icon={SuccessCreateIcon} />}
             extra={
-                <Row>
-                    <Space direction="vertical" size="small" justify="center" align="center" fullWidth>
-                        <Col sm={24}>
-                            <Button
-                                data-testid="schedule_new_deposition_button"
-                                type="primary"
-                                onClick={addNewCase}
-                                key="success_card_new_case_button"
-                            >
-                                {CONSTANTS.SCHEDULE_NEW_DEPOSITION}
-                            </Button>
-                        </Col>
-                        <Col sm={24}>
-                            <Button
-                                data-testid="go_to_deposition_button"
-                                type="text"
-                                onClick={goToDepositions}
-                                key="success_card_new_case_button"
-                            >
-                                {CONSTANTS.GO_TO_DEPOSITIONS}
-                            </Button>
-                        </Col>
-                    </Space>
-                </Row>
+                <Space direction="vertical" size="small" justify="center" align="center" fullWidth>
+                    <Button
+                        data-testid="schedule_new_deposition_button"
+                        type="primary"
+                        onClick={addNewCase}
+                        key="success_card_new_case_button"
+                    >
+                        {CONSTANTS.SCHEDULE_NEW_DEPOSITION}
+                    </Button>
+                    <Button
+                        data-testid="go_to_deposition_button"
+                        type="text"
+                        onClick={goToDepositions}
+                        key="success_card_new_case_button"
+                    >
+                        {CONSTANTS.GO_TO_DEPOSITIONS}
+                    </Button>
+                </Space>
             }
         />
     );

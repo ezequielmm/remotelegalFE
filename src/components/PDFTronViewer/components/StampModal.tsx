@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { Row, Form } from "antd";
+import { Form } from "antd";
 import Space from "../../Space";
 import { InputWrapper } from "../../Input/styles";
 import Input from "../../Input";
@@ -74,18 +74,16 @@ const StampModal = ({ open, handleClose, onConfirm, timeZone }: IModalProps) => 
                                 />
                             </InputWrapper>
                         </Form.Item>
-                        <Row justify="end">
-                            <Space size="large">
-                                <Button
-                                    data-testid={CONSTANTS.BUTTON_TESTID}
-                                    disabled={!stampTitle.length}
-                                    htmlType="submit"
-                                    type="primary"
-                                >
-                                    {CONSTANTS.BUTTON_LABEL}
-                                </Button>
-                            </Space>
-                        </Row>
+                        <Space size="large" justify="flex-end">
+                            <Button
+                                data-testid={CONSTANTS.BUTTON_TESTID}
+                                disabled={!stampTitle.length}
+                                htmlType="submit"
+                                type="primary"
+                            >
+                                {CONSTANTS.BUTTON_LABEL}
+                            </Button>
+                        </Space>
                     </Form>
                 </Space>
             </div>
