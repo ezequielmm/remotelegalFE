@@ -8,7 +8,7 @@ import Spinner from "../../../components/Spinner";
 import * as CONSTANTS from "../../../constants/inDepo";
 import { theme } from "../../../constants/styles/theme";
 import disconnectFromDepo from "../../../helpers/disconnectFromDepo";
-import { useJoinBreakroom, useJoinDeposition } from "../../../hooks/InDepo/depositionLifeTimeHooks";
+import { useJoinBreakroom } from "../../../hooks/InDepo/depositionLifeTimeHooks";
 import { GlobalStateContext } from "../../../state/GlobalState";
 import { ThemeMode } from "../../../types/ThemeType";
 import Exhibits from "../Exhibits";
@@ -25,7 +25,6 @@ const Breakroom = () => {
     const [exhibitsOpen, togglerExhibits] = useState<boolean>(false);
     const [videoLayoutSize, setVideoLayoutSize] = useState<number>(0);
     const [atendeesVisibility, setAtendeesVisibility] = useState<boolean>(true);
-    const [joinDeposition] = useJoinDeposition();
     const history = useHistory();
 
     useEffect(() => {
@@ -54,7 +53,6 @@ const Breakroom = () => {
 
     const handleRejoinDepo = () => {
         if (depositionID) {
-            joinDeposition(depositionID);
             history.push(`/deposition/join/${depositionID}`);
         }
     };
