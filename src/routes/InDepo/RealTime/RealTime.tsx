@@ -77,7 +77,6 @@ const RealTime = ({
                                                 }
                                                 type={transcription.to ? "info" : "warning"}
                                                 icon={<Icon icon={transcription.to ? TimeIcon : InfoIcon} />}
-                                                style={{ width: "100%" }}
                                             />
                                         ) : (
                                             <Space

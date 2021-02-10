@@ -47,6 +47,7 @@ const StyledAlert = styled(ANTDAlert)<IAlertProps>`
             `;
 
         const styles = `
+            width: 100%;
             padding: ${getREM(theme.default.spaces[6])} ${getREM(theme.default.spaces[5])};
             padding-left: ${getREM(theme.default.spaces[12] + theme.default.spaces[5])};
 
