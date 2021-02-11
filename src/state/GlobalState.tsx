@@ -2,13 +2,16 @@ import React, { memo, PropsWithChildren, useReducer } from "react";
 import { Deps, IGlobalContext, IGlobalReducer, IGlobalState } from "../models/general";
 import combineReducers from "./utils/combineReducers";
 import RoomReducer, { RoomReducerInitialState } from "./InDepo/InDepoReducer";
+import GeneralReducer, { GeneralUiReducerInitialState } from "./GeneralUi/GeneralUiReducer";
 
 export const initialState: IGlobalState = {
     room: RoomReducerInitialState,
+    generalUi: GeneralUiReducerInitialState,
 };
 
 export const combinedReducer = combineReducers<IGlobalState>({
     room: RoomReducer,
+    generalUi: GeneralReducer,
 });
 
 export const rootReducer = {

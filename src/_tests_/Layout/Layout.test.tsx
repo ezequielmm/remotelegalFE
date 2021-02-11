@@ -1,8 +1,8 @@
 import React from "react";
-import { render } from "@testing-library/react";
 import { Route, Switch, BrowserRouter } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 import userEvent from "@testing-library/user-event";
+import renderWithGlobalContext from "../utils/renderWithGlobalContext";
 import { theme } from "../../constants/styles/theme";
 import Layout from "../../components/Layout";
 
@@ -17,7 +17,7 @@ const Deposition = () => {
 const menuRoutes = [{ title: "MENU", routes: [{ path: "/dashboard", name: "Dashboard" }] }];
 
 test("expect click on menu option to redirect me to dashboard", async () => {
-    const { getByText } = render(
+    const { getByText } = renderWithGlobalContext(
         <ThemeProvider theme={theme}>
             <BrowserRouter>
                 <Switch>
@@ -34,7 +34,7 @@ test("expect click on menu option to redirect me to dashboard", async () => {
 });
 
 test("click on schedule deposition takes me to deposition", async () => {
-    const { getByText } = render(
+    const { getByText } = renderWithGlobalContext(
         <ThemeProvider theme={theme}>
             <BrowserRouter>
                 <Switch>

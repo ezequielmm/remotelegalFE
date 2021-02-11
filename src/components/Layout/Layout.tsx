@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext } from "react";
 import { Auth } from "aws-amplify";
 import { useHistory, useLocation } from "react-router-dom";
 import { Layout } from "antd";
@@ -17,6 +17,8 @@ import { ReactComponent as DropdownArrow } from "../../assets/layout/DropdownArr
 import * as CONSTANTS from "../../constants/layout";
 import ColorStatus from "../../types/ColorStatus";
 import { ReactComponent as AddIcon } from "../../assets/general/Add.svg";
+import { GlobalStateContext } from "../../state/GlobalState";
+import { useToggleSider } from "../../hooks/generalUi/useGeneralUi";
 
 const { Header } = Layout;
 
@@ -27,8 +29,13 @@ interface DashboardProps {
 const AppLayout = ({ children }: DashboardProps) => {
     const history = useHistory();
     const { pathname } = useLocation();
+    const { toggleSlider } = useToggleSider();
 
-    const [collapsed, setCollapsed] = useState<boolean>(false);
+    const {
+        state: {
+            generalUi: { isSiderCollapsed },
+        },
+    } = useContext(GlobalStateContext);
 
     const signOut = async () => {
         try {
@@ -46,10 +53,6 @@ const AppLayout = ({ children }: DashboardProps) => {
             <Menu.Item onClick={signOut}>Log Out</Menu.Item>
         </Menu>
     );
-
-    const onCollapse = () => {
-        setCollapsed(!collapsed);
-    };
 
     return (
         <Layout style={{ height: "100vh" }}>
@@ -80,7 +83,7 @@ const AppLayout = ({ children }: DashboardProps) => {
                 </Space>
             </Header>
             <Layout>
-                <Sider collapsible collapsed={collapsed} onCollapse={onCollapse}>
+                <Sider collapsible collapsed={isSiderCollapsed} onCollapse={toggleSlider}>
                     <div>
                         <Button
                             data-testid="schedule_deposition"
@@ -89,7 +92,7 @@ const AppLayout = ({ children }: DashboardProps) => {
                             block
                             onClick={() => history.push("/deposition/new")}
                         >
-                            {collapsed ? <Icon icon={AddIcon} /> : "Schedule deposition"}
+                            {isSiderCollapsed ? <Icon icon={AddIcon} /> : "Schedule deposition"}
                         </Button>
                         <Menu
                             theme="dark"

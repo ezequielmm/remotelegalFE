@@ -1,6 +1,7 @@
 import { Dispatch } from "react";
 import { ApiService } from "../services/ApiService";
 import { IRoom } from "../state/InDepo/InDepoReducer";
+import { IGeneralUi } from "../state/GeneralUi/GeneralUiReducer";
 
 export interface IAction<T = string, P = any> {
     type: T;
@@ -20,6 +21,7 @@ export interface Deps {
 
 export type IGlobalState = {
     room: IRoom;
+    generalUi: IGeneralUi;
 };
 
 export interface IGlobalContext {
