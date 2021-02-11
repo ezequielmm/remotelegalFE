@@ -22,6 +22,7 @@ import EndDepoScreen from "../routes/PostDepo/EndDepoScreen";
 import ROUTES_WITH_GUEST_TOKEN from "../constants/authenticator";
 import { ThemeMode } from "../types/ThemeType";
 import PreJoinDepo from "../routes/PreJoinDepo";
+import DepositionDetails from "../routes/DepositionDetails";
 
 function App() {
     const tagManagerId = {
@@ -60,6 +61,11 @@ function App() {
                         <RouteWithLayout exact path="/deposition/new" component={CreateDeposition} />
                         <RouteWithLayout exact path="/my-depositions" component={MyDepositions} />
                         <RouteWithLayout exact path="/depositions" component={MyDepositions} />
+                        <RouteWithLayout
+                            exact
+                            path="/deposition/post-depo-details/:depositionID"
+                            component={DepositionDetails}
+                        />
                         <Route
                             exact
                             path="/deposition/join/:depositionID/breakroom/:breakroomID"

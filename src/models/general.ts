@@ -2,6 +2,7 @@ import { Dispatch } from "react";
 import { ApiService } from "../services/ApiService";
 import { IRoom } from "../state/InDepo/InDepoReducer";
 import { IGeneralUi } from "../state/GeneralUi/GeneralUiReducer";
+import { IPostDepo } from "../state/PostDepo/PostDepoReducer";
 
 export interface IAction<T = string, P = any> {
     type: T;
@@ -22,6 +23,7 @@ export interface Deps {
 export type IGlobalState = {
     room: IRoom;
     generalUi: IGeneralUi;
+    postDepo: IPostDepo;
 };
 
 export interface IGlobalContext {

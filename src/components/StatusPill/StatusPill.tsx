@@ -6,18 +6,17 @@ import { ReactComponent as Pending } from "../../assets/icons/Pending.svg";
 import { ReactComponent as Canceled } from "../../assets/icons/Error.svg";
 import { ReactComponent as Completed } from "../../assets/icons/Checkmark.svg";
 import Icon from "../Icon";
-import { Theme, ThemeMode } from "../../types/ThemeType";
+import { ThemeMode } from "../../types/ThemeType";
 
 export enum Status {
     pending = "Pending",
-    approved = "Approved",
+    completed = "Completed",
     canceled = "Canceled",
     confirmed = "Confirmed",
 }
 
 export interface IStatusPillProps {
     status: Status;
-    theme?: Theme;
 }
 
 const StyledPill = styled.span`

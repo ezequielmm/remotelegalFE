@@ -3,15 +3,18 @@ import { Deps, IGlobalContext, IGlobalReducer, IGlobalState } from "../models/ge
 import combineReducers from "./utils/combineReducers";
 import RoomReducer, { RoomReducerInitialState } from "./InDepo/InDepoReducer";
 import GeneralReducer, { GeneralUiReducerInitialState } from "./GeneralUi/GeneralUiReducer";
+import PostDepoReducer, { PostDepoReducerInitialState } from "./PostDepo/PostDepoReducer";
 
 export const initialState: IGlobalState = {
     room: RoomReducerInitialState,
     generalUi: GeneralUiReducerInitialState,
+    postDepo: PostDepoReducerInitialState,
 };
 
 export const combinedReducer = combineReducers<IGlobalState>({
     room: RoomReducer,
     generalUi: GeneralReducer,
+    postDepo: PostDepoReducer,
 });
 
 export const rootReducer = {

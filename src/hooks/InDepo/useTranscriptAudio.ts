@@ -13,9 +13,10 @@ const useTranscriptAudio = () => {
 
     const [sendAudio] = useAsyncCallback(
         async (evt) => {
-            const { transcriptDateTime, text } = JSON.parse(evt.data);
+            const { id, transcriptDateTime, text } = JSON.parse(evt.data);
             if (!text) return;
             const parsedTranscription = {
+                id,
                 text,
                 userName: JSON.parse(currentRoom?.localParticipant?.identity)?.name,
                 transcriptDateTime,

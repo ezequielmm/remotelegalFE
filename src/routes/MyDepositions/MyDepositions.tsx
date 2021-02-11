@@ -8,13 +8,13 @@ import CardFetchError from "../../components/CardFetchError";
 import CardResult from "../../components/CardResult/CardResult";
 import { CustomStatus } from "../../components/Result/Result";
 import Spinner from "../../components/Spinner";
+import { Status } from "../../components/StatusPill/StatusPill";
 import Table from "../../components/Table";
 import Title from "../../components/Typography/Title";
 import * as CONSTANTS from "../../constants/depositions";
 import { useFetchDepositions } from "../../hooks/depositions/hooks";
 import { useUserIsAdmin } from "../../hooks/users/hooks";
 import useWindowSize from "../../hooks/useWindowSize";
-import { DepositionStatus } from "../../models/deposition";
 import { Roles } from "../../models/participant";
 
 const StyledSpace = styled(Space)`
@@ -27,7 +27,7 @@ const StyledSpace = styled(Space)`
 
 export interface MappedDeposition {
     id: string;
-    status: DepositionStatus;
+    status: Status;
     company: string;
     requester: string;
     caseName: string;

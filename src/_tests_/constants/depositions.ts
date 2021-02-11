@@ -11,6 +11,7 @@ export const getDepositions = () =>
         {
             id: "859233bf-a627-471c-02bb-08d8962d8ea9",
             creationDate: "2020-12-01T16:16:08-03:00",
+            completeDate: "2020-12-01T17:16:08-03:00",
             startDate: "2020-12-23T19:15:51-03:00",
             endDate: "2020-12-23T19:15:51-03:00",
             timeZone: "EST",

@@ -1,12 +1,7 @@
+import { Status } from "../components/StatusPill/StatusPill";
 import { DateLike, TimeZones } from "./general";
 import { IParticipant } from "./participant";
 import { IUser } from "./user";
-
-export enum DepositionStatus {
-    pending = "Pending",
-    approved = "Approved",
-    canceled = "Canceled",
-}
 
 export enum DepositionPermissionsTypes {
     recording = "Recording",
@@ -31,8 +26,9 @@ export interface IDeposition {
     creationDate: DateLike;
     startDate: DateLike;
     endDate: DateLike;
+    completeDate: DateLike;
     timeZone: TimeZones;
-    status?: string;
+    status?: Status;
     job?: string;
     caption: string;
     witness?: IParticipant;

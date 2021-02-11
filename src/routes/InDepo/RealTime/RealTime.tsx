@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import moment from "moment-timezone";
 import Space from "../../../components/Space";
 import Text from "../../../components/Typography/Text";
@@ -6,25 +6,25 @@ import Alert from "../../../components/Alert";
 import Icon from "../../../components/Icon";
 import { ReactComponent as TimeIcon } from "../../../assets/icons/time.svg";
 import { ReactComponent as InfoIcon } from "../../../assets/icons/information.svg";
-import { GlobalStateContext } from "../../../state/GlobalState";
 import { ContainerProps, StyledLayoutContent, StyledLayoutCotainer } from "../styles";
 import { RoughDraftPill, StyledRealTimeContainer } from "./styles";
 import * as CONSTANTS from "../../../constants/inDepo";
 import ColorStatus from "../../../types/ColorStatus";
 import { TimeZones } from "../../../models/general";
-import { theme } from "../../../constants/styles/theme";
-import { getREM } from "../../../constants/styles/utils";
+import { TranscriptionModel } from "../../../models";
 
 const RealTime = ({
+    disableAutoscroll,
     visible,
     timeZone,
+    transcriptions,
 }: ContainerProps & {
+    disableAutoscroll?: boolean;
     timeZone: TimeZones;
+    transcriptions?: (TranscriptionModel.Transcription & TranscriptionModel.TranscriptionPause)[];
 }) => {
-    const { state } = useContext(GlobalStateContext);
     const scrollableRef = useRef(null);
-    const { transcriptions } = state.room;
-
+    console.log(transcriptions);
     useEffect(() => {
         if (scrollableRef && scrollableRef.current) {
             scrollableRef.current.addEventListener("DOMNodeInserted", (event) => {
@@ -35,25 +35,12 @@ const RealTime = ({
     }, []);
 
     return (
-        <StyledLayoutCotainer visible={visible}>
+        <StyledLayoutCotainer noBackground={disableAutoscroll} visible={visible}>
             <StyledLayoutContent>
                 <StyledRealTimeContainer>
                     <div ref={scrollableRef}>
-                        <Space
-                            direction="vertical"
-                            justify="center"
-                            align="center"
-                            py={`${getREM(theme.default.spaces[6] * 6)}`}
-                        >
-                            <Text state={ColorStatus.primary} font="code" size="small" weight="bold" block uppercase>
-                                KOREMATSU V. UNITED STATES
-                            </Text>
-                            <Text state={ColorStatus.disabled} font="code" size="small" block>
-                                Case No. 123-45214
-                            </Text>
-                        </Space>
                         <div>
-                            <RoughDraftPill>ROUGH DRAFT: NOT FOR OFFICIAL USE</RoughDraftPill>
+                            {!disableAutoscroll && <RoughDraftPill>ROUGH DRAFT: NOT FOR OFFICIAL USE</RoughDraftPill>}
                             <Space direction="vertical" size="middle">
                                 {transcriptions.map(
                                     (transcription) =>
@@ -65,7 +52,7 @@ const RealTime = ({
                                                         ? "transcription_paused"
                                                         : "transcription_currently_paused"
                                                 }
-                                                key={transcription.from + transcription.to}
+                                                key={transcription.id}
                                                 message={
                                                     transcription.to
                                                         ? CONSTANTS.getPauseText(
@@ -79,14 +66,7 @@ const RealTime = ({
                                                 icon={<Icon icon={transcription.to ? TimeIcon : InfoIcon} />}
                                             />
                                         ) : (
-                                            <Space
-                                                direction="vertical"
-                                                key={
-                                                    transcription.from
-                                                        ? transcription.from + transcription.to
-                                                        : transcription.transcriptDateTime + transcription.userName
-                                                }
-                                            >
+                                            <Space direction="vertical" key={transcription.id}>
                                                 <Text
                                                     state={ColorStatus.disabled}
                                                     font="code"

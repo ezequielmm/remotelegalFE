@@ -1,4 +1,5 @@
 import React from "react";
+import { useParams } from "react-router";
 import { DepositionModel } from "../../models";
 import { IDeposition } from "../../models/deposition";
 import { GlobalStateContext } from "../../state/GlobalState";
@@ -14,19 +15,19 @@ export const useScheduleDepositions = () => {
 };
 
 export const useFetchDeposition = () => {
+    const { depositionID } = useParams<{ depositionID: string }>();
     const { deps } = React.useContext(GlobalStateContext);
-    const [fetchDeposition, , error] = useAsyncCallback<
+    const [fetchDeposition, loading, error, data] = useAsyncCallback<
         any,
         DepositionModel.IDeposition,
-        (depositionID: string) => Promise<DepositionModel.IDeposition>
-    >(async (depositionId) => {
-        const depositionCreated = await deps.apiService.fetchDeposition(depositionId);
-        return depositionCreated;
+        () => Promise<DepositionModel.IDeposition>
+    >(() => {
+        return deps.apiService.fetchDeposition(depositionID);
     }, []);
     React.useEffect(() => {
         if (error) console.error("Error fetching deposition.");
     }, [error]);
-    return fetchDeposition;
+    return { fetchDeposition, loading, deposition: data, error };
 };
 
 export const useFetchDepositions = () => {

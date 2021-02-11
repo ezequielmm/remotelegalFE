@@ -29,3 +29,5 @@ export const COPY_LINK_DESCRIPTION = "Invite participants to join the deposition
 export const COPY_LINK_BUTTON = "COPY INVITE LINK";
 export const COPY_LINK_SUCCESS_MSG = "Invite link has been copied to the clipboard";
 export const COPY_LINK_ERROR_MSG = "Error copying the invite to the clipboard";
+
+export const REAL_TIME_PILL = "ROUGH DRAFT: NOT FOR OFFICIAL USE";

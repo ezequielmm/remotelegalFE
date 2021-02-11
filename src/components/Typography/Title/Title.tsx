@@ -2,12 +2,14 @@ import React from "react";
 
 import styled from "styled-components";
 import { getREM, getEM, getWeightNumber } from "../../../constants/styles/utils";
+import ColorStatus from "../../../types/ColorStatus";
 
 type HeadingTag = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 
 export interface ITitleProps {
     level?: 1 | 2 | 3 | 4 | 5 | 6;
     weight?: "light" | "regular" | "bold";
+    color?: ColorStatus;
     ellipsis?: boolean;
     noMargin?: boolean;
     children: string;
@@ -15,7 +17,7 @@ export interface ITitleProps {
 }
 
 const StyledHeader = styled.div<ITitleProps>`
-    ${({ level, weight, ellipsis, noMargin, theme }) => {
+    ${({ level, weight, color, ellipsis, noMargin, theme }) => {
         const {
             textColor,
             headerFontFamilies,
@@ -35,7 +37,7 @@ const StyledHeader = styled.div<ITitleProps>`
             : "";
 
         const styles = `
-            color: ${textColor};
+            color: ${theme.default[`${color}Color`] || textColor};
             font-family: ${headerFontFamilies};
             font-size: ${getREM(fontSizes[level - 1])};
             font-weight: ${weight ? getWeightNumber(weight) : typographyTitleFontWeight};
@@ -49,15 +51,16 @@ const StyledHeader = styled.div<ITitleProps>`
     }}
 `;
 
-const title = ({ level = 1, weight, ellipsis = true, noMargin, children, dataTestId }: ITitleProps) => {
+const title = ({ level = 1, weight, color, ellipsis = true, noMargin, children, dataTestId }: ITitleProps) => {
     const headerTag = level ? `h${level}` : "h1";
 
     return (
         <StyledHeader
             data-testid={dataTestId}
             as={headerTag as HeadingTag}
-            weight={weight}
             level={level}
+            weight={weight}
+            color={color}
             ellipsis={ellipsis}
             noMargin={noMargin}
         >

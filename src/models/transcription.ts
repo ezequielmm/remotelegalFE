@@ -1,6 +1,7 @@
 import { DateLike } from "./general";
 
 export interface Transcription {
+    id: string;
     text: string;
     userEmail?: string;
     userName?: string;

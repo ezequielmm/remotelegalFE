@@ -1,6 +1,6 @@
-import { Space } from "antd";
 import styled from "styled-components";
-import { getREM, getPX, hexToRGBA } from "../../../constants/styles/utils";
+import Space from "../../../components/Space";
+import { getPX, getREM, hexToRGBA } from "../../../constants/styles/utils";
 
 export const StyledRealTimeContainer = styled.div`
     height: 100%;
@@ -42,19 +42,6 @@ export const RoughDraftPill = styled.div`
     padding: ${({ theme }) => `${getREM(theme.default.spaces[3])} ${getREM(theme.default.spaces[4])}`};
     margin: ${({ theme }) => `${getREM(theme.default.spaces[12])} auto`};
     border-radius: ${({ theme }) => getPX(theme.default.borderRadiusBase, theme.default.baseUnit)};
-`;
-
-export const RoughDraftDetailDepoPill = styled.div`
-    width: fit-content;
-    color: ${({ theme }) => theme.default.whiteColor};
-    text-align: center;
-    font-size: 0.625rem;
-    text-transform: uppercase;
-    background-color: ${({ theme }) => hexToRGBA(theme.colors.inDepoRed[6], 0.6)};
-    padding: ${({ theme }) => `${getREM(theme.default.spaces[3])} ${getREM(theme.default.spaces[4])}`};
-    margin: ${({ theme }) => `${getREM(theme.default.spaces[12])} auto`};
-    border-radius: ${({ theme }) => getPX(theme.default.borderRadiusBase, theme.default.baseUnit)};
-    line-height: 1;
 `;
 
 export const TranscriptionsContainer = styled(Space)`

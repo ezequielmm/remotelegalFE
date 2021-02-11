@@ -4,19 +4,27 @@ import { EventModel, TranscriptionModel } from "../models";
 
 export const setTranscriptionMessages = (
     transcriptions: TranscriptionModel.Transcription[],
-    events: EventModel.IEvent[]
+    events: EventModel.IEvent[],
+    removeCurrentPause?: boolean
 ): (TranscriptionModel.Transcription & TranscriptionModel.TranscriptionPause)[] => {
-    const pauses = events.reduce((acc, event: EventModel.IEvent) => {
+    if (!transcriptions) return null;
+    let pauses = events.reduce((acc, event: EventModel.IEvent) => {
         const isOnTheRecordObject = event.eventType === EventModel.EventType.onTheRecord ? "to" : "from";
         if (acc.length === 0 || isOnTheRecordObject === "from") {
-            return [...acc, { [isOnTheRecordObject]: event.creationDate }];
+            return [...acc, { [isOnTheRecordObject]: event.creationDate, id: event.id }];
         }
         const lastAcc = acc[acc.length - 1];
-        return [...acc.slice(0, acc.length - 1), { ...lastAcc, [isOnTheRecordObject]: event.creationDate }];
+        return [
+            ...acc.slice(0, acc.length - 1),
+            { ...lastAcc, [isOnTheRecordObject]: event.creationDate, id: event.id },
+        ];
     }, []);
+    const filterPauses = removeCurrentPause ? (pause) => pause.to : (pause) => pause.from || (!pause.from && !pause.to);
+    pauses = pauses.filter(filterPauses);
 
-    const transcriptionsWithPauses = [...transcriptions] as (TranscriptionModel.Transcription &
-        TranscriptionModel.TranscriptionPause)[];
+    const transcriptionsWithPauses = [
+        ...transcriptions.filter((transcription) => transcription.text !== ""),
+    ] as (TranscriptionModel.Transcription & TranscriptionModel.TranscriptionPause)[];
     let index = 0;
     while (pauses.length > 0 && index < transcriptionsWithPauses.length) {
         if (moment(pauses[0].to).isBefore(moment(transcriptionsWithPauses[index].transcriptDateTime), "second")) {

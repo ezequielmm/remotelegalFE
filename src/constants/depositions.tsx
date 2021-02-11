@@ -3,6 +3,7 @@ import React from "react";
 import Button from "../components/Button";
 import Space from "../components/Space";
 import StatusPill from "../components/StatusPill";
+import { Status } from "../components/StatusPill/StatusPill";
 import { MappedDeposition } from "../routes/MyDepositions/MyDepositions";
 
 export interface TableColumn {
@@ -70,13 +71,24 @@ export const COURT_REPORTER_COLUMN = {
 };
 export const JOB_COLUMN = { title: "JOB#", field: "details", render: (text) => text || "-", width: "6.5%" };
 export const getActionColumns = (history) => ({
-    render: ({ id }: MappedDeposition) => (
-        <Space justify="flex-end">
-            <Button onClick={() => history.push(`/deposition/join/${id}`)} type="primary" size="small" width="75px">
-                JOIN
-            </Button>
-        </Space>
-    ),
+    render: ({ id, status }: MappedDeposition) => {
+        const isCompleted = status === Status.completed;
+        return (
+            <Space justify="flex-end">
+                <Button
+                    onClick={() =>
+                        history.push(isCompleted ? `/deposition/post-depo-details/${id}` : `/deposition/join/${id}`)
+                    }
+                    type="primary"
+                    size="small"
+                    width="75px"
+                    data-testid={isCompleted ? "view_button" : "join_button"}
+                >
+                    {isCompleted ? "VIEW" : "JOIN"}
+                </Button>
+            </Space>
+        );
+    },
     sorter: false,
     width: 60,
 });

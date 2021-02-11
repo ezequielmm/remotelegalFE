@@ -9,6 +9,7 @@ import * as TRANSCRIPTIONS_MOCKS from "../mocks/transcription";
 import * as TESTS_CONSTANTS from "../constants/InDepo";
 import getMockDeps from "../utils/getMockDeps";
 import renderWithGlobalContext from "../utils/renderWithGlobalContext";
+import { wait } from "../../helpers/wait";
 
 jest.mock("audio-recorder-polyfill", () => {
     return jest.fn().mockImplementation(() => ({
@@ -20,13 +21,12 @@ jest.mock("audio-recorder-polyfill", () => {
     }));
 });
 
-const customDeps = getMockDeps();
-const history = createMemoryHistory();
-// TODO: Find a better way to mock Twilio (eg, adding it to DI system)
-
 (global.navigator as any).mediaDevices = {
     getUserMedia: jest.fn().mockResolvedValue(true),
 };
+
+const customDeps = getMockDeps();
+const history = createMemoryHistory();
 
 //TODO: Find a better way to mock Twilio (eg, adding it to DI system)
 jest.mock("twilio-video", () => ({
@@ -288,7 +288,7 @@ test("Record button and end deposition are not shown", async () => {
 
 describe("InDepo -> RealTime", () => {
     it("shows transcriptions when joinDeposition returns a transcriptions list not empty", async () => {
-        const { getByTestId, queryByTestId } = renderWithGlobalContext(
+        const { getByTestId } = renderWithGlobalContext(
             <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,
             customDeps,
             undefined,
@@ -297,11 +297,12 @@ describe("InDepo -> RealTime", () => {
         history.push(TESTS_CONSTANTS.TEST_ROUTE);
         await waitForDomChange();
         fireEvent.click(await waitForElement(() => getByTestId("realtime")));
-        act(() => expect(queryByTestId("transcription_text")).toBeTruthy());
-        act(() => expect(queryByTestId("transcription_title")).toBeTruthy());
+        await wait(100);
+        act(() => expect(getByTestId("transcription_text")).toBeTruthy());
+        act(() => expect(getByTestId("transcription_title")).toBeTruthy());
     });
     it("shows transcriptions with pause", async () => {
-        const { getByTestId, queryByTestId } = renderWithGlobalContext(
+        const { getByTestId } = renderWithGlobalContext(
             <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,
             customDeps,
             undefined,
@@ -310,13 +311,14 @@ describe("InDepo -> RealTime", () => {
         history.push(TESTS_CONSTANTS.TEST_ROUTE);
         await waitForDomChange();
         fireEvent.click(await waitForElement(() => getByTestId("realtime")));
-        act(() => expect(queryByTestId("transcription_paused")).toBeTruthy());
+        await wait(100);
+        act(() => expect(getByTestId("transcription_paused")).toBeTruthy());
     });
     it("shows transcriptions with paused", async () => {
         customDeps.apiService.getDepositionEvents = jest
             .fn()
             .mockResolvedValue([TRANSCRIPTIONS_MOCKS.getEvent(17, false)]);
-        const { getByTestId, queryByTestId } = renderWithGlobalContext(
+        const { getByTestId } = renderWithGlobalContext(
             <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,
             customDeps,
             undefined,
@@ -325,7 +327,8 @@ describe("InDepo -> RealTime", () => {
         history.push(TESTS_CONSTANTS.TEST_ROUTE);
         await waitForDomChange();
         fireEvent.click(await waitForElement(() => getByTestId("realtime")));
-        act(() => expect(queryByTestId("transcription_currently_paused")).toBeTruthy());
+        await wait(100);
+        act(() => expect(getByTestId("transcription_currently_paused")).toBeTruthy());
     });
 
     it("shows no transcriptions when when joinDeposition returns a transcriptions empty", async () => {
@@ -341,6 +344,7 @@ describe("InDepo -> RealTime", () => {
         await waitForDomChange();
 
         fireEvent.click(await waitForElement(() => getByTestId("realtime")));
+        await waitForDomChange();
         act(() => expect(queryByTestId("transcription_text")).toBeFalsy());
         act(() => expect(queryByTestId("transcription_title")).toBeFalsy());
     });

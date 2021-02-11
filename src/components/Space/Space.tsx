@@ -50,8 +50,9 @@ export interface ISpaceProps extends PropsWithChildren<SpaceProps> {
     size?: keyof typeof SizeType | range12Type | string;
     direction?: "horizontal" | "vertical";
     justify?: "space-between" | "space-around" | "center" | "flex-start" | "flex-end";
-    align?: "center" | "flex-start" | "flex-end";
+    align?: "center" | "flex-start" | "flex-end" | "stretch";
     fullWidth?: boolean;
+    flex?: string;
 }
 
 const spaceStyle = (props: SpaceProps): string => {
@@ -90,7 +91,7 @@ const StyledSpace = styled.div.attrs((props: ISpaceProps) => ({
     size: props.size,
 }))<ISpaceProps>`
     ${(props: ISpaceProps) => {
-        const { size, direction, justify, align, fullWidth } = props;
+        const { size, direction, justify, align, fullWidth, flex } = props;
 
         const sizeStyles = (): string => {
             if (size) {
@@ -131,6 +132,7 @@ const StyledSpace = styled.div.attrs((props: ISpaceProps) => ({
             flex-direction: ${direction === "horizontal" ? "row" : "column"};
             justify-content: ${justify};
             align-items: ${align};
+            flex: ${flex};
         `;
 
         const styles = `

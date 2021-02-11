@@ -33,7 +33,9 @@ export interface ContainerProps {
     onClick?: () => void;
 }
 
-interface StyledLayoutCotainerProps extends Pick<ContainerProps, "visible"> {}
+interface StyledLayoutCotainerProps extends Pick<ContainerProps, "visible"> {
+    noBackground?: boolean;
+}
 
 export const StyledLayoutCotainer = styled.div<StyledLayoutCotainerProps>`
     height: 100%;
@@ -43,17 +45,17 @@ export const StyledLayoutCotainer = styled.div<StyledLayoutCotainerProps>`
     flex-direction: column;
     flex: 0;
     opacity: 0;
-    background: ${({ theme }) => theme.colors.inDepoNeutrals[6]};
+    background: ${({ noBackground, theme }) => !noBackground && theme.colors.inDepoNeutrals[6]};
     border-radius: ${({ theme }) => getREM(theme.default.borderRadiusBase)};
     transition: flex 150ms ease 300ms;
     will-change: flex;
-    ${({ visible, theme }) => {
+    ${({ noBackground, visible, theme }) => {
         return visible
             ? `
                 width: unset;
                 flex: 1;
                 opacity: 1;
-                padding: ${getREM(theme.default.spaces[6])};
+                padding: ${noBackground ? getREM(theme.default.spaces[1]) : getREM(theme.default.spaces[6])};
                 margin-right: ${getREM(theme.default.spaces[3])};
             `
             : "";
