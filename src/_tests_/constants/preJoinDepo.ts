@@ -6,7 +6,12 @@ export const MOCKED_EMAIL = "test@test.com";
 export const MOCKED_NAME = "test";
 export const DEPO_ID = "depoId";
 export const TOKEN = "test1234";
+export const MOCKED_PASSWORD = "1234";
 export const PARTICIPANT_MOCK = {
     name: "test1234",
     role: "Attorney",
 };
+export const WIZARD_STEP_1_TEXT = "STEP 1 OF 2";
+export const WIZARD_STEP_2_TEXT = "STEP 2 OF 2";
+export const LOGGED_USER_EMAIL = "test1234@test.com";
+export const SIGN_IN_ERROR = "Incorrect email or password. Please try again.";

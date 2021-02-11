@@ -9,8 +9,8 @@ import ColorStatus from "../../types/ColorStatus";
 
 export interface IWizard {
     children: React.ReactNode;
-    step?: number;
-    totalSteps: number;
+    step?: number | null;
+    totalSteps?: number | null;
     title?: string;
     text?: string;
 }
@@ -37,7 +37,7 @@ const WizardActions = ({ children }: IWizardActionsProps) => {
 };
 
 const Wizard = ({ children, step = 0, totalSteps, title, text }: IWizard) => {
-    const stepText = `STEP ${step} OF ${totalSteps}`;
+    const stepText = step && totalSteps && `STEP ${step} OF ${totalSteps}`;
 
     return (
         <Modal onlyBody destroyOnClose closable={false} visible centered mask={false}>

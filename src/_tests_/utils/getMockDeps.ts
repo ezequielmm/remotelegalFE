@@ -23,5 +23,6 @@ export default (): Deps => ({
         currentUser: jest.fn().mockResolvedValue(getUser1()),
         verifyUser: jest.fn().mockResolvedValue(true),
         verifyEmail: jest.fn().mockResolvedValue(true),
+        addDepoParticipant: jest.fn().mockResolvedValue(true),
     } as any,
 });

@@ -8,11 +8,14 @@ import { GlobalStateContext } from "../state/GlobalState";
 import useAsyncCallback from "./useAsyncCallback";
 
 export const useAuthentication = () => {
-    const [isAuthenticated, setUserIsAuthenticated] = useState(null);
+    const [isAuthenticated, setUserIsAuthenticated] = useState<boolean | null>(null);
     const location = useLocation();
+    const currentEmail = useRef("");
+
     useEffect(() => {
         const checkAuthentication = async () => {
             try {
+                currentEmail.current = (await Auth.currentSession()).getIdToken().decodePayload().email;
                 await Auth.currentAuthenticatedUser();
                 await Auth.currentSession();
                 return setUserIsAuthenticated(true);
@@ -22,7 +25,7 @@ export const useAuthentication = () => {
         };
         checkAuthentication();
     }, [location]);
-    return { isAuthenticated };
+    return { isAuthenticated, currentEmail };
 };
 
 export const useSignIn = (location, emailValue, passwordValue) => {

@@ -16,6 +16,20 @@ export const NOT_VALID = () => {
     });
 };
 
+export const SUCCESSFUL_SIGN_IN = () => {
+    Auth.signIn = jest.fn().mockImplementation(() => {
+        return new Promise((resolve) => {
+            resolve("This was a success!");
+        });
+    });
+};
+
+export const REJECTED_SIGN_IN = () => {
+    Auth.signIn = jest.fn().mockImplementation(() => {
+        throw Error("Incorrect username or password.");
+    });
+};
+
 export const VALID = () => {
     Auth.currentAuthenticatedUser = jest.fn().mockImplementation(() => {
         return new Promise((resolve) => {
@@ -24,7 +38,12 @@ export const VALID = () => {
     });
     Auth.currentSession = jest.fn().mockImplementation(() => {
         return new Promise((resolve) => {
-            resolve({ getIdToken: () => ({ getJwtToken: () => "test1" }) });
+            resolve({
+                getIdToken: () => ({
+                    getJwtToken: () => "test1",
+                    decodePayload: () => ({ email: "test1234@test.com" }),
+                }),
+            });
         });
     });
 };
@@ -44,6 +63,7 @@ export const VALID_WITH_REFRESH = () => {
     Auth.currentSession = jest.fn().mockResolvedValue({
         getIdToken: () => ({
             getJwtToken: () => TOKEN_SET.accessToken,
+            decodePayload: () => ({ email: "test1234@test.com" }),
             getExpiration: () => TOKEN_SET.accessTokenExpiryTime,
         }),
         getRefreshToken: () => ({

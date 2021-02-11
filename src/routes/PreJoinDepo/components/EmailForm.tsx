@@ -1,4 +1,4 @@
-import { Button, Form } from "antd";
+import { Form } from "antd";
 import React, { useState } from "react";
 import { InputWrapper } from "../../../components/Input/styles";
 import isInvalidEmail from "../../../helpers/isInvalidEmail";
@@ -7,6 +7,7 @@ import ColorStatus from "../../../types/ColorStatus";
 import Text from "../../../components/Typography/Text";
 import Wizard from "../../../components/Wizard";
 import * as CONSTANTS from "../../../constants/preJoinDepo";
+import Button from "../../../components/Button";
 
 interface IEmailForm {
     loading: boolean;
@@ -62,7 +63,7 @@ const EmailForm = ({ loading, onSubmit, defaultEmailValue }: IEmailForm) => {
                     type="primary"
                     htmlType="submit"
                 >
-                    Next
+                    {CONSTANTS.STEP_1_BUTTON_TEXT}
                 </Button>
             </Wizard.Actions>
         </Form>

@@ -172,7 +172,16 @@ export class ApiService {
         });
     };
 
-    registerDepoParticipant = async (depositionID: string, payload) => {
+    registerGuestDepoParticipant = async (depositionID: string, payload) => {
+        return this.request({
+            path: `/api/Depositions/${depositionID}/addGuestParticipant`,
+            payload,
+            withToken: false,
+            method: HTTP_METHOD.POST,
+        });
+    };
+
+    addDepoParticipant = async (depositionID: string, payload) => {
         return this.request({
             path: `/api/Depositions/${depositionID}/addParticipant`,
             payload,

@@ -11,15 +11,17 @@ import * as CONSTANTS from "../../../constants/preJoinDepo";
 import { InputState } from "../../../types/PreJoinDepo";
 
 interface IParticipantForm {
-    nameInput: boolean;
+    nameInput?: boolean;
+    passwordInput?: boolean;
     roleInput: boolean;
     defaultRole?: string;
     defaultName?: string;
     email: string;
-    loading?: boolean;
+    loading: boolean;
     disableRoleSelect?: boolean;
-    returnFunc?: () => void;
-    joinDeposition?: (name?: string, role?: string) => void;
+    returnFunc: () => void;
+    hideBackButton?: boolean;
+    joinDeposition: (role: string, userData: string) => void;
 }
 const StyledEmailContainer = styled.div`
     margin-bottom: 24px;
@@ -35,8 +37,14 @@ const ParticipantInfoForm = ({
     returnFunc,
     joinDeposition,
     disableRoleSelect,
+    passwordInput,
+    hideBackButton,
 }: IParticipantForm) => {
     const [name, setName] = useState<InputState>({
+        value: "",
+        invalid: false,
+    });
+    const [password, setPassword] = useState<InputState>({
         value: "",
         invalid: false,
     });
@@ -54,9 +62,11 @@ const ParticipantInfoForm = ({
     const handleSubmit = () => {
         const { value: nameValue } = name;
         const { value: roleValue } = role;
-        // TODO: Modify this function to handle different scenarios
+        const { value: passwordValue } = password;
+
         const nameInputInvalid = nameInput ? isInputEmpty(nameValue) : false;
         const roleInputInvalid = roleInput ? roleValue === null : false;
+        const passwordInputInvalid = passwordInput ? isInputEmpty(passwordValue) : false;
 
         if (nameInputInvalid) {
             setName({ ...name, invalid: true });
@@ -65,8 +75,11 @@ const ParticipantInfoForm = ({
         if (roleInputInvalid) {
             setRole({ ...role, invalid: true });
         }
-        if (!nameInputInvalid && !roleInputInvalid) {
-            return joinDeposition(nameValue, roleValue);
+        if (passwordInputInvalid) {
+            setPassword({ ...password, invalid: true });
+        }
+        if (!nameInputInvalid && !roleInputInvalid && !passwordInputInvalid) {
+            return joinDeposition(roleValue, passwordValue || nameValue);
         }
         return null;
     };
@@ -80,6 +93,9 @@ const ParticipantInfoForm = ({
             </StyledEmailContainer>
 
             <UserInfoPanel
+                password={password}
+                setPassword={setPassword}
+                passwordInput={passwordInput}
                 nameInput={nameInput}
                 roleInput={roleInput}
                 role={role}
@@ -90,15 +106,18 @@ const ParticipantInfoForm = ({
             />
 
             <Wizard.Actions>
-                <Button
-                    style={{ textTransform: "uppercase" }}
-                    data-testid={CONSTANTS.BACK_BUTTON_ID}
-                    onClick={returnFunc}
-                    disabled={loading}
-                    type="link"
-                >
-                    {CONSTANTS.PREVIOUS_BUTTON}
-                </Button>
+                {!hideBackButton && (
+                    <Button
+                        style={{ textTransform: "uppercase" }}
+                        data-testid={CONSTANTS.BACK_BUTTON_ID}
+                        onClick={returnFunc}
+                        disabled={loading}
+                        type="link"
+                    >
+                        {CONSTANTS.PREVIOUS_BUTTON}
+                    </Button>
+                )}
+
                 <Button
                     loading={loading}
                     data-testid={CONSTANTS.STEP_2_BUTTON_ID}

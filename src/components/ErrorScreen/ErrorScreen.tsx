@@ -26,7 +26,7 @@ const ErrorScreen = ({
                         subTitle={texts.subtitle}
                         status={CustomStatus.errorFetch}
                         extra={[
-                            <Button type="primary" onClick={onClick} key="console" data-testid="new_case_button">
+                            <Button type="primary" onClick={onClick} key="console" data-testid="error_screen_button">
                                 {texts.button}
                             </Button>,
                         ]}

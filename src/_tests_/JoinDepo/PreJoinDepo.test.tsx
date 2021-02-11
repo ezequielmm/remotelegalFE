@@ -1,7 +1,7 @@
 import { fireEvent, waitForDomChange, waitForElement } from "@testing-library/react";
 import React from "react";
 import userEvent from "@testing-library/user-event";
-import { Amplify } from "aws-amplify";
+import { Amplify, Auth } from "aws-amplify";
 import * as CONSTANTS from "../../constants/preJoinDepo";
 import PreJoinDepo from "../../routes/PreJoinDepo";
 import * as AUTH from "../mocks/Auth";
@@ -26,9 +26,13 @@ jest.mock("react-router", () => ({
     useHistory: () => ({
         push: mockHistoryPush,
     }),
+    Redirect: jest.fn(({ to }) => `Redirected to ${to}`),
 }));
 
 describe("it tests validations on the initial flow", () => {
+    beforeEach(() => {
+        AUTH.NOT_VALID();
+    });
     test("should validate empty email input", async () => {
         const { getByTestId, getByText } = renderWithGlobalContext(<PreJoinDepo />);
         await waitForDomChange();
@@ -59,8 +63,8 @@ describe("it tests validations on the initial flow", () => {
 
 describe("It tests the non-registered and non-participant flow", () => {
     beforeEach(() => {
-        deps.apiService.checkUserDepoStatus = jest.fn().mockResolvedValue({ isUser: false, participant: null });
         AUTH.NOT_VALID();
+        deps.apiService.checkUserDepoStatus = jest.fn().mockResolvedValue({ isUser: false, participant: null });
     });
 
     test("should show step 2", async () => {
@@ -138,7 +142,7 @@ describe("It tests the non-registered and non-participant flow", () => {
     });
 
     test("should display message when registerParticipant service fails", async () => {
-        deps.apiService.registerDepoParticipant = jest.fn().mockRejectedValue(new Error(""));
+        deps.apiService.registerGuestDepoParticipant = jest.fn().mockRejectedValue(new Error(""));
         const { getByTestId, getByText, getAllByText } = renderWithGlobalContext(<PreJoinDepo />, deps);
         await waitForDomChange();
         fireEvent.change(getByTestId(CONSTANTS.EMAIL_INPUT_ID), { target: { value: TEST_CONSTANTS.MOCKED_EMAIL } });
@@ -154,7 +158,7 @@ describe("It tests the non-registered and non-participant flow", () => {
     });
 
     test("should redirect to InDepo page and set token", async () => {
-        deps.apiService.registerDepoParticipant = jest.fn().mockResolvedValue({ idToken: TEST_CONSTANTS.TOKEN });
+        deps.apiService.registerGuestDepoParticipant = jest.fn().mockResolvedValue({ idToken: TEST_CONSTANTS.TOKEN });
         const { getByTestId, getByText, getAllByText } = renderWithGlobalContext(<PreJoinDepo />, deps);
         await waitForDomChange();
         fireEvent.change(getByTestId(CONSTANTS.EMAIL_INPUT_ID), { target: { value: TEST_CONSTANTS.MOCKED_EMAIL } });
@@ -167,7 +171,7 @@ describe("It tests the non-registered and non-participant flow", () => {
         userEvent.click(getByTestId(CONSTANTS.STEP_2_BUTTON_ID));
         expect(getByTestId(CONSTANTS.STEP_2_BUTTON_ID)).toBeDisabled();
         expect(getByTestId(CONSTANTS.BACK_BUTTON_ID)).toBeDisabled();
-        expect(deps.apiService.registerDepoParticipant).toHaveBeenCalledWith(TEST_CONSTANTS.DEPO_ID, {
+        expect(deps.apiService.registerGuestDepoParticipant).toHaveBeenCalledWith(TEST_CONSTANTS.DEPO_ID, {
             emailAddress: TEST_CONSTANTS.MOCKED_EMAIL,
             name: TEST_CONSTANTS.MOCKED_NAME,
             participantType: TEST_CONSTANTS.ROLE,
@@ -180,14 +184,14 @@ describe("It tests the non-registered and non-participant flow", () => {
 
 describe("It tests the non-registered and participant flow", () => {
     beforeEach(() => {
+        AUTH.NOT_VALID();
         deps.apiService.checkUserDepoStatus = jest
             .fn()
             .mockResolvedValue({ isUser: false, participant: TEST_CONSTANTS.PARTICIPANT_MOCK });
-        AUTH.NOT_VALID();
     });
 
     test("should preload name, role shouldn´t be editable but name should be editable", async () => {
-        deps.apiService.registerDepoParticipant = jest.fn().mockResolvedValue({ idToken: TEST_CONSTANTS.TOKEN });
+        deps.apiService.registerGuestDepoParticipant = jest.fn().mockResolvedValue({ idToken: TEST_CONSTANTS.TOKEN });
         const { getByTestId, getByText, getByDisplayValue, queryByTestId } = renderWithGlobalContext(
             <PreJoinDepo />,
             deps
@@ -216,7 +220,7 @@ describe("It tests the non-registered and participant flow", () => {
     });
 
     test("should display message when registerParticipant service fails", async () => {
-        deps.apiService.registerDepoParticipant = jest.fn().mockRejectedValue(new Error(""));
+        deps.apiService.registerGuestDepoParticipant = jest.fn().mockRejectedValue(new Error(""));
         const { getByTestId, getByText } = renderWithGlobalContext(<PreJoinDepo />, deps);
         await waitForDomChange();
         fireEvent.change(getByTestId(CONSTANTS.EMAIL_INPUT_ID), { target: { value: TEST_CONSTANTS.MOCKED_EMAIL } });
@@ -228,7 +232,7 @@ describe("It tests the non-registered and participant flow", () => {
     });
 
     test("should redirect to InDepo page and set token", async () => {
-        deps.apiService.registerDepoParticipant = jest.fn().mockResolvedValue({ idToken: TEST_CONSTANTS.TOKEN });
+        deps.apiService.registerGuestDepoParticipant = jest.fn().mockResolvedValue({ idToken: TEST_CONSTANTS.TOKEN });
         const { getByTestId } = renderWithGlobalContext(<PreJoinDepo />, deps);
         await waitForDomChange();
         fireEvent.change(getByTestId(CONSTANTS.EMAIL_INPUT_ID), { target: { value: TEST_CONSTANTS.MOCKED_EMAIL } });
@@ -237,7 +241,7 @@ describe("It tests the non-registered and participant flow", () => {
         userEvent.click(getByTestId(CONSTANTS.STEP_2_BUTTON_ID));
         expect(getByTestId(CONSTANTS.STEP_2_BUTTON_ID)).toBeDisabled();
         expect(getByTestId(CONSTANTS.BACK_BUTTON_ID)).toBeDisabled();
-        expect(deps.apiService.registerDepoParticipant).toHaveBeenCalledWith(TEST_CONSTANTS.DEPO_ID, {
+        expect(deps.apiService.registerGuestDepoParticipant).toHaveBeenCalledWith(TEST_CONSTANTS.DEPO_ID, {
             emailAddress: TEST_CONSTANTS.MOCKED_EMAIL,
             name: TEST_CONSTANTS.PARTICIPANT_MOCK.name,
             participantType: TEST_CONSTANTS.PARTICIPANT_MOCK.role,
@@ -245,5 +249,277 @@ describe("It tests the non-registered and participant flow", () => {
         await waitForDomChange();
         expect(mockHistoryPush).toHaveBeenCalledWith(`${CONSTANTS.DEPOSITION_ROUTE}${TEST_CONSTANTS.DEPO_ID}`);
         expect(localStorage.getItem(TEMP_TOKEN)).toEqual(TEST_CONSTANTS.TOKEN);
+    });
+});
+
+describe("It tests the registered and not logged in user and non-participant flow", () => {
+    beforeEach(() => {
+        AUTH.NOT_VALID();
+        AUTH.SUCCESSFUL_SIGN_IN();
+        deps.apiService.checkUserDepoStatus = jest.fn().mockResolvedValue({ isUser: true, participant: null });
+    });
+    test("should show error toast if signIn method fails", async () => {
+        AUTH.REJECTED_SIGN_IN();
+        const { getByTestId, getByText, getAllByText } = renderWithGlobalContext(<PreJoinDepo />, deps);
+        await waitForDomChange();
+        fireEvent.change(getByTestId(CONSTANTS.EMAIL_INPUT_ID), { target: { value: TEST_CONSTANTS.MOCKED_EMAIL } });
+        userEvent.click(getByTestId(CONSTANTS.STEP_1_BUTTON_ID));
+        await waitForDomChange();
+        userEvent.click(getByText(CONSTANTS.ROLE_INPUT));
+        const role = await waitForElement(() => getAllByText(TEST_CONSTANTS.ROLE));
+        userEvent.click(role[1]);
+        fireEvent.change(getByTestId(CONSTANTS.PASSWORD_INPUT_ID), {
+            target: { value: TEST_CONSTANTS.MOCKED_PASSWORD },
+        });
+        userEvent.click(getByTestId(CONSTANTS.STEP_2_BUTTON_ID));
+        await waitForDomChange();
+        await waitForElement(() => getByText(TEST_CONSTANTS.SIGN_IN_ERROR));
+    });
+    test("should show toast when checkUserDepoStatus fails", async () => {
+        deps.apiService.checkUserDepoStatus = jest.fn().mockRejectedValue(Error(""));
+        const { getByTestId, getByText } = renderWithGlobalContext(<PreJoinDepo />, deps);
+        await waitForDomChange();
+        fireEvent.change(getByTestId(CONSTANTS.EMAIL_INPUT_ID), { target: { value: TEST_CONSTANTS.MOCKED_EMAIL } });
+        userEvent.click(getByTestId(CONSTANTS.STEP_1_BUTTON_ID));
+        await waitForElement(() => getByText(CONSTANTS.NETWORK_ERROR));
+    });
+
+    test("should show error toast if Add Participant fetch fails", async () => {
+        deps.apiService.addDepoParticipant = jest.fn().mockRejectedValue(Error("Error"));
+        const { getByTestId, getByText, getAllByText } = renderWithGlobalContext(<PreJoinDepo />, deps);
+        await waitForDomChange();
+        fireEvent.change(getByTestId(CONSTANTS.EMAIL_INPUT_ID), { target: { value: TEST_CONSTANTS.MOCKED_EMAIL } });
+        userEvent.click(getByTestId(CONSTANTS.STEP_1_BUTTON_ID));
+        await waitForDomChange();
+        userEvent.click(getByText(CONSTANTS.ROLE_INPUT));
+        const role = await waitForElement(() => getAllByText(TEST_CONSTANTS.ROLE));
+        userEvent.click(role[1]);
+
+        fireEvent.change(getByTestId(CONSTANTS.PASSWORD_INPUT_ID), {
+            target: { value: TEST_CONSTANTS.MOCKED_PASSWORD },
+        });
+        userEvent.click(getByTestId(CONSTANTS.STEP_2_BUTTON_ID));
+        await waitForDomChange();
+        await waitForElement(() => getByText(CONSTANTS.NETWORK_ERROR));
+    });
+    test("should show step 1, should not show logged user´s email", async () => {
+        const { queryByText, queryByTestId } = renderWithGlobalContext(<PreJoinDepo />, deps);
+        await waitForDomChange();
+        expect(queryByText(TEST_CONSTANTS.LOGGED_USER_EMAIL)).toBeFalsy();
+        expect(queryByTestId(CONSTANTS.EMAIL_INPUT_ID)).toBeTruthy();
+        expect(deps.apiService.checkUserDepoStatus).toHaveBeenCalledTimes(0);
+    });
+    test("should show step 2, and the proper inputs", async () => {
+        const { getByTestId, getByText, queryByTestId } = renderWithGlobalContext(<PreJoinDepo />, deps);
+        await waitForDomChange();
+        fireEvent.change(getByTestId(CONSTANTS.EMAIL_INPUT_ID), { target: { value: TEST_CONSTANTS.MOCKED_EMAIL } });
+        fireEvent.click(getByTestId(CONSTANTS.STEP_1_BUTTON_ID));
+        await waitForDomChange();
+        expect(getByText(TEST_CONSTANTS.STEP_2_TEXT)).toBeTruthy();
+        expect(getByText(TEST_CONSTANTS.MOCKED_EMAIL)).toBeTruthy();
+        expect(queryByTestId(CONSTANTS.NAME_INPUT_ID)).toBeFalsy();
+        expect(getByTestId(CONSTANTS.BACK_BUTTON_ID)).toBeInTheDocument();
+        expect(getByTestId(CONSTANTS.PASSWORD_INPUT_ID)).toBeInTheDocument();
+        expect(getByTestId(CONSTANTS.ENABLED_ROLE_INPUT_ID)).toBeInTheDocument();
+        expect(deps.apiService.checkUserDepoStatus).toHaveBeenCalled();
+    });
+
+    test("should go back when clicking the button", async () => {
+        const { getByTestId } = renderWithGlobalContext(<PreJoinDepo />, deps);
+        await waitForDomChange();
+        fireEvent.change(getByTestId(CONSTANTS.EMAIL_INPUT_ID), { target: { value: TEST_CONSTANTS.MOCKED_EMAIL } });
+        userEvent.click(getByTestId(CONSTANTS.STEP_1_BUTTON_ID));
+        await waitForDomChange();
+        userEvent.click(getByTestId(CONSTANTS.BACK_BUTTON_ID));
+        expect(getByTestId(CONSTANTS.STEP_1_BUTTON_ID)).toBeInTheDocument();
+    });
+    test("should call all services with the proper params", async () => {
+        deps.apiService.addDepoParticipant = jest.fn().mockResolvedValue(true);
+        const { getByTestId, getByText, getAllByText } = renderWithGlobalContext(<PreJoinDepo />, deps);
+        await waitForDomChange();
+        fireEvent.change(getByTestId(CONSTANTS.EMAIL_INPUT_ID), { target: { value: TEST_CONSTANTS.MOCKED_EMAIL } });
+        userEvent.click(getByTestId(CONSTANTS.STEP_1_BUTTON_ID));
+        await waitForDomChange();
+        userEvent.click(getByText(CONSTANTS.ROLE_INPUT));
+        const role = await waitForElement(() => getAllByText(TEST_CONSTANTS.ROLE));
+        userEvent.click(role[1]);
+        fireEvent.change(getByTestId(CONSTANTS.PASSWORD_INPUT_ID), {
+            target: { value: TEST_CONSTANTS.MOCKED_PASSWORD },
+        });
+        userEvent.click(getByTestId(CONSTANTS.STEP_2_BUTTON_ID));
+        await waitForDomChange();
+        expect(deps.apiService.addDepoParticipant).toHaveBeenCalledWith(TEST_CONSTANTS.DEPO_ID, {
+            emailAddress: TEST_CONSTANTS.MOCKED_EMAIL,
+            participantType: TEST_CONSTANTS.ROLE,
+        });
+        expect(Auth.signIn).toHaveBeenCalledWith(TEST_CONSTANTS.MOCKED_EMAIL, TEST_CONSTANTS.MOCKED_PASSWORD);
+        expect(mockHistoryPush).toHaveBeenCalledWith(`${CONSTANTS.DEPOSITION_ROUTE}${TEST_CONSTANTS.DEPO_ID}`);
+    });
+
+    test("should validate all inputs", async () => {
+        const { getByTestId, getByText } = renderWithGlobalContext(<PreJoinDepo />, deps);
+        await waitForDomChange();
+        userEvent.click(getByTestId(CONSTANTS.STEP_1_BUTTON_ID));
+        await waitForDomChange();
+        expect(getByText(CONSTANTS.EMPTY_EMAIL_MESSAGE)).toBeInTheDocument();
+        fireEvent.change(getByTestId(CONSTANTS.EMAIL_INPUT_ID), { target: { value: TEST_CONSTANTS.MOCKED_EMAIL } });
+        userEvent.click(getByTestId(CONSTANTS.STEP_1_BUTTON_ID));
+        await waitForDomChange();
+        userEvent.click(getByTestId(CONSTANTS.STEP_2_BUTTON_ID));
+        await waitForDomChange();
+        expect(getByText(CONSTANTS.INVALID_PASSWORD_MESSAGE)).toBeInTheDocument();
+        expect(getByText(CONSTANTS.INVALID_ROLE_MESSAGE)).toBeInTheDocument();
+    });
+});
+
+describe("It tests the registered and logged in user and non-participant flow", () => {
+    beforeEach(() => {
+        AUTH.VALID();
+        deps.apiService.checkUserDepoStatus = jest.fn().mockResolvedValue({ isUser: true, participant: null });
+    });
+    test("should show error toast if Add Participant fetch fails", async () => {
+        deps.apiService.addDepoParticipant = jest.fn().mockRejectedValue(Error("Error"));
+        const { getByText, getAllByText, getByTestId } = renderWithGlobalContext(<PreJoinDepo />, deps);
+        await waitForDomChange();
+        userEvent.click(getByText(CONSTANTS.ROLE_INPUT));
+        const role = await waitForElement(() => getAllByText(TEST_CONSTANTS.ROLE));
+        userEvent.click(role[1]);
+        userEvent.click(getByTestId(CONSTANTS.STEP_2_BUTTON_ID));
+        await waitForElement(() => getByText(CONSTANTS.NETWORK_ERROR));
+    });
+    test("should show spinner and show error screen if userStatus fetch fails", async () => {
+        deps.apiService.checkUserDepoStatus = jest.fn().mockRejectedValue(Error("Error"));
+        const { getByTestId, getByText } = renderWithGlobalContext(<PreJoinDepo />, deps);
+        expect(getByTestId("spinner")).toBeInTheDocument();
+        await waitForDomChange();
+        expect(getByText(CONSTANTS.FETCH_ERROR_RESULT_TITLE)).toBeInTheDocument();
+        expect(getByText(CONSTANTS.FETCH_ERROR_RESULT_BODY)).toBeInTheDocument();
+        expect(getByText(CONSTANTS.FETCH_ERROR_RESULT_BUTTON)).toBeInTheDocument();
+        fireEvent.click(getByTestId("error_screen_button"));
+        expect(deps.apiService.checkUserDepoStatus).toHaveBeenCalledTimes(2);
+        await waitForDomChange();
+    });
+
+    test("should not show step text and back button, should show logged user´s email and there should only be a role input", async () => {
+        const { getByTestId, queryByText, queryByTestId, getByText } = renderWithGlobalContext(<PreJoinDepo />, deps);
+        await waitForDomChange();
+        expect(getByText(TEST_CONSTANTS.LOGGED_USER_EMAIL)).toBeInTheDocument();
+        expect(queryByText(CONSTANTS.BACK_BUTTON_ID)).toBeFalsy();
+        expect(queryByText(TEST_CONSTANTS.STEP_1_TEXT)).toBeFalsy();
+        expect(queryByText(TEST_CONSTANTS.STEP_2_TEXT)).toBeFalsy();
+        expect(getByTestId(CONSTANTS.ENABLED_ROLE_INPUT_ID)).toBeInTheDocument();
+        expect(queryByTestId(CONSTANTS.PASSWORD_INPUT_ID)).toBeFalsy();
+        expect(queryByTestId(CONSTANTS.EMAIL_INPUT_ID)).toBeFalsy();
+        expect(queryByTestId(CONSTANTS.NAME_INPUT_ID)).toBeFalsy();
+    });
+
+    test("should validate role input", async () => {
+        const { getByTestId, getByText } = renderWithGlobalContext(<PreJoinDepo />, deps);
+        await waitForDomChange();
+        userEvent.click(getByTestId(CONSTANTS.STEP_2_BUTTON_ID));
+        expect(getByText(CONSTANTS.INVALID_ROLE_MESSAGE)).toBeInTheDocument();
+        await waitForDomChange();
+    });
+    test("should call add participant and history with the right parameters", async () => {
+        deps.apiService.addDepoParticipant = jest.fn().mockResolvedValue(true);
+        const { getByText, getAllByText, getByTestId } = renderWithGlobalContext(<PreJoinDepo />, deps);
+        await waitForDomChange();
+        userEvent.click(getByText(CONSTANTS.ROLE_INPUT));
+        const role = await waitForElement(() => getAllByText(TEST_CONSTANTS.ROLE));
+        userEvent.click(role[1]);
+        await waitForDomChange();
+        userEvent.click(getByTestId(CONSTANTS.STEP_2_BUTTON_ID));
+        await waitForDomChange();
+        expect(deps.apiService.addDepoParticipant).toHaveBeenCalledWith(TEST_CONSTANTS.DEPO_ID, {
+            emailAddress: TEST_CONSTANTS.LOGGED_USER_EMAIL,
+            participantType: TEST_CONSTANTS.ROLE,
+        });
+        expect(mockHistoryPush).toHaveBeenCalledWith(`${CONSTANTS.DEPOSITION_ROUTE}${TEST_CONSTANTS.DEPO_ID}`);
+    });
+});
+
+describe("It tests the registered and logged in user and participant flow", () => {
+    beforeEach(() => {
+        AUTH.VALID();
+        deps.apiService.checkUserDepoStatus = jest.fn().mockResolvedValue({ isUser: true, participant: true });
+    });
+
+    test("should show spinner and show error screen if userStatus fetch fails", async () => {
+        deps.apiService.checkUserDepoStatus = jest.fn().mockRejectedValue(Error("Error"));
+        const { getByTestId, getByText } = renderWithGlobalContext(<PreJoinDepo />, deps);
+        expect(getByTestId("spinner")).toBeInTheDocument();
+        await waitForDomChange();
+        expect(getByText(CONSTANTS.FETCH_ERROR_RESULT_TITLE)).toBeInTheDocument();
+        expect(getByText(CONSTANTS.FETCH_ERROR_RESULT_BODY)).toBeInTheDocument();
+        expect(getByText(CONSTANTS.FETCH_ERROR_RESULT_BUTTON)).toBeInTheDocument();
+        fireEvent.click(getByTestId("error_screen_button"));
+        expect(deps.apiService.checkUserDepoStatus).toHaveBeenCalledTimes(2);
+        await waitForDomChange();
+    });
+
+    test("should redirect to deposition", async () => {
+        const { getByText } = renderWithGlobalContext(<PreJoinDepo />, deps);
+        await waitForDomChange();
+        expect(getByText(`Redirected to ${CONSTANTS.DEPOSITION_ROUTE}${TEST_CONSTANTS.DEPO_ID}`)).toBeInTheDocument();
+    });
+});
+
+describe("It tests the registered and  not logged in user and participant flow", () => {
+    beforeEach(() => {
+        AUTH.NOT_VALID();
+        AUTH.SUCCESSFUL_SIGN_IN();
+        deps.apiService.checkUserDepoStatus = jest.fn().mockResolvedValue({ isUser: true, participant: true });
+    });
+
+    test("should show user´s email and there should only be a password input", async () => {
+        const { getByTestId, queryByTestId, getByText } = renderWithGlobalContext(<PreJoinDepo />, deps);
+        await waitForDomChange();
+        fireEvent.change(getByTestId(CONSTANTS.EMAIL_INPUT_ID), { target: { value: TEST_CONSTANTS.MOCKED_EMAIL } });
+        userEvent.click(getByTestId(CONSTANTS.STEP_1_BUTTON_ID));
+        await waitForDomChange();
+        expect(getByText(TEST_CONSTANTS.MOCKED_EMAIL)).toBeInTheDocument();
+        expect(queryByTestId(CONSTANTS.ENABLED_ROLE_INPUT_ID)).toBeFalsy();
+        expect(getByTestId(CONSTANTS.PASSWORD_INPUT_ID)).toBeInTheDocument();
+        expect(queryByTestId(CONSTANTS.EMAIL_INPUT_ID)).toBeFalsy();
+        expect(queryByTestId(CONSTANTS.NAME_INPUT_ID)).toBeFalsy();
+    });
+
+    test("should validate password input", async () => {
+        const { getByTestId, getByText } = renderWithGlobalContext(<PreJoinDepo />, deps);
+        await waitForDomChange();
+        fireEvent.change(getByTestId(CONSTANTS.EMAIL_INPUT_ID), { target: { value: TEST_CONSTANTS.MOCKED_EMAIL } });
+        userEvent.click(getByTestId(CONSTANTS.STEP_1_BUTTON_ID));
+        await waitForDomChange();
+        userEvent.click(getByTestId(CONSTANTS.STEP_2_BUTTON_ID));
+        expect(getByText(CONSTANTS.INVALID_PASSWORD_MESSAGE)).toBeInTheDocument();
+        await waitForDomChange();
+    });
+    test("should call services with the right params", async () => {
+        const { getByTestId } = renderWithGlobalContext(<PreJoinDepo />, deps);
+        await waitForDomChange();
+        fireEvent.change(getByTestId(CONSTANTS.EMAIL_INPUT_ID), { target: { value: TEST_CONSTANTS.MOCKED_EMAIL } });
+        userEvent.click(getByTestId(CONSTANTS.STEP_1_BUTTON_ID));
+        await waitForDomChange();
+        fireEvent.change(getByTestId(CONSTANTS.PASSWORD_INPUT_ID), {
+            target: { value: TEST_CONSTANTS.MOCKED_PASSWORD },
+        });
+        userEvent.click(getByTestId(CONSTANTS.STEP_2_BUTTON_ID));
+        await waitForDomChange();
+        expect(Auth.signIn).toHaveBeenCalledWith(TEST_CONSTANTS.MOCKED_EMAIL, TEST_CONSTANTS.MOCKED_PASSWORD);
+        expect(mockHistoryPush).toHaveBeenCalledWith(`${CONSTANTS.DEPOSITION_ROUTE}${TEST_CONSTANTS.DEPO_ID}`);
+    });
+    test("should show error toast if login service fails", async () => {
+        AUTH.REJECTED_SIGN_IN();
+        const { getByText, getByTestId } = renderWithGlobalContext(<PreJoinDepo />, deps);
+        await waitForDomChange();
+        fireEvent.change(getByTestId(CONSTANTS.EMAIL_INPUT_ID), { target: { value: TEST_CONSTANTS.MOCKED_EMAIL } });
+        userEvent.click(getByTestId(CONSTANTS.STEP_1_BUTTON_ID));
+        await waitForDomChange();
+        fireEvent.change(getByTestId(CONSTANTS.PASSWORD_INPUT_ID), {
+            target: { value: TEST_CONSTANTS.MOCKED_PASSWORD },
+        });
+        userEvent.click(getByTestId(CONSTANTS.STEP_2_BUTTON_ID));
+        await waitForDomChange();
+        await waitForElement(() => getByText(TEST_CONSTANTS.SIGN_IN_ERROR));
     });
 });

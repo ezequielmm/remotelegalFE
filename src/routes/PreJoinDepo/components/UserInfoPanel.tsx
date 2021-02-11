@@ -10,11 +10,14 @@ import { InputState } from "../../../types/PreJoinDepo";
 
 interface IUserInfoPanelProps {
     nameInput: boolean;
+    passwordInput?: boolean;
     setName: Dispatch<SetStateAction<InputState>>;
     roleInput: boolean;
     role: InputState;
+    password?: InputState;
     name: InputState;
     disableRoleSelect?: boolean;
+    setPassword?: Dispatch<SetStateAction<InputState>>;
     setRole: Dispatch<SetStateAction<InputState>>;
 }
 
@@ -26,8 +29,34 @@ const UserInfoPanel = ({
     setName,
     name,
     setRole,
+    passwordInput,
+    password,
+    setPassword,
 }: IUserInfoPanelProps) => (
     <>
+        {passwordInput && (
+            <Form.Item label="Password" htmlFor="password">
+                <InputWrapper>
+                    <Input
+                        onChange={(e) => {
+                            setPassword({ ...password, value: e.target.value, invalid: false });
+                        }}
+                        type="password"
+                        invalid={password.invalid}
+                        maxLength={50}
+                        value={password.value}
+                        name="password"
+                        placeholder={CONSTANTS.PASSWORD_PLACEHOLDER}
+                        data-testid={CONSTANTS.PASSWORD_INPUT_ID}
+                    />
+                </InputWrapper>
+                {password.invalid && (
+                    <Text size="small" state={ColorStatus.error}>
+                        {CONSTANTS.INVALID_PASSWORD_MESSAGE}
+                    </Text>
+                )}
+            </Form.Item>
+        )}
         {nameInput && (
             <Form.Item label="Full Name" htmlFor="name">
                 <InputWrapper>
