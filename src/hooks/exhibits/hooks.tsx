@@ -100,9 +100,9 @@ export const useExhibitFileInfo = () => {
         const exhibitFile: ExhibitFile = await deps.apiService.getSharedExhibit(depositionID);
         if (exhibitFile) {
             const user = await deps.apiService.currentUser();
+            dispatch(actions.setIsCurrentExhibitOwner(user?.id && user?.id === exhibitFile?.addedBy?.id));
             dispatch(actions.setCurrentUser(user));
             dispatch(actions.setSharedExhibit(exhibitFile));
-            dispatch(actions.setIsCurrentExhibitOwner(user?.id && user?.id === exhibitFile?.addedBy?.id));
         }
         return exhibitFile;
     }, []);
@@ -110,9 +110,11 @@ export const useExhibitFileInfo = () => {
 
 export const useExhibitTabs = () => {
     const { state, dispatch } = useContext(GlobalStateContext);
-    const { currentExhibit } = state.room;
+    const { depositionID } = useParams<{ depositionID: string }>();
+    const { currentExhibit, message, isCurrentExhibitOwner } = state.room;
     const [highlightKey, setHighlightKey] = useState<number>(-1);
     const [activeKey, setActiveKey] = useState<string>(CONSTANTS.DEFAULT_ACTIVE_TAB);
+    const [fetchExhibitFileInfo] = useExhibitFileInfo();
 
     useEffect(() => {
         setHighlightKey(
@@ -121,15 +123,23 @@ export const useExhibitTabs = () => {
     }, [currentExhibit]);
 
     useEffect(() => {
-        if (highlightKey !== -1 && state.room.currentExhibit && state.room.isCurrentExhibitOwner) {
+        if (highlightKey !== -1 && currentExhibit && isCurrentExhibitOwner) {
             setActiveKey(CONSTANTS.LIVE_EXHIBIT_TAB);
             dispatch(actions.setActiveTab(CONSTANTS.LIVE_EXHIBIT_TAB));
         }
-    }, [highlightKey, state.room.currentExhibit, state.room.isCurrentExhibitOwner, dispatch]);
+    }, [highlightKey, currentExhibit, isCurrentExhibitOwner, dispatch]);
 
     useEffect(() => {
         dispatch(actions.setExhibitTabName(activeKey));
     }, [activeKey, dispatch]);
+
+    useEffect(() => {
+        if (message.module === "shareExhibit" && !!message.value) {
+            setHighlightKey(CONSTANTS.EXHIBIT_TABS_DATA.findIndex((tab) => tab.tabId === CONSTANTS.LIVE_EXHIBIT_TAB));
+            fetchExhibitFileInfo(depositionID);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [message]);
 
     return { highlightKey, activeKey, setActiveKey: setActiveKey };
 };
