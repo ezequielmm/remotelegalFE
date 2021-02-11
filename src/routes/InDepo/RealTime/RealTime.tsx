@@ -24,7 +24,7 @@ const RealTime = ({
     transcriptions?: (TranscriptionModel.Transcription & TranscriptionModel.TranscriptionPause)[];
 }) => {
     const scrollableRef = useRef(null);
-    console.log(transcriptions);
+
     useEffect(() => {
         if (scrollableRef && scrollableRef.current) {
             scrollableRef.current.addEventListener("DOMNodeInserted", (event) => {
