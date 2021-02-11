@@ -29,35 +29,33 @@ export default function EndDepoScreen({ location }) {
                         <Card
                             style={{
                                 padding: `${getREM(theme.default.spaces[10] * 2)} 
-                                ${getREM(theme.default.spaces[10] * 4)}`,
+                                ${getREM(theme.default.spaces[9] * 4)}`,
                             }}
                         >
-                            <Row justify="center" align="middle">
-                                <Space direction="vertical" size="small" justify="center" align="center" fullWidth>
+                            <Space direction="vertical" size="large" justify="center" align="center" fullWidth>
+                                <Space pb={3}>
                                     <Logo version="dark" height={getREM(theme.default.spaces[8] * 2)} />
-                                    <Space.Item fullWidth style={{ textAlign: "center", marginTop: "10px" }}>
-                                        <Title weight="bold" level={4} noMargin>
-                                            {`${displayName(userInfo?.firstName, userInfo?.lastName)},`}
-                                        </Title>
-                                        <Title weight="light" level={4} ellipsis={false}>
-                                            {CONSTANTS.END_DEPO_SCREEN_FIRST_TEXT}
-                                        </Title>
-                                        <Text state={ColorStatus.disabled} ellipsis={false}>
-                                            {CONSTANTS.END_DEPO_SCREEN_SECOND_TEXT}
-                                        </Text>
-                                    </Space.Item>
-                                    <Space.Item fullWidth style={{ textAlign: "center", marginTop: "15px" }}>
-                                        <Button
-                                            onClick={() => downloadAssets(userInfo)}
-                                            type="primary"
-                                            size="middle"
-                                            data-testid="download_assets_button"
-                                        >
-                                            {CONSTANTS.END_DEPO_DOWNLOAD_BUTTON_LABEL}
-                                        </Button>
-                                    </Space.Item>
                                 </Space>
-                            </Row>
+                                <Space.Item style={{ textAlign: "center" }}>
+                                    <Title level={5} noMargin>
+                                        {`${displayName(userInfo?.firstName, userInfo?.lastName)},`}
+                                    </Title>
+                                    <Title weight="light" level={5} ellipsis={false} noMargin>
+                                        {CONSTANTS.END_DEPO_SCREEN_FIRST_TEXT}
+                                    </Title>
+                                </Space.Item>
+                                <Text state={ColorStatus.disabled} size="large" ellipsis={false} align="center">
+                                    {CONSTANTS.END_DEPO_SCREEN_SECOND_TEXT}
+                                </Text>
+                                <Button
+                                    onClick={() => downloadAssets(userInfo)}
+                                    type="primary"
+                                    size="middle"
+                                    data-testid="download_assets_button"
+                                >
+                                    {CONSTANTS.END_DEPO_DOWNLOAD_BUTTON_LABEL}
+                                </Button>
+                            </Space>
                         </Card>
                     </Col>
                 </Row>
