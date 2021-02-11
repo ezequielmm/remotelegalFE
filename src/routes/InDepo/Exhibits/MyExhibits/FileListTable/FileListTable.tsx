@@ -24,6 +24,7 @@ import { StyledFileNameCell } from "./styles";
 import ExhibitSharingModal from "../../ExhibitViewer/ExhibitSharingModal";
 import ColorStatus from "../../../../../types/ColorStatus";
 import { GlobalStateContext } from "../../../../../state/GlobalState";
+import { useShareExhibitFile } from "../../../../../hooks/exhibits/hooks";
 
 interface IFileListTable extends TableProps<DefaultRecordType> {
     onClickViewFile: (item: any) => void;
@@ -34,6 +35,7 @@ const FileListTable = (props: IFileListTable) => {
     const [currentModalMode, setCurrentModalMode] = useState<ModalMode>(null);
     const [exhibitSharingModalOpen, setExhibitSharingModalOpen] = useState(false);
     const [selectedSharedExhibitFile, setSelectedSharedExhibitFile] = useState<ExhibitFile>(null);
+    const { shareExhibit, shareExhibitPending, sharedExhibit, sharingExhibitFileError } = useShareExhibitFile();
     const { state } = useContext(GlobalStateContext);
     const { isRecording } = state.room;
 
@@ -78,14 +80,19 @@ const FileListTable = (props: IFileListTable) => {
     const onRenameCancelHandler = () => {};
     const onDeleteCancelHandler = () => {};
 
-    const onShareOkHandler = () => {
-        setExhibitSharingModalOpen(false);
+    const onShareOkHandler = async () => {
+        const isShared = await shareExhibit(selectedSharedExhibitFile);
+        if (Boolean(isShared)) {
+            setExhibitSharingModalOpen(false);
+            setSelectedSharedExhibitFile(null);
+        }
     };
     return (
         <>
             <ExhibitSharingModal
                 destroyOnClose
-                file={selectedSharedExhibitFile}
+                loading={shareExhibitPending}
+                file={sharedExhibit || sharingExhibitFileError}
                 visible={exhibitSharingModalOpen}
                 onShareOk={onShareOkHandler}
                 onShareCancel={() => setExhibitSharingModalOpen(false)}

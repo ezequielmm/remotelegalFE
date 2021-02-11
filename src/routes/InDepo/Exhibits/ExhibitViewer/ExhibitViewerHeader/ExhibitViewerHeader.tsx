@@ -31,15 +31,18 @@ export default function ExhibitViewerHeader({
 }: Props): ReactElement {
     const [sharingModalOpen, setSharingModalOpen] = useState(false);
     const [closingModalOpen, setClosingModalOpen] = useState(false);
-    const { shareExhibit, shareExhibitPending, closeSharedExhibit, pendingCloseSharedExhibit } = useShareExhibitFile();
+    const {
+        shareExhibit,
+        shareExhibitPending,
+        sharedExhibit,
+        closeSharedExhibit,
+        pendingCloseSharedExhibit,
+    } = useShareExhibitFile();
     const { state } = useContext(GlobalStateContext);
     const { isRecording, stampLabel } = state.room;
 
     const onShareOkHandler = () => {
         shareExhibit(file);
-        setSharingModalOpen(false);
-    };
-    const onShareCancel = () => {
         setSharingModalOpen(false);
     };
 
@@ -50,10 +53,12 @@ export default function ExhibitViewerHeader({
     return (
         <StyledExhibitViewerHeader align="middle" data-testid="view-document-header">
             <ExhibitSharingModal
-                file={file}
+                destroyOnClose
+                loading={shareExhibitPending}
+                file={sharedExhibit}
                 visible={sharingModalOpen}
                 onShareOk={onShareOkHandler}
-                onShareCancel={onShareCancel}
+                onShareCancel={() => setSharingModalOpen(false)}
             />
             <ExhibitClosingModal
                 file={file}
