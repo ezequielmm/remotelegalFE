@@ -45,7 +45,7 @@ export default function CreateDepositionResultCard({
                         data-testid="go_to_deposition_button"
                         type="text"
                         onClick={goToDepositions}
-                        key="success_card_new_case_button"
+                        key="success_card_go_to_deposition_button"
                     >
                         {CONSTANTS.GO_TO_DEPOSITIONS}
                     </Button>

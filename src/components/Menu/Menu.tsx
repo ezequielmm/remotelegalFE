@@ -40,9 +40,9 @@ const Menu = (props: IMenuProps) => {
     );
 };
 
-const MenuItem = styled(ANTMenu.Item)<{ unsetDisabledCursor?: boolean }>`
+const MenuItem = styled(ANTMenu.Item)<{ $unsetDisabledCursor?: boolean }>`
     &.ant-menu-item-disabled {
-        cursor: ${({ unsetDisabledCursor }) => unsetDisabledCursor && "unset !important"};
+        cursor: ${({ $unsetDisabledCursor }) => $unsetDisabledCursor && "unset !important"};
     }
 `;
 

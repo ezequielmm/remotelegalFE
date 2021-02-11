@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { Divider } from "antd";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import Button from "../../../components/Button";
@@ -21,15 +21,10 @@ const WitnessesSection = () => {
     return (
         <Card fullWidth>
             {fields.map((field, index) => (
-                <>
-                    <WitnessItem
-                        removeWitness={() => remove(index)}
-                        key={field.id}
-                        deposition={field}
-                        witnessNumber={index}
-                    />
+                <Fragment key={field.id}>
+                    <WitnessItem removeWitness={() => remove(index)} deposition={field} witnessNumber={index} />
                     {fields.length > index + 1 && <Divider />}
-                </>
+                </Fragment>
             ))}
             <Button
                 data-testid="add_witness_button"

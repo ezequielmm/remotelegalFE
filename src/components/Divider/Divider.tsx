@@ -10,7 +10,10 @@ export interface IDividerProps extends DividerProps {
     hasMargin?: boolean;
 }
 
-const StyledDivider = styled(AntDivider)<IDividerProps>`
+const StyledDivider = styled(AntDivider).withConfig({
+    shouldForwardProp: (prop, defaultValidatorFn) =>
+        !["hasMargin", "fitContent"].includes(prop) && defaultValidatorFn(prop),
+})<IDividerProps>`
     ${({ type, fitContent, hasMargin, theme }) => {
         const fitContentStyles = type === "vertical" ? "height: 100%;" : "width: 100%;";
 
@@ -30,8 +33,8 @@ const StyledDivider = styled(AntDivider)<IDividerProps>`
     }}
 `;
 
-const Divider = ({ fitContent, hasMargin = true, ...rest }: IDividerProps) => {
-    return <StyledDivider fitContent={fitContent} hasMargin={hasMargin} {...rest} />;
+const Divider = ({ hasMargin = true, ...rest }: IDividerProps) => {
+    return <StyledDivider hasMargin={hasMargin} {...rest} />;
 };
 
 export default Divider;
