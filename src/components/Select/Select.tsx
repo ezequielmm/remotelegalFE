@@ -5,10 +5,13 @@ import styled from "styled-components";
 import { getPX, getREM, hexToRGBA } from "../../constants/styles/utils";
 import { ReactComponent as DropdownArrowIcon } from "../../assets/icons/dropdown-arrow.svg";
 import Icon from "../Icon";
+import { theme } from "../../constants/styles/theme";
 
 export interface ISelectProps extends SelectProps<any> {
     invalid?: boolean;
 }
+
+const dropdownHeight = theme.default.baseUnit * 17.5;
 
 export const StyledSelect = styled(ANTSelect).attrs((props: ISelectProps) => ({
     invalid: props.invalid ? "true" : undefined,
@@ -96,6 +99,7 @@ const Select = ({ children, ...props }: ISelectProps) => (
     <StyledSelect
         // eslint-disable-next-line react/jsx-props-no-spreading
         {...props}
+        listHeight={dropdownHeight}
         suffixIcon={<Icon icon={DropdownArrowIcon} />}
         getPopupContainer={(trigger) => trigger.parentElement}
     >
