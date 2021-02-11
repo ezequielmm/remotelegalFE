@@ -14,12 +14,12 @@ export type ButtonTypeExtended = ButtonType | "secondary";
 
 export interface IButtonProps extends Omit<ButtonProps, "type" | "children"> {
     type: "circle" | "rounded" | "simple";
-    isToggled?: boolean;
+    isActive?: boolean;
     label?: string;
     color?: "blue" | "red";
 }
 
-export default function Control({ isToggled, type, label, icon, color, size, ...rest }: IButtonProps) {
+export default function Control({ isActive, type, label, icon, color, size, ...rest }: IButtonProps) {
     let Button;
 
     if (type === Types.CIRCLE) {
@@ -31,10 +31,10 @@ export default function Control({ isToggled, type, label, icon, color, size, ...
     }
 
     return (
-        <Button {...rest} color={color} isToggled={isToggled}>
+        <Button color={color} isActive={isActive} {...rest}>
             {icon}
             {label && (
-                <Text size="small" state={isToggled && color !== "red" ? ColorStatus.primary : ColorStatus.white}>
+                <Text size="small" state={isActive && color !== "red" ? ColorStatus.primary : ColorStatus.white}>
                     {label}
                 </Text>
             )}

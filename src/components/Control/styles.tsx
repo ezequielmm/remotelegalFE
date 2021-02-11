@@ -3,21 +3,21 @@ import { Button } from "antd";
 import styled from "styled-components";
 import { getREM, hexToRGBA } from "../../constants/styles/utils";
 
-const circleButton = ({ isToggled, ...props }) => <Button shape="circle" type="default" {...props} />;
-const roundButton = ({ isToggled, ...props }) => <Button type="default" {...props} />;
+const circleButton = ({ isActive, ...props }) => <Button shape="circle" type="default" {...props} />;
+const roundButton = ({ isActive, ...props }) => <Button type="default" {...props} />;
 
 export const StyledCircleControl = styled(circleButton)`
     display: flex;
     justify-content: center;
     align-items: center;
-    box-shadow: 2px 0 6px 0 ${({ theme }) => hexToRGBA(theme.colors.inDepoNeutrals[0], 0.57)};
+    box-shadow: 2px 0 6px 0 ${({ theme }) => hexToRGBA(theme.colors.inDepoNeutrals[6], 0.57)};
     border: 0;
     transition: all 300ms ease-in-out;
 
     &,
     &:focus {
-        background: ${({ theme, isToggled }) =>
-            isToggled ? theme.colors.inDepoNeutrals[2] : theme.colors.inDepoNeutrals[1]};
+        background: ${({ theme, isActive }) =>
+            isActive ? theme.colors.inDepoNeutrals[1] : theme.colors.inDepoNeutrals[2]};
     }
 
     &:hover {
@@ -39,22 +39,22 @@ export const StyledRoundedControl = styled(roundButton)`
     justify-content: center;
     align-items: center;
     padding: ${({ theme }) => `0 ${getREM(theme.default.spaces[5])}`};
-    border: ${({ isToggled, theme }) => (isToggled ? `1px solid ${theme.default.primaryColor}` : "none")};
+    border: ${({ isActive, theme }) => (isActive ? `1px solid ${theme.default.primaryColor}` : "none")};
 
     &,
     &:focus {
-        background-color: ${({ isToggled, theme }) =>
-            isToggled ? theme.colors.inDepoNeutrals[4] : theme.colors.inDepoBlue[5]};
+        background-color: ${({ isActive, theme }) =>
+            isActive ? theme.colors.inDepoNeutrals[4] : theme.colors.inDepoBlue[5]};
     }
 
     &:hover {
-        background-color: ${({ isToggled, theme }) =>
-            isToggled ? theme.colors.inDepoNeutrals[3] : theme.colors.inDepoBlue[4]};
+        background-color: ${({ isActive, theme }) =>
+            isActive ? theme.colors.inDepoNeutrals[3] : theme.colors.inDepoBlue[4]};
     }
 
     &:active {
-        background-color: ${({ isToggled, theme }) =>
-            isToggled ? theme.colors.inDepoNeutrals[5] : theme.colors.inDepoBlue[6]};
+        background-color: ${({ isActive, theme }) =>
+            isActive ? theme.colors.inDepoNeutrals[5] : theme.colors.inDepoBlue[6]};
     }
 
     ${({ color, theme }) =>
@@ -76,7 +76,7 @@ export const StyledRoundedControl = styled(roundButton)`
             : ""}
 
     path {
-        fill: ${({ isToggled, theme }) => (isToggled ? theme.default.primaryColor : theme.default.whiteColor)};
+        fill: ${({ isActive, theme }) => (isActive ? theme.default.primaryColor : theme.default.whiteColor)};
     }
 
     & > :first-child {
@@ -98,8 +98,8 @@ export const StyledRoundedButton = styled(StyledRoundedControl)`
 
     &,
     :focus {
-        border: 1px solid ${({ isToggled, theme }) => (isToggled ? theme.default.primaryColor : "transparent")};
-        background-color: ${({ isToggled, theme }) => (isToggled ? theme.colors.inDepoNeutrals[4] : "transparent")};
+        border: 1px solid ${({ isActive, theme }) => (isActive ? theme.default.primaryColor : "transparent")};
+        background-color: ${({ isActive, theme }) => (isActive ? theme.colors.inDepoNeutrals[4] : "transparent")};
     }
 
     &:hover {

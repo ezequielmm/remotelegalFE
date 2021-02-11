@@ -23,6 +23,8 @@ export const CONTROLS_BAR_SUMMARY_LABEL = "Summary";
 export const CONTROLS_BAR_SUPPORT_LABEL = "Support";
 export const CONTROLS_BAR_JOIN_BUTTON = "JOIN";
 
+export const CONTROLS_BAR_BREAKROOMS_PRIVACITY_DESCRIPTION = "Not recorded - Everything you say will remain private.";
+
 export const COPY_LINK_ALERT_DURATION = 4;
 export const COPY_LINK_TITLE = "Deposition information";
 export const COPY_LINK_DESCRIPTION = "Invite participants to join the deposition.";

@@ -73,5 +73,5 @@ export const TabPane = styled(AntTabs.TabPane)<TabPaneProps>`
 export const ExhibitTabPaneContainer = styled.div`
     height: inherit;
     width: 100%;
-    padding: ${({ theme }) => `${getREM(theme.default.spaces[9])} 0`};
+    padding: ${({ theme }) => `${getREM(theme.default.spaces[9])} 0 0`};
 `;

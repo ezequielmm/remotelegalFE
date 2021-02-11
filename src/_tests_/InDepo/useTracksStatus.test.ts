@@ -39,12 +39,12 @@ test("when video is toggled for the first time, the value changes to false", () 
         useTracksStatus([buildTrack(TRACK_TYPE.audio, true)], [buildTrack(TRACK_TYPE.video, true)])
     );
 
-    expect(result.current.cameraEnabled).toBe(true);
+    expect(result.current.isCameraEnabled).toBe(true);
 
     act(() => {
         result.current.setCameraEnabled(false);
     });
-    expect(result.current.cameraEnabled).toBe(false);
+    expect(result.current.isCameraEnabled).toBe(false);
 });
 
 test("when audio is toggled again, the value changes back to true", () => {
@@ -52,16 +52,16 @@ test("when audio is toggled again, the value changes back to true", () => {
         useTracksStatus([buildTrack(TRACK_TYPE.audio, true)], [buildTrack(TRACK_TYPE.video, true)])
     );
 
-    expect(result.current.cameraEnabled).toBe(true);
+    expect(result.current.isCameraEnabled).toBe(true);
 
     act(() => {
         result.current.setCameraEnabled(false);
     });
 
-    expect(result.current.cameraEnabled).toBe(false);
+    expect(result.current.isCameraEnabled).toBe(false);
 
     act(() => {
         result.current.setCameraEnabled(true);
     });
-    expect(result.current.cameraEnabled).toBe(true);
+    expect(result.current.isCameraEnabled).toBe(true);
 });

@@ -2,17 +2,6 @@ import React, { ReactElement, useState } from "react";
 import { LocalAudioTrack, LocalParticipant, LocalVideoTrack } from "twilio-video";
 import useParticipantTracks from "../../hooks/InDepo/useParticipantTracks";
 import useTracksStatus from "../../hooks/InDepo/useTracksStatus";
-import {
-    BreakroomTitle,
-    BreakroomBadge,
-    BreakroomDisclaimer,
-    StyledContainer,
-    StyledLeftControls,
-    StyledLogo,
-    StyledVideoControls,
-    StyledGeneralControls,
-    StyledPrimaryControls,
-} from "./styles";
 import Icon from "../Icon";
 import { ReactComponent as MuteIcon } from "../../assets/in-depo/Mute.svg";
 import { ReactComponent as UnmuteIcon } from "../../assets/in-depo/Unmute.svg";
@@ -21,15 +10,21 @@ import { ReactComponent as CameraOffIcon } from "../../assets/in-depo/Camera.off
 import { ReactComponent as BreakroomsIcon } from "../../assets/in-depo/Breakrooms.svg";
 import { ReactComponent as ExhibitsIcon } from "../../assets/in-depo/Exhibits.svg";
 import Control from "../Control/Control";
+import Tag from "../Tag";
+import Text from "../Typography/Text";
 import Logo from "../Logo";
-import { CONTROLS_BAR_EXHIBITS_LABEL } from "../../constants/inDepo";
 import Confirm from "../Confirm";
+import Space from "../Space";
+import Divider from "../Divider";
+import { StyledContainer, StyledLogo } from "../ControlsBar/styles";
+import { CONTROLS_BAR_EXHIBITS_LABEL, CONTROLS_BAR_BREAKROOMS_PRIVACITY_DESCRIPTION } from "../../constants/inDepo";
 import {
     LEAVE_BREAKROOM_TITLE,
     LEAVE_BREAKROOM_SUBTITLE,
     LEAVE_BREAKROOM_STAY,
     LEAVE_BREAKROOM_LEAVE,
 } from "../../constants/inBreakroom";
+import ColorStatus from "../../types/ColorStatus";
 
 interface IBreakroomControlsBar {
     localParticipant: LocalParticipant;
@@ -48,7 +43,7 @@ export default function BreakroomControlsBar({
 }: IBreakroomControlsBar): ReactElement {
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const { videoTracks, audioTracks } = useParticipantTracks(localParticipant);
-    const { isAudioEnabled, cameraEnabled, setAudioEnabled, setCameraEnabled } = useTracksStatus(
+    const { isAudioEnabled, isCameraEnabled, setAudioEnabled, setCameraEnabled } = useTracksStatus(
         audioTracks as LocalAudioTrack[],
         videoTracks as LocalVideoTrack[]
     );
@@ -74,52 +69,59 @@ export default function BreakroomControlsBar({
                 <span data-testid="modalconfirm" />
             </Confirm>
 
-            <StyledContainer>
-                <StyledLeftControls>
-                    <StyledLogo>
-                        <Logo version="light" height="100%" />
-                    </StyledLogo>
-                    <BreakroomTitle>
-                        <BreakroomBadge>{breakroomName}</BreakroomBadge>
-                        <BreakroomDisclaimer>
-                            Not recorded - Everything you say will remain private.
-                        </BreakroomDisclaimer>
-                    </BreakroomTitle>
-                </StyledLeftControls>
-                <StyledVideoControls>
-                    <Control
-                        data-testid="audio"
-                        type="circle"
-                        onClick={() => setAudioEnabled(!isAudioEnabled)}
-                        isToggled={!isAudioEnabled}
-                        icon={
-                            isAudioEnabled ? (
-                                <Icon data-testid="unmuted" icon={UnmuteIcon} size="1.625rem" />
-                            ) : (
-                                <Icon data-testid="muted" icon={MuteIcon} size="1.625rem" />
-                            )
-                        }
-                    />
-                    <Control
-                        data-testid="camera"
-                        type="circle"
-                        onClick={() => setCameraEnabled(!cameraEnabled)}
-                        isToggled={!cameraEnabled}
-                        icon={
-                            cameraEnabled ? (
-                                <Icon data-testid="camerashown" icon={CameraOnIcon} size="1.625rem" />
-                            ) : (
-                                <Icon data-testid="camerahidden" icon={CameraOffIcon} size="1.625rem" />
-                            )
-                        }
-                    />
-                </StyledVideoControls>
-                <StyledGeneralControls>
-                    <StyledPrimaryControls>
+            <StyledContainer px={6} justify="space-between" align="center">
+                <Space.Item flex="2 0 0" fullHeight>
+                    <Space size={6} align="center" fullHeight>
+                        <StyledLogo>
+                            <Logo version="light" height="100%" />
+                        </StyledLogo>
+                        <Space py={6} fullHeight>
+                            <Divider type="vertical" fitContent hasMargin={false} />
+                        </Space>
+                        <Space size={2} direction="vertical">
+                            <Tag>{breakroomName}</Tag>
+                            <Text state={ColorStatus.white} size="small">
+                                {CONTROLS_BAR_BREAKROOMS_PRIVACITY_DESCRIPTION}
+                            </Text>
+                        </Space>
+                    </Space>
+                </Space.Item>
+                <Space.Item flex="1 0 0">
+                    <Space size={4} justify="center" align="center">
+                        <Control
+                            data-testid="audio"
+                            type="circle"
+                            onClick={() => setAudioEnabled(!isAudioEnabled)}
+                            isActive={isAudioEnabled}
+                            icon={
+                                isAudioEnabled ? (
+                                    <Icon data-testid="unmuted" icon={UnmuteIcon} size="1.625rem" />
+                                ) : (
+                                    <Icon data-testid="muted" icon={MuteIcon} size="1.625rem" />
+                                )
+                            }
+                        />
+                        <Control
+                            data-testid="camera"
+                            type="circle"
+                            onClick={() => setCameraEnabled(!isCameraEnabled)}
+                            isActive={isCameraEnabled}
+                            icon={
+                                isCameraEnabled ? (
+                                    <Icon data-testid="camerashown" icon={CameraOnIcon} size="1.625rem" />
+                                ) : (
+                                    <Icon data-testid="camerahidden" icon={CameraOffIcon} size="1.625rem" />
+                                )
+                            }
+                        />
+                    </Space>
+                </Space.Item>
+                <Space.Item flex="2 0 0">
+                    <Space justify="flex-end" align="center">
                         {false && (
                             <Control
                                 data-testid="exhibits"
-                                isToggled={exhibitsOpen}
+                                isActive={exhibitsOpen}
                                 onClick={toggleExhibits}
                                 type="simple"
                                 label={CONTROLS_BAR_EXHIBITS_LABEL}
@@ -134,8 +136,8 @@ export default function BreakroomControlsBar({
                             label="Leave Breakroom"
                             icon={<Icon icon={BreakroomsIcon} size="1.625rem" />}
                         />
-                    </StyledPrimaryControls>
-                </StyledGeneralControls>
+                    </Space>
+                </Space.Item>
             </StyledContainer>
         </>
     );

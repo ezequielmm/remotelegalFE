@@ -97,6 +97,7 @@ export const StyledAttendeesContainer = styled.div<IAtendeesContainerProps>`
         flex: 4;
     }
     ${StyledVideoConference}.breakrooms & {
+        margin-left: 0;
         grid-template-columns: repeat(auto-fit, minmax(30%, 1fr));
         grid-auto-rows: minmax(calc(33% - ${({ theme }) => getREM(theme.default.spaces[2])}), 1fr);
     }

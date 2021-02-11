@@ -7,15 +7,7 @@ import EndDepoModal from "./components/EndDepoModal";
 import CopyLink from "./components/CopyLink";
 import { theme } from "../../constants/styles/theme";
 
-import {
-    StyledContainer,
-    StyledLogo,
-    StyledVideoControls,
-    StyledGeneralControls,
-    StyledPrimaryControls,
-    StyledSecondaryControls,
-    StyledComposedIconContainer,
-} from "./styles";
+import { StyledContainer, StyledLogo, StyledComposedIconContainer } from "./styles";
 import Icon from "../Icon";
 import { ReactComponent as MuteIcon } from "../../assets/in-depo/Mute.svg";
 import { ReactComponent as UnmuteIcon } from "../../assets/in-depo/Unmute.svg";
@@ -36,6 +28,7 @@ import Menu from "../Menu";
 import Button from "../Button";
 import Text from "../Typography/Text";
 import Space from "../Space";
+import Divider from "../Divider";
 import Logo from "../Logo";
 import useEndDepo from "../../hooks/InDepo/useEndDepo";
 import useStreamAudio from "../../hooks/useStreamAudio";
@@ -82,7 +75,7 @@ export default function ControlsBar({
     handleJoinBreakroom,
 }: IControlsBar): ReactElement {
     const { videoTracks, audioTracks } = useParticipantTracks(localParticipant);
-    const { isAudioEnabled, cameraEnabled, setAudioEnabled, setCameraEnabled } = useTracksStatus(
+    const { isAudioEnabled, isCameraEnabled, setAudioEnabled, setCameraEnabled } = useTracksStatus(
         audioTracks as LocalAudioTrack[],
         videoTracks as LocalVideoTrack[]
     );
@@ -138,7 +131,7 @@ export default function ControlsBar({
     };
 
     return (
-        <StyledContainer>
+        <StyledContainer px={6} align="center">
             <EndDepoModal
                 endDepoFunc={() => {
                     setModal(false);
@@ -147,135 +140,144 @@ export default function ControlsBar({
                 visible={modal}
                 closeModal={() => setModal(false)}
             />
-            <StyledLogo>
-                <Logo version="light" height="100%" />
-            </StyledLogo>
-            <StyledVideoControls>
-                <Control
-                    data-testid="audio"
-                    type="circle"
-                    onClick={() => setAudioEnabled(!isAudioEnabled)}
-                    isToggled={!isAudioEnabled}
-                    icon={
-                        isAudioEnabled ? (
-                            <Icon data-testid="unmuted" icon={UnmuteIcon} size="1.625rem" />
-                        ) : (
-                            <Icon data-testid="muted" icon={MuteIcon} size="1.625rem" />
-                        )
-                    }
-                />
-                <Control
-                    data-testid="camera"
-                    type="circle"
-                    onClick={() => setCameraEnabled(!cameraEnabled)}
-                    isToggled={!cameraEnabled}
-                    icon={
-                        cameraEnabled ? (
-                            <Icon data-testid="camerashown" icon={CameraOnIcon} size="1.625rem" />
-                        ) : (
-                            <Icon data-testid="camerahidden" icon={CameraOffIcon} size="1.625rem" />
-                        )
-                    }
-                />
-                {canRecord && (
+            <Space.Item flex="1 0 0">
+                <StyledLogo>
+                    <Logo version="light" height="100%" />
+                </StyledLogo>
+            </Space.Item>
+            <Space.Item flex="1 0 0" fullHeight>
+                <Space size={4} justify="center" align="center" fullHeight>
                     <Control
-                        disabled={loadingStartPauseRecording}
-                        data-testid="record"
-                        isToggled={isRecording}
-                        onClick={startPauseRecording}
-                        type="rounded"
-                        label={isRecording ? CONTROLS_BAR_OFF_THE_RECORD_LABEL : CONTROLS_BAR_ON_THE_RECORD_LABEL}
+                        data-testid="audio"
+                        type="circle"
+                        onClick={() => setAudioEnabled(!isAudioEnabled)}
+                        isActive={isAudioEnabled}
                         icon={
-                            isRecording ? (
-                                <Icon icon={PauseIcon} size="1.625rem" />
+                            isAudioEnabled ? (
+                                <Icon data-testid="unmuted" icon={UnmuteIcon} size="1.625rem" />
                             ) : (
-                                <Icon icon={RecordIcon} size="1.625rem" />
+                                <Icon data-testid="muted" icon={MuteIcon} size="1.625rem" />
                             )
                         }
                     />
-                )}
+                    <Control
+                        data-testid="camera"
+                        type="circle"
+                        onClick={() => setCameraEnabled(!isCameraEnabled)}
+                        isActive={isCameraEnabled}
+                        icon={
+                            isCameraEnabled ? (
+                                <Icon data-testid="camerashown" icon={CameraOnIcon} size="1.625rem" />
+                            ) : (
+                                <Icon data-testid="camerahidden" icon={CameraOffIcon} size="1.625rem" />
+                            )
+                        }
+                    />
+                    {canRecord && (
+                        <Control
+                            disabled={loadingStartPauseRecording}
+                            data-testid="record"
+                            isActive={isRecording}
+                            onClick={startPauseRecording}
+                            type="rounded"
+                            label={isRecording ? CONTROLS_BAR_OFF_THE_RECORD_LABEL : CONTROLS_BAR_ON_THE_RECORD_LABEL}
+                            icon={
+                                isRecording ? (
+                                    <Icon icon={PauseIcon} size="1.625rem" />
+                                ) : (
+                                    <Icon icon={RecordIcon} size="1.625rem" />
+                                )
+                            }
+                        />
+                    )}
 
-                {canEnd && (
-                    <Control
-                        data-testid="end"
-                        onClick={() => {
-                            setModal(true);
-                        }}
-                        type="rounded"
-                        color="red"
-                        label={CONTROLS_BAR_END_LABEL}
-                        icon={<Icon icon={EndCallIcon} size="1.625rem" />}
-                    />
-                )}
-            </StyledVideoControls>
-            <StyledGeneralControls>
-                <StyledPrimaryControls>
-                    <Control
-                        data-testid="exhibits"
-                        isToggled={exhibitsOpen}
-                        onClick={toggleExhibits}
-                        type="simple"
-                        label={CONTROLS_BAR_EXHIBITS_LABEL}
-                        icon={<Icon icon={ExhibitsIcon} size="1.625rem" />}
-                    />
-                    <Control
-                        data-testid="realtime"
-                        isToggled={realTimeOpen}
-                        onClick={toggleRealTime}
-                        type="simple"
-                        label={CONTROLS_BAR_REAL_TIME_LABEL}
-                        icon={<Icon icon={RealTimeIcon} size="1.625rem" />}
-                    />
-                    {breakrooms && !!breakrooms.length && (
+                    {canEnd && (
+                        <Control
+                            data-testid="end"
+                            onClick={() => {
+                                setModal(true);
+                            }}
+                            type="rounded"
+                            color="red"
+                            label={CONTROLS_BAR_END_LABEL}
+                            icon={<Icon icon={EndCallIcon} size="1.625rem" />}
+                        />
+                    )}
+                </Space>
+            </Space.Item>
+            <Space.Item flex="1 0 0" fullHeight>
+                <Space justify="flex-end" align="center" fullHeight>
+                    <Space align="center">
+                        <Control
+                            data-testid="exhibits"
+                            isActive={exhibitsOpen}
+                            onClick={toggleExhibits}
+                            type="simple"
+                            label={CONTROLS_BAR_EXHIBITS_LABEL}
+                            icon={<Icon icon={ExhibitsIcon} size="1.625rem" />}
+                        />
+                        <Control
+                            data-testid="realtime"
+                            isActive={realTimeOpen}
+                            onClick={toggleRealTime}
+                            type="simple"
+                            label={CONTROLS_BAR_REAL_TIME_LABEL}
+                            icon={<Icon icon={RealTimeIcon} size="1.625rem" />}
+                        />
+                        {breakrooms && !!breakrooms.length && (
+                            <Dropdown
+                                onVisibleChange={toggleBreakrooms}
+                                overlay={<Menu>{renderBreakrooms()}</Menu>}
+                                arrow
+                                styled
+                                placement="topCenter"
+                                trigger={["click"]}
+                            >
+                                <Control
+                                    data-testid="breakrooms"
+                                    isActive={breakroomsOpen}
+                                    type="simple"
+                                    label={CONTROLS_BAR_BREAKROOMS_LABEL}
+                                    icon={composeBreakroomsIcon}
+                                />
+                            </Dropdown>
+                        )}
+                    </Space>
+                    <Space py={3} fullHeight>
+                        <Divider type="vertical" fitContent hasMargin={false} />
+                    </Space>
+                    <Space align="center">
                         <Dropdown
-                            onVisibleChange={toggleBreakrooms}
-                            overlay={<Menu>{renderBreakrooms()}</Menu>}
+                            overlay={<CopyLink closePopOver={toggleSummary} link={joinDepositionLink} />}
+                            placement="topRight"
+                            onVisibleChange={(visible) => {
+                                if (!visible) toggleSummary();
+                            }}
+                            visible={summaryOpen}
+                            trigger={["click"]}
                             arrow
                             styled
-                            placement="topCenter"
-                            trigger={["click"]}
+                            overlayStyle={{ width: getREM(theme.default.spaces[6] * 23) }}
+                            theme={summaryTheme}
                         >
                             <Control
-                                data-testid="breakrooms"
-                                isToggled={breakroomsOpen}
+                                isActive={summaryOpen}
+                                onClick={toggleSummary}
                                 type="simple"
-                                label={CONTROLS_BAR_BREAKROOMS_LABEL}
-                                icon={composeBreakroomsIcon}
+                                label={CONTROLS_BAR_SUMMARY_LABEL}
+                                icon={<Icon icon={SummaryIcon} size="1.625rem" />}
                             />
                         </Dropdown>
-                    )}
-                </StyledPrimaryControls>
-                <StyledSecondaryControls>
-                    <Dropdown
-                        overlay={<CopyLink closePopOver={toggleSummary} link={joinDepositionLink} />}
-                        placement="topRight"
-                        onVisibleChange={(visible) => {
-                            if (!visible) toggleSummary();
-                        }}
-                        visible={summaryOpen}
-                        trigger={["click"]}
-                        arrow
-                        styled
-                        overlayStyle={{ width: getREM(theme.default.spaces[6] * 23) }}
-                        theme={summaryTheme}
-                    >
                         <Control
-                            isToggled={summaryOpen}
-                            onClick={toggleSummary}
+                            isActive={supportOpen}
+                            onClick={toggleSupport}
                             type="simple"
-                            label={CONTROLS_BAR_SUMMARY_LABEL}
-                            icon={<Icon icon={SummaryIcon} size="1.625rem" />}
+                            label={CONTROLS_BAR_SUPPORT_LABEL}
+                            icon={<Icon icon={SupportIcon} size="1.625rem" />}
                         />
-                    </Dropdown>
-                    <Control
-                        isToggled={supportOpen}
-                        onClick={toggleSupport}
-                        type="simple"
-                        label={CONTROLS_BAR_SUPPORT_LABEL}
-                        icon={<Icon icon={SupportIcon} size="1.625rem" />}
-                    />
-                </StyledSecondaryControls>
-            </StyledGeneralControls>
+                    </Space>
+                </Space>
+            </Space.Item>
         </StyledContainer>
     );
 }

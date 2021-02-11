@@ -3,7 +3,7 @@ import { LocalAudioTrack, LocalVideoTrack } from "twilio-video";
 
 const useVideoStatus = (audioTracks: LocalAudioTrack[], videoTracks: LocalVideoTrack[]) => {
     const [isAudioEnabled, setAudioEnabled] = useState(true);
-    const [cameraEnabled, setCameraEnabled] = useState(true);
+    const [isCameraEnabled, setCameraEnabled] = useState(true);
 
     useEffect(() => {
         audioTracks.forEach((audioTrack) =>
@@ -13,10 +13,10 @@ const useVideoStatus = (audioTracks: LocalAudioTrack[], videoTracks: LocalVideoT
 
     useEffect(() => {
         videoTracks.forEach((videoTrack) =>
-            !cameraEnabled && videoTrack.isEnabled ? videoTrack.disable() : videoTrack.enable()
+            !isCameraEnabled && videoTrack.isEnabled ? videoTrack.disable() : videoTrack.enable()
         );
-    }, [cameraEnabled, videoTracks]);
+    }, [isCameraEnabled, videoTracks]);
 
-    return { isAudioEnabled, cameraEnabled, setAudioEnabled, setCameraEnabled };
+    return { isAudioEnabled, isCameraEnabled, setAudioEnabled, setCameraEnabled };
 };
 export default useVideoStatus;

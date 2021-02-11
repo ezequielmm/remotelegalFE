@@ -52,6 +52,7 @@ export interface ISpaceProps extends PropsWithChildren<SpaceProps> {
     justify?: "space-between" | "space-around" | "center" | "flex-start" | "flex-end";
     align?: "center" | "flex-start" | "flex-end" | "stretch";
     fullWidth?: boolean;
+    fullHeight?: boolean;
     flex?: string;
 }
 
@@ -91,7 +92,7 @@ const StyledSpace = styled.div.attrs((props: ISpaceProps) => ({
     size: props.size,
 }))<ISpaceProps>`
     ${(props: ISpaceProps) => {
-        const { size, direction, justify, align, fullWidth, flex } = props;
+        const { size, direction, justify, align, fullWidth, fullHeight, flex } = props;
 
         const sizeStyles = (): string => {
             if (size) {
@@ -137,6 +138,7 @@ const StyledSpace = styled.div.attrs((props: ISpaceProps) => ({
 
         const styles = `
             ${fullWidth ? "width: 100%;" : ""}
+            ${fullHeight ? "height: 100%;" : ""}
             ${flexStyles}
             ${spaceStyle(props)}
 
@@ -149,8 +151,10 @@ const StyledSpace = styled.div.attrs((props: ISpaceProps) => ({
     }}
 `;
 
-const StyledSpaceItem = styled.div<{ fullWidth?: boolean }>`
+const StyledSpaceItem = styled.div<{ fullWidth?: boolean; fullHeight?: boolean; flex?: string }>`
     ${({ fullWidth }) => (fullWidth ? "width: 100%;" : "")}
+    ${({ fullHeight }) => (fullHeight ? "height: 100%;" : "")}
+    ${({ flex }) => (flex ? `flex: ${flex};` : "")}
 `;
 
 const Space = ({

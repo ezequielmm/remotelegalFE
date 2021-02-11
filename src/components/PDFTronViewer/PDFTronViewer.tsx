@@ -241,7 +241,7 @@ const PDFTronViewer = ({
                 onConfirm={stampDocument}
                 handleClose={setStampModal}
             />
-            <StyledPDFTronViewerContainer ref={viewerRef} />;
+            <StyledPDFTronViewerContainer ref={viewerRef} />
         </>
     );
 };
