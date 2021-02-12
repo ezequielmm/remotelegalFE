@@ -36,7 +36,7 @@ export const setTranscriptionMessages = (
     return transcriptionsWithPauses;
 };
 
-export const addTranscriptionMessages = (newTranscription, transcriptions) => {
+export const addTranscriptionMessages = (newTranscription, transcriptions = []) => {
     if (newTranscription.eventType === EventModel.EventType.offTheRecord) {
         return [...transcriptions, { from: newTranscription.creationDate, id: newTranscription.id }];
     }
@@ -49,7 +49,7 @@ export const addTranscriptionMessages = (newTranscription, transcriptions) => {
             : [{ to: newTranscription.creationDate, id: newTranscription.id }];
     }
     if (newTranscription.text === "") return transcriptions;
-    const laterTranscriptionIndex = transcriptions.findIndex((transcription) => {
+    const laterTranscriptionIndex = transcriptions?.findIndex((transcription) => {
         return (
             (transcription.from && !transcription.to) ||
             (!transcription.from &&
@@ -63,10 +63,10 @@ export const addTranscriptionMessages = (newTranscription, transcriptions) => {
         laterTranscriptionIndex === -1
             ? [...transcriptions, newTranscription]
             : [
-                  ...transcriptions.slice(0, laterTranscriptionIndex),
+                  ...transcriptions?.slice(0, laterTranscriptionIndex),
                   newTranscription,
-                  ...transcriptions.slice(laterTranscriptionIndex),
+                  ...transcriptions?.slice(laterTranscriptionIndex),
               ];
 
-    return newTranscriptions;
+    return newTranscriptions || [];
 };
