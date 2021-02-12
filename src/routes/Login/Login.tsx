@@ -53,15 +53,31 @@ const Login = ({ location }: LoginProps) => {
                     <Form onFinish={handleSubmit} layout="vertical">
                         <Space direction="vertical" size="large" fullWidth>
                             <Space.Item fullWidth>
-                                <Title level={3} weight="light" noMargin>
+                                <Title dataTestId="welcome_title" level={3} weight="light" noMargin>
                                     Welcome
                                 </Title>
-                                <Text size="large">Log in into your account</Text>
+                                <Text dataTestId="log_in_message" size="large">
+                                    Log in into your account
+                                </Text>
                             </Space.Item>
-                            {data && <Alert message="Your email has been verified successfully" type="success" />}
-                            {error && error !== 409 && <Alert message={ERRORS.NETWORK_ERROR} type="error" />}
-                            {error === 409 && <Alert message={ERRORS.INVALID_CODE_ERROR} type="error" />}
-                            {submitError && <Alert message={submitError} type="error" />}
+                            {data && (
+                                <Alert
+                                    data-testid="successful_verification_message"
+                                    message="Your email has been verified successfully"
+                                    type="success"
+                                />
+                            )}
+                            {error && error !== 409 && (
+                                <Alert data-testid={ERRORS.NETWORK_ERROR} message={ERRORS.NETWORK_ERROR} type="error" />
+                            )}
+                            {error === 409 && (
+                                <Alert
+                                    data-testid={ERRORS.INVALID_CODE_ERROR}
+                                    message={ERRORS.INVALID_CODE_ERROR}
+                                    type="error"
+                                />
+                            )}
+                            {submitError && <Alert data-testid={submitError} message={submitError} type="error" />}
                             <Space.Item fullWidth>
                                 <Form.Item label="Email" htmlFor="email">
                                     <InputWrapper>
@@ -75,7 +91,7 @@ const Login = ({ location }: LoginProps) => {
                                             name="email"
                                         />
                                         {emailErrorMessage && (
-                                            <Text size="small" state={ColorStatus.error}>
+                                            <Text size="small" dataTestId={emailErrorMessage} state={ColorStatus.error}>
                                                 {emailErrorMessage}
                                             </Text>
                                         )}
@@ -112,7 +128,11 @@ const Login = ({ location }: LoginProps) => {
                                             type="password"
                                         />
                                         {passwordErrorMessage && (
-                                            <Text size="small" state={ColorStatus.error}>
+                                            <Text
+                                                size="small"
+                                                dataTestId={passwordErrorMessage}
+                                                state={ColorStatus.error}
+                                            >
                                                 {passwordErrorMessage}
                                             </Text>
                                         )}

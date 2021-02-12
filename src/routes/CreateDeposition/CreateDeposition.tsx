@@ -84,7 +84,7 @@ const CreateDeposition = () => {
         <FormProvider {...methods}>
             <Form onFinish={methods.handleSubmit(submitDepositions)} layout="vertical">
                 <Space direction="vertical" size="large">
-                    <Title level={4} noMargin weight="light">
+                    <Title dataTestId="schedule_deposition_title" level={4} noMargin weight="light">
                         Schedule Deposition
                     </Title>
                     <CaseSection cases={cases} loadingCases={loadingCases} fetchingError={fetchingCasesError} />

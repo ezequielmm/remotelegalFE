@@ -115,7 +115,7 @@ const MyDepositions = () => {
                 (mappedDepositions === undefined || mappedDepositions?.length > 0) && (
                     <StyledSpace direction="vertical" size="large">
                         <Row justify="space-between">
-                            <Title level={4} noMargin weight="light">
+                            <Title level={4} noMargin weight="light" dataTestId="deposition_title">
                                 My Depositions
                             </Title>
                         </Row>

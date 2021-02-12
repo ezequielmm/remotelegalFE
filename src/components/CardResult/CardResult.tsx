@@ -22,7 +22,14 @@ export default function CardResult({
         <Row justify="center" align="middle" style={{ height: "100%" }}>
             <Col sm={24} lg={18} xl={13} xxl={10}>
                 <Card>
-                    <Result title={title} subTitle={subTitle} status={status} extra={extra} icon={icon} />
+                    <Result
+                        data-testid={`${subTitle}`}
+                        title={title}
+                        subTitle={subTitle}
+                        status={status}
+                        extra={extra}
+                        icon={icon}
+                    />
                 </Card>
             </Col>
         </Row>

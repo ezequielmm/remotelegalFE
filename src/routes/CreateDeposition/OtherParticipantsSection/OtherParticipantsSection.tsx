@@ -82,7 +82,7 @@ export default function OtherParticipantsSection(): ReactElement {
             <Card fullWidth>
                 <Space direction="vertical" size="middle" fullWidth>
                     <Space.Item fullWidth>
-                        <Title level={5} weight="regular">
+                        <Title level={5} weight="regular" dataTestId="other_participants_title">
                             {CONSTANTS.OTHER_PARTICIPANTS_SECTION_TITLE}
                         </Title>
                         <Text state={ColorStatus.disabled} ellipsis={false}>

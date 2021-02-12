@@ -88,6 +88,7 @@ const MyCases = () => {
                         </Button>
                     </Row>
                     <Table
+                        data-testid="my_cases_table"
                         ref={tableRef}
                         rowKey="id"
                         loading={loading}

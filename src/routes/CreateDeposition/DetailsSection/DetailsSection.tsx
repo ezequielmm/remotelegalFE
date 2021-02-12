@@ -11,7 +11,7 @@ const DetailsSection = () => {
     return (
         <Card fullWidth>
             <Space direction="vertical" size="large" fullWidth>
-                <Title level={5} weight="regular" noMargin>
+                <Title level={5} weight="regular" noMargin dataTestId="details_title">
                     {CONSTANTS.DETAILS_TITLE}
                 </Title>
                 <RHFTextArea

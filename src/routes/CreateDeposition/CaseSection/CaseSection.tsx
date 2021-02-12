@@ -24,10 +24,10 @@ const CaseSection = ({ cases, loadingCases, fetchingError }: CaseSectionProps) =
         <Card fullWidth>
             <Space direction="vertical" size="large" fullWidth>
                 <Space.Item fullWidth>
-                    <Title level={5} weight="regular">
+                    <Title level={5} weight="regular" dataTestId="cases_title">
                         {CONSTANTS.CASE_TITLE}
                     </Title>
-                    <Text state={ColorStatus.disabled} ellipsis={false}>
+                    <Text dataTestId="cases_subtitle" state={ColorStatus.disabled} ellipsis={false}>
                         {CONSTANTS.CASE_SUBTITLE}
                     </Text>
                 </Space.Item>

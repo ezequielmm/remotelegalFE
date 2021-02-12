@@ -131,7 +131,7 @@ export default function ControlsBar({
     };
 
     return (
-        <StyledContainer px={6} align="center">
+        <StyledContainer px={6} align="center" data-testid="controls_container">
             <EndDepoModal
                 endDepoFunc={() => {
                     setModal(false);

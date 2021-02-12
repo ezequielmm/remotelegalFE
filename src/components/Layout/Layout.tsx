@@ -50,7 +50,9 @@ const AppLayout = ({ children }: DashboardProps) => {
     };
     const menu = (
         <Menu>
-            <Menu.Item onClick={signOut}>Log Out</Menu.Item>
+            <Menu.Item data-testid="log_out_button" onClick={signOut}>
+                Log Out
+            </Menu.Item>
         </Menu>
     );
 
