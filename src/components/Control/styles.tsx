@@ -16,16 +16,15 @@ export const StyledCircleControl = styled(circleButton)`
 
     &,
     &:focus {
-        background: ${({ theme, isActive }) =>
-            isActive ? theme.colors.inDepoNeutrals[1] : theme.colors.inDepoNeutrals[2]};
+        background: ${({ theme, isActive }) => (isActive ? theme.colors.inDepoNeutrals[1] : theme.colors.inDepoRed[5])};
     }
 
     &:hover {
-        background: ${({ theme }) => theme.colors.inDepoNeutrals[0]};
+        background: ${({ theme, isActive }) => (isActive ? theme.colors.inDepoNeutrals[0] : theme.colors.inDepoRed[4])};
     }
 
     &:active {
-        background: ${({ theme }) => theme.colors.inDepoNeutrals[2]};
+        background: ${({ theme, isActive }) => (isActive ? theme.colors.inDepoNeutrals[2] : theme.colors.inDepoRed[6])};
     }
 
     & > :first-child {
