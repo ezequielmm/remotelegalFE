@@ -83,11 +83,11 @@ export default function DepositionDetailsSummary() {
                             <DashedLine side="right" />
                         </Space>
                     </Space>
-                    {loading ? (
-                        <Spinner />
-                    ) : (
-                        transcriptions && (
-                            <RealTimeContainer>
+                    <RealTimeContainer>
+                        {loading ? (
+                            <Spinner height="100%" />
+                        ) : (
+                            transcriptions && (
                                 <ThemeProvider theme={inDepoTheme}>
                                     <RealTime
                                         disableAutoscroll
@@ -96,9 +96,9 @@ export default function DepositionDetailsSummary() {
                                         timeZone={TimeZones.EST}
                                     />
                                 </ThemeProvider>
-                            </RealTimeContainer>
-                        )
-                    )}
+                            )
+                        )}
+                    </RealTimeContainer>
                 </Card>
             </Space>
         </Space>
