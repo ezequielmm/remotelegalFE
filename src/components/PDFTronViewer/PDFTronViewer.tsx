@@ -122,6 +122,11 @@ const PDFTronViewer = ({
     };
 
     const onDocumentLoadedHandler = () => {
+        if (filename.toLowerCase().includes(".mp4")) {
+            const customContainer = PDFTron.iframeWindow.document.querySelector(".custom-container");
+            renderControlsToDOM(PDFTron, customContainer);
+        }
+
         const { FitMode } = PDFTron;
         PDFTron.setFitMode(FitMode.FitWidth);
         setIsDocumentLoaded(true);
@@ -189,11 +194,7 @@ const PDFTronViewer = ({
 
     const loadPDFTronVideo = async (instance, video) => {
         const { loadVideo } = await initializeVideoViewer(instance, "");
-        loadVideo(video);
-        instance.docViewer.on("documentLoaded", () => {
-            const customContainer = instance.iframeWindow.document.querySelector(".custom-container");
-            renderControlsToDOM(instance, customContainer);
-        });
+        loadVideo(`${video}&`);
     };
 
     useEffect(() => {
