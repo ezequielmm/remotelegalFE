@@ -265,12 +265,8 @@ const StyledTable = styled(Table)`
                                     }
                                 }
                             }
-                            ${
-                                theme.mode === ThemeMode.inDepo
-                                    ? `> td.ant-table-column-sort {
-                                background: ${hexToRGBA(neutrals[1], 0.05)};
-                            }`
-                                    : ""
+                            > td.ant-table-column-sort {
+                                background: transparent
                             }
 
                         &.ant-table-placeholder {
