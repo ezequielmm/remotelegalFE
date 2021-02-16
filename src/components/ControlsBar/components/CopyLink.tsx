@@ -79,6 +79,7 @@ const CopyLink = ({ closePopOver, link }: { closePopOver: () => void; link: stri
             <StyledHiddenInput ref={refHiddenInput} value={link} readOnly data-testid="hidden-input" />
             {copyDone && !copyError && (
                 <Alert
+                    fullWidth={false}
                     message={COPY_LINK_SUCCESS_MSG}
                     type="success"
                     float

@@ -5,7 +5,7 @@ import { IAlertProps } from "./Alert";
 import { ThemeMode } from "../../types/ThemeType";
 
 const StyledAlert = styled(ANTDAlert)<IAlertProps>`
-    ${({ theme, type, float }) => {
+    ${({ theme, type, float, fullWidth = true }) => {
         const inDepotTheme = () => {
             const inDepoStyles = () => {
                 const typeColor = type === "info" ? theme.colors.inDepoBlue[6] : theme.default[`${type}Color`];
@@ -14,7 +14,7 @@ const StyledAlert = styled(ANTDAlert)<IAlertProps>`
                     background: ${typeColor};
                     border-color: ${typeColor};
                     color: ${theme.default.whiteColor};
-                    width: '100%';
+                    width: ${fullWidth ? "100%" : "auto"};
                     .anticon, .ant-alert-message, .ant-alert-description, span {
                         color: ${theme.default.whiteColor};
                     }
@@ -47,7 +47,7 @@ const StyledAlert = styled(ANTDAlert)<IAlertProps>`
             `;
 
         const styles = `
-            width: 100%;
+            width: ${fullWidth ? "100%" : "auto"};
             padding: ${getREM(theme.default.spaces[6])} ${getREM(theme.default.spaces[5])};
             padding-left: ${getREM(theme.default.spaces[12] + theme.default.spaces[5])};
 

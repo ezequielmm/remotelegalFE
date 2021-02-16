@@ -6,6 +6,7 @@ export interface IAlertProps extends AlertProps {
     float?: boolean;
     duration?: number;
     isVisible?: boolean;
+    fullWidth?: boolean;
 }
 
 const Alert = ({ showIcon = true, duration, ...rest }: IAlertProps) => {
