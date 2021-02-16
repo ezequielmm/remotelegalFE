@@ -300,23 +300,35 @@ export class ApiService {
         withContentType = true,
         formData = undefined,
     }: RequestParams): Promise<T> => {
+        const encodeGetParams = (p: string) => {
+            const hasParams = p.indexOf("?");
+            function getUrlParams(search: string) {
+                const hashes = search.slice(hasParams + 1).split("&");
+                const params = {};
+                hashes.map((hash) => {
+                    const [key, val] = hash.split("=");
+                    params[key] = val;
+                    return hash;
+                });
+                return params;
+            }
+
+            if (hasParams !== -1) {
+                return `${path.slice(0, hasParams)}?${Object.entries(getUrlParams(path))
+                    .map((params) => params.map(encodeURIComponent).join("="))
+                    .join("&")}`;
+            }
+            return path;
+        };
         if (withToken) await this.getTokenSet();
         const jwt = withToken ? `Bearer ${this.tokenSet.accessToken}` : undefined;
-        const queryParams =
-            Object.entries(payload).length &&
-            method === HTTP_METHOD.GET &&
-            `?${Object.entries(payload)
-                .filter(([, value]) => value !== undefined)
-                .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
-                .join("&")}`;
         const body =
             [HTTP_METHOD.POST, HTTP_METHOD.PUT, HTTP_METHOD.PATCH].includes(method) && !formData
                 ? JSON.stringify(payload)
                 : formData;
-
         const contentType = withContentType ? { Accept: "application/json", "Content-Type": "application/json" } : {};
         return this.retryRequest(
-            `${this.apiUrl}${path}${queryParams || ""}`,
+            `${this.apiUrl}${encodeGetParams(path)}`,
             {
                 method,
                 body,

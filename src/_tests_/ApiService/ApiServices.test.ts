@@ -23,7 +23,7 @@ describe("ApiService", () => {
     });
 
     it("should make a GET request", async () => {
-        (apiService as any).request({ path: url, withToken: false, payload });
+        (apiService as any).request({ path: `${url}?a=1&b=2`, withToken: false, payload });
         await wait(0);
         expect(fetch).toBeCalledWith(`${ENV.API.URL}${url}?a=1&b=2`, {
             method: HTTP_METHOD.GET,
