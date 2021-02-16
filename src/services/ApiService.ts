@@ -305,7 +305,7 @@ export class ApiService {
             function getUrlParams(search: string) {
                 const hashes = search.slice(hasParams + 1).split("&");
                 const params = {};
-                hashes.map((hash) => {
+                hashes.forEach((hash) => {
                     const [key, val] = hash.split("=");
                     params[key] = val;
                     return hash;
