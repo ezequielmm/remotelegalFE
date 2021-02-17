@@ -6,7 +6,7 @@ import ReactGA from "react-ga";
 import TagManager from "react-gtm-module";
 import { Route, Router, Switch } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
-import "../assets/less/global.less";
+import GlobalStyle from "./GlobalStyle";
 import { theme } from "../constants/styles/theme";
 import Dashboard from "../routes/dashboard/dashboard";
 import Login from "../routes/Login";
@@ -49,6 +49,7 @@ function App() {
 
     return (
         <ThemeProvider theme={{ ...theme, mode: ThemeMode[theme.mode] }}>
+            <GlobalStyle />
             <Router history={history}>
                 <Switch>
                     <Route exact path="/" component={Login} />

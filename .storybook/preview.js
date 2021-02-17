@@ -3,7 +3,7 @@ import { ThemeProvider } from "styled-components";
 import { theme } from "../src/constants/styles/theme";
 import { getREM } from "../src/constants/styles/utils";
 import styled from "styled-components";
-import "../src/assets/less/global.less";
+import GlobalStyle from "../src/components/GlobalStyle"
 import "./storybook.css";
 import { ThemeMode } from "../src/types/ThemeType";
 
@@ -34,6 +34,7 @@ const withThemeProvider = (Story, context) => {
 
     return (
         <ThemeProvider theme={selectedTheme}>
+            <GlobalStyle />
             <BackgroundWrapper>
                 <Story {...context} />
             </BackgroundWrapper>
