@@ -23,17 +23,23 @@ const CodeSent = ({ email }: CodeSentProps) => {
         verifyEmail();
     };
     return (
-        <Space direction="vertical" justify="center" size={`${getREM(theme.default.spaces[6] * 4)}`}>
+        <Space
+            direction="vertical"
+            justify="center"
+            align="center"
+            size={`${getREM(theme.default.spaces[6] * 4)}`}
+            fullWidth
+        >
             {error && <Alert data-testid={error} message={NETWORK_ERROR} type="error" />}
-            <Space justify="center">
-                <Title dataTestId="code_sent_title" level={3} weight="light" noMargin>
+            <Space direction="vertical" justify="center">
+                <Title dataTestId="code_sent_title" level={3} weight="light" noMargin ellipsis={false}>
                     Check your mailbox
                 </Title>
-                <Title dataTestId="code_sent_mail" level={4} weight="light">
+                <Title dataTestId="code_sent_mail" level={4} weight="light" ellipsis={false}>
                     {email}
                 </Title>
             </Space>
-            <Space size="small" align="flex-start">
+            <Space size="small" justify="center">
                 <Text size="extralarge" state={ColorStatus.disabled}>
                     Didn’t get the email?
                 </Text>
