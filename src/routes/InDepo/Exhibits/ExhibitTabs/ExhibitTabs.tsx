@@ -61,9 +61,7 @@ export default function ExhibitTabs({
                                     <Icon
                                         icon={icon}
                                         size={7}
-                                        style={{
-                                            color: highlight && !active ? ColorStatus.primary : ColorStatus.white,
-                                        }}
+                                        color={highlight && !active ? ColorStatus.primary : ColorStatus.white}
                                     />
                                 )}
                                 <Text
