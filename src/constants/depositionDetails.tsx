@@ -1,7 +1,9 @@
 import DepositionDetailsSummary from "../routes/DepositionDetails/DepositionDetailsSummary";
+import DepositionDetailsEnteredExhibits from "../routes/DepositionDetails/DepositionDetailsEnteredExhibits/DepositionDetailsEnteredExhibits";
 
 export enum DEPOSITION_DETAILS_TABS {
     "summary",
+    "entered_exhibits",
 }
 
 export const DETAILS_SUMMARY_VIDEO_TITLE = "Recording";
@@ -29,6 +31,13 @@ export const DEPOSITION_DETAILS_TABS_DATA = [
         DepositionDetailsComponent: DepositionDetailsSummary,
         tabPaneTestId: "summary_tab_pane",
     },
+    {
+        tabId: DEPOSITION_DETAILS_TABS[1],
+        tabTestId: "entered_exhibits",
+        title: "ENTERED EXHIBITS",
+        DepositionDetailsComponent: DepositionDetailsEnteredExhibits,
+        tabPaneTestId: "entered_exhibits_tab_pane",
+    },
 ] as DepositionDetailsTabData[];
 
 export const DEPOSITON_DETAILS_TITLE = "Deposition details";
@@ -45,3 +54,6 @@ export const FORMAT_DATE = "MMM D, YYYY";
 export const FORMAT_TIME = "hh:mm A";
 
 export const REAL_TIME_PILL = "ROUGH DRAFT: NOT FOR OFFICIAL USE";
+
+export const DEPOSITION_DETAILS_ENTERED_EXHIBITS_TITLE = "ENTERED EXHIBITS";
+export const DEPOSITION_DETAILS_DOWNLOAD_TITLE = "DOWNLOAD";
