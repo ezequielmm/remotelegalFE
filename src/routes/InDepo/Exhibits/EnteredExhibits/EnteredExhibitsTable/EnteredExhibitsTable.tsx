@@ -53,9 +53,9 @@ const EnteredExhibitsTable = (props: IEnteredExhibitsTable) => {
                     title="OWNER"
                     dataIndex="addedBy"
                     key="addedBy"
-                    sorter={({ addedBy: a }, { addedBy: b }) => a.lastName.localeCompare(b.firstName)}
+                    sorter={({ addedBy: a }, { addedBy: b }) => a.firstName.localeCompare(b.firstName)}
                     width={getREM(GlobalTheme.default.spaces[6] * 8)}
-                    render={(addedBy) => `${addedBy?.lastName} ${addedBy?.firstName}`}
+                    render={(addedBy) => `${addedBy?.firstName} ${addedBy?.lastName}`}
                 />
                 <Column
                     title="SHARED AT"
