@@ -84,7 +84,7 @@ const ParticipantInfoForm = ({
         return null;
     };
     return (
-        <Form layout="vertical" onFinish={handleSubmit}>
+        <Form layout="vertical">
             <StyledEmailContainer>
                 <Text uppercase state={ColorStatus.disabled} size="small" block>
                     {CONSTANTS.EMAIL_TEXT}
@@ -120,9 +120,9 @@ const ParticipantInfoForm = ({
 
                 <Button
                     loading={loading}
+                    onClick={handleSubmit}
                     data-testid={CONSTANTS.STEP_2_BUTTON_ID}
                     disabled={loading}
-                    onClick={handleSubmit}
                     type="primary"
                     htmlType="submit"
                 >
