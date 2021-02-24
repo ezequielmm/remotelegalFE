@@ -8,10 +8,11 @@ import { ThemeMode } from "../../types/ThemeType";
 
 interface ITableProps extends TableProps<DefaultRecordType> {
     ref?: React.MutableRefObject<any>;
+    cursorPointer?: boolean;
 }
 
-const StyledTable = styled(Table)`
-    ${({ theme, scroll }) => {
+const StyledTable = styled(Table)<Pick<ITableProps, "cursorPointer">>`
+    ${({ theme, scroll, cursorPointer }) => {
         const { fontSizes, spaces, borderRadiusBase } = theme.default;
         const { neutrals, disabled, primary, inDepoBlue, inDepoNeutrals } = theme.colors;
 
@@ -200,6 +201,7 @@ const StyledTable = styled(Table)`
 
                     tbody.ant-table-tbody {
                         > tr {
+                            cursor: ${cursorPointer ? "pointer" : "auto"};
                             background-color: ${theme.mode === ThemeMode.inDepo ? `transparent` : neutrals[6]};
                             ${
                                 theme.mode === ThemeMode.inDepo

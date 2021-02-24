@@ -1,9 +1,10 @@
 import React from "react";
 import Space from "../../../components/Space";
 import Tabs from "../../../components/Tabs";
-import * as CONSTANTS from "../../../constants/depositionDetails";
+import * as CONSTANTS from "../../../constants/activeDepositionDetails";
+import { DepositionModel } from "../../../models";
 
-export default function DepositionDetailsTabs() {
+export default function ActiveDepositionDetailsTabs({ deposition }: { deposition: DepositionModel.IDeposition }) {
     return (
         <Space mt={9} direction="vertical">
             <Space fullWidth>
@@ -26,7 +27,7 @@ export default function DepositionDetailsTabs() {
                         ({ tabId, DepositionDetailsComponent, tabPaneTestId, title }) => (
                             <Tabs.TabPane tab={title} key={tabId}>
                                 <Space data-testid={tabPaneTestId} size={4} direction="vertical">
-                                    <DepositionDetailsComponent />
+                                    <DepositionDetailsComponent deposition={deposition} />
                                 </Space>
                             </Tabs.TabPane>
                         )

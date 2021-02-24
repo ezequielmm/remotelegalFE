@@ -120,6 +120,19 @@ const MyDepositions = () => {
                             </Title>
                         </Row>
                         <Table
+                            cursorPointer={userIsAdmin}
+                            onRow={({ id, status }) => {
+                                return {
+                                    onClick: () => {
+                                        if (userIsAdmin) {
+                                            return status !== Status.completed
+                                                ? history.push(`${CONSTANTS.DEPOSITION_DETAILS_ROUTE}${id}`)
+                                                : history.push(`${CONSTANTS.DEPOSITION_POST_DEPO_ROUTE}${id}`);
+                                        }
+                                        return null;
+                                    },
+                                };
+                            }}
                             ref={tableRef}
                             rowKey="id"
                             loading={loading}

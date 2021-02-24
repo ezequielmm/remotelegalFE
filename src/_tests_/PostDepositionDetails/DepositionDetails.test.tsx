@@ -31,6 +31,9 @@ const history = createMemoryHistory();
 
 describe("DepositionDetails", () => {
     test("Load Header with deposition details", async () => {
+        customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
+            return getDepositions()[0];
+        });
         const { getByText } = renderWithGlobalContext(
             <Route exact path={TESTS_CONSTANTS.ROUTE} component={DepositionDetails} />,
             customDeps,

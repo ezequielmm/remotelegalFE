@@ -23,6 +23,7 @@ import ROUTES_WITH_GUEST_TOKEN from "../constants/authenticator";
 import { ThemeMode } from "../types/ThemeType";
 import PreJoinDepo from "../routes/PreJoinDepo";
 import DepositionDetails from "../routes/DepositionDetails";
+import ActiveDepositionDetails from "../routes/ActiveDepoDetails";
 
 function App() {
     const tagManagerId = {
@@ -56,6 +57,7 @@ function App() {
                     <Route path="/verifyUser" component={Login} />
                     <Route exact path="/sign-up" component={SignUp} />
                     <Route exact path="/deposition/pre-join/:depositionID" component={PreJoinDepo} />
+
                     <Authenticator routesWithGuestToken={ROUTES_WITH_GUEST_TOKEN}>
                         <RouteWithLayout exact path="/dashboard" component={Dashboard} />
                         <RouteWithLayout exact path="/my-cases" component={MyCases} />
@@ -66,6 +68,11 @@ function App() {
                             exact
                             path="/deposition/post-depo-details/:depositionID"
                             component={DepositionDetails}
+                        />
+                        <RouteWithLayout
+                            exact
+                            path="/deposition/details/:depositionID"
+                            component={ActiveDepositionDetails}
                         />
                         <Route
                             exact

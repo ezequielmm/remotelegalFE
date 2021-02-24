@@ -49,7 +49,6 @@ export const DEPOSITION_DETAILS_HEADER_CASE = "Case";
 export const DEPOSITION_DETAILS_HEADER_WITNESS = "Witness";
 export const DEPOSITION_DETAILS_HEADER_DATE = "Date and time";
 export const DEPOSITION_DETAILS_HEADER_JOB = "JOB #";
-
 export const FORMAT_DATE = "MMM D, YYYY";
 export const FORMAT_TIME = "hh:mm A";
 

@@ -14,6 +14,15 @@ import renderWithGlobalContext from "../utils/renderWithGlobalContext";
 const customDeps = getMockDeps();
 const history = createMemoryHistory();
 
+const mockHistoryPush = jest.fn();
+
+jest.mock("react-router", () => ({
+    ...jest.requireActual("react-router"),
+    useHistory: () => ({
+        push: mockHistoryPush,
+    }),
+}));
+
 describe("MyDepositions", () => {
     beforeEach(() => {
         AUTH.VALID();
@@ -107,5 +116,43 @@ describe("MyDepositions", () => {
         fireEvent.click(refreshButton);
         await waitForDomChange();
         expect(customDeps.apiService.fetchDepositions).toHaveBeenCalledWith({});
+    });
+    it("doesn´t redirect if user is not an admin", async () => {
+        const depositions = CONSTANTS.getDepositions();
+        customDeps.apiService.fetchDepositions = jest.fn().mockImplementation(async () => {
+            return depositions;
+        });
+        customDeps.apiService.currentUser = jest.fn().mockResolvedValue(SIGN_UP_CONSTANTS.getUserNotAdmin());
+        const { getByText } = renderWithGlobalContext(<MyDepositions />, customDeps);
+        await waitForDomChange();
+        fireEvent.click(getByText(depositions[0].witness.name));
+        expect(mockHistoryPush).not.toHaveBeenCalled();
+    });
+    it("redirects to active deposition details if the user is an admin and status is not completed", async () => {
+        const depositions = CONSTANTS.getDepositions();
+        customDeps.apiService.fetchDepositions = jest.fn().mockImplementation(async () => {
+            return depositions;
+        });
+        customDeps.apiService.currentUser = jest.fn().mockResolvedValue(SIGN_UP_CONSTANTS.getUser1());
+        const { getByText } = renderWithGlobalContext(<MyDepositions />, customDeps);
+        await waitForDomChange();
+        fireEvent.click(getByText(depositions[0].participants[0].name));
+        expect(mockHistoryPush).toHaveBeenCalledWith(
+            `${COMPONENTS_CONSTANTS.DEPOSITION_DETAILS_ROUTE}${depositions[0].id}`
+        );
+    });
+
+    it("redirects to post deposition details if the user is an admin and status is not completed", async () => {
+        const deposition = CONSTANTS.getDepositionWithOverrideValues({ status: "Completed" });
+        customDeps.apiService.fetchDepositions = jest.fn().mockImplementation(async () => {
+            return [deposition];
+        });
+        customDeps.apiService.currentUser = jest.fn().mockResolvedValue(SIGN_UP_CONSTANTS.getUser1());
+        const { getByText } = renderWithGlobalContext(<MyDepositions />, customDeps);
+        await waitForDomChange();
+        fireEvent.click(getByText(deposition.participants[0].name));
+        expect(mockHistoryPush).toHaveBeenCalledWith(
+            `${COMPONENTS_CONSTANTS.DEPOSITION_POST_DEPO_ROUTE}${deposition.id}`
+        );
     });
 });

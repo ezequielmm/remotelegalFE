@@ -76,9 +76,10 @@ export const getActionColumns = (history) => ({
         return (
             <Space justify="flex-end">
                 <Button
-                    onClick={() =>
-                        history.push(isCompleted ? `/deposition/post-depo-details/${id}` : `/deposition/join/${id}`)
-                    }
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        history.push(isCompleted ? `/deposition/post-depo-details/${id}` : `/deposition/join/${id}`);
+                    }}
                     type="primary"
                     size="small"
                     width="75px"
@@ -118,3 +119,5 @@ export const getDepositionColumns = (history: History, isAdmin?: boolean) =>
 export const EMPTY_STATE_TITLE = "No depositions added yet";
 export const EMPTY_STATE_TEXT = "Currently, you don't have any deposition added yet. Do you want to add a deposition?";
 export const EMPTY_STATE_BUTTON = "SCHEDULE DEPOSITION";
+export const DEPOSITION_DETAILS_ROUTE = "/deposition/details/";
+export const DEPOSITION_POST_DEPO_ROUTE = "/deposition/post-depo-details/";

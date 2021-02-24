@@ -217,6 +217,14 @@ export class ApiService {
         });
     };
 
+    fetchCaption = async (depositionID: string) => {
+        return this.request<boolean>({
+            path: `/api/depositions/${depositionID}/caption`,
+            withToken: true,
+            method: HTTP_METHOD.GET,
+        });
+    };
+
     getDocumentUrl = async ({ documentId, ...payload }): Promise<boolean> => {
         return this.request<boolean>({
             path: `/api/documents/${documentId}/preSignedUrl`,

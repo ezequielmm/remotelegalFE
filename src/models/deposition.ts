@@ -21,6 +21,8 @@ export interface IDepositionPermissions {
 
 export interface IDeposition {
     id: string;
+    requesterNotes?: string;
+    addedBy?: IUser;
     caseName: string;
     caseNumber: string;
     creationDate: DateLike;
@@ -30,7 +32,9 @@ export interface IDeposition {
     timeZone: TimeZones;
     status?: Status;
     job?: string;
-    caption: string;
+    caption: {
+        displayName: string;
+    };
     witness?: IParticipant;
     isVideoRecordingNeeded: boolean;
     requester: IUser;
