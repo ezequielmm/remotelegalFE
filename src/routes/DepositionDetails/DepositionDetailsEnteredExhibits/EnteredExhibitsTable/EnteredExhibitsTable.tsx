@@ -68,9 +68,9 @@ const EnteredExhibitsTable = (props: IEnteredExhibitsTable) => {
                     title=""
                     dataIndex="view"
                     key="view"
-                    width={getREM(GlobalTheme.default.spaces[8] * 4)}
+                    width={getREM(GlobalTheme.default.spaces[12] * 3)}
                     render={() => (
-                        <Button type="text" size="small" data-testid="file_list_view_button" onClick={() => {}}>
+                        <Button type="text" data-testid="file_list_view_button" onClick={() => {}}>
                             View
                         </Button>
                     )}

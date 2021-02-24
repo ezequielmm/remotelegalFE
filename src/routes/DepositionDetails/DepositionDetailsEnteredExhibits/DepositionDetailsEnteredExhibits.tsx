@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import { Row } from "antd";
 import { DownloadOutlined } from "@ant-design/icons";
 import Title from "../../../components/Typography/Title";
 import Button from "../../../components/Button";
@@ -10,7 +9,8 @@ import {
 import { useEnteredExhibit } from "../../../hooks/exhibits/hooks";
 
 import EnteredExhibitsTable from "./EnteredExhibitsTable";
-import { StyledSpace } from "./styles";
+import { StyledEnteredContainer } from "./styles";
+import Space from "../../../components/Space";
 
 export default function DepositionDetailsEnteredExhibits() {
     const { handleFetchFiles, enteredExhibits, enteredExhibitsPending } = useEnteredExhibit();
@@ -20,17 +20,21 @@ export default function DepositionDetailsEnteredExhibits() {
     }, [handleFetchFiles]);
 
     return (
-        <StyledSpace direction="vertical" size="large">
-            <Row justify="space-between" align="bottom">
-                <Title level={5} weight="light" dataTestId="entered_exhibits_title">
-                    {DEPOSITION_DETAILS_ENTERED_EXHIBITS_TITLE}
-                </Title>
-                <Button type="default" size="middle" data-testid="download_button" onClick={() => {}} disabled>
-                    <DownloadOutlined />
-                    {DEPOSITION_DETAILS_DOWNLOAD_TITLE}
-                </Button>
-            </Row>
+        <StyledEnteredContainer>
+            <Space mb={4} justify="space-between" align="flex-end">
+                <Space.Item>
+                    <Title level={5} weight="light" dataTestId="entered_exhibits_title">
+                        {DEPOSITION_DETAILS_ENTERED_EXHIBITS_TITLE}
+                    </Title>
+                </Space.Item>
+                <Space.Item>
+                    <Button type="default" size="small" data-testid="download_button" onClick={() => {}} disabled>
+                        <DownloadOutlined />
+                        {DEPOSITION_DETAILS_DOWNLOAD_TITLE}
+                    </Button>
+                </Space.Item>
+            </Space>
             <EnteredExhibitsTable loading={enteredExhibitsPending} dataSource={enteredExhibits || []} />
-        </StyledSpace>
+        </StyledEnteredContainer>
     );
 }

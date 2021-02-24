@@ -2,11 +2,14 @@ import styled from "styled-components";
 import { Space as AntSpace } from "antd";
 import { getPX } from "../../../constants/styles/utils";
 
-export const StyledSpace = styled(AntSpace)`
+export const StyledEnteredContainer = styled.div`
     width: 100%;
     height: 100%;
     > *:last-child {
         height: 100%;
+    }
+    h5 {
+        margin-bottom: 0;
     }
 `;
 
