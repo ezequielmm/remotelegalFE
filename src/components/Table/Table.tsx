@@ -203,15 +203,13 @@ const StyledTable = styled(Table)<Pick<ITableProps, "cursorPointer">>`
                         > tr {
                             cursor: ${cursorPointer ? "pointer" : "auto"};
                             background-color: ${theme.mode === ThemeMode.inDepo ? `transparent` : neutrals[6]};
-                            ${
-                                theme.mode === ThemeMode.inDepo
-                                    ? `
-                                &.ant-table-row:hover > td {
-                                    background: ${hexToRGBA(neutrals[1], 0.05)};
-                                }
-                            `
-                                    : ""
-                            };
+                            &.ant-table-row:hover > td {
+                                background-color: ${
+                                    theme.mode === ThemeMode.inDepo
+                                        ? hexToRGBA(neutrals[1], 0.2)
+                                        : hexToRGBA(neutrals[3], 0.3)
+                                };
+                            }
 
                             &.ant-table-row-selected > td {
                                 background-color: transparent;
