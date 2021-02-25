@@ -35,19 +35,10 @@ import useStreamAudio from "../../hooks/useStreamAudio";
 import { BreakroomModel } from "../../models";
 import ColorStatus from "../../types/ColorStatus";
 import useJoinDepositionLink from "../../hooks/InDepo/useJoinDepositionLink";
-import {
-    CONTROLS_BAR_OFF_THE_RECORD_LABEL,
-    CONTROLS_BAR_ON_THE_RECORD_LABEL,
-    CONTROLS_BAR_END_LABEL,
-    CONTROLS_BAR_EXHIBITS_LABEL,
-    CONTROLS_BAR_REAL_TIME_LABEL,
-    CONTROLS_BAR_BREAKROOMS_LABEL,
-    CONTROLS_BAR_SUMMARY_LABEL,
-    CONTROLS_BAR_SUPPORT_LABEL,
-    CONTROLS_BAR_JOIN_BUTTON,
-} from "../../constants/inDepo";
+import * as CONSTANTS from "../../constants/inDepo";
 import { ThemeMode } from "../../types/ThemeType";
 import { getREM } from "../../constants/styles/utils";
+import Confirm from "../Confirm";
 
 interface IControlsBar {
     breakrooms?: BreakroomModel.Breakroom[];
@@ -84,6 +75,7 @@ export default function ControlsBar({
     const [supportOpen, togglerSupport] = useState(false);
     const [breakroomsOpen, togglerBreakrooms] = useState(false);
     const [modal, setModal] = useState(false);
+    const [breakroomModal, setBreakroomModal] = useState(false);
     const { setEndDepo } = useEndDepo();
     const toggleMicrophone = useStreamAudio();
     const joinDepositionLink = useJoinDepositionLink();
@@ -118,8 +110,16 @@ export default function ControlsBar({
                         <Text block state={ColorStatus.white}>
                             {item.name}
                         </Text>
-                        <Button onClick={() => handleJoinBreakroom(item.id)} type="link">
-                            {CONTROLS_BAR_JOIN_BUTTON}
+                        <Button
+                            data-testid="join_breakroom"
+                            onClick={() => {
+                                toggleBreakrooms();
+                                if (isRecording) return setBreakroomModal(true);
+                                handleJoinBreakroom(item.id);
+                            }}
+                            type="link"
+                        >
+                            {CONSTANTS.CONTROLS_BAR_JOIN_BUTTON}
                         </Button>
                     </Space>
                 </Menu.Item>
@@ -132,6 +132,13 @@ export default function ControlsBar({
 
     return (
         <StyledContainer px={6} align="center" data-testid="controls_container">
+            <Confirm
+                visible={breakroomModal}
+                title={CONSTANTS.BREAKROOM_ON_THE_RECORD_TITLE}
+                subTitle={CONSTANTS.BREAKROOM_ON_THE_RECORD_MESSAGE}
+                positiveLabel="Ok"
+                onPositiveClick={() => setBreakroomModal(false)}
+            />
             <EndDepoModal
                 endDepoFunc={() => {
                     setModal(false);
@@ -180,7 +187,11 @@ export default function ControlsBar({
                             isActive={isRecording}
                             onClick={startPauseRecording}
                             type="rounded"
-                            label={isRecording ? CONTROLS_BAR_OFF_THE_RECORD_LABEL : CONTROLS_BAR_ON_THE_RECORD_LABEL}
+                            label={
+                                isRecording
+                                    ? CONSTANTS.CONTROLS_BAR_OFF_THE_RECORD_LABEL
+                                    : CONSTANTS.CONTROLS_BAR_ON_THE_RECORD_LABEL
+                            }
                             icon={
                                 isRecording ? (
                                     <Icon icon={PauseIcon} size="1.625rem" />
@@ -199,7 +210,7 @@ export default function ControlsBar({
                             }}
                             type="rounded"
                             color="red"
-                            label={CONTROLS_BAR_END_LABEL}
+                            label={CONSTANTS.CONTROLS_BAR_END_LABEL}
                             icon={<Icon icon={EndCallIcon} size="1.625rem" />}
                         />
                     )}
@@ -213,7 +224,7 @@ export default function ControlsBar({
                             isActive={exhibitsOpen}
                             onClick={toggleExhibits}
                             type="simple"
-                            label={CONTROLS_BAR_EXHIBITS_LABEL}
+                            label={CONSTANTS.CONTROLS_BAR_EXHIBITS_LABEL}
                             icon={<Icon icon={ExhibitsIcon} size="1.625rem" />}
                         />
                         <Control
@@ -221,12 +232,13 @@ export default function ControlsBar({
                             isActive={realTimeOpen}
                             onClick={toggleRealTime}
                             type="simple"
-                            label={CONTROLS_BAR_REAL_TIME_LABEL}
+                            label={CONSTANTS.CONTROLS_BAR_REAL_TIME_LABEL}
                             icon={<Icon icon={RealTimeIcon} size="1.625rem" />}
                         />
                         {breakrooms && !!breakrooms.length && (
                             <Dropdown
                                 onVisibleChange={toggleBreakrooms}
+                                visible={breakroomsOpen}
                                 overlay={<Menu>{renderBreakrooms()}</Menu>}
                                 arrow
                                 styled
@@ -237,7 +249,7 @@ export default function ControlsBar({
                                     data-testid="breakrooms"
                                     isActive={breakroomsOpen}
                                     type="simple"
-                                    label={CONTROLS_BAR_BREAKROOMS_LABEL}
+                                    label={CONSTANTS.CONTROLS_BAR_BREAKROOMS_LABEL}
                                     icon={composeBreakroomsIcon}
                                 />
                             </Dropdown>
@@ -264,7 +276,7 @@ export default function ControlsBar({
                                 isActive={summaryOpen}
                                 onClick={toggleSummary}
                                 type="simple"
-                                label={CONTROLS_BAR_SUMMARY_LABEL}
+                                label={CONSTANTS.CONTROLS_BAR_SUMMARY_LABEL}
                                 icon={<Icon icon={SummaryIcon} size="1.625rem" />}
                             />
                         </Dropdown>
@@ -272,7 +284,7 @@ export default function ControlsBar({
                             isActive={supportOpen}
                             onClick={toggleSupport}
                             type="simple"
-                            label={CONTROLS_BAR_SUPPORT_LABEL}
+                            label={CONSTANTS.CONTROLS_BAR_SUPPORT_LABEL}
                             icon={<Icon icon={SupportIcon} size="1.625rem" />}
                         />
                     </Space>

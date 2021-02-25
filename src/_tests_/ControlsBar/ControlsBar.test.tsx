@@ -1,6 +1,8 @@
 import { fireEvent } from "@testing-library/react";
 import React from "react";
 import ControlsBar from "../../components/ControlsBar";
+import { getBreakrooms } from "../mocks/breakroom";
+import * as CONSTANTS from "../../constants/inDepo";
 import getParticipant from "../mocks/participant";
 import renderWithGlobalContext from "../utils/renderWithGlobalContext";
 
@@ -15,13 +17,16 @@ jest.mock("audio-recorder-polyfill", () => {
 });
 
 let props;
+const breakrooms = getBreakrooms();
 
 beforeEach(() => {
     props = {
+        breakrooms,
         isRecording: false,
         togglerRecording: jest.fn(),
         togglerExhibits: jest.fn(),
         togglerRealTime: jest.fn(),
+        handleJoinBreakroom: jest.fn(),
         localParticipant: getParticipant("test1"),
         exhibitsOpen: false,
         realTimeOpen: false,
@@ -90,4 +95,20 @@ test("End depo button shows if prop is true", () => {
 test("Record button shows if prop is true", () => {
     const { queryByTestId } = renderWithGlobalContext(<ControlsBar {...props} canRecord />);
     expect(queryByTestId("record")).toBeTruthy();
+});
+
+test("Show modal when click on JOIN Breakroom if is recording", () => {
+    const { queryByTestId, queryAllByTestId, queryByText } = renderWithGlobalContext(
+        <ControlsBar {...props} isRecording />
+    );
+    fireEvent.click(queryByTestId("breakrooms"));
+    fireEvent.click(queryAllByTestId("join_breakroom")[0]);
+    expect(queryByText(CONSTANTS.BREAKROOM_ON_THE_RECORD_MESSAGE)).toBeTruthy();
+});
+
+test("Trigger handleJoinBreakroom when click on JOIN Breakroom if is not recording", () => {
+    const { queryByTestId, queryAllByTestId } = renderWithGlobalContext(<ControlsBar {...props} />);
+    fireEvent.click(queryByTestId("breakrooms"));
+    fireEvent.click(queryAllByTestId("join_breakroom")[0]);
+    expect(props.handleJoinBreakroom).toBeCalledWith(breakrooms[0].id);
 });

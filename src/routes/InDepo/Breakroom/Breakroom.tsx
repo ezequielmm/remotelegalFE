@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 import BreakroomControlsBar from "../../../components/BreakroomControlsBar";
@@ -18,7 +18,7 @@ import VideoConference from "../VideoConference";
 const Breakroom = () => {
     const inDepoTheme = { ...theme, mode: ThemeMode.inDepo };
     const { state, dispatch } = useContext(GlobalStateContext);
-    const [joinBreakroom, loading, error] = useJoinBreakroom();
+    const [joinBreakroom, loading, error, , errorGeneratingToken] = useJoinBreakroom();
     const { breakrooms, currentBreakroom, timeZone, breakroomDataTrack } = state.room;
     const { breakroomID, depositionID } = useParams<{ depositionID: string; breakroomID: string }>();
     const currentBreakroomData = breakrooms?.find((breakroom) => breakroom.id === breakroomID);
@@ -28,22 +28,34 @@ const Breakroom = () => {
     const history = useHistory();
 
     useEffect(() => {
+        if (!exhibitsOpen) return;
         setAtendeesVisibility((prev) => !prev);
         setVideoLayoutSize([exhibitsOpen].filter(Boolean).length);
         setTimeout(() => setAtendeesVisibility((prev) => !prev), 300);
     }, [exhibitsOpen]);
 
     useEffect(() => {
-        const cleanUpFunction = () => {
-            disconnectFromDepo(currentBreakroom, dispatch, null, null, depositionID);
-        };
-        window.addEventListener("beforeunload", cleanUpFunction);
+        let cleanUpFunction;
+        if (currentBreakroom) {
+            cleanUpFunction = () => {
+                disconnectFromDepo(currentBreakroom, dispatch, null, null, depositionID);
+            };
+            window.addEventListener("beforeunload", cleanUpFunction);
+        }
 
         return () => {
-            disconnectFromDepo(currentBreakroom, dispatch, null, null, depositionID);
-            window.removeEventListener("beforeunload", cleanUpFunction);
+            if (currentBreakroom) {
+                disconnectFromDepo(currentBreakroom, dispatch, null, null, depositionID);
+                window.removeEventListener("beforeunload", cleanUpFunction);
+            }
         };
     }, [currentBreakroom, dispatch, depositionID]);
+
+    useEffect(() => {
+        if (errorGeneratingToken === 400) {
+            history.push(`/deposition/join/${depositionID}`);
+        }
+    }, [errorGeneratingToken, history, depositionID]);
 
     useEffect(() => {
         if (breakroomID) {
@@ -51,16 +63,16 @@ const Breakroom = () => {
         }
     }, [breakroomID, joinBreakroom]);
 
-    const handleRejoinDepo = () => {
+    const handleRejoinDepo = useCallback(() => {
         if (depositionID) {
             history.push(`/deposition/join/${depositionID}`);
         }
-    };
+    }, [depositionID, history]);
 
     if (loading) {
         return <Spinner />;
     }
-    if (error) {
+    if (error || errorGeneratingToken) {
         return (
             <ErrorScreen
                 texts={{

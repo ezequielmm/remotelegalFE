@@ -13,8 +13,11 @@ export enum Roles {
 }
 export interface IParticipant {
     id?: string;
-    email: string;
-    name: string;
+    emailAddress?: string;
+    email?: string;
+    firstName?: string;
+    lastName?: string;
+    name?: string;
     role?: Roles;
     phone?: string;
     creationDate?: DateLike;

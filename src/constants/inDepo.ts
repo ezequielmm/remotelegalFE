@@ -33,3 +33,7 @@ export const COPY_LINK_SUCCESS_MSG = "Invite link has been copied to the clipboa
 export const COPY_LINK_ERROR_MSG = "Error copying the invite to the clipboard";
 
 export const REAL_TIME_PILL = "ROUGH DRAFT: NOT FOR OFFICIAL USE";
+
+export const BREAKROOM_ON_THE_RECORD_TITLE = "Deposition is on the record";
+export const BREAKROOM_ON_THE_RECORD_MESSAGE =
+    "Deposition needs to be off the record in order to have access to breakrooms.";

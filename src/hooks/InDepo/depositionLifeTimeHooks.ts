@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { connect, createLocalTracks, LocalDataTrack, Room } from "twilio-video";
 import { useParams } from "react-router";
 import { GlobalStateContext } from "../../state/GlobalState";
@@ -40,7 +40,7 @@ const useGenerateBreakroomToken = () => {
 export const useJoinBreakroom = () => {
     const [breakroom, setBreakroom] = useState<Room>(undefined);
     const { dispatch } = useContext(GlobalStateContext);
-    const [generateBreakroomToken] = useGenerateBreakroomToken();
+    const [generateBreakroomToken, , errorGeneratingToken] = useGenerateBreakroomToken();
     const [getBreakrooms] = useGetBreakrooms();
     const isMounted = useRef(true);
 
@@ -57,9 +57,11 @@ export const useJoinBreakroom = () => {
         };
     }, []);
 
-    return useAsyncCallback(async (breakroomID: string) => {
+    const joinBreakroomAsync = useAsyncCallback(async (breakroomID: string) => {
         const dataTrack = new LocalDataTrack({ maxPacketLifeTime: null, maxRetransmits: null });
         const token: any = await generateBreakroomToken();
+        if (!token) return "";
+
         const room = await createLocalTracks({ audio: true, video: { aspectRatio: 1.777777777777778 } }).then(
             (localTracks) => {
                 return connect(token, { name: breakroomID, tracks: [...localTracks, dataTrack] });
@@ -81,6 +83,8 @@ export const useJoinBreakroom = () => {
             (callbackRoom) => dispatch(actions.removeRemoteParticipantBreakroom(callbackRoom))
         );
     }, []);
+
+    return useMemo(() => [...joinBreakroomAsync, errorGeneratingToken], [joinBreakroomAsync, errorGeneratingToken]);
 };
 
 export const useJoinDeposition = () => {
