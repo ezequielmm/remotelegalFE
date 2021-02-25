@@ -300,6 +300,15 @@ export class ApiService {
         });
     };
 
+    getRecordingInfo = async ({ depositionID, ...payload }): Promise<boolean> => {
+        return this.request<boolean>({
+            path: `/api/Depositions/${depositionID}/video`,
+            payload,
+            withToken: true,
+            method: HTTP_METHOD.GET,
+        });
+    };
+
     private request = async <T>({
         path,
         payload = {},

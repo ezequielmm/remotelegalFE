@@ -6,15 +6,18 @@ import Result, { IResultProps } from "../Result/Result";
 
 interface IVideoPlaceholderProps extends IResultProps {
     padding?: string;
+    width?: string;
 }
 
 interface IStyledVideoPlaceholderProps extends IResultProps {
     $padding?: string;
+    $width?: string;
 }
 
 const StyledVideoPlaceholder = styled(Result)<IStyledVideoPlaceholderProps>`
     background-color: ${theme.default.disabledBg};
     ${({ $padding }) => ($padding ? `padding: ${$padding};` : ``)}
+    ${({ $width }) => ($width ? `width: ${$width};` : ``)}
     .ant-result-icon {
         margin-bottom: ${getREM(theme.default.spaces[6])};
         & > .anticon {
@@ -23,8 +26,8 @@ const StyledVideoPlaceholder = styled(Result)<IStyledVideoPlaceholderProps>`
     }
 `;
 
-const VideoPlaceholder = ({ padding, ...rest }: IVideoPlaceholderProps) => {
-    return <StyledVideoPlaceholder $padding={padding} {...rest} />;
+const VideoPlaceholder = ({ padding, width, ...rest }: IVideoPlaceholderProps) => {
+    return <StyledVideoPlaceholder $padding={padding} $width={width} {...rest} />;
 };
 
 export default VideoPlaceholder;

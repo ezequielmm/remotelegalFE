@@ -12,6 +12,11 @@ import renderWithGlobalContext from "../utils/renderWithGlobalContext";
 import { rootReducer } from "../../state/GlobalState";
 import getMockDeps from "../utils/getMockDeps";
 
+import { useEnteredExhibit } from "../../hooks/useEnteredExhibits";
+jest.mock("../../hooks/useEnteredExhibits", () => ({
+    useEnteredExhibit: jest.fn(),
+}));
+
 import {
     useUploadFile,
     useFileList,
@@ -19,7 +24,6 @@ import {
     useShareExhibitFile,
     useExhibitTabs,
     useExhibitAnnotation,
-    useEnteredExhibit,
 } from "../../hooks/exhibits/hooks";
 import LiveExhibits from "../../routes/InDepo/Exhibits/LiveExhibits";
 import EnteredExhibits from "../../routes/InDepo/Exhibits/EnteredExhibits";
@@ -30,7 +34,6 @@ jest.mock("../../hooks/exhibits/hooks", () => ({
     useShareExhibitFile: jest.fn(),
     useExhibitTabs: jest.fn(),
     useExhibitAnnotation: jest.fn(),
-    useEnteredExhibit: jest.fn(),
 }));
 
 jest.mock("react-router-dom", () => ({

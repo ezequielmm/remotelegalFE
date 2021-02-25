@@ -17,10 +17,10 @@ import { ExhibitTabPaneSpacer, ScrollTableContainer } from "../styles";
 import { theme } from "../../../../constants/styles/theme";
 import ColorStatus from "../../../../types/ColorStatus";
 import { GlobalStateContext } from "../../../../state/GlobalState";
-import { useEnteredExhibit } from "../../../../hooks/exhibits/hooks";
 import EnteredExhibitsTable from "./EnteredExhibitsTable";
 import { ExhibitFile } from "../../../../types/ExhibitFile";
 import ExhibitViewer from "../ExhibitViewer";
+import { useEnteredExhibit } from "../../../../hooks/useEnteredExhibits";
 
 export default function EnteredExhibits() {
     const { state } = useContext(GlobalStateContext);

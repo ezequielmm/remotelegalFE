@@ -6,7 +6,7 @@ import {
     DEPOSITION_DETAILS_ENTERED_EXHIBITS_TITLE,
     DEPOSITION_DETAILS_DOWNLOAD_TITLE,
 } from "../../../constants/depositionDetails";
-import { useEnteredExhibit } from "../../../hooks/exhibits/hooks";
+import { useEnteredExhibit } from "../../../hooks/useEnteredExhibits";
 
 import EnteredExhibitsTable from "./EnteredExhibitsTable";
 import { StyledEnteredContainer } from "./styles";

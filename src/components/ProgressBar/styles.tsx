@@ -1,6 +1,7 @@
 import { Progress } from "antd";
 import styled from "styled-components";
 import { getPX, getREM } from "../../constants/styles/utils";
+import Button from "../Button";
 
 export const StyledProgressBar = styled(Progress)`
     margin-right: ${({ theme }) => getREM(theme.default.spaces[4])};
@@ -16,5 +17,9 @@ export const StyledProgressBarContainer = styled.div`
 `;
 
 export const StyledComponentContainer = styled.div`
+    padding-top: ${({ theme }) => getREM(theme.default.spaces[4])};
+`;
+
+export const StyledButton = styled(Button)`
     padding-top: ${({ theme }) => getREM(theme.default.spaces[4])};
 `;

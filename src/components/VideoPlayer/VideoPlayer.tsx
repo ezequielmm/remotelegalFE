@@ -15,6 +15,7 @@ import { theme } from "../../constants/styles/theme";
 import Text from "../Typography/Text";
 
 const StyledVideoPlayer = styled.div`
+    width: 100%;
     position: relative;
     video {
         display: block;
@@ -74,11 +75,16 @@ const StyledTimeContainer = styled.div`
     padding-bottom: ${getREM(theme.default.spaces[2])};
 `;
 
-const VideoPlayer = ({ ...rest }: ReactPlayerProps) => {
+interface IVideoPlayer extends ReactPlayerProps {
+    fullScreen?: boolean;
+}
+
+const VideoPlayer = ({ fullScreen, fallback, ...rest }: IVideoPlayer) => {
     const [playing, setPlaying] = useState<boolean>(false);
     const [duration, setDuration] = useState<number>(0);
-    const [fullscreen, setfullscreen] = useState<boolean>(false);
+    const [fullscreen, setFullscreen] = useState<boolean>(false);
     const [currentTime, setCurrentTime] = useState<number>(0);
+    const [isVideoReady, setIsVideoReady] = useState(false);
 
     const player = useRef(null);
     const styledPlayerRef = useRef(null);
@@ -108,47 +114,60 @@ const VideoPlayer = ({ ...rest }: ReactPlayerProps) => {
         if (screenfull.isEnabled) {
             screenfull.toggle(styledPlayerRef.current);
         }
-        setfullscreen(!fullscreen);
+        setFullscreen(!fullscreen);
     };
 
     return (
-        <StyledVideoPlayer ref={styledPlayerRef}>
+        <StyledVideoPlayer ref={styledPlayerRef} data-testid="video_player">
             <ReactPlayer
+                data-testid="react_player"
                 ref={player}
                 playing={playing}
                 onPlay={handlePlay}
                 onProgress={handleProgress}
                 onDuration={handleDuration}
+                width="100%"
+                height={isVideoReady ? "100%" : "0"}
                 progressInterval={250}
+                onReady={() => setIsVideoReady(true)}
                 {...rest}
             />
-            <StyledControls>
-                <Space justify="space-between" align="center">
-                    <Space.Item>
-                        <Icon size={5} onClick={handlePlayPause} icon={playing ? PauseIcon : PlayIcon} />
-                    </Space.Item>
-                    <Space.Item flex="1 1">
-                        <Slider
-                            value={currentTime}
-                            step={0.25}
-                            defaultValue={currentTime}
-                            max={duration}
-                            onChange={handleSliderChange}
-                            tooltipVisible={false}
-                        />
-                    </Space.Item>
-                    <Space.Item>
-                        <StyledTimeContainer>
-                            <Duration seconds={currentTime} />
-                            <Text>/</Text>
-                            <Duration seconds={duration} />
-                        </StyledTimeContainer>
-                    </Space.Item>
-                    <Space.Item>
-                        <Icon size={6} icon={fullscreen ? ContractIcon : ExpandIcon} onClick={handleFullScreen} />
-                    </Space.Item>
-                </Space>
-            </StyledControls>
+            {!isVideoReady && fallback}
+            {isVideoReady && (
+                <StyledControls data-testid="video_player_control">
+                    <Space justify="space-between" align="center" fullWidth>
+                        <Space.Item>
+                            <Icon size={5} onClick={handlePlayPause} icon={playing ? PauseIcon : PlayIcon} />
+                        </Space.Item>
+                        <Space.Item flex="1 1">
+                            <Slider
+                                value={currentTime}
+                                step={0.25}
+                                defaultValue={currentTime}
+                                max={duration}
+                                onChange={handleSliderChange}
+                                tooltipVisible={false}
+                            />
+                        </Space.Item>
+                        <Space.Item>
+                            <StyledTimeContainer>
+                                <Duration seconds={currentTime} />
+                                <Text>/</Text>
+                                <Duration seconds={duration} />
+                            </StyledTimeContainer>
+                        </Space.Item>
+                        {fullScreen && (
+                            <Space.Item>
+                                <Icon
+                                    size={6}
+                                    icon={fullscreen ? ContractIcon : ExpandIcon}
+                                    onClick={handleFullScreen}
+                                />
+                            </Space.Item>
+                        )}
+                    </Space>
+                </StyledControls>
+            )}
         </StyledVideoPlayer>
     );
 };

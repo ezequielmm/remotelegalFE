@@ -1,9 +1,15 @@
-import { fireEvent, waitForDomChange, waitForElement } from "@testing-library/react";
+import { waitForDomChange, waitForElement } from "@testing-library/react";
 import React from "react";
 import { act } from "react-dom/test-utils";
 import { wait } from "../../helpers/wait";
+import { Roles } from "../../models/participant";
 import DepositionDetailsSummary from "../../routes/DepositionDetails/DepositionDetailsSummary/DepositionDetailsSummary";
-import * as TRANSCRIPTIONS_MOCKS from "../mocks/transcription";
+import { rootReducer } from "../../state/GlobalState";
+import {
+    getCurrentDepositionNoParticipants,
+    getCurrentDepositionOneCourtReporter,
+    getCurrentDepositionTwoParticipants,
+} from "../mocks/currentDeposition";
 import getMockDeps from "../utils/getMockDeps";
 import renderWithGlobalContext from "../utils/renderWithGlobalContext";
 
@@ -48,5 +54,106 @@ describe("DepositionDetailsSummary -> RealTime", () => {
         await wait(100);
         act(() => expect(queryByTestId("transcription_text")).toBeFalsy());
         act(() => expect(queryByTestId("transcription_title")).toBeFalsy());
+    });
+});
+
+describe("DepositionDetailsSummary -> Cards", () => {
+    it("shows a card with the court reporter name", async () => {
+        customDeps.apiService.getDepositionTranscriptions = jest.fn().mockResolvedValue([]);
+        customDeps.apiService.getDepositionEvents = jest.fn().mockResolvedValue([]);
+        customDeps.apiService.getEnteredExhibits = jest.fn().mockResolvedValue([]);
+        const courtReportName = "Joe Doe";
+        const { queryByText, queryByTestId } = renderWithGlobalContext(<DepositionDetailsSummary />, customDeps, {
+            ...rootReducer,
+            initialState: {
+                postDepo: {
+                    ...rootReducer.initialState.postDepo,
+                    currentDeposition: getCurrentDepositionOneCourtReporter(courtReportName),
+                },
+            },
+        });
+        await waitForDomChange();
+        await wait(100);
+        act(() => expect(queryByTestId("court_report_name")).toHaveTextContent(courtReportName));
+    });
+
+    it("shows a card with the invited parties count more than zero", async () => {
+        customDeps.apiService.getDepositionTranscriptions = jest.fn().mockResolvedValue([]);
+        customDeps.apiService.getDepositionEvents = jest.fn().mockResolvedValue([]);
+        customDeps.apiService.getEnteredExhibits = jest.fn().mockResolvedValue([]);
+        const courtReportName = "Joe Doe";
+        const { queryByTestId } = renderWithGlobalContext(<DepositionDetailsSummary />, customDeps, {
+            ...rootReducer,
+            initialState: {
+                postDepo: {
+                    ...rootReducer.initialState.postDepo,
+                    currentDeposition: getCurrentDepositionTwoParticipants(),
+                },
+            },
+        });
+        await waitForDomChange();
+        await wait(100);
+        act(() => expect(queryByTestId("invited_parties_count")).toHaveTextContent("2"));
+    });
+
+    it("shows a card with the invited parties count equal to zero", async () => {
+        customDeps.apiService.getDepositionTranscriptions = jest.fn().mockResolvedValue([]);
+        customDeps.apiService.getDepositionEvents = jest.fn().mockResolvedValue([]);
+        customDeps.apiService.getEnteredExhibits = jest.fn().mockResolvedValue([]);
+        const { queryByTestId } = renderWithGlobalContext(<DepositionDetailsSummary />, customDeps, {
+            ...rootReducer,
+            initialState: {
+                postDepo: {
+                    ...rootReducer.initialState.postDepo,
+                    currentDeposition: getCurrentDepositionNoParticipants(),
+                },
+            },
+        });
+        await waitForDomChange();
+        await wait(100);
+        act(() => expect(queryByTestId("invited_parties_count")).toHaveTextContent("0"));
+    });
+
+    it("shows a card with the entered exhibits count more than zero", async () => {
+        customDeps.apiService.getDepositionTranscriptions = jest.fn().mockResolvedValue([]);
+        customDeps.apiService.getDepositionEvents = jest.fn().mockResolvedValue([]);
+        customDeps.apiService.getEnteredExhibits = jest.fn().mockResolvedValue([
+            {
+                name: "File1.pdf",
+                displayName: "File1.pdf",
+                size: 1000,
+                preSignedUrl: "",
+                close: false,
+            },
+        ]);
+        const { queryByTestId } = renderWithGlobalContext(<DepositionDetailsSummary />, customDeps);
+        await waitForDomChange();
+        await wait(100);
+        act(() => expect(queryByTestId("entered_exhibits_count")).toBeInTheDocument());
+        act(() => expect(queryByTestId("entered_exhibits_count")).toHaveTextContent("1"));
+    });
+
+    it("shows a card with the entered exhibits count equal to zero", async () => {
+        customDeps.apiService.getDepositionTranscriptions = jest.fn().mockResolvedValue([]);
+        customDeps.apiService.getDepositionEvents = jest.fn().mockResolvedValue([]);
+        customDeps.apiService.getEnteredExhibits = jest.fn().mockResolvedValue([]);
+        const { queryByTestId } = renderWithGlobalContext(<DepositionDetailsSummary />, customDeps);
+        await waitForDomChange();
+        await wait(100);
+        act(() => expect(queryByTestId("entered_exhibits_count")).toBeInTheDocument());
+        act(() => expect(queryByTestId("entered_exhibits_count")).toHaveTextContent("0"));
+    });
+
+    it("shows a card with the entered exhibits count equal to zero when received an error", async () => {
+        customDeps.apiService.getDepositionTranscriptions = jest.fn().mockResolvedValue([]);
+        customDeps.apiService.getDepositionEvents = jest.fn().mockResolvedValue([]);
+        customDeps.apiService.getEnteredExhibits = jest.fn().mockRejectedValue(async () => {
+            throw Error("Something wrong");
+        });
+        const { queryByTestId } = renderWithGlobalContext(<DepositionDetailsSummary />, customDeps);
+        await waitForDomChange();
+        await wait(100);
+        act(() => expect(queryByTestId("entered_exhibits_count")).toBeInTheDocument());
+        act(() => expect(queryByTestId("entered_exhibits_count")).toHaveTextContent("0"));
     });
 });

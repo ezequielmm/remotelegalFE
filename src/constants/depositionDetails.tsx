@@ -10,6 +10,9 @@ export const DETAILS_SUMMARY_VIDEO_TITLE = "Recording";
 export const DETAILS_SUMMARY_TRANSCRIPT_TITLE = "Transcript";
 export const DETAILS_SUMMARY_TRANSCRIPT_SUBTITLE =
     "Once the Certified transcript is finished, you can download it from the transcripts tab.";
+export const DETAILS_SUMMARY_TOTAL_TIME_TEXT = "total time";
+export const DETAILS_SUMMARY_ON_THE_RECORD_TEXT = "on the record";
+export const DETAILS_SUMMARY_OFF_THE_RECORD_TEXT = "off the record";
 
 export const DEFAULT_ACTIVE_TAB = "summary";
 
@@ -54,5 +57,7 @@ export const FORMAT_TIME = "hh:mm A";
 
 export const REAL_TIME_PILL = "ROUGH DRAFT: NOT FOR OFFICIAL USE";
 
-export const DEPOSITION_DETAILS_ENTERED_EXHIBITS_TITLE = "Entered Exhibits";
 export const DEPOSITION_DETAILS_DOWNLOAD_TITLE = "DOWNLOAD";
+export const DEPOSITION_DETAILS_COURT_REPORTER_TITLE = "COURT REPORTER";
+export const DEPOSITION_DETAILS_INVITED_PARTIES_TITLE = "INVITED PARTIES";
+export const DEPOSITION_DETAILS_ENTERED_EXHIBITS_TITLE = "ENTERED EXHIBITS";

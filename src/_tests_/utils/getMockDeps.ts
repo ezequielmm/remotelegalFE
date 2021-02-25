@@ -26,5 +26,6 @@ export default (): Deps => ({
         verifyUser: jest.fn().mockResolvedValue(true),
         verifyEmail: jest.fn().mockResolvedValue(true),
         addDepoParticipant: jest.fn().mockResolvedValue(true),
+        getRecordingInfo: jest.fn().mockResolvedValue(true),
     } as any,
 });

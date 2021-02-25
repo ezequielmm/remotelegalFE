@@ -19,7 +19,3 @@ export const DashedLine = styled.div<{ side: string }>`
     flex: 0 1 auto;
     width: 25%;
 `;
-
-export const RealTimeContainer = styled.div`
-    height: 390px;
-`;

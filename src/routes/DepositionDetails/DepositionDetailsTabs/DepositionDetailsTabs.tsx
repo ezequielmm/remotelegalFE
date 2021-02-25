@@ -25,9 +25,9 @@ export default function DepositionDetailsTabs() {
                     {CONSTANTS.DEPOSITION_DETAILS_TABS_DATA.map(
                         ({ tabId, DepositionDetailsComponent, tabPaneTestId, title }) => (
                             <Tabs.TabPane tab={title} key={tabId}>
-                                <Space data-testid={tabPaneTestId} size={4} direction="vertical">
+                                <div data-testid={tabPaneTestId}>
                                     <DepositionDetailsComponent />
-                                </Space>
+                                </div>
                             </Tabs.TabPane>
                         )
                     )}
