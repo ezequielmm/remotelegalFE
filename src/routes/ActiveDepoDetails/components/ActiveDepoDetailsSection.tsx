@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { Row } from "antd";
 import moment from "moment";
 import Space from "../../../components/Space";
@@ -22,11 +22,21 @@ import Text from "../../../components/Typography/Text";
 import ColorStatus from "../../../types/ColorStatus";
 import Divider from "../../../components/Divider";
 import Button from "../../../components/Button";
-import useFetchCaption from "../../../hooks/activeDepositionDetails/hooks";
+import { useFetchCaption } from "../../../hooks/activeDepositionDetails/hooks";
 import Message from "../../../components/Message";
 import downloadFile from "../../../helpers/downloadFile";
+import { useFetchDeposition } from "../../../hooks/depositions/hooks";
+import CardFetchError from "../../../components/CardFetchError";
+import Spinner from "../../../components/Spinner";
 
-const DepositionDetailsSection = ({ deposition }: { deposition: DepositionModel.IDeposition }) => {
+const DepositionDetailsSection = ({
+    deposition,
+    activeKey,
+}: {
+    deposition: DepositionModel.IDeposition;
+    activeKey: string;
+}) => {
+    const { fetchDeposition, loading, deposition: updatedDeposition, error } = useFetchDeposition();
     const {
         participants,
         status,
@@ -38,15 +48,27 @@ const DepositionDetailsSection = ({ deposition }: { deposition: DepositionModel.
         addedBy,
         requester,
         requesterNotes,
-    } = deposition || {};
+    } = updatedDeposition || deposition || {};
     const { lastName, firstName, phoneNumber, emailAddress, companyName } = requester || {};
     const courtReporter = participants?.find((participant) => participant.role === "CourtReporter");
     const [fetchCaption, captionLoading, captionError, captionUrl] = useFetchCaption();
+    const firstRender = useRef(true);
+
+    useEffect(() => {
+        if (activeKey === CONSTANTS.DEFAULT_ACTIVE_TAB) {
+            if (firstRender.current) {
+                firstRender.current = false;
+                return;
+            }
+
+            fetchDeposition();
+        }
+    }, [fetchDeposition, activeKey]);
 
     useEffect(() => {
         if (captionError) {
             Message({
-                content: CONSTANTS.NETWORK_ERROR,
+                content: CONSTANTS.CAPTION_NETWORK_ERROR,
                 type: "error",
                 duration: 3,
             });
@@ -70,8 +92,12 @@ const DepositionDetailsSection = ({ deposition }: { deposition: DepositionModel.
         return caption?.displayName.length > 25 ? `${caption.displayName.slice(0, 25)}...` : caption.displayName;
     };
 
-    if (!deposition) {
-        return null;
+    if (loading) {
+        return <Spinner height="50vh" width="50vw" />;
+    }
+
+    if (error) {
+        return <CardFetchError width="100%" onClick={fetchDeposition} />;
     }
 
     return (

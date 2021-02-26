@@ -2,7 +2,7 @@ import React from "react";
 import { GlobalStateContext } from "../../state/GlobalState";
 import useAsyncCallback from "../useAsyncCallback";
 
-const useFetchCaption = () => {
+export const useFetchCaption = () => {
     const { deps } = React.useContext(GlobalStateContext);
 
     return useAsyncCallback(async (depositionID: string) => {
@@ -10,4 +10,27 @@ const useFetchCaption = () => {
         return caption;
     }, []);
 };
-export default useFetchCaption;
+
+export const useFetchParticipants = () => {
+    const { deps } = React.useContext(GlobalStateContext);
+    return useAsyncCallback<any, any>(async (depoID, payload) => {
+        const response = await deps.apiService.fetchParticipants(depoID, payload);
+        return response;
+    }, []);
+};
+
+export const useAddParticipantToExistingDepo = () => {
+    const { deps } = React.useContext(GlobalStateContext);
+    return useAsyncCallback<any, any>(async (depoID, payload) => {
+        const response = await deps.apiService.addParticipantToExistingDepo(depoID, payload);
+        return response;
+    }, []);
+};
+
+export const useRemoveParticipantFromExistingDepo = () => {
+    const { deps } = React.useContext(GlobalStateContext);
+    return useAsyncCallback<any, any>(async (depoID, payload) => {
+        const response = await deps.apiService.removeParticipantFromExistingDepo(depoID, payload);
+        return response;
+    }, []);
+};

@@ -11,15 +11,17 @@ export default function CardResult({
     status,
     extra,
     icon,
+    width,
 }: {
     title: string;
     subTitle: string;
     status?: ResultStatusType | CustomStatus;
+    width?: string;
     icon?: React.ReactNode;
     extra: React.ReactNode;
 }) {
     return (
-        <Row justify="center" align="middle" style={{ height: "100%" }}>
+        <Row justify="center" align="middle" style={{ height: "100%", width: width || "auto" }}>
             <Col sm={24} lg={18} xl={13} xxl={10}>
                 <Card>
                     <Result

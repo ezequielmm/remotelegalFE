@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import CardFetchError from "../../components/CardFetchError";
 import Space from "../../components/Space";
 import Spinner from "../../components/Spinner";
@@ -7,9 +7,11 @@ import { DEPOSITION_DETAILS_TITLE } from "../../constants/activeDepositionDetail
 import { useFetchDeposition } from "../../hooks/depositions/hooks";
 import ActiveDepositionDetailsHeader from "./components/ActiveDepoDetailsHeader";
 import ActiveDepositionDetailsTabs from "./components/ActiveDepoDetailsTabs";
+import * as CONSTANTS from "../../constants/activeDepositionDetails";
 
 export default function ActiveDepositionDetails() {
     const { fetchDeposition, loading, deposition, error } = useFetchDeposition();
+    const [activeKey, setActiveKey] = useState(CONSTANTS.DEFAULT_ACTIVE_TAB);
 
     useEffect(() => {
         fetchDeposition();
@@ -31,7 +33,7 @@ export default function ActiveDepositionDetails() {
                 </Title>
                 <ActiveDepositionDetailsHeader deposition={deposition} />
             </Space>
-            <ActiveDepositionDetailsTabs deposition={deposition} />
+            <ActiveDepositionDetailsTabs activeKey={activeKey} setActiveKey={setActiveKey} deposition={deposition} />
         </>
     );
 }

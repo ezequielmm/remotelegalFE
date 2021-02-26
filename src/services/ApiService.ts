@@ -10,7 +10,7 @@
 import { Auth } from "aws-amplify";
 import ENV from "../constants/env";
 import { wait } from "../helpers/wait";
-import { EventModel, CaseModel, DepositionModel, UserModel } from "../models";
+import { EventModel, CaseModel, DepositionModel, UserModel, ParticipantModel } from "../models";
 import { HTTP_METHOD, ITokenSet } from "../models/general";
 import TEMP_TOKEN from "../constants/ApiService";
 
@@ -218,10 +218,34 @@ export class ApiService {
     };
 
     fetchCaption = async (depositionID: string) => {
-        return this.request<boolean>({
+        return this.request({
             path: `/api/depositions/${depositionID}/caption`,
             withToken: true,
             method: HTTP_METHOD.GET,
+        });
+    };
+
+    fetchParticipants = async (depoID: string, payload): Promise<ParticipantModel.IParticipant[]> => {
+        return this.request({
+            path: `/api/Depositions/${depoID}/participants`,
+            payload,
+        }).then((participants: ParticipantModel.IParticipant[]) => participants || []);
+    };
+
+    addParticipantToExistingDepo = async (depositionID: string, payload) => {
+        return this.request({
+            path: `/api/depositions/${depositionID}/participants`,
+            payload,
+            withToken: true,
+            method: HTTP_METHOD.POST,
+        });
+    };
+
+    removeParticipantFromExistingDepo = async (depositionID: string, participantID: string) => {
+        return this.request({
+            path: `/api/depositions/${depositionID}/participants/${participantID}`,
+            withToken: true,
+            method: HTTP_METHOD.DELETE,
         });
     };
 

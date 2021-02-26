@@ -8,6 +8,7 @@ export const DEPO_ID = "depoId";
 export const TOKEN = "test1234";
 export const MOCKED_PASSWORD = "1234";
 export const PARTICIPANT_MOCK = {
+    id: "test12",
     name: "test1234",
     role: "Attorney",
 };

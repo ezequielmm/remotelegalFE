@@ -4,9 +4,10 @@ import Button from "../Button";
 import CardResult from "../CardResult";
 import { CustomStatus } from "../Result/Result";
 
-export default function CardError({ onClick }: { onClick: (ev: React.MouseEvent) => void }) {
+export default function CardError({ onClick, width }: { onClick: (ev: React.MouseEvent) => void; width?: string }) {
     return (
         <CardResult
+            width={width}
             title={ERRORS_CONSTANTS.FETCH_ERROR_MODAL_TITLE}
             subTitle={ERRORS_CONSTANTS.FETCH_ERROR_MODAL_BODY}
             status={CustomStatus.errorFetch}

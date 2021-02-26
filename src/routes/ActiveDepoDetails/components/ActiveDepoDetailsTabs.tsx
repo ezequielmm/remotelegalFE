@@ -1,14 +1,23 @@
-import React from "react";
+import React, { SetStateAction } from "react";
 import Space from "../../../components/Space";
 import Tabs from "../../../components/Tabs";
 import * as CONSTANTS from "../../../constants/activeDepositionDetails";
 import { DepositionModel } from "../../../models";
 
-export default function ActiveDepositionDetailsTabs({ deposition }: { deposition: DepositionModel.IDeposition }) {
+const ActiveDepositionDetailsTabs = ({
+    deposition,
+    setActiveKey,
+    activeKey,
+}: {
+    activeKey: string;
+    deposition: DepositionModel.IDeposition;
+    setActiveKey: React.Dispatch<SetStateAction<string>>;
+}) => {
     return (
         <Space mt={9} direction="vertical">
             <Space fullWidth>
                 <Tabs
+                    onChange={setActiveKey}
                     style={{ width: "100%" }}
                     renderTabBar={(props: { activeKey: string }, DefaultTabBar) => (
                         <DefaultTabBar {...props}>
@@ -27,7 +36,7 @@ export default function ActiveDepositionDetailsTabs({ deposition }: { deposition
                         ({ tabId, DepositionDetailsComponent, tabPaneTestId, title }) => (
                             <Tabs.TabPane tab={title} key={tabId}>
                                 <Space data-testid={tabPaneTestId} size={4} direction="vertical">
-                                    <DepositionDetailsComponent deposition={deposition} />
+                                    <DepositionDetailsComponent activeKey={activeKey} deposition={deposition} />
                                 </Space>
                             </Tabs.TabPane>
                         )
@@ -36,4 +45,5 @@ export default function ActiveDepositionDetailsTabs({ deposition }: { deposition
             </Space>
         </Space>
     );
-}
+};
+export default React.memo(ActiveDepositionDetailsTabs);
