@@ -33,6 +33,7 @@ const disconnectFromDepo = async (
         room.disconnect();
         dispatch(actions.disconnect(initialState));
     }
+    dispatch(actions.stopShareExhibit());
     return history?.push("/deposition/end", { depositionID });
 };
 export default disconnectFromDepo;
