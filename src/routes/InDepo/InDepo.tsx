@@ -32,6 +32,7 @@ const InDepo = () => {
         transcriptions,
         timeZone,
         dataTrack,
+        currentExhibit,
     } = state.room;
     const { depositionID } = useParams<DepositionID>();
     const [realTimeOpen, togglerRealTime] = useState<boolean>(false);
@@ -76,6 +77,12 @@ const InDepo = () => {
             dispatch(actions.addTranscription(message.value));
         }
     }, [message, currentRoom, dispatch, history, depositionID]);
+
+    useEffect(() => {
+        if (currentExhibit) {
+            togglerExhibits(true);
+        }
+    }, [currentExhibit]);
 
     if (loading) {
         return <Spinner />;

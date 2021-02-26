@@ -10,6 +10,10 @@ import * as TESTS_CONSTANTS from "../constants/InDepo";
 import getMockDeps from "../utils/getMockDeps";
 import renderWithGlobalContext from "../utils/renderWithGlobalContext";
 import { wait } from "../../helpers/wait";
+import { rootReducer } from "../../state/GlobalState";
+import dataTrackMock from "../mocks/dataTrack";
+import getParticipant from "../mocks/participant";
+import { currentExhibit } from "../mocks/currentExhibit";
 
 jest.mock("audio-recorder-polyfill", () => {
     return jest.fn().mockImplementation(() => ({
@@ -347,5 +351,74 @@ describe("InDepo -> RealTime", () => {
         await waitForDomChange();
         act(() => expect(queryByTestId("transcription_text")).toBeFalsy());
         act(() => expect(queryByTestId("transcription_title")).toBeFalsy());
+    });
+
+    it("shows no transcriptions when when joinDeposition returns a transcriptions empty", async () => {
+        customDeps.apiService.getDepositionTranscriptions = jest.fn().mockResolvedValue([]);
+        customDeps.apiService.getDepositionEvents = jest.fn().mockResolvedValue([]);
+        const { getByTestId, queryByTestId } = renderWithGlobalContext(
+            <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,
+            customDeps,
+            undefined,
+            history
+        );
+        history.push(TESTS_CONSTANTS.TEST_ROUTE);
+        await waitForDomChange();
+
+        fireEvent.click(await waitForElement(() => getByTestId("realtime")));
+        await waitForDomChange();
+        act(() => expect(queryByTestId("transcription_text")).toBeFalsy());
+        act(() => expect(queryByTestId("transcription_title")).toBeFalsy());
+    });
+});
+
+describe("inDepo -> Exhibits view with a shared exhibit", () => {
+    it.only("should not display the exhibit section when has not a exhibit shared", async () => {
+        customDeps.apiService.getDepositionTranscriptions = jest.fn().mockResolvedValue([]);
+        customDeps.apiService.getDepositionEvents = jest.fn().mockResolvedValue([]);
+        const { queryByTestId } = renderWithGlobalContext(
+            <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,
+            customDeps,
+            undefined,
+            history
+        );
+
+        history.push(TESTS_CONSTANTS.TEST_ROUTE);
+        await waitForDomChange();
+
+        expect(queryByTestId("live_exhibits_tab_active")).not.toBeInTheDocument();
+        expect(queryByTestId("view-document-header")).not.toBeInTheDocument();
+    });
+
+    it.only("should display the exhibit section with the live exhibit selected and highlighted when has a exhibit shared", async () => {
+        customDeps.apiService.getDepositionTranscriptions = jest.fn().mockResolvedValue([]);
+        customDeps.apiService.getDepositionEvents = jest.fn().mockResolvedValue([]);
+        const { queryByTestId, queryByText } = renderWithGlobalContext(
+            <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,
+            customDeps,
+            {
+                ...rootReducer,
+                initialState: {
+                    room: {
+                        ...rootReducer.initialState.room,
+                        dataTrack: dataTrackMock,
+                        currentRoom: {
+                            localParticipant: getParticipant("test"),
+                            participants: [],
+                        },
+                        currentExhibit,
+                    },
+                },
+            },
+            history
+        );
+
+        history.push(TESTS_CONSTANTS.TEST_ROUTE);
+        await waitForDomChange();
+
+        expect(queryByTestId("live_exhibits_tab_active")).toBeInTheDocument();
+        expect(queryByTestId("view-document-header")).toBeInTheDocument();
+        expect(queryByTestId("live_exhibits_tab")).toHaveAttribute("highlight");
+        expect(queryByText("LIVE EXHIBITS")).toBeInTheDocument();
     });
 });

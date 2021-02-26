@@ -111,7 +111,7 @@ export const useExhibitFileInfo = () => {
 export const useExhibitTabs = () => {
     const { state, dispatch } = useContext(GlobalStateContext);
     const { depositionID } = useParams<{ depositionID: string }>();
-    const { currentExhibit, message, isCurrentExhibitOwner } = state.room;
+    const { currentExhibit, message } = state.room;
     const [highlightKey, setHighlightKey] = useState<number>(-1);
     const [activeKey, setActiveKey] = useState<string>(CONSTANTS.DEFAULT_ACTIVE_TAB);
     const [fetchExhibitFileInfo] = useExhibitFileInfo();
@@ -123,18 +123,18 @@ export const useExhibitTabs = () => {
     }, [currentExhibit]);
 
     useEffect(() => {
-        if (highlightKey !== -1 && currentExhibit && isCurrentExhibitOwner) {
+        if (highlightKey !== -1 && currentExhibit) {
             setActiveKey(CONSTANTS.LIVE_EXHIBIT_TAB);
             dispatch(actions.setActiveTab(CONSTANTS.LIVE_EXHIBIT_TAB));
         }
-    }, [highlightKey, currentExhibit, isCurrentExhibitOwner, dispatch]);
+    }, [highlightKey, currentExhibit, dispatch]);
 
     useEffect(() => {
         dispatch(actions.setExhibitTabName(activeKey));
     }, [activeKey, dispatch]);
 
     useEffect(() => {
-        if (message.module === "shareExhibit" && !!message.value) {
+        if (message?.module === "shareExhibit" && !!message?.value) {
             setHighlightKey(CONSTANTS.EXHIBIT_TABS_DATA.findIndex((tab) => tab.tabId === CONSTANTS.LIVE_EXHIBIT_TAB));
             fetchExhibitFileInfo(depositionID);
         }
