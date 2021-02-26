@@ -18,11 +18,6 @@ describe("DepositionDetailsEnteredExhibits", () => {
         expect(await waitForElement(() => expect(getByTestId("entered_exhibits_title")))).toBeTruthy();
     });
 
-    it("show a button with DEPOSITION_DETAILS_DOWNLOAD_TITLE constant", async () => {
-        const { getByTestId } = renderWithGlobalContext(<DepositionDetailsEnteredExhibits />, customDeps);
-        expect(await waitForElement(() => expect(getByTestId("download_button")))).toBeTruthy();
-    });
-
     it("show a table with entered depositions table", async () => {
         const { getByTestId } = renderWithGlobalContext(<DepositionDetailsEnteredExhibits />, customDeps);
         expect(await waitForElement(() => expect(getByTestId("entered_exhibits_table")))).toBeTruthy();

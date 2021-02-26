@@ -1,6 +1,6 @@
+import { Key, useCallback, useContext } from "react";
 import { TablePaginationConfig } from "antd/lib/table";
 import { SortOrder } from "antd/lib/table/interface";
-import { Key, useCallback, useContext } from "react";
 import { useParams } from "react-router";
 import { GlobalStateContext } from "../state/GlobalState";
 import useAsyncCallback from "./useAsyncCallback";
@@ -24,13 +24,14 @@ export const useEnteredExhibit = (): {
     const { depositionID } = useParams<{ depositionID: string }>();
     const [getEnteredExhibits, enteredExhibitsPending, enteredExhibitsError, enteredExhibits] = useAsyncCallback(
         async (payload) => {
-            const enteredExhibits = await deps.apiService.getEnteredExhibits({ depositionID, ...payload });
-            return enteredExhibits;
+            const exhibits = await deps.apiService.getEnteredExhibits({ depositionID, ...payload });
+            return exhibits;
         },
         []
     );
 
     const handleFetchFiles = useCallback(
+        // eslint-disable-next-line consistent-return
         (pagination, filters, sorter) => {
             if (!sorter) return getEnteredExhibits({});
             const enteredExhibitsSortedFields = {
@@ -47,3 +48,5 @@ export const useEnteredExhibit = (): {
     );
     return { handleFetchFiles, enteredExhibitsPending, enteredExhibitsError, enteredExhibits };
 };
+
+export default useEnteredExhibit;

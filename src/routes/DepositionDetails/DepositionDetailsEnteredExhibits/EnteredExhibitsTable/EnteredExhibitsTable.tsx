@@ -5,13 +5,10 @@ import { TableProps } from "antd/lib/table";
 import { DefaultRecordType } from "rc-table/lib/interface";
 import Column from "antd/lib/table/Column";
 import Table from "../../../../components/Table";
-import { getREM } from "../../../../constants/styles/utils";
-import { theme as GlobalTheme } from "../../../../constants/styles/theme";
 import { StyledFileNameCell } from "./styles";
 import FileIcon from "../FileIcon";
 import Text from "../../../../components/Typography/Text";
 import ColorStatus from "../../../../types/ColorStatus";
-import Button from "../../../../components/Button";
 
 interface IEnteredExhibitsTable extends TableProps<DefaultRecordType> {}
 
@@ -24,7 +21,6 @@ const EnteredExhibitsTable = (props: IEnteredExhibitsTable) => {
                 sortDirections={["descend", "ascend"]}
                 pagination={false}
                 style={{ height: "100%" }}
-                rowSelection={{ type: "checkbox" }}
                 {...props}
             >
                 <Column
@@ -58,22 +54,12 @@ const EnteredExhibitsTable = (props: IEnteredExhibitsTable) => {
                 />
                 <Column
                     title="STAMP LABEL"
-                    dataIndex="addedBy"
-                    key="addedBy"
-                    sorter={({ addedBy: a }, { addedBy: b }) => a.firstName.localeCompare(b.firstName)}
+                    dataIndex="stampLabel"
+                    key="stampLabel"
+                    sorter={({ stampLabel: a }, { stampLabel: b }) => a.localeCompare(b)}
                     width="25%"
-                    render={() => `[EX-01] Certitificate`}
-                />
-                <Column
-                    title=""
-                    dataIndex="view"
-                    key="view"
-                    width={getREM(GlobalTheme.default.spaces[12] * 3)}
-                    render={() => (
-                        <Button type="text" data-testid="file_list_view_button" onClick={() => {}}>
-                            View
-                        </Button>
-                    )}
+                    render={(stampLabel) => stampLabel}
+                    defaultSortOrder="ascend"
                 />
             </Table>
         </>
