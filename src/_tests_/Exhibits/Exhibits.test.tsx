@@ -221,7 +221,7 @@ describe("Exhibits", () => {
         );
         const fileViewButton = queryByTestId("file_list_view_button");
         expect(fileViewButton).toBeInTheDocument();
-        const exhibitViewerHeader = queryByTestId("view-document-header");
+        const exhibitViewerHeader = queryByTestId("view_document_header");
         expect(exhibitViewerHeader).not.toBeInTheDocument();
     });
     it("should display the view document component when click on a file view button", () => {
@@ -240,7 +240,7 @@ describe("Exhibits", () => {
         const fileViewButton = queryByTestId("file_list_view_button");
         expect(fileViewButton).toBeInTheDocument();
         fireEvent.click(fileViewButton);
-        const exhibitViewerHeader = queryByTestId("view-document-header");
+        const exhibitViewerHeader = queryByTestId("view_document_header");
         expect(exhibitViewerHeader).toBeInTheDocument();
     });
 
@@ -259,7 +259,7 @@ describe("Exhibits", () => {
         const fileViewButton = queryByTestId("file_list_view_button");
         expect(fileViewButton).toBeInTheDocument();
         fireEvent.click(fileViewButton);
-        const exhibitViewerHeader = queryByTestId("view-document-header");
+        const exhibitViewerHeader = queryByTestId("view_document_header");
         expect(exhibitViewerHeader).toBeInTheDocument();
         expect(queryByTestId("spinner")).toBeInTheDocument();
     });
@@ -280,7 +280,7 @@ describe("Exhibits", () => {
         const fileViewButton = queryByTestId("file_list_view_button");
         expect(fileViewButton).toBeInTheDocument();
         fireEvent.click(fileViewButton);
-        const exhibitViewerHeader = queryByTestId("view-document-header");
+        const exhibitViewerHeader = queryByTestId("view_document_header");
         expect(exhibitViewerHeader).toBeInTheDocument();
         expect(fileViewButton).not.toBeInTheDocument();
         const backButton = getByTestId("view-document-back-button");
@@ -395,7 +395,7 @@ describe("Exhibits", () => {
         const fileViewButton = queryByTestId("file_list_view_button");
         expect(fileViewButton).toBeInTheDocument();
         fireEvent.click(fileViewButton);
-        const exhibitViewerHeader = queryByTestId("view-document-header");
+        const exhibitViewerHeader = queryByTestId("view_document_header");
         expect(exhibitViewerHeader).toBeInTheDocument();
         expect(fileViewButton).not.toBeInTheDocument();
         const shareButton = getByTestId("view_document_share_button");
@@ -427,7 +427,7 @@ describe("Exhibits", () => {
         const fileViewButton = queryByTestId("file_list_view_button");
         expect(fileViewButton).toBeInTheDocument();
         fireEvent.click(fileViewButton);
-        const exhibitViewerHeader = queryByTestId("view-document-header");
+        const exhibitViewerHeader = queryByTestId("view_document_header");
         expect(exhibitViewerHeader).toBeInTheDocument();
         expect(fileViewButton).not.toBeInTheDocument();
         const shareButton = getByTestId("view_document_share_button");
@@ -565,103 +565,5 @@ describe("Exhibits", () => {
         expect(closeSharedStampedPositiveButton).toBeInTheDocument();
         const closeSharedStampedNegativeButton = queryByText(CONSTANTS.MY_EXHIBITS_CLOSE_MODAL_OK_BUTTON_LABEL);
         expect(closeSharedStampedNegativeButton).toBeInTheDocument();
-    });
-
-    it("Should be display the Entered exhibits tab with an empty state when has no entered exhibits", () => {
-        const handleFetchFiles = jest.fn();
-        useEnteredExhibit.mockImplementation(() => ({
-            handleFetchFiles,
-            enteredExhibits: [],
-            enteredExhibitsPending: false,
-        }));
-        const { queryByText } = renderWithGlobalContext(
-            <ThemeProvider theme={theme}>
-                <EnteredExhibits />
-            </ThemeProvider>,
-            getMockDeps(),
-            {
-                ...rootReducer,
-                initialState: {
-                    room: {
-                        ...rootReducer.initialState.room,
-                        isRecording: true,
-                        currentExhibitTabName: "enteredExhibits",
-                    },
-                },
-            }
-        );
-        expect(handleFetchFiles).toBeCalled();
-        const enteredExhibitsEmptyStateTitle = queryByText(CONSTANTS.ENTERED_EXHIBITS_EMPTY_STATE_TITLE);
-        expect(enteredExhibitsEmptyStateTitle).toBeInTheDocument();
-    });
-    it("Should be display the Entered exhibits tab with an empty state when has an error", () => {
-        const handleFetchFiles = jest.fn();
-        useEnteredExhibit.mockImplementation(() => ({
-            handleFetchFiles,
-            enteredExhibits: [],
-            enteredExhibitsPending: false,
-            enteredExhibitsError: "error",
-        }));
-        const { queryByText } = renderWithGlobalContext(
-            <ThemeProvider theme={theme}>
-                <EnteredExhibits />
-            </ThemeProvider>,
-            getMockDeps(),
-            {
-                ...rootReducer,
-                initialState: {
-                    room: {
-                        ...rootReducer.initialState.room,
-                        isRecording: true,
-                        currentExhibitTabName: "enteredExhibits",
-                    },
-                },
-            }
-        );
-        expect(handleFetchFiles).toBeCalled();
-        const enteredExhibitsEmptyStateTitle = queryByText(CONSTANTS.ENTERED_EXHIBITS_EMPTY_STATE_TITLE);
-        expect(enteredExhibitsEmptyStateTitle).toBeInTheDocument();
-    });
-    it("Should be display the Entered exhibits tab with a list of entered exhibits", () => {
-        const enteredExhibits = [
-            {
-                name: "enteredDoc.pdf",
-                displayName: "enteredDoc.pdf",
-                addedBy: {
-                    firstName: "John",
-                    LastName: "Doe",
-                },
-            },
-        ];
-        const handleFetchFiles = jest.fn(() => enteredExhibits);
-        useEnteredExhibit.mockImplementation(() => ({
-            handleFetchFiles,
-            enteredExhibits,
-            enteredExhibitsPending: false,
-        }));
-        const { queryByTestId, queryByText } = renderWithGlobalContext(
-            <ThemeProvider theme={theme}>
-                <EnteredExhibits />
-            </ThemeProvider>,
-            getMockDeps(),
-            {
-                ...rootReducer,
-                initialState: {
-                    room: {
-                        ...rootReducer.initialState.room,
-                        isRecording: true,
-                        currentExhibitTabName: "enteredExhibits",
-                    },
-                },
-            }
-        );
-        expect(handleFetchFiles).toBeCalled();
-        expect(handleFetchFiles).toHaveReturnedWith(enteredExhibits);
-        const enteredExhibitsEmptyStateTitle = queryByText(CONSTANTS.ENTERED_EXHIBITS_EMPTY_STATE_TITLE);
-        expect(enteredExhibitsEmptyStateTitle).not.toBeInTheDocument();
-        const enteredExhibitsTable = queryByTestId("entered_exhibits_table");
-        expect(enteredExhibitsTable).toBeInTheDocument();
-        const enteredExhibitDisplayName = queryByTestId("entered_exhibit_display_name");
-        expect(enteredExhibitDisplayName).toBeInTheDocument();
     });
 });

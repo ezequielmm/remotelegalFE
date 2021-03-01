@@ -21,6 +21,7 @@ import EnteredExhibitsTable from "./EnteredExhibitsTable";
 import { ExhibitFile } from "../../../../types/ExhibitFile";
 import ExhibitViewer from "../ExhibitViewer";
 import { useEnteredExhibit } from "../../../../hooks/useEnteredExhibits";
+import { TOOLBAR_GROUP_ANNOTATE, TOOLBAR_GROUP_VIEW } from "../../../../constants/PDFTronViewer";
 
 export default function EnteredExhibits() {
     const { state } = useContext(GlobalStateContext);
@@ -77,6 +78,8 @@ export default function EnteredExhibits() {
                     file={selectedFile}
                     onClose={() => setSelectedFile(null)}
                     showShareButtonOnHeader={true}
+                    pdfTronDisableElements={[TOOLBAR_GROUP_ANNOTATE, TOOLBAR_GROUP_VIEW]}
+                    pdfTronReadOnly
                 />
             )}
         </ExhibitTabPaneSpacer>

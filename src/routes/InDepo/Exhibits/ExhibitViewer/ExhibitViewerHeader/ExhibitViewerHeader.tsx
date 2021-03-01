@@ -51,7 +51,7 @@ export default function ExhibitViewerHeader({
     };
 
     return (
-        <StyledExhibitViewerHeader align="middle" data-testid="view-document-header">
+        <StyledExhibitViewerHeader align="middle" data-testid="view_document_header">
             <ExhibitSharingModal
                 destroyOnClose
                 loading={shareExhibitPending}

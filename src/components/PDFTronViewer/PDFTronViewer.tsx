@@ -22,6 +22,8 @@ export interface PdfTronViewerProps {
     showStamp?: boolean;
     annotations?: [];
     onAnnotationChange?: (data: AnnotationPayload) => void;
+    disableElements?: string[];
+    readOnly?: boolean;
 }
 
 const PDFTronViewer = ({
@@ -31,6 +33,8 @@ const PDFTronViewer = ({
     showStamp,
     annotations,
     onAnnotationChange,
+    disableElements = [],
+    readOnly = false,
 }: PdfTronViewerProps) => {
     const { state, dispatch } = useContext(GlobalStateContext);
     const { timeZone } = state.room;
@@ -161,11 +165,14 @@ const PDFTronViewer = ({
                     // TODO: Add License Key
                     css: "./PDFTronStyles.css",
                     path: "/webviewer/lib/",
-                    disabledElements: CONSTANTS.DISABLED_BUTTONS,
+                    disabledElements: CONSTANTS.DISABLED_BUTTONS.concat(disableElements),
                 },
                 viewerRef.current
             ).then((instance) => {
                 instance.setTheme("dark");
+                if (readOnly) {
+                    instance.annotManager.setReadOnly(true);
+                }
                 instance.setHeaderItems((header) => {
                     header
                         .get("panToolButton")
@@ -190,6 +197,7 @@ const PDFTronViewer = ({
         };
 
         startViewer();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const loadPDFTronVideo = async (instance, video) => {

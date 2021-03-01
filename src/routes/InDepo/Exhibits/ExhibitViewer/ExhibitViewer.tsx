@@ -27,6 +27,8 @@ interface Props extends PdfTronViewerProps {
     showShareButtonOnHeader?: boolean;
     annotations?: [];
     onAnnotationChange?: (data: AnnotationPayload) => void;
+    pdfTronDisableElements?: string[];
+    pdfTronReadOnly?: boolean;
 }
 
 export const ExhibitViewer = ({
@@ -37,6 +39,8 @@ export const ExhibitViewer = ({
     showShareButtonOnHeader = false,
     annotations,
     onAnnotationChange,
+    pdfTronDisableElements,
+    pdfTronReadOnly = false,
 }: Props): ReactElement => {
     const { state } = useContext(GlobalStateContext);
     const { exhibitTab, permissions } = state.room;
@@ -60,6 +64,8 @@ export const ExhibitViewer = ({
                     filename={file?.displayName}
                     annotations={annotations}
                     onAnnotationChange={onAnnotationChange}
+                    disableElements={pdfTronDisableElements}
+                    readOnly={pdfTronReadOnly}
                 />
             )}
             {!!error && (
