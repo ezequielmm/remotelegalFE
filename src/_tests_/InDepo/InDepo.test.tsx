@@ -387,7 +387,7 @@ describe("inDepo -> Exhibits view with a shared exhibit", () => {
         await waitForDomChange();
 
         expect(queryByTestId("live_exhibits_tab_active")).not.toBeInTheDocument();
-        expect(queryByTestId("view-document-header")).not.toBeInTheDocument();
+        expect(queryByTestId("view_document_header")).not.toBeInTheDocument();
     });
 
     it("should display the exhibit section with the live exhibit selected and highlighted when has a exhibit shared", async () => {
@@ -417,7 +417,7 @@ describe("inDepo -> Exhibits view with a shared exhibit", () => {
         await waitForDomChange();
 
         expect(queryByTestId("live_exhibits_tab_active")).toBeInTheDocument();
-        expect(queryByTestId("view-document-header")).toBeInTheDocument();
+        expect(queryByTestId("view_document_header")).toBeInTheDocument();
         expect(queryByTestId("live_exhibits_tab")).toHaveAttribute("highlight");
         expect(queryByText("LIVE EXHIBITS")).toBeInTheDocument();
     });
