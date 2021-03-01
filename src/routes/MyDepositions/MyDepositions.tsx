@@ -120,6 +120,7 @@ const MyDepositions = () => {
                             </Title>
                         </Row>
                         <Table
+                            data-testid="my_depositions_table"
                             cursorPointer={userIsAdmin}
                             onRow={({ id, status }) => {
                                 return {

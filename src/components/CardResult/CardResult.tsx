@@ -23,15 +23,8 @@ export default function CardResult({
     return (
         <Row justify="center" align="middle" style={{ height: "100%", width: width || "auto" }}>
             <Col sm={24} lg={18} xl={13} xxl={10}>
-                <Card>
-                    <Result
-                        data-testid={`${subTitle}`}
-                        title={title}
-                        subTitle={subTitle}
-                        status={status}
-                        extra={extra}
-                        icon={icon}
-                    />
+                <Card data-testid={`${title}`}>
+                    <Result title={title} subTitle={subTitle} status={status} extra={extra} icon={icon} />
                 </Card>
             </Col>
         </Row>

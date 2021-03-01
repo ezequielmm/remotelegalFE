@@ -27,6 +27,7 @@ export default function CreateDepositionResultCard({
         <CardFetchError onClick={refreshCasesList} />
     ) : (
         <CardResult
+            data-testid="deposition_created_successful"
             title={CONSTANTS.getSuccessDepositionTitle(createdDepositions)}
             subTitle={CONSTANTS.SUCCESS_DEPOSITION_SUBTITLE}
             status={CustomStatus.successCreate}

@@ -54,7 +54,7 @@ const WitnessItem = ({ deposition, removeWitness, witnessNumber }: WitnessItemPr
         <Space direction="vertical" size="large" fullWidth>
             <Space.Item fullWidth>
                 <WitnessTitleContainer data-testid="witness_title">
-                    <Title level={5} weight="regular">
+                    <Title level={5} weight="regular" dataTestId="witness_sub_title">
                         {`${CONSTANTS.WITNESS_TITLE} ${witnessNumber + 1}`}
                     </Title>
                     {witnessNumber > 0 && (

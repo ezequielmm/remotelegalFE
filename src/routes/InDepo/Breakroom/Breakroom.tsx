@@ -87,7 +87,7 @@ const Breakroom = () => {
 
     return currentBreakroom && breakroomDataTrack ? (
         <ThemeProvider theme={inDepoTheme}>
-            <StyledInDepoContainer data-testid="videoconference">
+            <StyledInDepoContainer data-testid="videoconference_breakroom">
                 <StyledInDepoLayout>
                     <RecordPill on={false} />
                     <Exhibits visible={exhibitsOpen} />

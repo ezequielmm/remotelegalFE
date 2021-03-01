@@ -11,6 +11,7 @@ export interface IDropdownProps extends Omit<DropDownProps, "overlay"> {
     children: React.ReactChild;
     styled?: boolean;
     theme?: Theme;
+    dataTestId?: string;
 }
 
 const StyledPopupContainer = styledComponent(PopupContainer)<{ $styled?: boolean }>`
@@ -62,19 +63,27 @@ const StyledDropdownOverlay = styledComponent.div`
     }}
 `;
 
-const Dropdown = ({ children, overlay, styled, theme, ...props }: IDropdownProps) => {
+const Dropdown = ({ children, overlay, styled, theme, dataTestId, ...props }: IDropdownProps) => {
     return (
-        <StyledPopupContainer $styled={styled} theme={theme}>
-            <ANTDropdown
-                overlay={() => (
-                    <>{styled ? <StyledDropdownOverlay theme={theme}>{overlay}</StyledDropdownOverlay> : { overlay }}</>
-                )}
-                getPopupContainer={(trigger) => trigger.parentElement}
-                {...props}
-            >
-                {children}
-            </ANTDropdown>
-        </StyledPopupContainer>
+        <div data-testid={dataTestId}>
+            <StyledPopupContainer $styled={styled} theme={theme}>
+                <ANTDropdown
+                    overlay={() => (
+                        <>
+                            {styled ? (
+                                <StyledDropdownOverlay theme={theme}>{overlay}</StyledDropdownOverlay>
+                            ) : (
+                                { overlay }
+                            )}
+                        </>
+                    )}
+                    getPopupContainer={(trigger) => trigger.parentElement}
+                    {...props}
+                >
+                    {children}
+                </ANTDropdown>
+            </StyledPopupContainer>
+        </div>
     );
 };
 

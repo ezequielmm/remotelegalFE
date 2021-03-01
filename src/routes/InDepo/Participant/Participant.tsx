@@ -39,7 +39,7 @@ const Participant = ({
             <StyledIdentityBox>
                 {isWitness && (
                     <Text
-                        data-testid="witness-name"
+                        data-testid="participant_name"
                         size="small"
                         lineHeight={theme.default.spaces[8]}
                         weight="bold"
@@ -50,7 +50,7 @@ const Participant = ({
                 )}
                 {!isWitness && (
                     <Text
-                        data-testid="participant-name"
+                        data-testid="participant_name"
                         size="small"
                         lineHeight={theme.default.spaces[8]}
                         weight="bold"
@@ -60,7 +60,7 @@ const Participant = ({
                     </Text>
                 )}
                 <Text
-                    data-testid="participant-role"
+                    data-testid="participant_role"
                     size="small"
                     lineHeight={theme.default.spaces[8]}
                     state={ColorStatus.white}

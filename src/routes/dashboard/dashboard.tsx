@@ -11,7 +11,7 @@ const Dashboard = () => {
     return (
         <Row justify="center" align="middle" style={{ height: "100%" }}>
             <Col sm={24} lg={18} xl={13} xxl={10}>
-                <Card>
+                <Card data-testid="welcome_card">
                     <Result
                         title="Welcome to Remote Legal"
                         subTitle="Want to schedule a deposition? Click the button below"
