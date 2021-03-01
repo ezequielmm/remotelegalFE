@@ -78,13 +78,7 @@ export const DEPOSITION_DETAILS_ADD_PARTICIPANT_MODAL_DATA_TEST_ID_TITLE =
 export const DEPOSITION_DETAILS_ADD_PARTICIPANT_MODAL_ROLE_SELECT_PLACEHOLDER = "Please select a role";
 export const DEPOSITION_DETAILS_ADD_PARTICIPANT_MODAL_DATA_TEST_ID_ROLE =
     "deposition_details_add_participant_modal_role_select";
-export const DEPOSITION_DETAILS_ADD_PARTICIPANT_MODAL_ROLES = [
-    "Attorney",
-    "Court Reporter",
-    "Observer",
-    "Paralegal",
-    "Witness",
-];
+export const DEPOSITION_DETAILS_ADD_PARTICIPANT_MODAL_ROLES = ["Attorney", "Court Reporter", "Observer", "Paralegal"];
 export const DEPOSITION_DETAILS_ADD_PARTICIPANT_MODAL_DATA_TEST_ID_INVALID_ROLE =
     "deposition_details_add_participant_modal_role_select_invalid";
 export const DEPOSITION_DETAILS_ADD_PARTICIPANT_MODAL_ROLE_SELECT_INVALID_ROLE = "Please select a role";
