@@ -1,6 +1,6 @@
 import React from "react";
 import { waitForDomChange, waitForElement } from "@testing-library/react";
-import DepositionDetailsEnteredExhibits from "../../routes/DepositionDetails/DepositionDetailsEnteredExhibits";
+import DepositionDetailsEnteredExhibits from "../../routes/DepositionDetails/DepositionDetailsEnteredExhibits/DepositionDetailsEnteredExhibits";
 
 import getMockDeps from "../utils/getMockDeps";
 import renderWithGlobalContext from "../utils/renderWithGlobalContext";

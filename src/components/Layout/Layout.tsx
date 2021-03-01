@@ -12,7 +12,7 @@ import Text from "../Typography/Text";
 import Sider from "./Sider";
 import Content from "./Content";
 import { ReactComponent as Bell } from "../../assets/layout/Bell.svg";
-import { ReactComponent as Messages } from "../../assets/layout/Messages.svg";
+import { ReactComponent as Messages } from "../../assets/icons/Messages.svg";
 import { ReactComponent as DropdownArrow } from "../../assets/layout/DropdownArrow.svg";
 import * as CONSTANTS from "../../constants/layout";
 import ColorStatus from "../../types/ColorStatus";

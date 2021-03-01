@@ -18,6 +18,7 @@ export const StyledProgressBarContainer = styled.div`
 
 export const StyledComponentContainer = styled.div`
     padding-top: ${({ theme }) => getREM(theme.default.spaces[4])};
+    width: 100%;
 `;
 
 export const StyledButton = styled(Button)`

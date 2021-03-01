@@ -249,6 +249,15 @@ export class ApiService {
         });
     };
 
+    fetchTranscriptsFiles = async ({ depositionID, ...payload }): Promise<boolean> => {
+        return this.request<boolean>({
+            path: `/Transcriptions/${depositionID}/Files`,
+            payload,
+            withToken: true,
+            method: HTTP_METHOD.GET,
+        });
+    };
+
     getDocumentUrl = async ({ documentId, ...payload }): Promise<boolean> => {
         return this.request<boolean>({
             path: `/api/documents/${documentId}/preSignedUrl`,

@@ -1,8 +1,11 @@
+import { formatBytes } from "../helpers/formatBytes";
 import DepositionDetailsSummary from "../routes/DepositionDetails/DepositionDetailsSummary";
-import DepositionDetailsEnteredExhibits from "../routes/DepositionDetails/DepositionDetailsEnteredExhibits/DepositionDetailsEnteredExhibits";
+import DepositionDetailsEnteredExhibits from "../routes/DepositionDetails/DepositionDetailsEnteredExhibits";
+import DepositionDetailsTranscript from "../routes/DepositionDetails/DepositionDetailsTranscript";
 
 export enum DEPOSITION_DETAILS_TABS {
     "summary",
+    "transcript",
     "entered_exhibits",
 }
 
@@ -13,6 +16,11 @@ export const DETAILS_SUMMARY_TRANSCRIPT_SUBTITLE =
 export const DETAILS_SUMMARY_TOTAL_TIME_TEXT = "total time";
 export const DETAILS_SUMMARY_ON_THE_RECORD_TEXT = "on the record";
 export const DETAILS_SUMMARY_OFF_THE_RECORD_TEXT = "off the record";
+
+export const DETAILS_TRANSCRIPT_TITLE = "Transcript";
+export const DETAILS_TRANSCRIPT_BUTTON_NOTIFY = "Notify parties";
+export const DETAILS_TRANSCRIPT_BUTTON_DOWNLOAD = "Download";
+export const DETAILS_TRANSCRIPT_BUTTON_UPLOAD = "Upload transcript";
 
 export const DEFAULT_ACTIVE_TAB = "summary";
 
@@ -36,6 +44,13 @@ export const DEPOSITION_DETAILS_TABS_DATA = [
     },
     {
         tabId: DEPOSITION_DETAILS_TABS[1],
+        tabTestId: "transcript_tab",
+        title: "TRANSCRIPT",
+        DepositionDetailsComponent: DepositionDetailsTranscript,
+        tabPaneTestId: "transcript_tab_pane",
+    },
+    {
+        tabId: DEPOSITION_DETAILS_TABS[2],
         tabTestId: "entered_exhibits",
         title: "ENTERED EXHIBITS",
         DepositionDetailsComponent: DepositionDetailsEnteredExhibits,
@@ -61,3 +76,17 @@ export const DEPOSITION_DETAILS_DOWNLOAD_TITLE = "DOWNLOAD";
 export const DEPOSITION_DETAILS_COURT_REPORTER_TITLE = "COURT REPORTER";
 export const DEPOSITION_DETAILS_INVITED_PARTIES_TITLE = "INVITED PARTIES";
 export const DEPOSITION_DETAILS_ENTERED_EXHIBITS_TITLE = "ENTERED EXHIBITS";
+
+export const DEPOSITION_DETAILS_TRANSCRIPTS_COLUMNS = [
+    {
+        title: "Name",
+        dataIndex: "displayName",
+        key: "displayName",
+    },
+    {
+        title: "Size",
+        dataIndex: "size",
+        key: "size",
+        render: (size: number) => formatBytes(size, 0),
+    },
+];
