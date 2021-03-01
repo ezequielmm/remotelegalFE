@@ -1,13 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import Space from "../../../components/Space";
 import Tabs from "../../../components/Tabs";
 import * as CONSTANTS from "../../../constants/depositionDetails";
 
 export default function DepositionDetailsTabs() {
+    const [activeKey, setActiveKey] = useState<string>(CONSTANTS.DEFAULT_ACTIVE_TAB);
     return (
         <Space mt={9} direction="vertical">
             <Space fullWidth>
                 <Tabs
+                    activeKey={activeKey}
+                    onChange={setActiveKey}
                     style={{ width: "100%" }}
                     renderTabBar={(props: { activeKey: string }, DefaultTabBar) => (
                         <DefaultTabBar {...props}>
@@ -26,7 +29,7 @@ export default function DepositionDetailsTabs() {
                         ({ tabId, DepositionDetailsComponent, tabPaneTestId, title }) => (
                             <Tabs.TabPane tab={title} key={tabId}>
                                 <div data-testid={tabPaneTestId}>
-                                    <DepositionDetailsComponent />
+                                    <DepositionDetailsComponent setActiveKey={setActiveKey} />
                                 </div>
                             </Tabs.TabPane>
                         )

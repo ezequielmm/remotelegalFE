@@ -28,7 +28,11 @@ import CardIcon from "../../../components/CardIcon";
 import { IPostDepo } from "../../../state/PostDepo/PostDepoReducer";
 import { useEnteredExhibit } from "../../../hooks/useEnteredExhibits";
 
-export default function DepositionDetailsSummary() {
+interface IDepositionDetailsSummary {
+    setActiveKey: (activeKey: string) => void;
+}
+
+export default function DepositionDetailsSummary({ setActiveKey }: IDepositionDetailsSummary) {
     const inDepoTheme = { ...theme, mode: ThemeMode.inDepo };
     const { dispatch, state } = useContext(GlobalStateContext);
     const [getTranscriptions, loading] = useGetTranscriptions();
@@ -99,7 +103,7 @@ export default function DepositionDetailsSummary() {
                             </CardIcon>
                         </Space>
                         <Space align="stretch" fullWidth size={6}>
-                            <CardIcon icon={ExhibitsIcon} fullWidth>
+                            <CardIcon icon={ExhibitsIcon} fullWidth onClick={() => setActiveKey("entered_exhibits")}>
                                 <Text state={ColorStatus.disabled} ellipsis={false}>
                                     {CONSTANTS.DEPOSITION_DETAILS_ENTERED_EXHIBITS_TITLE}
                                 </Text>
@@ -158,7 +162,6 @@ export default function DepositionDetailsSummary() {
                     </Space>
                 </Space>
             </Space>
-
         </>
     );
 }
