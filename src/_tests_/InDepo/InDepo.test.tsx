@@ -390,35 +390,35 @@ describe("inDepo -> Exhibits view with a shared exhibit", () => {
         expect(queryByTestId("view-document-header")).not.toBeInTheDocument();
     });
 
-    // it.only("should display the exhibit section with the live exhibit selected and highlighted when has a exhibit shared", async () => {
-    //   customDeps.apiService.getDepositionTranscriptions = jest.fn().mockResolvedValue([]);
-    //   customDeps.apiService.getDepositionEvents = jest.fn().mockResolvedValue([]);
-    // const { queryByTestId, queryByText } = renderWithGlobalContext(
-    //   <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,
-    // customDeps,
-    // {
-    //   ...rootReducer,
-    //  initialState: {
-    //    room: {
-    //      ...rootReducer.initialState.room,
-    //    dataTrack: dataTrackMock,
-    //  currentRoom: {
-    //    localParticipant: getParticipant("test"),
-    //    participants: [],
-    //    },
-    //      currentExhibit,
-    //    },
-    //  },
-    //},
-    //  history
-    //);
+    it("should display the exhibit section with the live exhibit selected and highlighted when has a exhibit shared", async () => {
+        customDeps.apiService.getDepositionTranscriptions = jest.fn().mockResolvedValue([]);
+        customDeps.apiService.getDepositionEvents = jest.fn().mockResolvedValue([]);
+        const { queryByTestId, queryByText } = renderWithGlobalContext(
+            <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,
+            customDeps,
+            {
+                ...rootReducer,
+                initialState: {
+                    room: {
+                        ...rootReducer.initialState.room,
+                        dataTrack: dataTrackMock,
+                        currentRoom: {
+                            localParticipant: getParticipant("test"),
+                            participants: [],
+                        },
+                        currentExhibit,
+                    },
+                },
+            },
+            history
+        );
 
-    // history.push(TESTS_CONSTANTS.TEST_ROUTE);
-    //   await waitForDomChange();
+        history.push(TESTS_CONSTANTS.TEST_ROUTE);
+        await waitForDomChange();
 
-    //expect(queryByTestId("live_exhibits_tab_active")).toBeInTheDocument();
-    // expect(queryByTestId("view-document-header")).toBeInTheDocument();
-    //   expect(queryByTestId("live_exhibits_tab")).toHaveAttribute("highlight");
-    //     expect(queryByText("LIVE EXHIBITS")).toBeInTheDocument();
-    // });
+        expect(queryByTestId("live_exhibits_tab_active")).toBeInTheDocument();
+        expect(queryByTestId("view-document-header")).toBeInTheDocument();
+        expect(queryByTestId("live_exhibits_tab")).toHaveAttribute("highlight");
+        expect(queryByText("LIVE EXHIBITS")).toBeInTheDocument();
+    });
 });

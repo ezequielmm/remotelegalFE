@@ -18,6 +18,11 @@ const disconnectFromDepo = async (
         breakroomDataTrack: null,
         timeZone: null,
         message: { module: "", value: "" },
+        currentExhibit: null,
+        exhibitDocument: null,
+        stampLabel: "",
+        annotations: [],
+        lastAnnotationId: "",
     };
     const doesRoomExistAndIsParticipantConnected = room?.localParticipant?.state === "connected";
     if (killDepo && typeof killDepo === "function") {
@@ -33,7 +38,6 @@ const disconnectFromDepo = async (
         room.disconnect();
         dispatch(actions.disconnect(initialState));
     }
-    dispatch(actions.stopShareExhibit());
     return history?.push("/deposition/end", { depositionID });
 };
 export default disconnectFromDepo;
