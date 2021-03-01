@@ -20,6 +20,7 @@ interface Props {
     showBackButton?: boolean;
     showCloseButton?: boolean;
     showShareButton?: boolean;
+    readOnly?: boolean;
 }
 
 export default function ExhibitViewerHeader({
@@ -28,6 +29,7 @@ export default function ExhibitViewerHeader({
     showBackButton = true,
     showCloseButton = true,
     showShareButton = false,
+    readOnly = false,
 }: Props): ReactElement {
     const [sharingModalOpen, setSharingModalOpen] = useState(false);
     const [closingModalOpen, setClosingModalOpen] = useState(false);
@@ -42,7 +44,7 @@ export default function ExhibitViewerHeader({
     const { isRecording, stampLabel } = state.room;
 
     const onShareOkHandler = () => {
-        shareExhibit(file);
+        shareExhibit(file, readOnly);
         setSharingModalOpen(false);
     };
 
@@ -85,7 +87,14 @@ export default function ExhibitViewerHeader({
             <Col md={6} xxl={4} style={{ textAlign: "right" }}>
                 {showCloseButton && (
                     <StyledCloseButton
-                        onClick={() => setClosingModalOpen(true)}
+                        onClick={() => {
+                            if (readOnly) {
+                                closeSharedExhibit();
+                            } else {
+                                setClosingModalOpen(true);
+                            }
+                        }}
+                        loading={pendingCloseSharedExhibit}
                         type="primary"
                         size="small"
                         data-testid="close_document_button"

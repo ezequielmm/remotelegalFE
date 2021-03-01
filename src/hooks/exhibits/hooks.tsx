@@ -84,8 +84,9 @@ export const useFileList = (
 
 export const useSignedUrl = (documentId: string, preSignedUrl?: string) => {
     const { deps } = useContext(GlobalStateContext);
+    const { depositionID } = useParams<{ depositionID: string }>();
     const [getURL, pending, error, documentUrl] = useAsyncCallback(async (payload) => {
-        return preSignedUrl ?? (await deps.apiService.getDocumentUrl({ documentId, ...payload }));
+        return preSignedUrl ?? (await deps.apiService.getDocumentUrl({ depositionID, documentId, ...payload }));
     }, []);
     useEffect(() => {
         getURL();
@@ -96,11 +97,11 @@ export const useSignedUrl = (documentId: string, preSignedUrl?: string) => {
 
 export const useExhibitFileInfo = () => {
     const { deps, dispatch } = useContext(GlobalStateContext);
-    return useAsyncCallback(async (depositionID) => {
+    return useAsyncCallback(async (depositionID, readOnly: boolean = false) => {
         const exhibitFile: ExhibitFile = await deps.apiService.getSharedExhibit(depositionID);
         if (exhibitFile) {
+            exhibitFile.readOnly = readOnly;
             const user = await deps.apiService.currentUser();
-            dispatch(actions.setIsCurrentExhibitOwner(user?.id && user?.id === exhibitFile?.addedBy?.id));
             dispatch(actions.setCurrentUser(user));
             dispatch(actions.setSharedExhibit(exhibitFile));
         }
@@ -150,9 +151,14 @@ export const useShareExhibitFile = () => {
     const [fetchExhibitFileInfo] = useExhibitFileInfo();
     const { dataTrack, message, currentExhibit, exhibitDocument, stampLabel, rawAnnotations } = state.room;
     const [shareExhibit, shareExhibitPending, sharingExhibitFileError] = useAsyncCallback(
-        async (exhibitFile: ExhibitFile) => {
-            const isShared = (await deps.apiService.shareExhibit(exhibitFile.id)) !== undefined;
-            const fileInfo: any = await fetchExhibitFileInfo(depositionID);
+        async (exhibitFile: ExhibitFile, readOnly: boolean = false) => {
+            const isShared =
+                (await deps.apiService.shareExhibit({
+                    depositionId: depositionID,
+                    documentId: exhibitFile.id,
+                    readOnly,
+                })) !== undefined;
+            const fileInfo: any = await fetchExhibitFileInfo(depositionID, readOnly);
             if (fileInfo) {
                 dataTrack.send(JSON.stringify({ module: "shareExhibit", value: fileInfo }));
             }
@@ -163,31 +169,34 @@ export const useShareExhibitFile = () => {
 
     useEffect(() => {
         if (message.module === "shareExhibit" && message.value) {
-            fetchExhibitFileInfo(depositionID);
+            fetchExhibitFileInfo(depositionID, message.value?.readOnly);
         }
         if (message.module === "closeSharedExhibit" && message?.value?.id === currentExhibit?.id) {
             dispatch(actions.stopShareExhibit());
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [message]);
+    }, [message, depositionID]);
 
-    const [closeSharedExhibit, pendingCloseSharedExhibit] = useAsyncCallback(async () => {
-        if (stampLabel) {
-            const exhibitDocumentData = await (exhibitDocument as CoreControls.Document)?.getFileData({
-                xfdfString: rawAnnotations,
-                flatten: true,
-            });
-            const arrData = new Uint8Array(exhibitDocumentData);
-            const blob = new Blob([arrData]);
-            await deps.apiService.closeStampedExhibit({ depositionID, stampLabel, blob });
-        } else {
-            await deps.apiService.closeExhibit({ depositionID });
-        }
-        dispatch(actions.stopShareExhibit());
-        if (currentExhibit && dataTrack) {
-            dataTrack.send(JSON.stringify({ module: "closeSharedExhibit", value: currentExhibit }));
-        }
-    }, [exhibitDocument, stampLabel, dataTrack, rawAnnotations]);
+    const [closeSharedExhibit, pendingCloseSharedExhibit] = useAsyncCallback(
+        async (isReadyOnly = false) => {
+            if (stampLabel) {
+                const exhibitDocumentData = await (exhibitDocument as CoreControls.Document)?.getFileData({
+                    xfdfString: rawAnnotations,
+                    flatten: true,
+                });
+                const arrData = new Uint8Array(exhibitDocumentData);
+                const blob = new Blob([arrData]);
+                await deps.apiService.closeStampedExhibit({ depositionID, stampLabel, blob });
+            } else {
+                await deps.apiService.closeExhibit({ depositionID });
+            }
+            dispatch(actions.stopShareExhibit());
+            if (currentExhibit && dataTrack) {
+                dataTrack.send(JSON.stringify({ module: "closeSharedExhibit", value: currentExhibit }));
+            }
+        },
+        [exhibitDocument, stampLabel, dataTrack, rawAnnotations]
+    );
 
     return {
         shareExhibit,

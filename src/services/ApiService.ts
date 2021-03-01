@@ -258,19 +258,19 @@ export class ApiService {
         });
     };
 
-    getDocumentUrl = async ({ documentId, ...payload }): Promise<boolean> => {
+    getDocumentUrl = async ({ depositionID, documentId, ...payload }): Promise<boolean> => {
         return this.request<boolean>({
-            path: `/api/documents/${documentId}/preSignedUrl`,
+            path: `/api/depositions/${depositionID}/documents/${documentId}/preSignedUrl`,
             payload,
             withToken: true,
             method: HTTP_METHOD.GET,
         });
     };
 
-    shareExhibit = async (payload): Promise<boolean> => {
+    shareExhibit = async ({ depositionId, documentId, readOnly }): Promise<boolean> => {
         return this.request<boolean>({
-            path: `/api/documents/${payload}/Share`,
-            payload,
+            path: `/api/depositions/${depositionId}/documents/${documentId}/Share`,
+            payload: { readOnly },
             withToken: true,
             method: HTTP_METHOD.PUT,
         });

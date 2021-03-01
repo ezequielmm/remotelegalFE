@@ -2,7 +2,6 @@ import { LocalDataTrack, Room } from "twilio-video";
 import { TimeZones } from "../../models/general";
 import { DataTrackMessage, DisconnectRoomState } from "../types";
 import { EventModel, TranscriptionModel, BreakroomModel } from "../../models";
-import { ExhibitFile } from "../../types/ExhibitFile";
 import { EXHIBIT_TAB } from "../../constants/exhibits";
 import { CoreControls } from "@pdftron/webviewer";
 
@@ -20,7 +19,6 @@ export enum ACTION_TYPE {
     IN_DEPO_ADD_TRANSCRIPTION = "IN_DEPO_ADD_TRANSCRIPTION",
     IN_DEPO_START_SHARE_EXHIBIT = "IN_DEPO_START_SHARE_EXHIBIT",
     IN_DEPO_STOP_SHARE_EXHIBIT = "IN_DEPO_STOP_SHARE_EXHIBIT",
-    IN_DEPO_SET_CURRENT_EXHIBIT_OWNER = "IN_DEPO_SET_CURRENT_EXHIBIT_OWNER",
     IN_DEPO_SET_EXHIBIT_TAB_NAME = "IN_DEPO_SET_EXHIBIT_TAB_NAME",
     IN_DEPO_SET_EXHIBIT_ANNOTATIONS = "IN_DEPO_SET_EXHIBIT_ANNOTATIONS",
     IN_DEPO_SET_CURRENT_USER = "IN_DEPO_SET_CURRENT_USER",
@@ -108,17 +106,13 @@ const actions = {
         type: ACTION_TYPE.CHANGE_EXHIBIT_TAB,
         payload,
     }),
-    setSharedExhibit: (payload: ExhibitFile) => ({
+    setSharedExhibit: (payload) => ({
         type: ACTION_TYPE.IN_DEPO_START_SHARE_EXHIBIT,
         payload,
     }),
     stopShareExhibit: () => ({
         type: ACTION_TYPE.IN_DEPO_STOP_SHARE_EXHIBIT,
         payload: null,
-    }),
-    setIsCurrentExhibitOwner: (payload: boolean) => ({
-        type: ACTION_TYPE.IN_DEPO_SET_CURRENT_EXHIBIT_OWNER,
-        payload,
     }),
     setExhibitTabName: (payload: string) => ({
         type: ACTION_TYPE.IN_DEPO_SET_EXHIBIT_TAB_NAME,

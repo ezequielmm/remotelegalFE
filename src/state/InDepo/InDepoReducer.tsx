@@ -160,14 +160,10 @@ const RoomReducer: Reducer<IRoom, IAction> = (state: IRoom, action: IAction): IR
                 ...state,
                 currentExhibit: null,
                 exhibitDocument: null,
+                isCurrentExhibitOwner: false,
                 stampLabel: "",
                 annotations: [],
                 lastAnnotationId: "",
-            };
-        case ACTION_TYPE.IN_DEPO_SET_CURRENT_EXHIBIT_OWNER:
-            return {
-                ...state,
-                isCurrentExhibitOwner: action.payload,
             };
         case ACTION_TYPE.IN_DEPO_SET_EXHIBIT_TAB_NAME:
             return {

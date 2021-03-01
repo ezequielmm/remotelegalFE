@@ -9,6 +9,7 @@ import { ExhibitTabPaneSpacer } from "../styles";
 import { theme } from "../../../../constants/styles/theme";
 import ExhibitViewer from "../ExhibitViewer";
 import { useExhibitAnnotation, useShareExhibitFile } from "../../../../hooks/exhibits/hooks";
+import { TOOLBAR_GROUP_ANNOTATE, TOOLBAR_GROUP_VIEW } from "../../../../constants/PDFTronViewer";
 
 export default function LiveExhibits() {
     const { sharedExhibit, closeSharedExhibit } = useShareExhibitFile();
@@ -25,6 +26,8 @@ export default function LiveExhibits() {
                     onClose={closeSharedExhibit}
                     annotations={annotations}
                     onAnnotationChange={sendAnnotation}
+                    pdfTronDisableElements={sharedExhibit?.readOnly ? [TOOLBAR_GROUP_ANNOTATE, TOOLBAR_GROUP_VIEW] : []}
+                    readOnly={sharedExhibit?.readOnly}
                 />
             )}
             {!sharedExhibit && (

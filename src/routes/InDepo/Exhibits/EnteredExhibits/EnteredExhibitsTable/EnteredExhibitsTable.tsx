@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { Tooltip } from "antd";
 import { TableProps } from "antd/lib/table";
 import { DefaultRecordType } from "rc-table/lib/interface";
@@ -15,6 +15,8 @@ import ColorStatus from "../../../../../types/ColorStatus";
 import { GlobalStateContext } from "../../../../../state/GlobalState";
 import moment from "moment-timezone";
 import { mapTimeZone } from "../../../../../models/general";
+import ExhibitSharingModal from "../../ExhibitViewer/ExhibitSharingModal";
+import { useShareExhibitFile } from "../../../../../hooks/exhibits/hooks";
 
 interface IEnteredExhibitsTable extends TableProps<DefaultRecordType> {
     onClickViewFile: (item: any) => void;
@@ -24,9 +26,28 @@ const EnteredExhibitsTable = (props: IEnteredExhibitsTable) => {
     const { state } = useContext(GlobalStateContext);
     const { timeZone } = state.room;
     const { isRecording } = state.room;
+    const [exhibitSharingModalOpen, setExhibitSharingModalOpen] = useState(false);
+    const [selectedSharedExhibitFile, setSelectedSharedExhibitFile] = useState<ExhibitFile>(null);
+    const { shareExhibit, shareExhibitPending, sharedExhibit, sharingExhibitFileError } = useShareExhibitFile();
+
+    const onShareOkHandler = async () => {
+        const isShared = await shareExhibit(selectedSharedExhibitFile, true);
+        if (Boolean(isShared)) {
+            setExhibitSharingModalOpen(false);
+            setSelectedSharedExhibitFile(null);
+        }
+    };
 
     return (
         <>
+            <ExhibitSharingModal
+                destroyOnClose
+                loading={shareExhibitPending}
+                file={sharedExhibit || sharingExhibitFileError}
+                visible={exhibitSharingModalOpen}
+                onShareOk={onShareOkHandler}
+                onShareCancel={() => setExhibitSharingModalOpen(false)}
+            />
             <Table {...props}>
                 <Column
                     title="FILE"
@@ -95,6 +116,10 @@ const EnteredExhibitsTable = (props: IEnteredExhibitsTable) => {
                                 size="small"
                                 type="ghost"
                                 data-testid="file_list_share_button"
+                                onClick={() => {
+                                    setSelectedSharedExhibitFile(file);
+                                    setExhibitSharingModalOpen(true);
+                                }}
                             >
                                 Share
                             </Button>

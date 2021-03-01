@@ -28,7 +28,7 @@ interface Props extends PdfTronViewerProps {
     annotations?: [];
     onAnnotationChange?: (data: AnnotationPayload) => void;
     pdfTronDisableElements?: string[];
-    pdfTronReadOnly?: boolean;
+    readOnly?: boolean;
 }
 
 export const ExhibitViewer = ({
@@ -39,8 +39,8 @@ export const ExhibitViewer = ({
     showShareButtonOnHeader = false,
     annotations,
     onAnnotationChange,
-    pdfTronDisableElements,
-    pdfTronReadOnly = false,
+    pdfTronDisableElements = [],
+    readOnly = false,
 }: Props): ReactElement => {
     const { state } = useContext(GlobalStateContext);
     const { exhibitTab, permissions } = state.room;
@@ -54,18 +54,21 @@ export const ExhibitViewer = ({
                 showBackButton={showBackButtonOnHeader}
                 showCloseButton={showCloseButtonOnHeader}
                 showShareButton={showShareButtonOnHeader}
+                readOnly={readOnly}
             />
             {pending && <Spinner />}
             {documentUrl && (
                 <PDFTronViewer
-                    canStamp={permissions.includes(DepositionModel.DepositionPermissionsTypes.stampExhibit)}
+                    canStamp={
+                        permissions.includes(DepositionModel.DepositionPermissionsTypes.stampExhibit) && !readOnly
+                    }
                     showStamp={exhibitTab === LIVE_EXHIBIT_TAB}
                     document={documentUrl}
                     filename={file?.displayName}
                     annotations={annotations}
                     onAnnotationChange={onAnnotationChange}
                     disableElements={pdfTronDisableElements}
-                    readOnly={pdfTronReadOnly}
+                    readOnly={readOnly}
                 />
             )}
             {!!error && (

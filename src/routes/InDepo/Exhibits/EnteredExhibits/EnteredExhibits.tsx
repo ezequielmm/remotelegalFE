@@ -26,7 +26,7 @@ import { TOOLBAR_GROUP_ANNOTATE, TOOLBAR_GROUP_VIEW } from "../../../../constant
 export default function EnteredExhibits() {
     const { state } = useContext(GlobalStateContext);
     const { currentExhibitTabName } = state.room;
-    const { handleFetchFiles, enteredExhibits, enteredExhibitsPending, enteredExhibitsError } = useEnteredExhibit();
+    const { handleFetchFiles, enteredExhibits = [], enteredExhibitsPending, enteredExhibitsError } = useEnteredExhibit();
     const [selectedFile, setSelectedFile] = useState<ExhibitFile>(null);
     useEffect(() => {
         if (currentExhibitTabName === EXHIBIT_TABS.enteredExhibits) {
@@ -59,7 +59,6 @@ export default function EnteredExhibits() {
                             <Row justify="center" align="middle" style={{ height: "100%" }}>
                                 <Col sm={18} lg={14} xl={13} xxl={9}>
                                     <Result
-                                        data-testid="entered_exhibits_empty_state"
                                         icon={<Icon icon={EnteredExhibitsIcon} style={{ fontSize: "6.1rem" }} />}
                                         title={ENTERED_EXHIBITS_EMPTY_STATE_TITLE}
                                         subTitle={ENTERED_EXHIBITS_EMPTY_STATE_SUBTITLE}
@@ -79,7 +78,7 @@ export default function EnteredExhibits() {
                     onClose={() => setSelectedFile(null)}
                     showShareButtonOnHeader={true}
                     pdfTronDisableElements={[TOOLBAR_GROUP_ANNOTATE, TOOLBAR_GROUP_VIEW]}
-                    pdfTronReadOnly
+                    readOnly
                 />
             )}
         </ExhibitTabPaneSpacer>

@@ -1,5 +1,5 @@
 import "@testing-library/jest-dom";
-import { fireEvent, waitForElement } from "@testing-library/react";
+import { fireEvent, waitForElement, waitForDomChange } from "@testing-library/react";
 import React from "react";
 import { ThemeProvider } from "styled-components";
 import * as CONSTANTS from "../../constants/exhibits";
@@ -8,15 +8,6 @@ import renderWithGlobalContext from "../utils/renderWithGlobalContext";
 import { rootReducer } from "../../state/GlobalState";
 import getMockDeps from "../utils/getMockDeps";
 
-import { useSignedUrl, useShareExhibitFile } from "../../hooks/exhibits/hooks";
-jest.mock("../../hooks/exhibits/hooks", () => ({
-    useSignedUrl: jest.fn(),
-    useShareExhibitFile: jest.fn(),
-}));
-import { useEnteredExhibit } from "../../hooks/useEnteredExhibits";
-jest.mock("../../hooks/useEnteredExhibits", () => ({
-    useEnteredExhibit: jest.fn(),
-}));
 import EnteredExhibits from "../../routes/InDepo/Exhibits/EnteredExhibits";
 import { enteredExhibits } from "../mocks/enteredExhibits";
 
@@ -37,35 +28,15 @@ jest.mock("moment-timezone", () => {
     }));
 });
 
-beforeEach(() => {
-    useShareExhibitFile.mockImplementation(() => ({
-        sharedExhibit: {},
-    }));
-    useSignedUrl.mockImplementation(() => ({
-        pending: false,
-        error: null,
-        documentUrl: "",
-    }));
-    useEnteredExhibit.mockImplementation(() => ({
-        getEnteredExhibits: jest.fn(),
-        enteredExhibits: [],
-        enteredExhibitsPending: false,
-    }));
-});
-
+const customDeps = getMockDeps();
 describe("Entered Exhibits", () => {
-    it("Should be display the Entered exhibits tab with an empty state when has no entered exhibits", () => {
-        const handleFetchFiles = jest.fn();
-        useEnteredExhibit.mockImplementation(() => ({
-            handleFetchFiles,
-            enteredExhibits: [],
-            enteredExhibitsPending: false,
-        }));
+    test("Should be display the Entered exhibits tab with an empty state when has no entered exhibits", () => {
+        customDeps.apiService.getEnteredExhibits = jest.fn().mockResolvedValue([]);
         const { queryByText } = renderWithGlobalContext(
             <ThemeProvider theme={theme}>
                 <EnteredExhibits />
             </ThemeProvider>,
-            getMockDeps(),
+            customDeps,
             {
                 ...rootReducer,
                 initialState: {
@@ -77,23 +48,16 @@ describe("Entered Exhibits", () => {
                 },
             }
         );
-        expect(handleFetchFiles).toBeCalled();
         const enteredExhibitsEmptyStateTitle = queryByText(CONSTANTS.ENTERED_EXHIBITS_EMPTY_STATE_TITLE);
         expect(enteredExhibitsEmptyStateTitle).toBeInTheDocument();
     });
-    it("Should be display the Entered exhibits tab with an empty state when has an error", () => {
-        const handleFetchFiles = jest.fn();
-        useEnteredExhibit.mockImplementation(() => ({
-            handleFetchFiles,
-            enteredExhibits: [],
-            enteredExhibitsPending: false,
-            enteredExhibitsError: "error",
-        }));
+    test("Should be display the Entered exhibits tab with an empty state when has an error", () => {
+        customDeps.apiService.getEnteredExhibits = jest.fn().mockResolvedValue([]);
         const { queryByText } = renderWithGlobalContext(
             <ThemeProvider theme={theme}>
                 <EnteredExhibits />
             </ThemeProvider>,
-            getMockDeps(),
+            customDeps,
             {
                 ...rootReducer,
                 initialState: {
@@ -105,22 +69,16 @@ describe("Entered Exhibits", () => {
                 },
             }
         );
-        expect(handleFetchFiles).toBeCalled();
         const enteredExhibitsEmptyStateTitle = queryByText(CONSTANTS.ENTERED_EXHIBITS_EMPTY_STATE_TITLE);
         expect(enteredExhibitsEmptyStateTitle).toBeInTheDocument();
     });
-    it("Should be display the Entered exhibits tab with a list of entered exhibits", () => {
-        const handleFetchFiles = jest.fn(() => enteredExhibits);
-        useEnteredExhibit.mockImplementation(() => ({
-            handleFetchFiles,
-            enteredExhibits,
-            enteredExhibitsPending: false,
-        }));
+    test("Should be display the Entered exhibits tab with a list of entered exhibits", async () => {
+        customDeps.apiService.getEnteredExhibits = jest.fn().mockResolvedValue(enteredExhibits);
         const { queryByTestId, queryByText } = renderWithGlobalContext(
             <ThemeProvider theme={theme}>
                 <EnteredExhibits />
             </ThemeProvider>,
-            getMockDeps(),
+            customDeps,
             {
                 ...rootReducer,
                 initialState: {
@@ -132,8 +90,7 @@ describe("Entered Exhibits", () => {
                 },
             }
         );
-        expect(handleFetchFiles).toBeCalled();
-        expect(handleFetchFiles).toHaveReturnedWith(enteredExhibits);
+        await waitForDomChange();
         const enteredExhibitsEmptyStateTitle = queryByText(CONSTANTS.ENTERED_EXHIBITS_EMPTY_STATE_TITLE);
         expect(enteredExhibitsEmptyStateTitle).not.toBeInTheDocument();
         const enteredExhibitsTable = queryByTestId("entered_exhibits_table");
@@ -141,18 +98,13 @@ describe("Entered Exhibits", () => {
         const enteredExhibitDisplayName = queryByTestId("entered_exhibit_display_name");
         expect(enteredExhibitDisplayName).toBeInTheDocument();
     });
-    it("should be display the exhibit viewer after click on the view button", async () => {
-        const handleFetchFiles = jest.fn(() => enteredExhibits);
-        useEnteredExhibit.mockImplementation(() => ({
-            handleFetchFiles,
-            enteredExhibits,
-            enteredExhibitsPending: false,
-        }));
+    test("should be display the exhibit viewer after click on the view button", async () => {
+        customDeps.apiService.getEnteredExhibits = jest.fn().mockResolvedValue(enteredExhibits);
         const { queryByTestId, queryByText, debug } = renderWithGlobalContext(
             <ThemeProvider theme={theme}>
                 <EnteredExhibits />
             </ThemeProvider>,
-            getMockDeps(),
+            customDeps,
             {
                 ...rootReducer,
                 initialState: {
@@ -164,9 +116,37 @@ describe("Entered Exhibits", () => {
                 },
             }
         );
+        await waitForDomChange();
         expect(queryByTestId("entered_exhibits_table")).toBeInTheDocument();
         expect(queryByTestId("view_document_header")).not.toBeInTheDocument();
         fireEvent.click(queryByTestId("file_list_view_button"));
         expect(await waitForElement(() => queryByTestId("view_document_header"))).toBeInTheDocument();
+    });
+    test("should be display the exhibit share modal after click on the share button", async () => {
+        customDeps.apiService.getEnteredExhibits = jest.fn().mockResolvedValue(enteredExhibits);
+        customDeps.apiService.shareExhibit = jest.fn().mockResolvedValue(true);
+        const { queryByTestId, queryByText, debug } = renderWithGlobalContext(
+            <ThemeProvider theme={theme}>
+                <EnteredExhibits />
+            </ThemeProvider>,
+            customDeps,
+            {
+                ...rootReducer,
+                initialState: {
+                    room: {
+                        ...rootReducer.initialState.room,
+                        isRecording: true,
+                        currentExhibitTabName: "enteredExhibits",
+                    },
+                },
+            }
+        );
+        await waitForDomChange();
+        expect(queryByTestId("entered_exhibits_table")).toBeInTheDocument();
+        fireEvent.click(queryByTestId("file_list_share_button"));
+        expect(await waitForElement(() => queryByTestId("share_document_modal"))).toBeInTheDocument();
+        fireEvent.click(queryByTestId("confirm_positive_button"));
+        await waitForDomChange();
+        expect(queryByTestId("confirm_positive_button")).not.toBeInTheDocument();
     });
 });
