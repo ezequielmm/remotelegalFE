@@ -85,4 +85,56 @@ describe("Live Exhibits", () => {
         expect(queryByTestId("confirm_positive_button")).not.toBeInTheDocument();
         expect(queryByText(CONSTANTS.LIVE_EXHIBITS_TITLE)).toBeInTheDocument();
     });
+    test("Should not call getSignedUrl or getPrivateSignedUrl when the current exhibit has a presignUrl", async () => {
+        customDeps.apiService.getEnteredExhibits = jest.fn().mockResolvedValue([]);
+        customDeps.apiService.closeExhibit = jest.fn().mockResolvedValue(true);
+        customDeps.apiService.getSignedUrl = jest.fn().mockResolvedValue("url");
+        customDeps.apiService.getPrivateSignedUrl = jest.fn().mockResolvedValue("url");
+        const { queryByText, queryByTestId, debug } = renderWithGlobalContext(
+            <ThemeProvider theme={theme}>
+                <LiveExhibits />
+            </ThemeProvider>,
+            customDeps,
+            {
+                ...rootReducer,
+                initialState: {
+                    room: {
+                        ...rootReducer.initialState.room,
+                        isRecording: true,
+                        currentExhibitTabName: "liveExhibits",
+                        currentExhibit: { ...currentExhibit, close: true, readOnly: true },
+                    },
+                },
+            }
+        );
+        await waitForDomChange();
+        expect(customDeps.apiService.getSignedUrl).not.toHaveBeenCalled();
+        expect(customDeps.apiService.getPrivateSignedUrl).not.toHaveBeenCalled();
+    });
+    test("Should call getSignedUrl and not getPrivateSignedUrl when the current exhibit has not a presignUrl and is read only", async () => {
+        customDeps.apiService.getEnteredExhibits = jest.fn().mockResolvedValue([]);
+        customDeps.apiService.closeExhibit = jest.fn().mockResolvedValue(true);
+        customDeps.apiService.getSignedUrl = jest.fn().mockResolvedValue("url");
+        customDeps.apiService.getPrivateSignedUrl = jest.fn().mockResolvedValue("url");
+        const { queryByText, queryByTestId, debug } = renderWithGlobalContext(
+            <ThemeProvider theme={theme}>
+                <LiveExhibits />
+            </ThemeProvider>,
+            customDeps,
+            {
+                ...rootReducer,
+                initialState: {
+                    room: {
+                        ...rootReducer.initialState.room,
+                        isRecording: true,
+                        currentExhibitTabName: "liveExhibits",
+                        currentExhibit: { ...currentExhibit, preSignedUrl: "", close: true, readOnly: true },
+                    },
+                },
+            }
+        );
+        await waitForDomChange();
+        expect(customDeps.apiService.getSignedUrl).toHaveBeenCalled();
+        expect(customDeps.apiService.getPrivateSignedUrl).not.toHaveBeenCalled();
+    });    
 });

@@ -86,7 +86,8 @@ export const useSignedUrl = (documentId: string, preSignedUrl?: string, isPublic
     const { deps } = useContext(GlobalStateContext);
     const { depositionID } = useParams<{ depositionID: string }>();
     const [getURL, pending, error, documentUrl] = useAsyncCallback(async (payload) => {
-        return preSignedUrl ?? isPublic
+        if (preSignedUrl) return preSignedUrl;
+        return isPublic
             ? deps.apiService.getSignedUrl({ depositionID, documentId, ...payload })
             : deps.apiService.getPrivateSignedUrl({ documentId, ...payload });
     }, []);
