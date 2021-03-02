@@ -8,7 +8,7 @@ import useWebSocket from "../useWebSocket";
 
 const useTranscriptAudio = () => {
     const { dispatch, state } = useContext(GlobalStateContext);
-    const { dataTrack, currentRoom } = state.room;
+    const { isRecording, dataTrack, currentRoom } = state.room;
     const { depositionID } = useParams<DepositionID>();
 
     const [sendAudio] = useAsyncCallback(
@@ -36,9 +36,10 @@ const useTranscriptAudio = () => {
 
     const [transcriptAudio] = useAsyncCallback(
         async (audio: ArrayBuffer | string, sampleRate: number) => {
-            sendMessage({ message: audio, extraUrl: `depositionId=${depositionID}&sampleRate=${sampleRate}` });
+            if (isRecording)
+                sendMessage({ message: audio, extraUrl: `depositionId=${depositionID}&sampleRate=${sampleRate}` });
         },
-        [sendMessage]
+        [isRecording, sendMessage]
     );
 
     const [stopAudio] = useAsyncCallback(

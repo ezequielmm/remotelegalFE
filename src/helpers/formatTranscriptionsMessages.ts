@@ -19,7 +19,7 @@ export const setTranscriptionMessages = (
             { ...lastAcc, [isOnTheRecordObject]: event.creationDate, id: event.id },
         ];
     }, []);
-    const filterPauses = removeCurrentPause ? (pause) => pause.to : (pause) => pause.from || (!pause.from && !pause.to);
+    const filterPauses = removeCurrentPause ? (pause) => pause.to : (pause) => pause.from;
     pauses = pauses.filter(filterPauses);
 
     const transcriptionsWithPauses = [
@@ -46,7 +46,7 @@ export const addTranscriptionMessages = (newTranscription, transcriptions = []) 
                   ...transcriptions.slice(0, transcriptions.length - 1),
                   { ...transcriptions[transcriptions.length - 1], to: newTranscription.creationDate },
               ]
-            : [{ to: newTranscription.creationDate, id: newTranscription.id }];
+            : [];
     }
     if (newTranscription.text === "") return transcriptions;
     const laterTranscriptionIndex = transcriptions?.findIndex((transcription) => {
