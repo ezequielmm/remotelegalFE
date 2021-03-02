@@ -79,7 +79,7 @@ const AddParticipantModal = ({ open, handleClose, fetchParticipants, isCourtRepo
         }
         const body = Object.fromEntries(
             Object.entries({
-                role: role.value === "Court Reporter" ? "CourtReporter" : role.value,
+                role: role.value.replace(/\s+/g, ""),
                 name: name.value,
                 phone: phone.value,
                 email: email.value,
