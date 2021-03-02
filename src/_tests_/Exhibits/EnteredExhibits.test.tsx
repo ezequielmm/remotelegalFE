@@ -149,4 +149,32 @@ describe("Entered Exhibits", () => {
         await waitForDomChange();
         expect(queryByTestId("confirm_positive_button")).not.toBeInTheDocument();
     });
+    test("should be call getSignedUrl when the user is in the entered exhibits tab", async () => {
+        customDeps.apiService.getEnteredExhibits = jest.fn().mockResolvedValue(enteredExhibits);
+        customDeps.apiService.getSignedUrl = jest.fn().mockResolvedValue("url")
+        customDeps.apiService.getPrivateSignedUrl = jest.fn().mockResolvedValue("url")
+        const { queryByTestId, queryByText, debug } = renderWithGlobalContext(
+            <ThemeProvider theme={theme}>
+                <EnteredExhibits />
+            </ThemeProvider>,
+            customDeps,
+            {
+                ...rootReducer,
+                initialState: {
+                    room: {
+                        ...rootReducer.initialState.room,
+                        isRecording: true,
+                        currentExhibitTabName: "enteredExhibits",
+                    },
+                },
+            }
+        );
+        await waitForDomChange();
+        expect(queryByTestId("entered_exhibits_table")).toBeInTheDocument();
+        expect(queryByTestId("view_document_header")).not.toBeInTheDocument();
+        fireEvent.click(queryByTestId("file_list_view_button"));
+        expect(await waitForElement(() => queryByTestId("view_document_header"))).toBeInTheDocument();
+        expect(customDeps.apiService.getSignedUrl).toHaveBeenCalled();
+        expect(customDeps.apiService.getPrivateSignedUrl).not.toHaveBeenCalled();
+    });
 });

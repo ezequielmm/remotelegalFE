@@ -44,7 +44,7 @@ export const ExhibitViewer = ({
 }: Props): ReactElement => {
     const { state } = useContext(GlobalStateContext);
     const { exhibitTab, permissions } = state.room;
-    const { pending, error, documentUrl } = useSignedUrl(file?.id, file?.preSignedUrl);
+    const { pending, error, documentUrl } = useSignedUrl(file?.id, file?.preSignedUrl, readOnly);
 
     return (
         <StyledExhibitViewerContainer>

@@ -258,10 +258,19 @@ export class ApiService {
         });
     };
 
-    getDocumentUrl = async ({ depositionID, documentId, ...payload }): Promise<boolean> => {
+    getSignedUrl = async ({ depositionID, documentId}): Promise<boolean> => {
         return this.request<boolean>({
             path: `/api/depositions/${depositionID}/documents/${documentId}/preSignedUrl`,
-            payload,
+            payload: {},
+            withToken: true,
+            method: HTTP_METHOD.GET,
+        });
+    };
+
+    getPrivateSignedUrl = async ({ documentId }): Promise<boolean> => {
+        return this.request<boolean>({
+            path: `/api/documents/${documentId}/preSignedUrl`,
+            payload: {},
             withToken: true,
             method: HTTP_METHOD.GET,
         });

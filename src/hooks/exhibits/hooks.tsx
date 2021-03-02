@@ -82,11 +82,13 @@ export const useFileList = (
     return { handleFetchFiles, loading, errorFetchFiles, files, sortDirection, sortedField, refreshList };
 };
 
-export const useSignedUrl = (documentId: string, preSignedUrl?: string) => {
+export const useSignedUrl = (documentId: string, preSignedUrl?: string, isPublic?: boolean) => {
     const { deps } = useContext(GlobalStateContext);
     const { depositionID } = useParams<{ depositionID: string }>();
     const [getURL, pending, error, documentUrl] = useAsyncCallback(async (payload) => {
-        return preSignedUrl ?? (await deps.apiService.getDocumentUrl({ depositionID, documentId, ...payload }));
+        return preSignedUrl ?? isPublic
+            ? deps.apiService.getSignedUrl({ depositionID, documentId, ...payload })
+            : deps.apiService.getPrivateSignedUrl({ documentId, ...payload });
     }, []);
     useEffect(() => {
         getURL();
