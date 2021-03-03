@@ -1,4 +1,4 @@
-import Icon from "@ant-design/icons";
+import ANTIcon from "@ant-design/icons";
 import React from "react";
 import { IconComponentProps } from "@ant-design/icons/lib/components/Icon";
 import styled from "styled-components";
@@ -8,7 +8,7 @@ import ColorStatus, { isColorStatusType } from "../../types/ColorStatus";
 const range12 = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] as const;
 type range12Type = typeof range12[number];
 
-interface CustomIconProps
+export interface IIconProps
     extends Pick<
         IconComponentProps,
         "component" | "style" | "spin" | "rotate" | "className" | "height" | "width" | "onClick" | "tabIndex"
@@ -23,7 +23,7 @@ interface StyledIconProps extends IconComponentProps {
     $color?: ColorStatus | string;
 }
 
-const StyledCustomIcon = styled(Icon)<StyledIconProps>`
+const StyledIcon = styled(ANTIcon)<StyledIconProps>`
     ${({ $size, $color, theme }) => {
         const rangeSize = theme.default.spaces[$size];
 
@@ -51,7 +51,7 @@ const StyledCustomIcon = styled(Icon)<StyledIconProps>`
         `;
     }}
 `;
-const CustomIcon = ({ icon, size, color, ...props }: CustomIconProps) => {
-    return <StyledCustomIcon $size={size} $color={color} component={icon} {...props} />;
+const Icon = ({ icon, size, color, ...props }: IIconProps) => {
+    return <StyledIcon $size={size} $color={color} component={icon} {...props} />;
 };
-export default CustomIcon;
+export default Icon;

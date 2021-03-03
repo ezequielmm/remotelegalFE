@@ -6,7 +6,7 @@ import { DefaultRecordType } from "rc-table/lib/interface";
 import Column from "antd/lib/table/Column";
 import Table from "../../../../components/Table";
 import { StyledFileNameCell } from "./styles";
-import FileIcon from "../FileIcon";
+import FileIcon from "../../../../components/FileIcon";
 import Text from "../../../../components/Typography/Text";
 import ColorStatus from "../../../../types/ColorStatus";
 

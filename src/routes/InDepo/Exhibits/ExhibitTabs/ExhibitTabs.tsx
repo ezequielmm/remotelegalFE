@@ -1,4 +1,4 @@
-import { CustomIconComponentProps } from "@ant-design/icons/lib/components/Icon";
+import { IconComponentProps } from "@ant-design/icons/lib/components/Icon";
 import React from "react";
 import Icon from "../../../../components/Icon";
 import Space from "../../../../components/Space";
@@ -12,7 +12,7 @@ export interface ExhibitTabData {
     tabTestId: string;
     title: string;
     subTitle: string;
-    icon?: React.ComponentType<CustomIconComponentProps | React.SVGProps<SVGSVGElement>>;
+    icon?: React.ComponentType<IconComponentProps | React.SVGProps<SVGSVGElement>>;
     ExhibitComponent: React.FC<any>;
     tabPaneTestId: string;
 }

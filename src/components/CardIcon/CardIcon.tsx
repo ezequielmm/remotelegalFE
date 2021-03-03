@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import Space from "../Space";
 import { ICardProps } from "../Card/Card";
 import { StyledCardIcon, IStyledCardIconProps, StyledButton, StyledIconWrapper } from "./styles";
-import CustomIcon from "../Icon";
+import Icon from "../Icon";
 import { ReactComponent as ArrowIcon } from "../../assets/general/Arrow.svg";
 import ColorStatus from "../../types/ColorStatus";
 
@@ -40,13 +40,13 @@ const CardIcon = ({ icon, to, onClick, children, hasShaddow = false, ...cardProp
                 <Space size="middle" align="center" fullWidth justify="space-between">
                     <Space size="middle" align="center" fullWidth>
                         <StyledIconWrapper>
-                            <CustomIcon icon={icon} size={8} color={ColorStatus.white} />
+                            <Icon icon={icon} size={8} color={ColorStatus.white} />
                         </StyledIconWrapper>
                         <Space.Item>{children}</Space.Item>
                     </Space>
                     {(to || onClick) && (
                         <Space.Item className="card-icon__action">
-                            <CustomIcon icon={ArrowIcon} size="2rem" rotate={-90} />
+                            <Icon icon={ArrowIcon} size="2rem" rotate={-90} />
                         </Space.Item>
                     )}
                 </Space>

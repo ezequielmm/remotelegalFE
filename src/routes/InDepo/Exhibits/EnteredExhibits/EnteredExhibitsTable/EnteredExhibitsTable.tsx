@@ -8,7 +8,7 @@ import { getREM } from "../../../../../constants/styles/utils";
 import Button from "../../../../../components/Button";
 import Table from "../../../../../components/Table";
 import Text from "../../../../../components/Typography/Text";
-import FileIcon from "../../FileIcon";
+import FileIcon from "../../../../../components/FileIcon";
 import { ExhibitFile } from "../../../../../types/ExhibitFile";
 import { StyledFileNameCell } from "./styles";
 import ColorStatus from "../../../../../types/ColorStatus";

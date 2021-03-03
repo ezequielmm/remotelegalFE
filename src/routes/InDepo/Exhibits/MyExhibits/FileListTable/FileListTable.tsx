@@ -12,7 +12,7 @@ import Dropdown from "../../../../../components/Dropdown";
 import Menu from "../../../../../components/Menu";
 import Space from "../../../../../components/Space";
 import Icon from "../../../../../components/Icon";
-import FileIcon from "../../FileIcon";
+import FileIcon from "../../../../../components/FileIcon";
 import { ReactComponent as kebebIcon } from "../../../../../assets/icons/kebeb.svg";
 import { ReactComponent as DeleteIcon } from "../../../../../assets/icons/delete.svg";
 import { ReactComponent as RenameIcon } from "../../../../../assets/icons/edit.svg";
