@@ -30,7 +30,7 @@ jest.mock("moment-timezone", () => {
 
 const customDeps = getMockDeps();
 describe("Live Exhibits", () => {
-    test("Should display the close confirmation modal if the shared exhibit is not readOnly", async () => {
+    test("Should display the close confirmation modal if the shared exhibit is not isPublic", async () => {
         customDeps.apiService.getEnteredExhibits = jest.fn().mockResolvedValue([]);
         customDeps.apiService.closeExhibit = jest.fn().mockResolvedValue(true);
         const { queryByTestId } = renderWithGlobalContext(
@@ -57,7 +57,7 @@ describe("Live Exhibits", () => {
         await waitForDomChange();
         expect(queryByTestId("confirm_positive_button")).toBeInTheDocument();
     });
-    test("Should not display the close confirmation modal if the shared exhibit is readOnly", async () => {
+    test("Should not display the close confirmation modal if the shared exhibit is isPublic", async () => {
         customDeps.apiService.getEnteredExhibits = jest.fn().mockResolvedValue([]);
         customDeps.apiService.closeExhibit = jest.fn().mockResolvedValue(true);
         const { queryByText, queryByTestId, debug } = renderWithGlobalContext(
@@ -72,7 +72,7 @@ describe("Live Exhibits", () => {
                         ...rootReducer.initialState.room,
                         isRecording: true,
                         currentExhibitTabName: "liveExhibits",
-                        currentExhibit: { ...currentExhibit, close: true, readOnly: true },
+                        currentExhibit: { ...currentExhibit, close: true, isPublic: true },
                     },
                 },
             }
@@ -102,7 +102,7 @@ describe("Live Exhibits", () => {
                         ...rootReducer.initialState.room,
                         isRecording: true,
                         currentExhibitTabName: "liveExhibits",
-                        currentExhibit: { ...currentExhibit, close: true, readOnly: true },
+                        currentExhibit: { ...currentExhibit, close: true, isPublic: true },
                     },
                 },
             }
@@ -128,7 +128,7 @@ describe("Live Exhibits", () => {
                         ...rootReducer.initialState.room,
                         isRecording: true,
                         currentExhibitTabName: "liveExhibits",
-                        currentExhibit: { ...currentExhibit, preSignedUrl: "", close: true, readOnly: true },
+                        currentExhibit: { ...currentExhibit, preSignedUrl: "", close: true, isPublic: true },
                     },
                 },
             }
@@ -136,5 +136,5 @@ describe("Live Exhibits", () => {
         await waitForDomChange();
         expect(customDeps.apiService.getSignedUrl).toHaveBeenCalled();
         expect(customDeps.apiService.getPrivateSignedUrl).not.toHaveBeenCalled();
-    });    
+    });
 });

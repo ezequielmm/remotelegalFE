@@ -44,7 +44,7 @@ export const ExhibitViewer = ({
 }: Props): ReactElement => {
     const { state } = useContext(GlobalStateContext);
     const { exhibitTab, permissions } = state.room;
-    const { pending, error, documentUrl } = useSignedUrl(file?.id, file?.preSignedUrl, readOnly);
+    const { pending, error, documentUrl, isPublic } = useSignedUrl(file, readOnly);
 
     return (
         <StyledExhibitViewerContainer>
@@ -54,13 +54,13 @@ export const ExhibitViewer = ({
                 showBackButton={showBackButtonOnHeader}
                 showCloseButton={showCloseButtonOnHeader}
                 showShareButton={showShareButtonOnHeader}
-                readOnly={readOnly}
+                readOnly={isPublic}
             />
             {pending && <Spinner />}
             {documentUrl && (
                 <PDFTronViewer
                     canStamp={
-                        permissions.includes(DepositionModel.DepositionPermissionsTypes.stampExhibit) && !readOnly
+                        permissions.includes(DepositionModel.DepositionPermissionsTypes.stampExhibit) && !isPublic
                     }
                     showStamp={exhibitTab === LIVE_EXHIBIT_TAB}
                     document={documentUrl}
@@ -68,7 +68,7 @@ export const ExhibitViewer = ({
                     annotations={annotations}
                     onAnnotationChange={onAnnotationChange}
                     disableElements={pdfTronDisableElements}
-                    readOnly={readOnly}
+                    readOnly={isPublic}
                 />
             )}
             {!!error && (

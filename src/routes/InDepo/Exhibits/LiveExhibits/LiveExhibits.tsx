@@ -26,8 +26,8 @@ export default function LiveExhibits() {
                     onClose={closeSharedExhibit}
                     annotations={annotations}
                     onAnnotationChange={sendAnnotation}
-                    pdfTronDisableElements={sharedExhibit?.readOnly ? [TOOLBAR_GROUP_ANNOTATE, TOOLBAR_GROUP_VIEW] : []}
-                    readOnly={sharedExhibit?.readOnly}
+                    pdfTronDisableElements={sharedExhibit?.isPublic ? [TOOLBAR_GROUP_ANNOTATE, TOOLBAR_GROUP_VIEW] : []}
+                    readOnly={sharedExhibit?.isPublic}
                 />
             )}
             {!sharedExhibit && (

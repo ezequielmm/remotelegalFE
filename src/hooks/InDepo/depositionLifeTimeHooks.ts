@@ -118,9 +118,9 @@ export const useJoinDeposition = () => {
         const transcriptions = await getTranscriptions();
         const breakrooms = await getBreakrooms();
         const events = await getDepositionEvents(depositionID);
-        const { isOnTheRecord, timeZone, token, isSharing, isReadyOnly = false }: any = await generateToken();
+        const { isOnTheRecord, timeZone, token, isSharing }: any = await generateToken();
         if (isSharing) {
-            fetchExhibitFileInfo(depositionID, isReadyOnly);
+            fetchExhibitFileInfo(depositionID);
         }
         const room = await createLocalTracks({ audio: true, video: { aspectRatio: 1.777777777777778 } }).then(
             (localTracks) => {

@@ -82,28 +82,31 @@ export const useFileList = (
     return { handleFetchFiles, loading, errorFetchFiles, files, sortDirection, sortedField, refreshList };
 };
 
-export const useSignedUrl = (documentId: string, preSignedUrl?: string, isPublic?: boolean) => {
+export const useSignedUrl = (file: ExhibitFile, isPublic?: boolean) => {
     const { deps } = useContext(GlobalStateContext);
     const { depositionID } = useParams<{ depositionID: string }>();
-    const [getURL, pending, error, documentUrl] = useAsyncCallback(async (payload) => {
-        if (preSignedUrl) return preSignedUrl;
+    const [getURL, pending, error, documentData] = useAsyncCallback(async (payload) => {
+        if (file?.preSignedUrl)
+            return {
+                url: file.preSignedUrl,
+                isPublic: file.isPublic,
+            };
         return isPublic
-            ? deps.apiService.getSignedUrl({ depositionID, documentId, ...payload })
-            : deps.apiService.getPrivateSignedUrl({ documentId, ...payload });
+            ? await deps.apiService.getSignedUrl({ depositionID, documentId: file?.id, ...payload })
+            : await deps.apiService.getPrivateSignedUrl({ documentId: file?.id, ...payload });
     }, []);
     useEffect(() => {
         getURL();
     }, [getURL]);
 
-    return { getURL, pending, error, documentUrl };
+    return { getURL, pending, error, documentUrl: documentData?.url, isPublic: documentData?.isPublic };
 };
 
 export const useExhibitFileInfo = () => {
     const { deps, dispatch } = useContext(GlobalStateContext);
-    return useAsyncCallback(async (depositionID, readOnly: boolean = false) => {
-        const exhibitFile: ExhibitFile = await deps.apiService.getSharedExhibit(depositionID);
+    return useAsyncCallback(async (depositionID) => {
+        const exhibitFile = await deps.apiService.getSharedExhibit(depositionID);
         if (exhibitFile) {
-            exhibitFile.readOnly = readOnly;
             const user = await deps.apiService.currentUser();
             dispatch(actions.setCurrentUser(user));
             dispatch(actions.setSharedExhibit(exhibitFile));
@@ -161,7 +164,7 @@ export const useShareExhibitFile = () => {
                     documentId: exhibitFile.id,
                     readOnly,
                 })) !== undefined;
-            const fileInfo: any = await fetchExhibitFileInfo(depositionID, readOnly);
+            const fileInfo: any = await fetchExhibitFileInfo(depositionID);
             if (fileInfo) {
                 dataTrack.send(JSON.stringify({ module: "shareExhibit", value: fileInfo }));
             }
@@ -172,7 +175,7 @@ export const useShareExhibitFile = () => {
 
     useEffect(() => {
         if (message.module === "shareExhibit" && message.value) {
-            fetchExhibitFileInfo(depositionID, message.value?.readOnly);
+            fetchExhibitFileInfo(depositionID);
         }
         if (message.module === "closeSharedExhibit" && message?.value?.id === currentExhibit?.id) {
             dispatch(actions.stopShareExhibit());

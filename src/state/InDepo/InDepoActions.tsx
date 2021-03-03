@@ -4,6 +4,7 @@ import { DataTrackMessage, DisconnectRoomState } from "../types";
 import { EventModel, TranscriptionModel, BreakroomModel } from "../../models";
 import { EXHIBIT_TAB } from "../../constants/exhibits";
 import { CoreControls } from "@pdftron/webviewer";
+import { ExhibitFile } from "../../types/ExhibitFile";
 
 export enum ACTION_TYPE {
     SEND_MESSAGE = "SEND_MESSAGE",
@@ -106,7 +107,7 @@ const actions = {
         type: ACTION_TYPE.CHANGE_EXHIBIT_TAB,
         payload,
     }),
-    setSharedExhibit: (payload) => ({
+    setSharedExhibit: (payload: ExhibitFile) => ({
         type: ACTION_TYPE.IN_DEPO_START_SHARE_EXHIBIT,
         payload,
     }),

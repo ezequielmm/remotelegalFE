@@ -12,6 +12,6 @@ export type ExhibitFile = {
     preSignedUrl?: string;
     addedBy?: AddedBy;
     close?: boolean;
-    sharedAt?: string,
-    readOnly?: boolean,
+    sharedAt?: string;
+    isPublic?: boolean;
 };
