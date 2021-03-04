@@ -15,7 +15,10 @@ jobs:
           fetch-depth: 0
 
       - name: Install Yarn
-        run: npm install -g yarn
+        uses: actions/setup-node@v2
+        run: sudo npm install -g yarn
+        with:
+            node-version: 14
 
       - name: Install Dependencies
         run: npm install
