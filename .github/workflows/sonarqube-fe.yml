@@ -4,19 +4,40 @@ on:
   push:
     branches:
       - develop
-      
+
 jobs:
   analyze:
     runs-on: ubuntu-latest
     steps:
-    - name: Checking out
-      uses: actions/checkout@v2
-      with:
-        fetch-depth: 0    
-    - name: Sonarqube Scan
-      uses: kitabisa/sonarqube-action@master
-      with:
-        host: "https://sonarqube.prdevelopment.net"
-        projectKey: "prp-fe"
-        projectName: "prp-fe"
-        login: ${{ secrets.SONAR_TOKEN }}
+      - name: Checking out
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Install Yarn
+        run: npm install -g yarn
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Extract Branch Name for ENV file replacement
+        id: extract-branch-for-replacement
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+
+      - name: Getting appropriate ENV file
+        uses: canastro/copy-file-action@master
+        with:
+          source: ./env/.env.${{ steps.extract-branch-for-replacement.outputs.branch }}
+          target: .env
+
+      - name: Test
+        run: CI=true yarn test --coverage --watchAll=false
+
+      - name: Sonarqube Scan
+        uses: kitabisa/sonarqube-action@master
+        with:
+          host: "https://sonarqube.prdevelopment.net"
+          projectKey: "prp-fe"
+          projectName: "prp-fe"
+          login: ${{ secrets.SONAR_TOKEN }}
