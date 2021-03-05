@@ -56,7 +56,6 @@ jobs:
             - name: Test
               run: CI=true yarn test
             - name: Upload publish to GitHub Store
-              if: ${{ env.ENABLE_CACHE == 'true' }}
               uses: actions/upload-artifact@master
               with:
                   name: publish-build
