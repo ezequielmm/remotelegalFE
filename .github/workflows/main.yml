@@ -12,10 +12,13 @@ on:
 jobs:
     build-test:
         runs-on: ubuntu-latest
+        env:
+          CLEAN_NODE_MODULES: ${{ secrets.CLEAN_NODE_MODULES }}
+          ENABLE_CACHE: secrets.ENABLE_CACHE
         steps:
             - uses: actions/checkout@v2
             - name: Cache node modules
-              if: ${{ secrets.ENABLE_CACHE == 'true' }}
+              if: ${{ env.ENABLE_CACHE == 'true' }}
               id: yarn-cache
               uses: actions/cache@v2
               env:
@@ -29,11 +32,11 @@ jobs:
                       ${{ runner.os }}-
 
             - name: Remove node_modules
-              if: ${{ secrets.CLEAN_NODE_MODULES == 'true' }}
+              if: ${{ env.CLEAN_NODE_MODULES == 'true' }}
               run: rm -rf node_modules
 
             - name: Install Dependencies
-              if: ${{ secrets.ENABLE_CACHE == 'true' && steps.yarn-cache.outputs.cache-hit != 'true'}}
+              if: ${{ env.ENABLE_CACHE != 'true' && steps.yarn-cache.outputs.cache-hit != 'true' }}
               run: yarn install
 
             - name: Extract Branch Name for ENV file replacement
@@ -53,7 +56,7 @@ jobs:
             - name: Test
               run: CI=true yarn test
             - name: Upload publish to GitHub Store
-              if: ${{ secrets.ENABLE_CACHE == 'true'  }}
+              if: ${{ env.ENABLE_CACHE == 'true' }}
               uses: actions/upload-artifact@master
               with:
                   name: publish-build
@@ -82,8 +85,8 @@ jobs:
             - name: Configure AWS Credentials
               uses: aws-actions/configure-aws-credentials@v1
               with:
-                  aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-                  aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+                  aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+                  aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
                   aws-region: us-east-1
             - name: Download publish from GitHub Store
               uses: actions/download-artifact@master
@@ -95,7 +98,7 @@ jobs:
               if: ${{ steps.extract-branch.outputs.branch == 'develop' }}
               shell: bash
               env:
-                  DIST: ${{ secrets.DISTRIBUTION_DEV }}
+                  DIST: ${{ env.DISTRIBUTION_DEV }}
               run: |
                   echo "DISTRIBUTION=$DIST" >> $GITHUB_ENV
                   echo "BUCKET=prp-fe-develop" >> $GITHUB_ENV
@@ -103,7 +106,7 @@ jobs:
               if: ${{ steps.extract-branch.outputs.branch == 'qa' }}
               shell: bash
               env:
-                  DIST: ${{ secrets.DISTRIBUTION_QA }}
+                  DIST: ${{ env.DISTRIBUTION_QA }}
               run: |
                   echo "DISTRIBUTION=$DIST" >> $GITHUB_ENV
                   echo "BUCKET=prp-fe-qa" >> $GITHUB_ENV
