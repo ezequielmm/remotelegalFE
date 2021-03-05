@@ -13,8 +13,6 @@ jobs:
     build-test:
         runs-on: ubuntu-latest
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           CLEAN_NODE_MODULES: ${{ secrets.CLEAN_NODE_MODULES }}
           ENABLE_CACHE: secrets.ENABLE_CACHE
         steps:
@@ -87,8 +85,8 @@ jobs:
             - name: Configure AWS Credentials
               uses: aws-actions/configure-aws-credentials@v1
               with:
-                  aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
-                  aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+                  aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+                  aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
                   aws-region: us-east-1
             - name: Download publish from GitHub Store
               uses: actions/download-artifact@master
@@ -100,7 +98,7 @@ jobs:
               if: ${{ steps.extract-branch.outputs.branch == 'develop' }}
               shell: bash
               env:
-                  DIST: ${{ env.DISTRIBUTION_DEV }}
+                  DIST: ${{ secrets.DISTRIBUTION_DEV }}
               run: |
                   echo "DISTRIBUTION=$DIST" >> $GITHUB_ENV
                   echo "BUCKET=prp-fe-develop" >> $GITHUB_ENV
@@ -108,7 +106,7 @@ jobs:
               if: ${{ steps.extract-branch.outputs.branch == 'qa' }}
               shell: bash
               env:
-                  DIST: ${{ env.DISTRIBUTION_QA }}
+                  DIST: ${{ secrets.DISTRIBUTION_QA }}
               run: |
                   echo "DISTRIBUTION=$DIST" >> $GITHUB_ENV
                   echo "BUCKET=prp-fe-qa" >> $GITHUB_ENV
