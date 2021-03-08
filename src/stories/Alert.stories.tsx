@@ -32,7 +32,7 @@ export default {
     },
 } as Meta;
 
-const Template: Story = (args: IAlertProps) => <Alert {...args} />;
+const Template: Story = (args: IAlertProps) => <Alert closable {...args} />;
 
 export const AntAlert = Template.bind({});
 AntAlert.args = {

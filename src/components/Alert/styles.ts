@@ -63,6 +63,12 @@ const StyledAlert = styled(ANTDAlert)<IAlertProps>`
                 display: block;
             }
 
+            .ant-alert-close-icon{ 
+                top: calc(${getREM(theme.default.spaces[9])} - 1px); 
+                right: ${getREM(theme.default.spaces[5])}; 
+                transform: translateY(-50%); 
+            }
+
             .ant-alert-description {
                 line-height: 1.5;
                 margin-top: ${getREM(theme.default.spaces[4])};
