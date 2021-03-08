@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { SetStateAction, useEffect, useRef, useState } from "react";
 import { Row } from "antd";
 import moment from "moment";
 import Space from "../../../components/Space";
@@ -28,13 +28,17 @@ import downloadFile from "../../../helpers/downloadFile";
 import { useFetchDeposition } from "../../../hooks/depositions/hooks";
 import CardFetchError from "../../../components/CardFetchError";
 import Spinner from "../../../components/Spinner";
+import EditDepoModal from "./EditDepoModal";
+import EditRequesterNotesModal from "./RequesterModal";
 
 const DepositionDetailsSection = ({
     deposition,
     activeKey,
+    setUpdatedDeposition,
 }: {
     deposition: DepositionModel.IDeposition;
     activeKey: string;
+    setUpdatedDeposition: React.Dispatch<SetStateAction<DepositionModel.IDeposition>>;
 }) => {
     const { fetchDeposition, loading, deposition: updatedDeposition, error } = useFetchDeposition();
     const {
@@ -48,10 +52,12 @@ const DepositionDetailsSection = ({
         addedBy,
         requester,
         requesterNotes,
-    } = updatedDeposition || deposition || {};
+    } = deposition || {};
     const { lastName, firstName, phoneNumber, emailAddress, companyName } = requester || {};
     const courtReporter = participants?.find((participant) => participant.role === "CourtReporter");
     const [fetchCaption, captionLoading, captionError, captionUrl] = useFetchCaption();
+    const [openEditDepositionModal, setOpenEditDepositionModal] = useState(false);
+    const [openEditRequesterNotesModal, setOpenEditRequesterNotesModal] = useState(false);
     const firstRender = useRef(true);
 
     useEffect(() => {
@@ -64,6 +70,12 @@ const DepositionDetailsSection = ({
             fetchDeposition();
         }
     }, [fetchDeposition, activeKey]);
+
+    useEffect(() => {
+        if (updatedDeposition) {
+            setUpdatedDeposition(updatedDeposition);
+        }
+    }, [updatedDeposition, setUpdatedDeposition]);
 
     useEffect(() => {
         if (captionError) {
@@ -102,6 +114,22 @@ const DepositionDetailsSection = ({
 
     return (
         <>
+            {deposition && (
+                <EditDepoModal
+                    fetchDeposition={fetchDeposition}
+                    open={openEditDepositionModal}
+                    handleClose={setOpenEditDepositionModal}
+                    deposition={updatedDeposition || deposition}
+                />
+            )}
+            {deposition && (
+                <EditRequesterNotesModal
+                    fetchDeposition={fetchDeposition}
+                    open={openEditRequesterNotesModal}
+                    handleClose={setOpenEditRequesterNotesModal}
+                    deposition={updatedDeposition || deposition}
+                />
+            )}
             <Space py={6} fullWidth>
                 <Title
                     level={5}
@@ -112,7 +140,10 @@ const DepositionDetailsSection = ({
                     {CONSTANTS.DEPOSITION_ADDITIONAL_INFORMATION_TEXT}
                 </Title>
             </Space>
-            <SectionCard title={CONSTANTS.DEPOSITION_CARD_DETAILS_TITLE}>
+            <SectionCard
+                title={CONSTANTS.DEPOSITION_CARD_DETAILS_TITLE}
+                actionTrigger={() => setOpenEditDepositionModal(true)}
+            >
                 <Space size={12} direction="vertical" fullWidth>
                     <Row style={{ width: "100%" }}>
                         <SectionCardCol
@@ -182,7 +213,10 @@ const DepositionDetailsSection = ({
                     dataTestId={CONSTANTS.DEPOSITION_REQUESTED_TEXT_DATA_TEST_ID}
                 >{`Requested by ${firstName} ${lastName} | ${companyName}`}</Text>
             </SectionCard>
-            <SectionCard title={CONSTANTS.DEPOSITION_REQUESTER_TITLE}>
+            <SectionCard
+                title={CONSTANTS.DEPOSITION_REQUESTER_TITLE}
+                actionTrigger={() => setOpenEditRequesterNotesModal(true)}
+            >
                 <Space size={12} direction="vertical" fullWidth>
                     <Row style={{ width: "100%" }}>
                         <SectionCardCol

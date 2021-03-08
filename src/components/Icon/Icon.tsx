@@ -43,6 +43,7 @@ const StyledIcon = styled(ANTIcon)<StyledIconProps>`
             .anticon&& {
                 ${colorStyles}
                 ${sizeStyles}
+                line-height: 0;
     
                 &:focus {
                     outline-color: ${theme.default.primaryColor};

@@ -134,6 +134,8 @@ export const DEPOSITION_NO_PARTICIPANT_TEXT = "To be defined";
 export const DEPOSITION_NO_JOB_TEXT = "To be defined";
 export const DEPOSITION_ADDITIONAL_INFORMATION_TEXT = "Additional Information";
 export const DEPOSITION_CARD_DETAILS_TITLE = "Details";
+export const DEPOSITION_CARD_DETAILS_ACTION_TRIGGER = "edit";
+export const DEPOSITION_CARD_DETAILS_EDIT_BUTTON_DATA_TEST_ID = "edit_button";
 export const DEPOSITION_VIDEO_RECORDING_TITLE = "Video Recording";
 export const DEPOSITION_VIDEO_RECORDING_TRUE_TEXT = "Yes";
 export const DEPOSITION_VIDEO_RECORDING_FALSE_TEXT = "No";
@@ -146,3 +148,49 @@ export const DEPOSITION_REQUESTED_TEXT_DATA_TEST_ID = "deposition_details_reques
 export const CAPTION_NETWORK_ERROR = "Sorry, we couldn´t get the file. Please try again";
 export const NETWORK_ERROR = "An unexpected error occurred! Please try again";
 export const DEPOSITION_DETAILS_ADD_PARTICIPANT_MODAL_PARTICIPANT_ALREADY_EXISTS_ERROR = "Participant already exists";
+export const DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_TITLE = "Details";
+export const DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_DATA_TEST_ID_TITLE =
+    "deposition_details_edit_deposition_modal_title";
+export const DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_DATA_TEST_ID_STATUS =
+    "deposition_details_edit_deposition_modal_status";
+export const DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_STATUS_OPTIONS = ["Pending", "Confirmed"];
+export const DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_DATA_TEST_ID_JOB = "deposition_details_edit_deposition_modal_job";
+export const DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_RADIO_LABEL =
+    "DOES THE WITNESS TESTIMONY NEED TO BE VIDEO RECORDED?";
+export const DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_RADIO_LABEL_TOOLTIP =
+    'Choosing "Yes" for this option will provide you with a time-stamped video of the witness testimony on the record. Please ensure that all parties agree to this option before choosing.';
+export const DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_DATA_TEST_ID_VIDEO_RECORDING_RADIO_GROUP =
+    "deposition_details_edit_deposition_modal_video_recording_radio_group";
+export const DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_RADIO_OPTIONS = [
+    { value: true, label: "YES" },
+    { value: false, label: "NO" },
+];
+export const DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_DATA_TEST_ID_DETAILS =
+    "deposition_details_edit_deposition_modal_details";
+export const DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_CANCEL_BUTTON_TEXT = "Cancel";
+export const DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_CANCEL_BUTTON_TEST_ID =
+    "deposition_details_edit_deposition_cancel_button";
+export const DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_CONFIRM_BUTTON_TEXT = "Save";
+export const DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_CONFIRM_BUTTON_TEST_ID =
+    "deposition_details_edit_deposition_confirm_button";
+export const DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_CAPTION_BUTTON_TEST_ID =
+    "deposition_details_edit_deposition_caption_button";
+export const DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_CAPTION_BUTTON_REMOVE_FILE_TEST_ID =
+    "deposition_details_edit_deposition_caption_button_remove_file";
+export const DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_UPLOAD_COMPONENT_DATA_TEST_ID =
+    "deposition_details_edit_deposition_upload_component";
+export const DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_FILE_ERROR_MESSAGE_DATA_TEST_ID =
+    "deposition_details_edit_deposition_file_error_message";
+export const DEPOSITION_DETAILS_EDIT_REQUESTER_MODAL_TITLE = "Requester";
+export const DEPOSITION_DETAILS_EDIT_REQUESTER_MODAL_DATA_TEST_ID_TITLE =
+    "deposition_details_edit_requester_modal_title";
+export const DEPOSITION_DETAILS_EDIT_REQUESTER_MODAL_DATA_TEST_ID_INPUT =
+    "deposition_details_edit_requester_modal_input";
+export const DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_FILE_ERROR_MESSAGE = "File must be a pdf";
+export const DEPOSITION_DETAILS_EDIT_REQUESTER_MODAL_CANCEL_BUTTON_TEXT = "Cancel";
+export const DEPOSITION_DETAILS_EDIT_REQUESTER_MODAL_CANCEL_BUTTON_TEST_ID =
+    "deposition_details_edit_requester_cancel_button";
+export const DEPOSITION_DETAILS_EDIT_REQUESTER_MODAL_CONFIRM_BUTTON_TEXT = "Save";
+export const DEPOSITION_DETAILS_EDIT_REQUESTER_MODAL_CONFIRM_BUTTON_TEST_ID =
+    "deposition_details_edit_requester_confirm_button";
+export const DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_SUCCESS_TOAST = "The deposition was successfully updated";

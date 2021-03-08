@@ -58,7 +58,7 @@ const MyDepositions = () => {
 
     const mappedDepositions = React.useMemo(
         () =>
-            data?.map(({ id, details, status, requester, witness, participants, ...depositions }) => {
+            data?.map(({ id, details, status, requester, witness, participants, job, ...depositions }) => {
                 const courtReporter = participants.find((participant) => participant.role === Roles.courtReporter);
                 return {
                     id,
@@ -69,6 +69,7 @@ const MyDepositions = () => {
                     startDate: parseDate(depositions),
                     witness: witness?.name,
                     courtReporter: courtReporter?.name,
+                    job,
                     details: "-",
                 } as MappedDeposition;
             }),

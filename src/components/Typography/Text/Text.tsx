@@ -1,10 +1,9 @@
 import React from "react";
-
 import styled from "styled-components";
 import { getREM, getWeightNumber } from "../../../constants/styles/utils";
 import ColorStatus from "../../../types/ColorStatus";
 
-export interface ITextProps {
+export interface ITextProps extends React.HTMLAttributes<HTMLSpanElement> {
     height?: number;
     size?: "small" | "default" | "large" | "extralarge";
     weight?: "light" | "regular" | "bold";

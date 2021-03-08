@@ -1,15 +1,17 @@
 import React from "react";
 // also exported from '@storybook/react' if you can deal with breaking changes in 6.1
 import { Story, Meta } from "@storybook/react/types-6-0";
-import Card from "../components/Card";
+import CardComponent from "../components/Card";
 import ColorStatus from "../types/ColorStatus";
 import Button from "../components/Button";
 import Icon from "../components/Icon";
 import { ReactComponent as EditIcon } from "../assets/icons/edit.svg";
+import Title from "../components/Typography/Title";
+import Text from "../components/Typography/Text";
 
 export default {
     title: "Card",
-    component: Card,
+    component: CardComponent,
     argTypes: {
         bg: {
             control: {
@@ -22,20 +24,20 @@ export default {
 
 const Template: Story = (args) => {
     return (
-        <Card
-            {...args}
-            extra={
-                <Button icon={<Icon icon={EditIcon} />} type="link">
-                    EDIT
-                </Button>
-            }
-        >
-            <p>To select or add a case please complete the information below.</p>
-        </Card>
+        <CardComponent {...args}>
+            <Title level={5}>Card Title</Title>
+            <Text>To select or add a case please complete the information below.</Text>
+        </CardComponent>
     );
 };
 
-export const StyledCard = Template.bind({});
-StyledCard.args = {
-    title: "Select or add a case",
+export const Card = Template.bind({});
+
+export const CardWithAction = Template.bind({});
+CardWithAction.args = {
+    extra: (
+        <Button icon={<Icon icon={EditIcon} />} type="link">
+            EDIT
+        </Button>
+    ),
 };

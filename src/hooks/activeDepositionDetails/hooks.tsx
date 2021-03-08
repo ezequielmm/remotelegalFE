@@ -34,3 +34,12 @@ export const useRemoveParticipantFromExistingDepo = () => {
         return response;
     }, []);
 };
+
+export const useEditDeposition = () => {
+    const { deps } = React.useContext(GlobalStateContext);
+
+    return useAsyncCallback(async (depositionID: string, payload, file?, deleteCaption?) => {
+        const editedDeposition = await deps.apiService.editDeposition(depositionID, payload, file, deleteCaption);
+        return editedDeposition;
+    }, []);
+};

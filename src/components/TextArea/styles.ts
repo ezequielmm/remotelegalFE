@@ -1,6 +1,6 @@
 import { Input } from "antd";
 import styled from "styled-components";
-import { getREM } from "../../constants/styles/utils";
+import { getPX, getREM } from "../../constants/styles/utils";
 import { ITextAreaProps } from "./TextArea";
 
 const { TextArea: AntTextArea } = Input;
@@ -37,6 +37,22 @@ export const StyledTextArea = styled(AntTextArea).attrs((props: ITextAreaProps) 
             text-area {
                 line-height: 1.3;
                 border-radius: 0;
+            }
+
+            padding-right: ${getREM(theme.default.spaces[6])}; 
+            scrollbar-color: ${`${theme.colors.disabled[6]} ${theme.colors.disabled[4]}`};
+            &::-webkit-scrollbar {
+                width: ${getPX(theme.default.spaces[2])};
+                height: ${getPX(theme.default.spaces[2])};
+            }
+            &::-webkit-scrollbar-track {
+                background-color: ${theme.colors.disabled[4]};
+                border-radius: ${getPX(theme.default.spaces[2])};
+                margin: ${getREM(theme.default.spaces[6])};
+            }
+            &::-webkit-scrollbar-thumb {
+                border-radius: ${getPX(theme.default.spaces[2])};
+                background: ${theme.colors.disabled[6]};
             }
             `;
 

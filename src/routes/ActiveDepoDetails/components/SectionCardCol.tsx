@@ -22,7 +22,13 @@ const SectionCardCol = ({ icon, title, text, children, colProps }: SectionCardCo
                 <Text dataTestId={`deposition_details_${title}`} size="small" uppercase state={ColorStatus.disabled}>
                     {title}
                 </Text>
-                {text ? <Text dataTestId={`deposition_details_${text}`}>{text}</Text> : children}
+                {text ? (
+                    <Text dataTestId={`deposition_details_${text}`} ellipsis={false}>
+                        {text}
+                    </Text>
+                ) : (
+                    children
+                )}
             </Space>
         </Space>
     </Col>

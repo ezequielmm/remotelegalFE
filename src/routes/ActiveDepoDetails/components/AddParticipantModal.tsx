@@ -14,6 +14,7 @@ import isPhoneInvalid from "../../../helpers/isPhoneInvalid";
 import isInvalidEmail from "../../../helpers/isInvalidEmail";
 import { useAddParticipantToExistingDepo } from "../../../hooks/activeDepositionDetails/hooks";
 import Message from "../../../components/Message";
+import filterEmptyPropertiesFromObject from "../../../helpers/filterEmptyPropertiesFromObject";
 
 interface IModalProps {
     open: boolean;
@@ -77,15 +78,15 @@ const AddParticipantModal = ({ open, handleClose, fetchParticipants, isCourtRepo
                 phone: { ...phone, invalid: isPhoneNotValid },
             });
         }
-        const body = Object.fromEntries(
-            Object.entries({
+        const body = filterEmptyPropertiesFromObject(
+            {
                 role: role.value.replace(/\s+/g, ""),
                 name: name.value,
                 phone: phone.value,
                 email: email.value,
-            }).filter(([, value]) => value !== "")
+            },
+            ""
         );
-
         return addParticipant(depoID, body);
     };
 

@@ -49,6 +49,7 @@ export const getDepositions = () =>
             details: "",
             room: null,
             documents: null,
+            job: "12345",
         },
     ] as IDeposition[];
 

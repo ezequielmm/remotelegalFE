@@ -8,10 +8,12 @@ const ActiveDepositionDetailsTabs = ({
     deposition,
     setActiveKey,
     activeKey,
+    setUpdatedDeposition,
 }: {
     activeKey: string;
     deposition: DepositionModel.IDeposition;
     setActiveKey: React.Dispatch<SetStateAction<string>>;
+    setUpdatedDeposition: React.Dispatch<SetStateAction<DepositionModel.IDeposition>>;
 }) => {
     return (
         <Space mt={9} direction="vertical">
@@ -36,7 +38,11 @@ const ActiveDepositionDetailsTabs = ({
                         ({ tabId, DepositionDetailsComponent, tabPaneTestId, title }) => (
                             <Tabs.TabPane tab={title} key={tabId}>
                                 <Space data-testid={tabPaneTestId} size={4} direction="vertical">
-                                    <DepositionDetailsComponent activeKey={activeKey} deposition={deposition} />
+                                    <DepositionDetailsComponent
+                                        activeKey={activeKey}
+                                        deposition={deposition}
+                                        setUpdatedDeposition={setUpdatedDeposition}
+                                    />
                                 </Space>
                             </Tabs.TabPane>
                         )

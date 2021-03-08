@@ -1,4 +1,4 @@
-import { waitForDomChange, fireEvent, waitForElement } from "@testing-library/react";
+import { waitForDomChange, fireEvent, waitForElement, act } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import React from "react";
 import moment from "moment-timezone";
@@ -6,6 +6,7 @@ import { wait } from "../../helpers/wait";
 import ActiveDepositionDetails from "../../routes/ActiveDepoDetails";
 import getMockDeps from "../utils/getMockDeps";
 import renderWithGlobalContext from "../utils/renderWithGlobalContext";
+import * as TEST_CONSTANTS from "../constants/activeDepositionDetails";
 import * as CONSTANTS from "../../constants/activeDepositionDetails";
 import * as ERRORS_CONSTANTS from "../../constants/errors";
 import { getDepositionWithOverrideValues } from "../constants/depositions";
@@ -505,6 +506,26 @@ describe("Tests the Invited Parties tab", () => {
             role: "Paralegal",
         });
     });
+    test("Should display error toast if add participant endpoint fails", async () => {
+        customDeps.apiService.fetchParticipants = jest.fn().mockImplementation(async () => {
+            return [PARTICIPANT_MOCK];
+        });
+        customDeps.apiService.addParticipantToExistingDepo = jest.fn().mockRejectedValue({});
+        const deposition = getDepositionWithOverrideValues();
+        const { getByText, getByTestId, getAllByText } = renderWithGlobalContext(
+            <ParticipantListTable deposition={deposition} activeKey={CONSTANTS.DEPOSITION_DETAILS_TABS[1]} />,
+            customDeps
+        );
+        await waitForDomChange();
+        fireEvent.click(getByText(CONSTANTS.DEPOSITION_DETAILS_ADD_PARTICIPANT_BUTTON));
+        await waitForDomChange();
+        userEvent.click(getByText(CONSTANTS.DEPOSITION_DETAILS_ADD_PARTICIPANT_MODAL_ROLE_SELECT_PLACEHOLDER));
+        const role = await waitForElement(() => getAllByText("Attorney"));
+        userEvent.click(role[1]);
+        userEvent.click(getByTestId(CONSTANTS.DEPOSITION_DETAILS_ADD_PARTICIPANT_MODAL_CONFIRM_BUTTON_TEST_ID));
+        await waitForDomChange();
+        await waitForElement(() => getAllByText(CONSTANTS.NETWORK_ERROR));
+    });
     test("Should display error toast if participant has been added already", async () => {
         customDeps.apiService.fetchParticipants = jest.fn().mockImplementation(async () => {
             return [PARTICIPANT_MOCK];
@@ -528,26 +549,7 @@ describe("Tests the Invited Parties tab", () => {
             getByText(CONSTANTS.DEPOSITION_DETAILS_ADD_PARTICIPANT_MODAL_PARTICIPANT_ALREADY_EXISTS_ERROR)
         ).toBeInTheDocument();
     });
-    test("Should display error toast if add participant endpoint fails", async () => {
-        customDeps.apiService.fetchParticipants = jest.fn().mockImplementation(async () => {
-            return [PARTICIPANT_MOCK];
-        });
-        customDeps.apiService.addParticipantToExistingDepo = jest.fn().mockRejectedValue({});
-        const deposition = getDepositionWithOverrideValues();
-        const { getByText, getByTestId, getAllByText } = renderWithGlobalContext(
-            <ParticipantListTable deposition={deposition} activeKey={CONSTANTS.DEPOSITION_DETAILS_TABS[1]} />,
-            customDeps
-        );
-        await waitForDomChange();
-        fireEvent.click(getByText(CONSTANTS.DEPOSITION_DETAILS_ADD_PARTICIPANT_BUTTON));
-        await waitForDomChange();
-        userEvent.click(getByText(CONSTANTS.DEPOSITION_DETAILS_ADD_PARTICIPANT_MODAL_ROLE_SELECT_PLACEHOLDER));
-        const role = await waitForElement(() => getAllByText("Attorney"));
-        userEvent.click(role[1]);
-        userEvent.click(getByTestId(CONSTANTS.DEPOSITION_DETAILS_ADD_PARTICIPANT_MODAL_CONFIRM_BUTTON_TEST_ID));
-        await waitForDomChange();
-        await waitForElement(() => getAllByText(CONSTANTS.NETWORK_ERROR));
-    });
+
     test("Court Reporter shouldn´t be an option in Add Participant Modal if there is already one present", async () => {
         const participant = getDepoParticipantWithOverrideValues();
         customDeps.apiService.fetchParticipants = jest.fn().mockImplementation(async () => {
@@ -579,5 +581,199 @@ describe("Tests the Invited Parties tab", () => {
         );
         await waitForDomChange();
         expect(queryByText(CONSTANTS.DEPOSITION_DETAILS_ADD_PARTICIPANT_BUTTON)).toBeFalsy();
+    });
+});
+
+describe("Tests Edit Deposition Modal", () => {
+    test("Shows correct info when modal pops up after clicking the edit icon on the depo info", async () => {
+        const fullDeposition = getDepositionWithOverrideValues();
+        customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
+            return fullDeposition;
+        });
+        const { getAllByTestId, getAllByText, getByTestId } = renderWithGlobalContext(
+            <ActiveDepositionDetails />,
+            customDeps
+        );
+        await waitForDomChange();
+        const editButton = getAllByTestId(CONSTANTS.DEPOSITION_CARD_DETAILS_EDIT_BUTTON_DATA_TEST_ID);
+        fireEvent.click(editButton[0]);
+        await waitForDomChange();
+        expect(getAllByText(fullDeposition.status)).toHaveLength(3);
+        expect(getByTestId("true YES")).toBeChecked();
+        expect(getByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_DATA_TEST_ID_JOB)).toHaveValue(
+            fullDeposition.job
+        );
+        expect(
+            getByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_CAPTION_BUTTON_TEST_ID)
+        ).toHaveTextContent(fullDeposition.caption.displayName);
+        expect(getByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_DATA_TEST_ID_DETAILS)).toHaveValue(
+            fullDeposition.details
+        );
+    });
+    test("Shows toast when submitting", async () => {
+        const fullDeposition = getDepositionWithOverrideValues();
+        customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
+            return fullDeposition;
+        });
+        customDeps.apiService.editDeposition = jest.fn().mockImplementation(async () => {
+            return {};
+        });
+        const { getAllByTestId, getAllByText, getByTestId } = renderWithGlobalContext(
+            <ActiveDepositionDetails />,
+            customDeps
+        );
+        await waitForDomChange();
+        const editButton = getAllByTestId(CONSTANTS.DEPOSITION_CARD_DETAILS_EDIT_BUTTON_DATA_TEST_ID);
+        fireEvent.click(editButton[0]);
+        const options = getAllByText("pending");
+        userEvent.click(options[2]);
+        const confirmed = await waitForElement(() => getAllByText("Confirmed"));
+        userEvent.click(confirmed[1]);
+        fireEvent.click(getByTestId("false NO"));
+        fireEvent.click(
+            getByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_CAPTION_BUTTON_REMOVE_FILE_TEST_ID)
+        );
+        expect(getByTestId("caption_input")).toBeInTheDocument();
+        const file = new File(["file"], "file.pdf", { type: "application/pdf" });
+        await act(async () => {
+            await fireEvent.change(
+                getByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_UPLOAD_COMPONENT_DATA_TEST_ID),
+                {
+                    target: { files: [file] },
+                }
+            );
+        });
+        fireEvent.change(getByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_DATA_TEST_ID_JOB), {
+            target: { value: TEST_CONSTANTS.EXPECTED_EDIT_DEPOSITION_BODY.job },
+        });
+
+        fireEvent.change(getByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_DATA_TEST_ID_DETAILS), {
+            target: { value: TEST_CONSTANTS.EXPECTED_EDIT_DEPOSITION_BODY.details },
+        });
+        userEvent.click(getByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_CONFIRM_BUTTON_TEST_ID));
+        await waitForDomChange();
+        await waitForElement(() => getAllByText(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_SUCCESS_TOAST));
+        expect(customDeps.apiService.editDeposition).toHaveBeenCalledWith(
+            fullDeposition.id,
+            TEST_CONSTANTS.EXPECTED_EDIT_DEPOSITION_BODY,
+            file,
+            true
+        );
+    });
+    test("validates that file is a not a PDF file", async () => {
+        const fullDeposition = getDepositionWithOverrideValues();
+        customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
+            return fullDeposition;
+        });
+        customDeps.apiService.editDeposition = jest.fn().mockImplementation(async () => {
+            return {};
+        });
+        const { getAllByTestId, getByTestId, getByText } = renderWithGlobalContext(
+            <ActiveDepositionDetails />,
+            customDeps
+        );
+        await waitForDomChange();
+        const editButton = getAllByTestId(CONSTANTS.DEPOSITION_CARD_DETAILS_EDIT_BUTTON_DATA_TEST_ID);
+        fireEvent.click(editButton[0]);
+        fireEvent.click(
+            getByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_CAPTION_BUTTON_REMOVE_FILE_TEST_ID)
+        );
+        expect(getByTestId("caption_input")).toBeInTheDocument();
+        const file = new File(["file"], "file.png", { type: "application/image" });
+        await act(async () => {
+            await fireEvent.change(
+                getByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_UPLOAD_COMPONENT_DATA_TEST_ID),
+                {
+                    target: { files: [file] },
+                }
+            );
+        });
+
+        expect(getByText(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_FILE_ERROR_MESSAGE)).toBeInTheDocument();
+    });
+    test("Shows error toast if fetch fails", async () => {
+        const fullDeposition = getDepositionWithOverrideValues();
+        customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
+            return fullDeposition;
+        });
+        customDeps.apiService.editDeposition = jest.fn().mockRejectedValue(async () => {
+            throw Error("Something wrong");
+        });
+        const { getAllByTestId, getAllByText, getByTestId } = renderWithGlobalContext(
+            <ActiveDepositionDetails />,
+            customDeps
+        );
+        await waitForDomChange();
+        const editButton = getAllByTestId(CONSTANTS.DEPOSITION_CARD_DETAILS_EDIT_BUTTON_DATA_TEST_ID);
+        fireEvent.click(editButton[0]);
+        userEvent.click(getByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_CONFIRM_BUTTON_TEST_ID));
+        await waitForDomChange();
+        await waitForElement(() => getAllByText(CONSTANTS.NETWORK_ERROR));
+    });
+
+    describe("Tests Edit Requester Modal", () => {
+        test("Shows correct info when modal pops up after clicking the edit icon on the requester info", async () => {
+            const fullDeposition = getDepositionWithOverrideValues();
+            customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
+                return fullDeposition;
+            });
+            const { getAllByTestId, getByTestId } = renderWithGlobalContext(<ActiveDepositionDetails />, customDeps);
+            await waitForDomChange();
+            const editButton = getAllByTestId(CONSTANTS.DEPOSITION_CARD_DETAILS_EDIT_BUTTON_DATA_TEST_ID);
+            fireEvent.click(editButton[1]);
+            await waitForDomChange();
+            expect(getByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_REQUESTER_MODAL_DATA_TEST_ID_INPUT)).toHaveValue(
+                fullDeposition.requesterNotes
+            );
+        });
+        test("Shows toast when submitting", async () => {
+            const fullDeposition = getDepositionWithOverrideValues();
+            customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
+                return fullDeposition;
+            });
+            customDeps.apiService.editDeposition = jest.fn().mockImplementation(async () => {
+                return {};
+            });
+            const { getAllByTestId, getByTestId, getAllByText } = renderWithGlobalContext(
+                <ActiveDepositionDetails />,
+                customDeps
+            );
+            await waitForDomChange();
+            const editButton = getAllByTestId(CONSTANTS.DEPOSITION_CARD_DETAILS_EDIT_BUTTON_DATA_TEST_ID);
+            fireEvent.click(editButton[1]);
+            fireEvent.change(getByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_REQUESTER_MODAL_DATA_TEST_ID_INPUT), {
+                target: { value: TEST_CONSTANTS.EXPECTED_EDIT_REQUESTER_BODY.requesterNotes },
+            });
+            fireEvent.click(getByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_REQUESTER_MODAL_CONFIRM_BUTTON_TEST_ID));
+            await waitForDomChange();
+            await waitForElement(() => getAllByText(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_SUCCESS_TOAST));
+            expect(customDeps.apiService.editDeposition).toHaveBeenCalledWith(
+                fullDeposition.id,
+                TEST_CONSTANTS.EXPECTED_EDIT_REQUESTER_BODY,
+                undefined,
+                undefined
+            );
+        });
+        test("Shows error toast if fetch fails", async () => {
+            const fullDeposition = getDepositionWithOverrideValues();
+            customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
+                return fullDeposition;
+            });
+            customDeps.apiService.editDeposition = jest.fn().mockRejectedValue(async () => {
+                throw Error("Something wrong");
+            });
+            const { getAllByTestId, getByTestId, getAllByText } = renderWithGlobalContext(
+                <ActiveDepositionDetails />,
+                customDeps
+            );
+            await waitForDomChange();
+            const editButton = getAllByTestId(CONSTANTS.DEPOSITION_CARD_DETAILS_EDIT_BUTTON_DATA_TEST_ID);
+            fireEvent.click(editButton[1]);
+            fireEvent.change(getByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_REQUESTER_MODAL_DATA_TEST_ID_INPUT), {
+                target: { value: TEST_CONSTANTS.EXPECTED_EDIT_REQUESTER_BODY.requesterNotes },
+            });
+            fireEvent.click(getByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_REQUESTER_MODAL_CONFIRM_BUTTON_TEST_ID));
+            await waitForElement(() => getAllByText(CONSTANTS.NETWORK_ERROR));
+        });
     });
 });

@@ -57,6 +57,7 @@ describe("DepositionDetails", () => {
                 } to ${completeDate.toLowerCase()} ${deposition.timeZone}`
             )
         ).toBeInTheDocument();
+        expect(getByText(deposition.job)).toBeInTheDocument();
     });
 
     test("Error screen is shown when fetch fails", async () => {

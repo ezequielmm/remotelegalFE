@@ -11,6 +11,7 @@ import * as CONSTANTS from "../../constants/activeDepositionDetails";
 
 export default function ActiveDepositionDetails() {
     const { fetchDeposition, loading, deposition, error } = useFetchDeposition();
+    const [updatedDeposition, setUpdatedDeposition] = useState(null);
     const [activeKey, setActiveKey] = useState(CONSTANTS.DEFAULT_ACTIVE_TAB);
 
     useEffect(() => {
@@ -31,9 +32,14 @@ export default function ActiveDepositionDetails() {
                 <Title level={4} noMargin weight="light">
                     {DEPOSITION_DETAILS_TITLE}
                 </Title>
-                <ActiveDepositionDetailsHeader deposition={deposition} />
+                <ActiveDepositionDetailsHeader deposition={updatedDeposition || deposition} />
             </Space>
-            <ActiveDepositionDetailsTabs activeKey={activeKey} setActiveKey={setActiveKey} deposition={deposition} />
+            <ActiveDepositionDetailsTabs
+                activeKey={activeKey}
+                setActiveKey={setActiveKey}
+                deposition={updatedDeposition || deposition}
+                setUpdatedDeposition={setUpdatedDeposition}
+            />
         </>
     );
 }

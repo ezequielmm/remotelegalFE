@@ -15,8 +15,7 @@ export interface ICardProps extends Omit<CardProps, "title"> {
 }
 
 export const StyledCard = styled(ANTDCard).withConfig({
-    shouldForwardProp: (prop, defaultValidatorFn) =>
-        !["bg", "hasPadding", "hasShaddow", "fullWidth", "hasBorder"].includes(prop) && defaultValidatorFn(prop),
+    shouldForwardProp: (prop) => !["bg", "hasPadding", "hasShaddow", "fullWidth", "hasBorder"].includes(prop),
 })<ICardProps>`
     ${({ theme, hasPadding, hasShaddow, fullWidth, bg }) => {
         const { spaces, fontSizes } = theme.default;
@@ -32,7 +31,7 @@ export const StyledCard = styled(ANTDCard).withConfig({
   
                 .ant-card-head {
                     padding: 0;
-                    margin: 0 0 ${getREM(spaces[6])};
+                    margin: 0;
                     border: 0;
                     min-height: auto;
 

@@ -141,6 +141,21 @@ export class ApiService {
         });
     };
 
+    editDeposition = async (depoID: string, data, file?, deleteCaption?) => {
+        const formData = new FormData();
+        if (file) {
+            formData.append(file.uid, file);
+        }
+        formData.set("json", JSON.stringify({ deposition: data, deleteCaption }));
+
+        return this.request<boolean>({
+            path: `/api/depositions/${depoID}`,
+            formData,
+            withContentType: false,
+            method: HTTP_METHOD.PATCH,
+        });
+    };
+
     createDepositions = async ({ depositionList, files, caseId }) => {
         const formData = new FormData();
         files.forEach((file) => {

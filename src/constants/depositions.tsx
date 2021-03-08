@@ -69,7 +69,7 @@ export const COURT_REPORTER_COLUMN = {
     field: "courtReporter",
     render: (text) => text || "-",
 };
-export const JOB_COLUMN = { title: "JOB#", field: "details", render: (text) => text || "-", width: "6.5%" };
+export const JOB_COLUMN = { title: "JOB#", field: "job", render: (text) => text || "-", width: "6.5%" };
 export const getActionColumns = (history) => ({
     render: ({ id, status }: MappedDeposition) => {
         const isCompleted = status === Status.completed;
