@@ -258,7 +258,7 @@ export class ApiService {
         });
     };
 
-    getSignedUrl = async ({ depositionID, documentId}): Promise<boolean> => {
+    getSignedUrl = async ({ depositionID, documentId }): Promise<boolean> => {
         return this.request<boolean>({
             path: `/api/depositions/${depositionID}/documents/${documentId}/preSignedUrl`,
             payload: {},
@@ -348,6 +348,15 @@ export class ApiService {
             payload,
             withToken: true,
             method: HTTP_METHOD.GET,
+        });
+    };
+
+    deleteExhibit = async ({ depositionID, documentId }): Promise<boolean> => {
+        return this.request<boolean>({
+            path: `/api/Depositions/${depositionID}/DeleteMyExhibits/${documentId}`,
+            payload: {},
+            withToken: true,
+            method: HTTP_METHOD.DELETE,
         });
     };
 

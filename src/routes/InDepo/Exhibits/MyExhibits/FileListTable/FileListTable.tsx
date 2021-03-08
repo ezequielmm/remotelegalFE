@@ -15,7 +15,6 @@ import Icon from "../../../../../components/Icon";
 import FileIcon from "../../../../../components/FileIcon";
 import { ReactComponent as kebebIcon } from "../../../../../assets/icons/kebeb.svg";
 import { ReactComponent as DeleteIcon } from "../../../../../assets/icons/delete.svg";
-import { ReactComponent as RenameIcon } from "../../../../../assets/icons/edit.svg";
 import { formatBytes } from "../../../../../helpers/formatBytes";
 import FileListActionModal from "./FileListActionModal";
 import { ModalMode } from "./FileListActionModal/FileListActionModal";
@@ -28,37 +27,36 @@ import { useShareExhibitFile } from "../../../../../hooks/exhibits/hooks";
 
 interface IFileListTable extends TableProps<DefaultRecordType> {
     onClickViewFile: (item: any) => void;
+    onOptionsConfirmOk?: () => void;
 }
 
-const FileListTable = (props: IFileListTable) => {
+const FileListTable = ({ onClickViewFile, onOptionsConfirmOk, ...props }: IFileListTable) => {
     const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
     const [currentModalMode, setCurrentModalMode] = useState<ModalMode>(null);
     const [exhibitSharingModalOpen, setExhibitSharingModalOpen] = useState(false);
+    const [selectedExhibitForOptions, setSelectedExhibitForOptions] = useState<ExhibitFile>(null);
     const [selectedSharedExhibitFile, setSelectedSharedExhibitFile] = useState<ExhibitFile>(null);
     const { shareExhibit, shareExhibitPending, sharedExhibit, sharingExhibitFileError } = useShareExhibitFile();
     const { state } = useContext(GlobalStateContext);
-    const { isRecording } = state.room;
+    const { isRecording, currentExhibit } = state.room;
 
     const toggleModal = (mode: ModalMode) => {
         setConfirmModalIsOpen(true);
         setCurrentModalMode(mode);
     };
 
-    const menu = (
-        <Menu>
+    const menu = (exhibit) => (
+        <Menu data-testid="menu_options">
             <Menu.Item key="0">
-                <Button type="link" onClick={() => toggleModal("rename")}>
-                    <Space size="middle" align="center">
-                        <Icon icon={RenameIcon} size={8} style={{ color: "white" }} />
-                        <Text state={ColorStatus.white} size="small">
-                            Rename
-                        </Text>
-                    </Space>
-                </Button>
-            </Menu.Item>
-            <Menu.Divider />
-            <Menu.Item key="1">
-                <Button type="link" onClick={() => toggleModal("delete")}>
+                <Button
+                    data-testid="option_delete_button"
+                    type="link"
+                    disabled={currentExhibit?.id && currentExhibit?.id === exhibit?.id}
+                    onClick={() => {
+                        setSelectedExhibitForOptions(exhibit);
+                        toggleModal("delete");
+                    }}
+                >
                     <Space size="middle" align="center">
                         <Icon icon={DeleteIcon} size={8} style={{ color: "white" }} />
                         <Text state={ColorStatus.white} size="small">
@@ -76,9 +74,14 @@ const FileListTable = (props: IFileListTable) => {
     const onRenameOkHandler = () => {
         setConfirmModalIsOpen(false);
     };
-    const onDeleteOkHandler = () => {};
+    const onDeleteOkHandler = () => {
+        setConfirmModalIsOpen(false);
+        onOptionsConfirmOk();
+    };
     const onRenameCancelHandler = () => {};
-    const onDeleteCancelHandler = () => {};
+    const onDeleteCancelHandler = () => {
+        setConfirmModalIsOpen(false);
+    };
 
     const onShareOkHandler = async () => {
         const isShared = await shareExhibit(selectedSharedExhibitFile);
@@ -99,12 +102,14 @@ const FileListTable = (props: IFileListTable) => {
             />
             <FileListActionModal
                 mode={currentModalMode}
+                file={selectedExhibitForOptions}
                 visible={confirmModalIsOpen}
                 onRenameOk={onRenameOkHandler}
                 onDeleteOk={onDeleteOkHandler}
                 onRenameCancel={onRenameCancelHandler}
                 onDeleteCancel={onDeleteCancelHandler}
                 onCancel={handleCloseClick}
+                onError={() => setConfirmModalIsOpen(false)}
             />
             <Table {...props}>
                 <Column
@@ -145,7 +150,7 @@ const FileListTable = (props: IFileListTable) => {
                             type="text"
                             size="small"
                             data-testid="file_list_view_button"
-                            onClick={() => props.onClickViewFile(file)}
+                            onClick={() => onClickViewFile(file)}
                         >
                             View
                         </Button>
@@ -178,8 +183,15 @@ const FileListTable = (props: IFileListTable) => {
                     key="options"
                     className="file-list-options-button"
                     width={getREM(GlobalTheme.default.spaces[6] * 3)}
-                    render={() => (
-                        <Dropdown disabled overlay={menu} trigger={["click"]} styled arrow placement="bottomRight">
+                    render={(item, file: ExhibitFile) => (
+                        <Dropdown
+                            overlay={menu(file)}
+                            trigger={["click"]}
+                            styled
+                            arrow
+                            placement="bottomRight"
+                            dataTestId="dropdown_options"
+                        >
                             <Icon icon={kebebIcon} size={9} />
                         </Dropdown>
                     )}

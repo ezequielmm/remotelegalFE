@@ -1,4 +1,4 @@
-import React, { ReactElement } from "react";
+import React, { ReactElement, useEffect } from "react";
 import { Col, Row, Form } from "antd";
 import { IConfirmProps } from "../../../../../../components/Confirm/Confirm";
 import Confirm from "../../../../../../components/Confirm";
@@ -7,11 +7,15 @@ import Text from "../../../../../../components/Typography/Text";
 import { InputWrapper } from "../../../../../../components/Input/styles";
 import useInput from "../../../../../../hooks/useInput";
 import ColorStatus from "../../../../../../types/ColorStatus";
+import { ExhibitFile } from "../../../../../../types/ExhibitFile";
+import { useDeleteExhibit } from "../../../../../../hooks/useDeleteExhibit";
 
 export type ModalMode = "rename" | "delete";
 
 interface Props extends IConfirmProps {
     mode: ModalMode;
+    file?: ExhibitFile;
+    onError?: () => void;
     onRenameOk: (value: string) => void;
     onRenameCancel: () => void;
     onDeleteOk: () => void;
@@ -20,14 +24,24 @@ interface Props extends IConfirmProps {
 
 export default function FileListActionModal({
     mode,
+    onError,
     onRenameOk,
     onDeleteOk,
     onRenameCancel,
     onDeleteCancel,
+    file,
     ...props
 }: Props): ReactElement {
     const { inputValue, input, invalid } = useInput();
+    const { deleteExhibit, pendingDelete, errorDelete } = useDeleteExhibit();
     const exhibitNameErrorMessage = invalid && "Please enter a new exhibit name";
+
+    useEffect(() => {
+        if (errorDelete) {
+            onError();
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [errorDelete]);
     const renameForm = (
         <Form layout="vertical">
             <Row gutter={16}>
@@ -48,7 +62,15 @@ export default function FileListActionModal({
         <Confirm
             {...props}
             destroyOnClose
-            onPositiveClick={() => (mode === "rename" ? onRenameOk(inputValue) : onDeleteOk())}
+            positiveLoading={pendingDelete}
+            onPositiveClick={async () => {
+                if (mode === "rename") {
+                    onRenameOk(inputValue);
+                } else {
+                    await deleteExhibit(file?.id);
+                    onDeleteOk();
+                }
+            }}
             onNegativeClick={mode === "rename" ? onRenameCancel : onDeleteCancel}
             positiveLabel={
                 mode === "rename"

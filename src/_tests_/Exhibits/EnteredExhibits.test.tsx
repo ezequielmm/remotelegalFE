@@ -9,7 +9,7 @@ import { rootReducer } from "../../state/GlobalState";
 import getMockDeps from "../utils/getMockDeps";
 
 import EnteredExhibits from "../../routes/InDepo/Exhibits/EnteredExhibits";
-import { enteredExhibits } from "../mocks/enteredExhibits";
+import { exhibits } from "../mocks/exhibits";
 
 jest.mock("react-router-dom", () => ({
     ...jest.requireActual("react-router-dom"), // use actual for all non-hook parts
@@ -73,7 +73,7 @@ describe("Entered Exhibits", () => {
         expect(enteredExhibitsEmptyStateTitle).toBeInTheDocument();
     });
     test("Should be display the Entered exhibits tab with a list of entered exhibits", async () => {
-        customDeps.apiService.getEnteredExhibits = jest.fn().mockResolvedValue(enteredExhibits);
+        customDeps.apiService.getEnteredExhibits = jest.fn().mockResolvedValue(exhibits);
         const { queryByTestId, queryByText } = renderWithGlobalContext(
             <ThemeProvider theme={theme}>
                 <EnteredExhibits />
@@ -99,7 +99,7 @@ describe("Entered Exhibits", () => {
         expect(enteredExhibitDisplayName).toBeInTheDocument();
     });
     test("should be display the exhibit viewer after click on the view button", async () => {
-        customDeps.apiService.getEnteredExhibits = jest.fn().mockResolvedValue(enteredExhibits);
+        customDeps.apiService.getEnteredExhibits = jest.fn().mockResolvedValue(exhibits);
         const { queryByTestId, queryByText, debug } = renderWithGlobalContext(
             <ThemeProvider theme={theme}>
                 <EnteredExhibits />
@@ -123,7 +123,7 @@ describe("Entered Exhibits", () => {
         expect(await waitForElement(() => queryByTestId("view_document_header"))).toBeInTheDocument();
     });
     test("should be display the exhibit share modal after click on the share button", async () => {
-        customDeps.apiService.getEnteredExhibits = jest.fn().mockResolvedValue(enteredExhibits);
+        customDeps.apiService.getEnteredExhibits = jest.fn().mockResolvedValue(exhibits);
         customDeps.apiService.shareExhibit = jest.fn().mockResolvedValue(true);
         const { queryByTestId, queryByText, debug } = renderWithGlobalContext(
             <ThemeProvider theme={theme}>
@@ -150,9 +150,9 @@ describe("Entered Exhibits", () => {
         expect(queryByTestId("confirm_positive_button")).not.toBeInTheDocument();
     });
     test("should be call getSignedUrl when the user is in the entered exhibits tab", async () => {
-        customDeps.apiService.getEnteredExhibits = jest.fn().mockResolvedValue(enteredExhibits);
-        customDeps.apiService.getSignedUrl = jest.fn().mockResolvedValue("url")
-        customDeps.apiService.getPrivateSignedUrl = jest.fn().mockResolvedValue("url")
+        customDeps.apiService.getEnteredExhibits = jest.fn().mockResolvedValue(exhibits);
+        customDeps.apiService.getSignedUrl = jest.fn().mockResolvedValue("url");
+        customDeps.apiService.getPrivateSignedUrl = jest.fn().mockResolvedValue("url");
         const { queryByTestId, queryByText, debug } = renderWithGlobalContext(
             <ThemeProvider theme={theme}>
                 <EnteredExhibits />

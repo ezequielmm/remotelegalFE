@@ -1,4 +1,4 @@
-export const enteredExhibits = [
+export const exhibits = [
     {
         name: "enteredDoc.pdf",
         displayName: "enteredDoc.pdf",

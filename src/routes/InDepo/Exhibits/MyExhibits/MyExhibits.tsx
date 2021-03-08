@@ -48,13 +48,14 @@ export default function MyExhibits() {
                         <UploadButton onUpload={upload} onUploadCompleted={refreshList} />
                         {files?.length > 0 && (
                             <FileListTable
-                                data-testid="file-list-table"
+                                data-testid="file_list_table"
                                 loading={loading}
                                 dataSource={files}
                                 pagination={false}
                                 sortDirections={["descend", "ascend"]}
                                 onClickViewFile={setSelectedFile}
                                 onChange={handleFetchFiles}
+                                onOptionsConfirmOk={handleFetchFiles}
                             />
                         )}
                         {(files?.length === 0 || errorFetchFiles) && (

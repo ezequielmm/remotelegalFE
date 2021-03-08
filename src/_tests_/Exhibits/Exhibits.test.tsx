@@ -167,7 +167,7 @@ describe("Exhibits", () => {
                 <MyExhibits />
             </ThemeProvider>
         );
-        const fileListTable = queryByTestId("file-list-table");
+        const fileListTable = queryByTestId("file_list_table");
         expect(fileListTable).toBeInTheDocument();
     });
     it("should not display the file list when has zero file in the list", async () => {
@@ -179,7 +179,7 @@ describe("Exhibits", () => {
                 <MyExhibits />
             </ThemeProvider>
         );
-        const fileListTable = queryByTestId("file-list-table");
+        const fileListTable = queryByTestId("file_list_table");
         expect(fileListTable).not.toBeInTheDocument();
     });
     it("should not display the empty state component when has more than file in the list", async () => {
@@ -191,7 +191,7 @@ describe("Exhibits", () => {
                 <MyExhibits />
             </ThemeProvider>
         );
-        const fileListTable = queryByTestId("file-list-table");
+        const fileListTable = queryByTestId("file_list_table");
         const noExhibitComponent = queryByText("No exhibits added yet");
         expect(fileListTable).toBeInTheDocument();
         expect(noExhibitComponent).not.toBeInTheDocument();
@@ -205,7 +205,7 @@ describe("Exhibits", () => {
                 <MyExhibits />
             </ThemeProvider>
         );
-        const fileListTable = queryByTestId("file-list-table");
+        const fileListTable = queryByTestId("file_list_table");
         const noExhibitComponent = queryByText("No exhibits added yet");
         expect(fileListTable).not.toBeInTheDocument();
         expect(noExhibitComponent).toBeInTheDocument();

@@ -55,7 +55,7 @@ export const MY_EXHIBITS_RENAME_SUBTITLE_TEXT = "To rename the exhibit, type the
 export const MY_EXHIBITS_RENAME_NAME_LABEL = "EXHIBIT NAME";
 export const MY_EXHIBITS_RENAME_OK_BUTTON_TEXT = "SAVE";
 export const MY_EXHIBITS_RENAME_CANCEL_BUTTON_TEXT = "CANCEL";
-export const MY_EXHIBITS_DELETE_TITLE_TEXT = "Delete Exhibit";
+export const MY_EXHIBITS_DELETE_TITLE_TEXT = "Delete Exhibit?";
 export const MY_EXHIBITS_DELETE_SUBTITLE_TEXT =
     "This action cannot be undone. Are you sure you want to delete the exhibit?";
 export const MY_EXHIBITS_DELETE_OK_BUTTON_TEXT = "yes, delete exhibit";
@@ -96,3 +96,5 @@ export const LIVE_EXHIBITS_SHARE_ERROR_409 = "Can't share document while another
 
 export const CLOSE_SHARED_EXHIBIT_BUTTON_LABEL = "Close for all";
 export const SHARE_EXHIBIT_BUTTON_LABEL = "Share with all";
+
+export const EXHIBIT_DELETE_ERROR_MESSAGE = "An unexpected error occurred!";
