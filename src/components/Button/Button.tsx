@@ -10,7 +10,6 @@ export type ButtonTypeExtended = ButtonType | "secondary";
 
 export interface IButtonProps extends Omit<ButtonProps, "type"> {
     type?: ButtonTypeExtended;
-    width?: string;
 }
 
 const buttonDefault = ({ children, type, ...rest }: IButtonProps) => {
@@ -24,36 +23,29 @@ const buttonDefault = ({ children, type, ...rest }: IButtonProps) => {
 };
 
 const StyledButton = styled(buttonDefault)<IButtonProps>`
-    ${({ size, type, width, icon, theme }) => {
-        const { textColorInverse, fontSizes, spaces } = theme.default;
+    ${({ size, type, icon, theme }) => {
+        const { textColorInverse, fontSizes } = theme.default;
         const { primary, secondary, disabled } = theme.colors;
-
-        const smallButtonStyle =
-            size === "small"
+        const buttonSizeStyle =
+            size === "middle"
                 ? `
-                    font-size: ${getREM(fontSizes[4] / 2)};
-                    padding: ${getREM(spaces[5] / 2)} ${getREM(spaces[5])};
-                    min-width: auto;
-                    height: ${getREM(spaces[12])};
-                    border-radius: ${getREM(spaces[3])};
-                    line-height: 1.2;
+                font-size: ${getREM(fontSizes[8])};
                 `
-                : "";
-
+                : ``;
         const typeSecondaryStyle =
             type === "secondary"
                 ? `
                 background: ${secondary[5]};
                 border-color: ${secondary[5]};
                 color: ${textColorInverse}; // TODO get contrast and return white or black text
-
+                
                 &:hover,
                 &:focus {
                     background: ${secondary[4]};
                     border-color: ${secondary[4]};
                     color: ${textColorInverse}; // TODO get contrast and return white or black text
                 }
-
+                
                 &:active {
                     background: ${secondary[6]};
                     border-color: ${secondary[6]};
@@ -126,15 +118,13 @@ const StyledButton = styled(buttonDefault)<IButtonProps>`
             : "";
 
         const styles = `
-            min-width: ${String(width) || getREM(9.375)};
-            font-size: ${getREM(fontSizes[7])};
-            line-height: 2;
             text-transform: uppercase;
             text-shadow: none;
+            min-width: auto;
             ${typeLinkStyle}
             ${typeSecondaryStyle}
             ${typeTextStyle}
-            ${smallButtonStyle}
+            ${buttonSizeStyle}
             ${typeGhostStyle}
             ${iconStyle}
             `;
@@ -143,8 +133,12 @@ const StyledButton = styled(buttonDefault)<IButtonProps>`
     }}
 `;
 
-const button = ({ children, ...rest }: IButtonProps) => {
-    return <StyledButton {...rest}>{children}</StyledButton>;
+const button = ({ children, size = "large", ...rest }: IButtonProps) => {
+    return (
+        <StyledButton size={size} {...rest}>
+            {children}
+        </StyledButton>
+    );
 };
 
 export default button;

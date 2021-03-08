@@ -17,7 +17,7 @@ export default {
         size: {
             control: {
                 type: "select",
-                options: ["small", "default", "large"],
+                options: ["small", "middle", "large"],
             },
         },
         disabled: { control: "boolean" },
@@ -32,5 +32,5 @@ PRButton.args = {
     type: "primary",
     disabled: false,
     children: "Button",
-    size: "default",
+    size: "middle",
 };

@@ -82,7 +82,6 @@ export const getActionColumns = (history) => ({
                     }}
                     type="primary"
                     size="small"
-                    width="75px"
                     data-testid={isCompleted ? "view_button" : "join_button"}
                 >
                     {isCompleted ? "VIEW" : "JOIN"}
