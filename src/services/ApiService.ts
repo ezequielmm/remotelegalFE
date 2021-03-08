@@ -368,7 +368,7 @@ export class ApiService {
 
     deleteExhibit = async ({ depositionID, documentId }): Promise<boolean> => {
         return this.request<boolean>({
-            path: `/api/Depositions/${depositionID}/DeleteMyExhibits/${documentId}`,
+            path: `/api/Depositions/${depositionID}/documents/${documentId}`,
             payload: {},
             withToken: true,
             method: HTTP_METHOD.DELETE,
