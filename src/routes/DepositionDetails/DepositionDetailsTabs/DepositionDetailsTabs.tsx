@@ -1,10 +1,14 @@
 import React, { useState } from "react";
+import { useParams } from "react-router";
 import Space from "../../../components/Space";
 import Tabs from "../../../components/Tabs";
 import * as CONSTANTS from "../../../constants/depositionDetails";
+import { DepositionID } from "../../../state/types";
 
 export default function DepositionDetailsTabs() {
     const [activeKey, setActiveKey] = useState<string>(CONSTANTS.DEFAULT_ACTIVE_TAB);
+    const { depositionID } = useParams<DepositionID>();
+
     return (
         <Space mt={9} direction="vertical">
             <Space fullWidth>
@@ -29,7 +33,11 @@ export default function DepositionDetailsTabs() {
                         ({ tabId, DepositionDetailsComponent, tabPaneTestId, title }) => (
                             <Tabs.TabPane tab={title} key={tabId}>
                                 <div data-testid={tabPaneTestId}>
-                                    <DepositionDetailsComponent setActiveKey={setActiveKey} />
+                                    <DepositionDetailsComponent
+                                        activeKey={activeKey}
+                                        depositionID={depositionID}
+                                        setActiveKey={setActiveKey}
+                                    />
                                 </div>
                             </Tabs.TabPane>
                         )

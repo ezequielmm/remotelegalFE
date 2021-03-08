@@ -2,11 +2,13 @@ import { formatBytes } from "../helpers/formatBytes";
 import DepositionDetailsSummary from "../routes/DepositionDetails/DepositionDetailsSummary";
 import DepositionDetailsEnteredExhibits from "../routes/DepositionDetails/DepositionDetailsEnteredExhibits";
 import DepositionDetailsTranscript from "../routes/DepositionDetails/DepositionDetailsTranscript";
+import DepositionDetailsAttendees from "../routes/DepositionDetails/DepositionDetailsAttendees";
 
 export enum DEPOSITION_DETAILS_TABS {
-    "summary",
-    "transcript",
-    "entered_exhibits",
+    summary = "summary",
+    transcript = "transcript",
+    enteredExhibits = "entered_exhibits",
+    attendees = "attendees",
 }
 
 export const DETAILS_SUMMARY_VIDEO_TITLE = "Recording";
@@ -24,6 +26,32 @@ export const DETAILS_TRANSCRIPT_BUTTON_UPLOAD = "Upload transcript";
 
 export const DEFAULT_ACTIVE_TAB = "summary";
 
+export const DEPOSITION_DETAILS_ATTENDEES_COLUMNS = [
+    {
+        title: "ROLE",
+        dataIndex: "role",
+        ellipsis: true,
+        width: "20%",
+    },
+    {
+        title: "NAME",
+        dataIndex: "name",
+        ellipsis: true,
+        width: "25%",
+    },
+    {
+        title: "EMAIL",
+        dataIndex: "email",
+        ellipsis: true,
+        width: "25%",
+    },
+    {
+        title: "PHONE NUMBER",
+        dataIndex: "phone",
+        ellipsis: true,
+    },
+];
+
 export type DEPOSITION_DETAILS_TAB = "summary";
 
 export interface DepositionDetailsTabData {
@@ -36,25 +64,32 @@ export interface DepositionDetailsTabData {
 
 export const DEPOSITION_DETAILS_TABS_DATA = [
     {
-        tabId: DEPOSITION_DETAILS_TABS[0],
+        tabId: DEPOSITION_DETAILS_TABS.summary,
         tabTestId: "summary_tab",
         title: "SUMMARY",
         DepositionDetailsComponent: DepositionDetailsSummary,
         tabPaneTestId: "summary_tab_pane",
     },
     {
-        tabId: DEPOSITION_DETAILS_TABS[1],
+        tabId: DEPOSITION_DETAILS_TABS.transcript,
         tabTestId: "transcript_tab",
         title: "TRANSCRIPT",
         DepositionDetailsComponent: DepositionDetailsTranscript,
         tabPaneTestId: "transcript_tab_pane",
     },
     {
-        tabId: DEPOSITION_DETAILS_TABS[2],
+        tabId: DEPOSITION_DETAILS_TABS.enteredExhibits,
         tabTestId: "entered_exhibits",
         title: "ENTERED EXHIBITS",
         DepositionDetailsComponent: DepositionDetailsEnteredExhibits,
         tabPaneTestId: "entered_exhibits_tab_pane",
+    },
+    {
+        tabId: DEPOSITION_DETAILS_TABS.attendees,
+        tabTestId: "attendees",
+        title: "ATTENDEES",
+        DepositionDetailsComponent: DepositionDetailsAttendees,
+        tabPaneTestId: "attendees_tab_pane",
     },
 ] as DepositionDetailsTabData[];
 
@@ -74,8 +109,11 @@ export const REAL_TIME_PILL = "ROUGH DRAFT: NOT FOR OFFICIAL USE";
 
 export const DEPOSITION_DETAILS_DOWNLOAD_TITLE = "DOWNLOAD";
 export const DEPOSITION_DETAILS_COURT_REPORTER_TITLE = "COURT REPORTER";
-export const DEPOSITION_DETAILS_INVITED_PARTIES_TITLE = "INVITED PARTIES";
+export const DEPOSITION_DETAILS_INVITED_PARTIES_TITLE = "ATTENDEES";
 export const DEPOSITION_DETAILS_ENTERED_EXHIBITS_TITLE = "ENTERED EXHIBITS";
+export const DEPOSITION_DETAILS_ATTENDEES_TITLE = "Attendees";
+
+export const DEPOSITION_DETAILS_ATTENDEES_TEST_ID = "attendees_title";
 
 export const DEPOSITION_DETAILS_TRANSCRIPTS_COLUMNS = [
     {

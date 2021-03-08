@@ -1,16 +1,20 @@
-import { waitForDomChange, waitForElement } from "@testing-library/react";
-import moment from "moment-timezone";
+import { waitForDomChange, waitForElement, fireEvent } from "@testing-library/react";
 import { createMemoryHistory } from "history";
+import moment from "moment-timezone";
 import React from "react";
 import { Route } from "react-router-dom";
 import { FORMAT_DATE, FORMAT_TIME } from "../../constants/depositionDetails";
 import * as ERROR_CONSTANTS from "../../constants/errors";
+import * as CONSTANTS from "../../constants/depositionDetails";
 import { wait } from "../../helpers/wait";
 import DepositionDetails from "../../routes/DepositionDetails";
 import * as TESTS_CONSTANTS from "../constants/depositionDetails";
-import { getDepositions } from "../constants/depositions";
+import { DEPOSITION_ID, getDepositions } from "../constants/depositions";
 import getMockDeps from "../utils/getMockDeps";
+import DEPO_PARTICIPANT_MOCK from "../mocks/depoParticipant";
 import renderWithGlobalContext from "../utils/renderWithGlobalContext";
+import DepositionDetailsAttendees from "../../routes/DepositionDetails/DepositionDetailsAttendees";
+import { Roles } from "../../models/participant";
 
 jest.mock("audio-recorder-polyfill", () => {
     return jest.fn().mockImplementation(() => ({
@@ -91,5 +95,50 @@ describe("DepositionDetails", () => {
         history.push(TESTS_CONSTANTS.TEST_ROUTE);
         expect(spinner).toBeInTheDocument();
         await waitForDomChange();
+    });
+});
+
+describe("Tests the attendees tab", () => {
+    test("Shows error when fetch fails", async () => {
+        customDeps.apiService.fetchParticipants = jest.fn().mockRejectedValue(async () => {
+            throw Error("Something wrong");
+        });
+        const { getByText } = renderWithGlobalContext(
+            <DepositionDetailsAttendees
+                activeKey={CONSTANTS.DEPOSITION_DETAILS_TABS.attendees}
+                depositionID={DEPOSITION_ID}
+            />,
+            customDeps
+        );
+        await waitForDomChange();
+        expect(getByText(ERROR_CONSTANTS.FETCH_ERROR_MODAL_TITLE)).toBeInTheDocument();
+        expect(getByText(ERROR_CONSTANTS.FETCH_ERROR_MODAL_BODY)).toBeInTheDocument();
+        expect(getByText(ERROR_CONSTANTS.FETCH_ERROR_MODAL_BODY)).toBeInTheDocument();
+    });
+    test("Shows correct info if fetch succeeds", async () => {
+        customDeps.apiService.fetchParticipants = jest.fn().mockImplementation(async () => {
+            return [DEPO_PARTICIPANT_MOCK];
+        });
+        const { getByText } = renderWithGlobalContext(
+            <DepositionDetailsAttendees
+                activeKey={CONSTANTS.DEPOSITION_DETAILS_TABS.attendees}
+                depositionID={DEPOSITION_ID}
+            />,
+            customDeps
+        );
+        await waitForDomChange();
+        Object.values(DEPO_PARTICIPANT_MOCK)
+            .filter((value) => {
+                const isAValidTestValue =
+                    value !== null &&
+                    value !== DEPO_PARTICIPANT_MOCK.id &&
+                    value !== DEPO_PARTICIPANT_MOCK.creationDate;
+                return isAValidTestValue;
+            })
+            .map((element) => {
+                const isCourtReporter = element === Roles.courtReporter ? "Court Reporter" : element;
+                return expect(getByText(String(isCourtReporter))).toBeInTheDocument();
+            });
+        expect(customDeps.apiService.fetchParticipants).toHaveBeenCalledWith(DEPOSITION_ID, undefined);
     });
 });

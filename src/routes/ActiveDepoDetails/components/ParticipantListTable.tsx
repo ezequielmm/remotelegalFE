@@ -102,7 +102,7 @@ const ParticipantListTable = ({
     useEffect(() => {
         if (participants) {
             const participantsArray = participants.map((participant: IParticipant) => {
-                const { email, id, name, phone, role } = participant;
+                const { email, id, name, phone, role, user } = participant;
                 const isCourtReporter = role === Roles.courtReporter;
                 if (isCourtReporter) {
                     isCourtReporterPresent.current = true;
@@ -110,7 +110,7 @@ const ParticipantListTable = ({
                 return {
                     email,
                     id,
-                    name,
+                    name: user ? `${user.firstName} ${user.lastName}` : name,
                     phone,
                     role: isCourtReporter ? "Court Reporter" : role,
                 };

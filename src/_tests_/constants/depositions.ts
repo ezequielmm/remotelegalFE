@@ -6,10 +6,12 @@ export const getNoDepositions = () => [];
 
 export const PARTICIPANT_NAME = "Participant Name";
 
+export const DEPOSITION_ID = "859233bf-a627-471c-02bb-08d8962d8ea9";
+
 export const getDepositions = () =>
     [
         {
-            id: "859233bf-a627-471c-02bb-08d8962d8ea9",
+            id: DEPOSITION_ID,
             creationDate: "2020-12-01T16:16:08-03:00",
             completeDate: "2020-12-01T17:16:08-03:00",
             startDate: "2020-12-23T19:15:51-03:00",
@@ -62,7 +64,7 @@ export const getDepositionWithOverrideValues = (values?) => {
             firstName: "fictional creator name",
             lastName: "fictional creator last name",
         },
-        id: "859233bf-a627-471c-02bb-08d8962d8ea9",
+        id: DEPOSITION_ID,
         creationDate: "2020-12-01T16:16:08-03:00",
         completeDate: "2020-12-01T17:16:08-03:00",
         startDate: "2020-12-23T19:15:51-03:00",

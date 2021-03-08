@@ -93,7 +93,11 @@ export default function DepositionDetailsSummary({ setActiveKey }: IDepositionDe
                     </Space>
                     <Space align="stretch" flex="1 0 48%">
                         <Space align="stretch" fullWidth size={6}>
-                            <CardIcon icon={ParticipantsIcon} fullWidth>
+                            <CardIcon
+                                icon={ParticipantsIcon}
+                                fullWidth
+                                onClick={() => setActiveKey(CONSTANTS.DEPOSITION_DETAILS_TABS.attendees)}
+                            >
                                 <Text state={ColorStatus.disabled} ellipsis={false}>
                                     {CONSTANTS.DEPOSITION_DETAILS_INVITED_PARTIES_TITLE}
                                 </Text>
@@ -103,7 +107,11 @@ export default function DepositionDetailsSummary({ setActiveKey }: IDepositionDe
                             </CardIcon>
                         </Space>
                         <Space align="stretch" fullWidth size={6}>
-                            <CardIcon icon={ExhibitsIcon} fullWidth onClick={() => setActiveKey("entered_exhibits")}>
+                            <CardIcon
+                                icon={ExhibitsIcon}
+                                fullWidth
+                                onClick={() => setActiveKey(CONSTANTS.DEPOSITION_DETAILS_TABS.enteredExhibits)}
+                            >
                                 <Text state={ColorStatus.disabled} ellipsis={false}>
                                     {CONSTANTS.DEPOSITION_DETAILS_ENTERED_EXHIBITS_TITLE}
                                 </Text>
