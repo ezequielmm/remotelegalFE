@@ -45,11 +45,14 @@ export const useLogin = (depositionID: string) => {
     useEffect(() => {
         if (addParticipantError) {
             setLoading(false);
-            Message({
-                content: CONSTANTS.NETWORK_ERROR,
-                type: "error",
-                duration: 3,
-            });
+
+            if (addParticipantError !== 400) {
+                Message({
+                    content: CONSTANTS.NETWORK_ERROR,
+                    type: "error",
+                    duration: 3,
+                });
+            }
         }
     }, [addParticipantError]);
 
@@ -78,5 +81,5 @@ export const useLogin = (depositionID: string) => {
         }
     };
 
-    return { loginUser, loading, loginError };
+    return { loginUser, loading, loginError, addParticipantError };
 };

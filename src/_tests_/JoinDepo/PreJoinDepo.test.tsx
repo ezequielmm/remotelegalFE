@@ -154,7 +154,23 @@ describe("It tests the non-registered and non-participant flow", () => {
         userEvent.click(role[1]);
         userEvent.click(getByTestId(CONSTANTS.STEP_2_BUTTON_ID));
         await waitForDomChange();
-        expect(getByText(CONSTANTS.NETWORK_ERROR)).toBeInTheDocument();
+        await waitForElement(() => getAllByText(CONSTANTS.NETWORK_ERROR));
+    });
+
+    test("should display witness error message if guestDepoParticipant endpoint returns a 400", async () => {
+        deps.apiService.registerGuestDepoParticipant = jest.fn().mockRejectedValue(400);
+        const { getByTestId, getByText, getAllByText } = renderWithGlobalContext(<PreJoinDepo />, deps);
+        await waitForDomChange();
+        fireEvent.change(getByTestId(CONSTANTS.EMAIL_INPUT_ID), { target: { value: TEST_CONSTANTS.MOCKED_EMAIL } });
+        userEvent.click(getByTestId(CONSTANTS.STEP_1_BUTTON_ID));
+        await waitForDomChange();
+        fireEvent.change(getByTestId(CONSTANTS.NAME_INPUT_ID), { target: { value: TEST_CONSTANTS.MOCKED_NAME } });
+        userEvent.click(getByText(CONSTANTS.ROLE_INPUT));
+        const role = await waitForElement(() => getAllByText(TEST_CONSTANTS.ROLE));
+        userEvent.click(role[1]);
+        userEvent.click(getByTestId(CONSTANTS.STEP_2_BUTTON_ID));
+        await waitForDomChange();
+        expect(getByText(CONSTANTS.WITNESS_ALREADY_PRESENT_ERROR)).toBeInTheDocument();
     });
 
     test("should redirect to InDepo page and set token", async () => {
@@ -221,14 +237,14 @@ describe("It tests the non-registered and participant flow", () => {
 
     test("should display message when registerParticipant service fails", async () => {
         deps.apiService.registerGuestDepoParticipant = jest.fn().mockRejectedValue(new Error(""));
-        const { getByTestId, getByText } = renderWithGlobalContext(<PreJoinDepo />, deps);
+        const { getByTestId, getAllByText } = renderWithGlobalContext(<PreJoinDepo />, deps);
         await waitForDomChange();
         fireEvent.change(getByTestId(CONSTANTS.EMAIL_INPUT_ID), { target: { value: TEST_CONSTANTS.MOCKED_EMAIL } });
         userEvent.click(getByTestId(CONSTANTS.STEP_1_BUTTON_ID));
         await waitForDomChange();
         userEvent.click(getByTestId(CONSTANTS.STEP_2_BUTTON_ID));
         await waitForDomChange();
-        expect(getByText(CONSTANTS.NETWORK_ERROR)).toBeInTheDocument();
+        await waitForElement(() => getAllByText(CONSTANTS.NETWORK_ERROR));
     });
 
     test("should redirect to InDepo page and set token", async () => {
@@ -301,6 +317,24 @@ describe("It tests the registered and not logged in user and non-participant flo
         userEvent.click(getByTestId(CONSTANTS.STEP_2_BUTTON_ID));
         await waitForDomChange();
         await waitForElement(() => getByText(CONSTANTS.NETWORK_ERROR));
+    });
+    test("should display witness error message if addDepoParticipant endpoint returns a 400", async () => {
+        deps.apiService.addDepoParticipant = jest.fn().mockRejectedValue(400);
+        const { getByTestId, getByText, getAllByText } = renderWithGlobalContext(<PreJoinDepo />, deps);
+        await waitForDomChange();
+        fireEvent.change(getByTestId(CONSTANTS.EMAIL_INPUT_ID), { target: { value: TEST_CONSTANTS.MOCKED_EMAIL } });
+        userEvent.click(getByTestId(CONSTANTS.STEP_1_BUTTON_ID));
+        await waitForDomChange();
+        userEvent.click(getByText(CONSTANTS.ROLE_INPUT));
+        const role = await waitForElement(() => getAllByText(TEST_CONSTANTS.ROLE));
+        userEvent.click(role[1]);
+
+        fireEvent.change(getByTestId(CONSTANTS.PASSWORD_INPUT_ID), {
+            target: { value: TEST_CONSTANTS.MOCKED_PASSWORD },
+        });
+        userEvent.click(getByTestId(CONSTANTS.STEP_2_BUTTON_ID));
+        await waitForDomChange();
+        await waitForElement(() => getByText(CONSTANTS.WITNESS_ALREADY_PRESENT_ERROR));
     });
     test("should show step 1, should not show logged user´s email", async () => {
         const { queryByText, queryByTestId } = renderWithGlobalContext(<PreJoinDepo />, deps);

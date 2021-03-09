@@ -13,6 +13,7 @@ export interface IWizard {
     totalSteps?: number | null;
     title?: string;
     text?: string;
+    alertComponent?: React.ReactNode;
 }
 
 interface IWizardStepProps {
@@ -36,7 +37,7 @@ const WizardActions = ({ children }: IWizardActionsProps) => {
     return <StyledCustomSpacer>{children}</StyledCustomSpacer>;
 };
 
-const Wizard = ({ children, step = 0, totalSteps, title, text }: IWizard) => {
+const Wizard = ({ children, step = 0, totalSteps, title, text, alertComponent }: IWizard) => {
     const stepText = step && totalSteps && `STEP ${step} OF ${totalSteps}`;
 
     return (
@@ -51,6 +52,7 @@ const Wizard = ({ children, step = 0, totalSteps, title, text }: IWizard) => {
                     </Title>
                     <Text state={ColorStatus.disabled}>{text}</Text>
                 </Space.Item>
+                {alertComponent}
                 <Space.Item fullWidth>{children}</Space.Item>
             </Space>
         </Modal>

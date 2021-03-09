@@ -27,3 +27,5 @@ export const DEPOSITION_ROUTE = "/deposition/join/";
 export const FETCH_ERROR_RESULT_TITLE = "Sorry! We couldn't connect to the Join Deposition page.";
 export const FETCH_ERROR_RESULT_BODY = "Something went wrong, please refresh the page to try again.";
 export const FETCH_ERROR_RESULT_BUTTON = "Refresh Page";
+export const WITNESS_ALREADY_PRESENT_ERROR =
+    "There is another witness assigned to this deposition. Please select another role.";

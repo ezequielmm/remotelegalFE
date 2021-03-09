@@ -12,6 +12,7 @@ import Wizard from "../../components/Wizard";
 import TEMP_TOKEN from "../../constants/ApiService";
 import * as CONSTANTS from "../../constants/preJoinDepo";
 import ErrorScreen from "../../components/ErrorScreen";
+import Alert from "../../components/Alert";
 
 const PreJoinDepo = () => {
     const { depositionID } = useParams<DepositionID>();
@@ -21,8 +22,8 @@ const PreJoinDepo = () => {
     const emailRef = useRef("");
     const passwordRef = useRef("");
     const [checkUserStatus, userStatusLoading, userStatusError, userStatus] = useCheckUserStatus();
-    const { loginUser, loading: loginLoading, loginError } = useLogin(depositionID);
-
+    const { loginUser, loading: loginLoading, loginError, addParticipantError } = useLogin(depositionID);
+    const [witnessAlreadyExistsError, setWitnessAlreadyExistsError] = useState(false);
     const [
         registerParticipant,
         registerParticipantLoading,
@@ -41,12 +42,15 @@ const PreJoinDepo = () => {
     }, [checkUserStatus, isAuthenticated, depositionID, currentEmail]);
 
     useEffect(() => {
-        if (userStatusError || registerParticipantError) {
+        if (userStatusError || (registerParticipantError && registerParticipantError !== 400)) {
             Message({
                 content: CONSTANTS.NETWORK_ERROR,
                 type: "error",
                 duration: 3,
             });
+        }
+        if (registerParticipantError === 400 || addParticipantError === 400) {
+            setWitnessAlreadyExistsError(true);
         }
         if (loginError) {
             Message({
@@ -55,7 +59,7 @@ const PreJoinDepo = () => {
                 duration: 3,
             });
         }
-    }, [userStatusError, registerParticipantError, loginError]);
+    }, [userStatusError, registerParticipantError, loginError, addParticipantError]);
 
     useEffect(() => {
         if (userStatus) {
@@ -116,6 +120,13 @@ const PreJoinDepo = () => {
         );
     }
 
+    const resetStep = () => {
+        if (witnessAlreadyExistsError) {
+            setWitnessAlreadyExistsError(false);
+        }
+        setStep(step - 1);
+    };
+
     return (
         <div
             style={{
@@ -130,6 +141,17 @@ const PreJoinDepo = () => {
                 totalSteps={isAuthenticated ? null : 2}
                 title={CONSTANTS.WIZARD_TITLE}
                 text={CONSTANTS.WIZARD_TEXT}
+                alertComponent={
+                    witnessAlreadyExistsError && (
+                        <Alert
+                            closable
+                            afterClose={() => setWitnessAlreadyExistsError(false)}
+                            type="warning"
+                            message={CONSTANTS.WITNESS_ALREADY_PRESENT_ERROR}
+                            data-testid="witness_already_present_alert"
+                        />
+                    )
+                }
             >
                 {step === 1 && isAuthenticated === false && (
                     <EmailForm
@@ -146,7 +168,7 @@ const PreJoinDepo = () => {
                         passwordInput={!isAuthenticated}
                         joinDeposition={joinDepositionAsRegisteredUser}
                         loading={loginLoading}
-                        returnFunc={() => setStep(step - 1)}
+                        returnFunc={resetStep}
                     />
                 ) : (
                     step === 2 && (
@@ -159,7 +181,7 @@ const PreJoinDepo = () => {
                             loading={registerParticipantLoading}
                             defaultName={userStatus.participant?.name}
                             disableRoleSelect={userStatus.participant}
-                            returnFunc={() => setStep(step - 1)}
+                            returnFunc={resetStep}
                         />
                     )
                 )}
