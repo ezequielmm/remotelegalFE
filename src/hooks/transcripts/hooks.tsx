@@ -79,3 +79,11 @@ export const useUploadFile = (depositionID: string) => {
 
     return { upload };
 };
+
+export const useRemoveTranscript = () => {
+    const { deps } = useContext(GlobalStateContext);
+    return useAsyncCallback<any, any>(async (depoID, transcriptID) => {
+        const response = await deps.apiService.removeTranscript(depoID, transcriptID);
+        return response;
+    }, []);
+};

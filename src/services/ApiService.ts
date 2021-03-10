@@ -451,4 +451,12 @@ export class ApiService {
             throw error;
         }
     };
+
+    removeTranscript = async (depositionID: string, transcriptID: string) => {
+        return this.request({
+            path: `/api/depositions/${depositionID}/transcripts/${transcriptID}`,
+            withToken: true,
+            method: HTTP_METHOD.DELETE,
+        });
+    };
 }

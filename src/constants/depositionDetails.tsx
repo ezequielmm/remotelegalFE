@@ -110,7 +110,7 @@ export const REAL_TIME_PILL = "ROUGH DRAFT: NOT FOR OFFICIAL USE";
 export const DEPOSITION_DETAILS_DOWNLOAD_TITLE = "DOWNLOAD";
 export const DEPOSITION_DETAILS_COURT_REPORTER_TITLE = "COURT REPORTER";
 export const DEPOSITION_DETAILS_INVITED_PARTIES_TITLE = "ATTENDEES";
-export const DEPOSITION_DETAILS_ENTERED_EXHIBITS_TITLE = "ENTERED EXHIBITS";
+export const DEPOSITION_DETAILS_ENTERED_EXHIBITS_TITLE = "Entered Exhibits";
 export const DEPOSITION_DETAILS_ATTENDEES_TITLE = "Attendees";
 
 export const DEPOSITION_DETAILS_ATTENDEES_TEST_ID = "attendees_title";
@@ -128,3 +128,13 @@ export const DEPOSITION_DETAILS_TRANSCRIPTS_COLUMNS = [
         render: (size: number) => formatBytes(size, 0),
     },
 ];
+
+export const NETWORK_ERROR = "An unexpected error occurred! Please try again";
+export const DEPOSITION_DETAILS_REMOVE_TRANSCRIPT_TOAST = "The transcript was successfully removed";
+
+export const DEPOSITION_DETAILS_DELETE_MODAL_TITLE = "Delete file?";
+export const DEPOSITION_DETAILS_DELETE_MODAL_SUBTITLE = "This action cannot be undone. Are you sure you want to delete";
+export const DEPOSITION_DETAILS_DELETE_MODAL_NO = "NO, KEEP IT";
+export const DEPOSITION_DETAILS_DELETE_MODAL_YES = "YES, DELETE FILE";
+
+export const DEPOSITION_DETAILS_TRANSCRIPT_ROUGH_TYPE = "DraftTranscription";

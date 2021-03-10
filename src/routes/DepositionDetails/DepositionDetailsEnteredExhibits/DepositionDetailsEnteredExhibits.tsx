@@ -16,9 +16,9 @@ export default function DepositionDetailsEnteredExhibits() {
 
     return (
         <StyledEnteredContainer>
-            <Space mb={4} justify="space-between" align="flex-end">
+            <Space mb={4} mt={6} justify="space-between" align="flex-end">
                 <Space.Item>
-                    <Title level={5} weight="light" dataTestId="entered_exhibits_title">
+                    <Title level={5} weight="regular" noMargin dataTestId="entered_exhibits_title">
                         {DEPOSITION_DETAILS_ENTERED_EXHIBITS_TITLE}
                     </Title>
                 </Space.Item>

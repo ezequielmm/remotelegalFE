@@ -7,6 +7,7 @@ import { getUser1 } from "../constants/signUp";
 import { getEvents, getRecordResponse, getTranscription, getTranscriptionsWithOffset } from "../mocks/transcription";
 import { CAPTION_MOCK } from "../constants/caption";
 import { getBreakrooms } from "../mocks/breakroom";
+import { getTranscriptFileList } from "../mocks/transcriptsFileList";
 
 export default (): Deps => ({
     apiService: {
@@ -31,5 +32,6 @@ export default (): Deps => ({
         addDepoParticipant: jest.fn().mockResolvedValue(true),
         getRecordingInfo: jest.fn().mockResolvedValue(true),
         getEnteredExhibits: jest.fn().mockResolvedValue([]),
+        fetchTranscriptsFiles: jest.fn().mockResolvedValue(getTranscriptFileList()),
     } as any,
 });
