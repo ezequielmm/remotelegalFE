@@ -6,13 +6,21 @@ import { setTranscriptionMessages } from "../../helpers/formatTranscriptionsMess
 import { IDeposition } from "../../models/deposition";
 
 export interface IPostDepo {
+    currentTime: number;
+    changeTime: { time: number };
     transcriptions?: (TranscriptionModel.Transcription & TranscriptionModel.TranscriptionPause)[];
     currentDeposition?: IDeposition;
+    playing: boolean;
+    duration: number;
 }
 
 export const PostDepoReducerInitialState: IPostDepo = {
+    currentTime: undefined,
+    changeTime: { time: undefined },
     transcriptions: [],
     currentDeposition: null,
+    playing: false,
+    duration: 0,
 };
 
 const PostDepoReducer: Reducer<IPostDepo, IAction> = (state: IPostDepo, action: IAction): IPostDepo => {
@@ -27,7 +35,16 @@ const PostDepoReducer: Reducer<IPostDepo, IAction> = (state: IPostDepo, action: 
                 ...state,
                 currentDeposition: action.payload,
             };
-
+        case ACTION_TYPE.SET_PLAYING:
+            return { ...state, playing: action.payload.playing };
+        case ACTION_TYPE.SET_DURATION:
+            return { ...state, duration: action.payload.duration };
+        case ACTION_TYPE.SET_CURRENT_TIME:
+            return { ...state, currentTime: action.payload.currentTime };
+        case ACTION_TYPE.SET_CHANGE_TIME:
+            return { ...state, changeTime: { time: action.payload.changeTime } };
+        case ACTION_TYPE.RESET_VIDEO_DATA:
+            return { ...state, playing: false, duration: 0, currentTime: undefined, changeTime: { time: undefined } };
         default:
             return state;
     }

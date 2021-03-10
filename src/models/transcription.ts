@@ -6,6 +6,10 @@ export interface Transcription {
     userEmail?: string;
     userName?: string;
     transcriptDateTime?: DateLike;
+    prevEndTime?: number;
+    transcriptionVideoTime?: number;
+    duration?: number;
+    confidence?: number;
 }
 export interface TranscriptionPause {
     from: DateLike;

@@ -1,4 +1,4 @@
-import { EventModel } from "../../models";
+import { EventModel, TranscriptionModel } from "../../models";
 import { TimeZones } from "../../models/general";
 
 const transcriptDateTime = "2021-01-05T17:52:08.2345064Z";
@@ -11,6 +11,45 @@ export const getTranscription = (): any => ({
     userName: "userName",
     transcriptDateTime,
 });
+
+export const getTranscriptionsWithOffset = (): TranscriptionModel.Transcription[] => [
+    {
+        text: "Hello, how are you?",
+        transcriptDateTime: "2021-03-09T12:51:56",
+        transcriptionVideoTime: 110,
+        duration: 280,
+        confidence: 0,
+        userName: "Facu Cast",
+        id: "fad7d738-6d8b-4b10-a77f-08d8e2fa1f50",
+    },
+    {
+        text: "This is not for official use.",
+        transcriptDateTime: "2021-03-09T12:52:02",
+        transcriptionVideoTime: 115,
+        duration: 50,
+        confidence: 0,
+        userName: "Facu Cast",
+        id: "07380222-ba75-478c-a780-08d8e2fa1f50",
+    },
+    {
+        text: "Let's see if the highlighting is is doing OK.",
+        transcriptDateTime: "2021-03-09T12:52:09",
+        transcriptionVideoTime: 123,
+        duration: 460,
+        confidence: 0,
+        userName: "Facu Cast",
+        id: "8c88dd44-4245-4d84-a781-08d8e2fa1f50",
+    },
+    {
+        text: "Well my English is improving.",
+        transcriptDateTime: "2021-03-09T12:52:17",
+        transcriptionVideoTime: 130,
+        duration: 840,
+        confidence: 0,
+        userName: "Facu Cast",
+        id: "edc08e1f-2cd8-4e56-a782-08d8e2fa1f50",
+    },
+];
 
 export const getTranscriptionsWithPause = (): any => [
     {

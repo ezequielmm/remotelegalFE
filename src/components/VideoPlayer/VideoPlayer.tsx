@@ -1,5 +1,5 @@
 import { Slider } from "antd";
-import React, { useRef, useState } from "react";
+import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
 import ReactPlayer, { ReactPlayerProps } from "react-player";
 import screenfull from "screenfull";
 import styled from "styled-components";
@@ -13,6 +13,8 @@ import Duration from "./Duration";
 import { getREM, hexToRGBA } from "../../constants/styles/utils";
 import { theme } from "../../constants/styles/theme";
 import Text from "../Typography/Text";
+import actions from "../../state/PostDepo/PostDepoActions";
+import { GlobalStateContext } from "../../state/GlobalState";
 
 const StyledVideoPlayer = styled.div`
     width: 100%;
@@ -80,35 +82,38 @@ interface IVideoPlayer extends ReactPlayerProps {
 }
 
 const VideoPlayer = ({ fullScreen, fallback, ...rest }: IVideoPlayer) => {
-    const [playing, setPlaying] = useState<boolean>(false);
-    const [duration, setDuration] = useState<number>(0);
+    const { dispatch, state } = useContext(GlobalStateContext);
+    const { changeTime, currentTime, playing, duration } = state.postDepo;
+
     const [fullscreen, setFullscreen] = useState<boolean>(false);
-    const [currentTime, setCurrentTime] = useState<number>(0);
     const [isVideoReady, setIsVideoReady] = useState(false);
 
     const player = useRef(null);
     const styledPlayerRef = useRef(null);
 
     const handleDuration = (newDuration) => {
-        setDuration(newDuration);
+        dispatch(actions.setDuration(newDuration));
     };
 
     const handlePlayPause = () => {
-        setPlaying(!playing);
+        dispatch(actions.setPlaying(!playing));
     };
 
     const handlePlay = () => {
-        setPlaying(true);
+        dispatch(actions.setPlaying(true));
     };
 
     const handleProgress = (state) => {
-        setCurrentTime(state.played * duration);
+        dispatch(actions.setCurrentTime(state.played * duration));
     };
 
-    const handleSliderChange = (value) => {
-        setCurrentTime(value);
-        player.current.seekTo(value);
-    };
+    const handleSliderChange = useCallback(
+        (value) => {
+            dispatch(actions.setCurrentTime(value));
+            player.current.seekTo(value);
+        },
+        [player, dispatch]
+    );
 
     const handleFullScreen = () => {
         if (screenfull.isEnabled) {
@@ -116,6 +121,17 @@ const VideoPlayer = ({ fullScreen, fallback, ...rest }: IVideoPlayer) => {
         }
         setFullscreen(!fullscreen);
     };
+
+    useEffect(() => {
+        return () => dispatch(actions.resetVideoData());
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    useEffect(() => {
+        if (player && player.current && changeTime.time !== undefined) {
+            handleSliderChange(changeTime.time);
+        }
+    }, [handleSliderChange, changeTime, styledPlayerRef]);
 
     return (
         <StyledVideoPlayer ref={styledPlayerRef} data-testid="video_player">

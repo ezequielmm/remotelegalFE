@@ -4,7 +4,7 @@ import { getCaseAsc, getOneCase } from "../constants/cases";
 import { JOIN_BREAKROOM_MOCK, JOIN_DEPOSITION_MOCK, PERMISSIONS_MOCK } from "../constants/InDepo";
 import { getDepositions } from "../constants/depositions";
 import { getUser1 } from "../constants/signUp";
-import { getEvents, getRecordResponse, getTranscription } from "../mocks/transcription";
+import { getEvents, getRecordResponse, getTranscription, getTranscriptionsWithOffset } from "../mocks/transcription";
 import { CAPTION_MOCK } from "../constants/caption";
 import { getBreakrooms } from "../mocks/breakroom";
 
@@ -16,6 +16,7 @@ export default (): Deps => ({
         joinBreakroom: jest.fn().mockResolvedValue(JOIN_BREAKROOM_MOCK),
         getDepositionBreakrooms: jest.fn().mockResolvedValue(getBreakrooms()),
         getDepositionTranscriptions: jest.fn().mockResolvedValue([getTranscription()]),
+        getDepositionTranscriptionsWithOffsets: jest.fn().mockResolvedValue(getTranscriptionsWithOffset()),
         getDepositionEvents: jest.fn().mockResolvedValue(getEvents()),
         getDepositionPermissions: jest.fn().mockResolvedValue({ permissions: PERMISSIONS_MOCK }),
         fetchCases: jest.fn().mockResolvedValue(getCaseAsc()),

@@ -22,9 +22,14 @@ export const setTranscriptionMessages = (
     const filterPauses = removeCurrentPause ? (pause) => pause.to : (pause) => pause.from;
     pauses = pauses.filter(filterPauses);
 
-    const transcriptionsWithPauses = [
+    let transcriptionsWithPauses = [
         ...transcriptions.filter((transcription) => transcription.text !== ""),
     ] as (TranscriptionModel.Transcription & TranscriptionModel.TranscriptionPause)[];
+    if (removeCurrentPause)
+        transcriptionsWithPauses = transcriptionsWithPauses.map((trancription, i) => ({
+            ...trancription,
+            prevEndTime: transcriptions[i - 1]?.transcriptionVideoTime || 0,
+        }));
     let index = 0;
     while (pauses.length > 0 && index < transcriptionsWithPauses.length) {
         if (moment(pauses[0].to).isBefore(moment(transcriptionsWithPauses[index].transcriptDateTime), "second")) {

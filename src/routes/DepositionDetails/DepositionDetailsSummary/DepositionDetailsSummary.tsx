@@ -25,7 +25,6 @@ import { ThemeMode } from "../../../types/ThemeType";
 import DepositionDetailsVideoSection from "./DepositionDetailsVideoSection";
 import { useGetRecordingInfo } from "../../../hooks/useGetRecordingInfo";
 import CardIcon from "../../../components/CardIcon";
-import { IPostDepo } from "../../../state/PostDepo/PostDepoReducer";
 import { useEnteredExhibit } from "../../../hooks/useEnteredExhibits";
 
 interface IDepositionDetailsSummary {
@@ -35,12 +34,12 @@ interface IDepositionDetailsSummary {
 export default function DepositionDetailsSummary({ setActiveKey }: IDepositionDetailsSummary) {
     const inDepoTheme = { ...theme, mode: ThemeMode.inDepo };
     const { dispatch, state } = useContext(GlobalStateContext);
-    const [getTranscriptions, loading] = useGetTranscriptions();
+    const [getTranscriptions, loading] = useGetTranscriptions(true);
     const [getDepositionEvents] = useGetEvents();
     const { depositionID } = useParams<DepositionID>();
-    const { transcriptions, currentDeposition }: IPostDepo = state.postDepo;
     const { handleFetchFiles, enteredExhibits } = useEnteredExhibit();
     const [courtReporterName, setCourtReporterName] = useState("");
+    const { duration, currentTime, transcriptions, currentDeposition } = state.postDepo;
 
     const [setTranscriptions] = useAsyncCallback(async () => {
         const newTranscriptions = await getTranscriptions();
@@ -157,10 +156,21 @@ export default function DepositionDetailsSummary({ setActiveKey }: IDepositionDe
                                     transcriptions && (
                                         <ThemeProvider theme={inDepoTheme}>
                                             <RealTime
+                                                manageTranscriptionClicked={
+                                                    duration > 0 &&
+                                                    ((transcription) => {
+                                                        dispatch(
+                                                            actions.setChangeTime(transcription.prevEndTime + 0.0001)
+                                                        );
+                                                        dispatch(actions.setPlaying(true));
+                                                    })
+                                                }
                                                 disableAutoscroll
                                                 transcriptions={transcriptions}
                                                 visible
                                                 timeZone={TimeZones.EST}
+                                                playedSeconds={currentTime}
+                                                scrollToHighlighted
                                             />
                                         </ThemeProvider>
                                     )

@@ -1,10 +1,12 @@
 import { Roles } from "../../models/participant";
+import { getDepositions } from "../constants/depositions";
 
 export const getCurrentDepositionOneCourtReporter = (name) => ({
+    ...getDepositions()[0],
     participants: [
         {
             email: "email@email.com",
-            name: name,
+            name,
             role: Roles.courtReporter,
             phone: "1234",
             user: null,
@@ -13,6 +15,7 @@ export const getCurrentDepositionOneCourtReporter = (name) => ({
 });
 
 export const getCurrentDepositionTwoParticipants = () => ({
+    ...getDepositions()[0],
     participants: [
         {
             email: "email@email.com",
@@ -32,5 +35,6 @@ export const getCurrentDepositionTwoParticipants = () => ({
 });
 
 export const getCurrentDepositionNoParticipants = () => ({
+    ...getDepositions()[0],
     participants: [],
 });

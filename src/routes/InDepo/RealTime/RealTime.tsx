@@ -7,7 +7,7 @@ import Icon from "../../../components/Icon";
 import { ReactComponent as TimeIcon } from "../../../assets/icons/time.svg";
 import { ReactComponent as InfoIcon } from "../../../assets/icons/information.svg";
 import { ContainerProps, StyledLayoutContent, StyledLayoutCotainer } from "../styles";
-import { RoughDraftPill, StyledRealTimeContainer } from "./styles";
+import { HiddenRef, RoughDraftPill, StyledRealTimeContainer, TranscriptionText } from "./styles";
 import * as CONSTANTS from "../../../constants/inDepo";
 import ColorStatus from "../../../types/ColorStatus";
 import { TimeZones } from "../../../models/general";
@@ -15,24 +15,36 @@ import { TranscriptionModel } from "../../../models";
 
 const RealTime = ({
     disableAutoscroll,
+    manageTranscriptionClicked,
     visible,
     timeZone,
     transcriptions,
+    playedSeconds,
+    scrollToHighlighted,
 }: ContainerProps & {
     disableAutoscroll?: boolean;
+    manageTranscriptionClicked?: (transcription: TranscriptionModel.Transcription) => void;
     timeZone: TimeZones;
     transcriptions?: (TranscriptionModel.Transcription & TranscriptionModel.TranscriptionPause)[];
+    playedSeconds?: number;
+    scrollToHighlighted?: boolean;
 }) => {
     const scrollableRef = useRef(null);
 
     useEffect(() => {
         if (scrollableRef && scrollableRef.current) {
             scrollableRef.current.addEventListener("DOMNodeInserted", (event) => {
-                const { currentTarget: target } = event;
-                target.scroll({ top: target.scrollHeight, behavior: "smooth" });
+                const { relatedNode, currentTarget: target } = event;
+                if (
+                    scrollToHighlighted &&
+                    2 * relatedNode.offsetHeight + relatedNode.offsetTop - target.offsetTop >=
+                        target.scrollTop + target.offsetHeight
+                )
+                    return event.relatedNode.scrollIntoView({ behavior: "smooth" });
+                if (!scrollToHighlighted) target.scroll({ top: target.scrollHeight, behavior: "smooth" });
             });
         }
-    }, []);
+    }, [scrollToHighlighted]);
 
     return (
         <StyledLayoutCotainer noBackground={disableAutoscroll} visible={visible}>
@@ -67,6 +79,11 @@ const RealTime = ({
                                             />
                                         ) : (
                                             <Space direction="vertical" key={transcription.id}>
+                                                {playedSeconds !== undefined &&
+                                                    (i === 0 || playedSeconds - transcription.prevEndTime >= 0) &&
+                                                    playedSeconds - transcription.transcriptionVideoTime < 0 && (
+                                                        <HiddenRef />
+                                                    )}
                                                 <Text
                                                     state={ColorStatus.disabled}
                                                     font="code"
@@ -82,15 +99,24 @@ const RealTime = ({
                                                             .format("hh:mm:ss A")}
                                                     </>
                                                 </Text>
-                                                <Text
+                                                <TranscriptionText
                                                     font="code"
                                                     size="small"
                                                     block
                                                     ellipsis={false}
                                                     dataTestId="transcription_text"
+                                                    highlighted={
+                                                        playedSeconds !== undefined &&
+                                                        (i === 0 || playedSeconds - transcription.prevEndTime >= 0) &&
+                                                        playedSeconds - transcription.transcriptionVideoTime < 0
+                                                    }
+                                                    onClick={
+                                                        manageTranscriptionClicked &&
+                                                        (() => manageTranscriptionClicked(transcription))
+                                                    }
                                                 >
                                                     {transcription.text}
-                                                </Text>
+                                                </TranscriptionText>
                                             </Space>
                                         ))
                                 )}

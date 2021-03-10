@@ -1,6 +1,8 @@
 import styled from "styled-components";
+import Text from "../../../components/Typography/Text";
 import Space from "../../../components/Space";
 import { getPX, getREM, hexToRGBA } from "../../../constants/styles/utils";
+import { ITextProps } from "../../../components/Typography/Text/Text";
 
 export const StyledRealTimeContainer = styled.div`
     height: 100%;
@@ -29,6 +31,15 @@ export const StyledRealTimeContainer = styled.div`
             border-bottom: ${({ theme }) => `1px dashed ${theme.colors.inDepoBlue[2]}`};
         }
     }
+`;
+
+export const HiddenRef = styled.span`
+    display: none;
+`;
+
+export const TranscriptionText = styled(Text)<ITextProps & { highlighted: boolean; onClick: () => void }>`
+    background-color: ${({ highlighted, theme }) => highlighted && theme.colors.warning[2]};
+    cursor: ${({ onClick }) => onClick && "pointer"};
 `;
 
 export const RoughDraftPill = styled.div`

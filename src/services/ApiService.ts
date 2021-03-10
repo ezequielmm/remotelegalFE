@@ -96,6 +96,13 @@ export class ApiService {
         });
     };
 
+    getDepositionTranscriptionsWithOffsets = async (depositionID: string) => {
+        return this.request<DepositionModel.IDeposition>({
+            path: `/transcriptions/${depositionID}/offsets`,
+            method: HTTP_METHOD.GET,
+        });
+    };
+
     getDepositionBreakrooms = async (depositionID: string): Promise<DepositionModel.DepositionPermissions> => {
         return this.request({
             path: `/api/depositions/${depositionID}/breakrooms`,
