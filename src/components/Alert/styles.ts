@@ -48,7 +48,7 @@ const StyledAlert = styled(ANTDAlert)<IAlertProps>`
 
         const styles = `
             width: ${fullWidth ? "100%" : "auto"};
-            padding: ${getREM(theme.default.spaces[6])} ${getREM(theme.default.spaces[5])};
+            padding: ${getREM(theme.default.spaces[4])} ${getREM(theme.default.spaces[5])};
             padding-left: ${getREM(theme.default.spaces[12] + theme.default.spaces[5])};
 
             .ant-alert-icon {
@@ -59,7 +59,6 @@ const StyledAlert = styled(ANTDAlert)<IAlertProps>`
             }
 
             .ant-alert-message {
-                line-height: 1;
                 display: block;
             }
 

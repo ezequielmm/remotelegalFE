@@ -36,7 +36,8 @@ const Template: Story = (args: IAlertProps) => <Alert closable {...args} />;
 
 export const AntAlert = Template.bind({});
 AntAlert.args = {
-    message: "Alert text",
+    message:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi in mauris imperdiet, posuere mauris sit amet, posuere est. Etiam nec sapien varius nunc scelerisque cursus ac id neque.",
     type: "success",
 };
 
