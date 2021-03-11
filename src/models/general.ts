@@ -4,6 +4,7 @@ import { IRoom } from "../state/InDepo/InDepoReducer";
 import { IGeneralUi } from "../state/GeneralUi/GeneralUiReducer";
 import { IPostDepo } from "../state/PostDepo/PostDepoReducer";
 import { IUserPermissions } from "../state/UserPermissions/UserPermissionsReducer";
+import { ISignalR } from "../state/SignalR/SignalRReducer";
 
 export interface IAction<T = string, P = any> {
     type: T;
@@ -25,6 +26,7 @@ export type IGlobalState = {
     room: IRoom;
     generalUi: IGeneralUi;
     userPermissions: IUserPermissions;
+    signalR: ISignalR;
     postDepo: IPostDepo;
 };
 

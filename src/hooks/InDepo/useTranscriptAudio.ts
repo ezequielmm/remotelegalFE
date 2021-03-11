@@ -1,38 +1,30 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { useParams } from "react-router";
 import { GlobalStateContext } from "../../state/GlobalState";
 import actions from "../../state/InDepo/InDepoActions";
 import { DepositionID } from "../../state/types";
 import useAsyncCallback from "../useAsyncCallback";
+import useSignalR from "../useSignalR";
 import useWebSocket from "../useWebSocket";
 
 const useTranscriptAudio = () => {
     const { dispatch, state } = useContext(GlobalStateContext);
-    const { isRecording, dataTrack, currentRoom } = state.room;
+    const { isRecording } = state.room;
     const { depositionID } = useParams<DepositionID>();
+    const { subscribeToGroup, signalR } = useSignalR("/depositionHub");
 
-    const [sendAudio] = useAsyncCallback(
-        async (evt) => {
-            const { id, transcriptDateTime, text } = JSON.parse(evt.data);
-            if (!text) return;
-            const parsedTranscription = {
-                id,
-                text,
-                userName: JSON.parse(currentRoom?.localParticipant?.identity)?.name,
-                transcriptDateTime,
-            };
-            dataTrack.send(
-                JSON.stringify({
-                    module: "addTranscription",
-                    value: parsedTranscription,
-                })
-            );
-            dispatch(actions.addTranscription(parsedTranscription));
-        },
-        [currentRoom, dataTrack, dispatch]
-    );
+    useEffect(() => {
+        if (dispatch && signalR) {
+            subscribeToGroup("ReceiveNotification", (message) => {
+                const { id, transcriptDateTime, text, userName } = message.content;
+                if (!text) return;
+                const parsedTranscription = { id, text, userName, transcriptDateTime };
+                dispatch(actions.addTranscription(parsedTranscription));
+            });
+        }
+    }, [signalR, subscribeToGroup, dispatch]);
 
-    const [sendMessage] = useWebSocket(`/transcriptions`, sendAudio, true);
+    const [sendMessage] = useWebSocket(`/transcriptions`, undefined, true);
 
     const [transcriptAudio] = useAsyncCallback(
         async (audio: ArrayBuffer | string, sampleRate: number) => {

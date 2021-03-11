@@ -8,6 +8,7 @@
         "@babel/helper-skip-transparent-expression-wrappers": "^7.11.0",
         "@craco/craco": "^5.7.0",
         "@hookform/resolvers": "^1.0.1",
+        "@microsoft/signalr": "^5.0.3",
         "@pdftron/webviewer": "^7.2.0",
         "@pdftron/webviewer-video": "^3.3.5",
         "@testing-library/jest-dom": "^5.11.6",

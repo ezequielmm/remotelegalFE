@@ -19,6 +19,7 @@ import { DepositionID } from "../../state/types";
 import actions from "../../state/InDepo/InDepoActions";
 import { ThemeMode } from "../../types/ThemeType";
 import { EventModel } from "../../models";
+import useSignalR from "../../hooks/useSignalR";
 
 const InDepo = () => {
     const inDepoTheme = { ...theme, mode: ThemeMode.inDepo };
@@ -41,6 +42,21 @@ const InDepo = () => {
     const [videoLayoutSize, setVideoLayoutSize] = useState<number>(0);
     const [atendeesVisibility, setAtendeesVisibility] = useState<boolean>(true);
     const history = useHistory();
+    const { stop, sendMessage, signalR } = useSignalR("/depositionHub");
+
+    useEffect(
+        () => () => {
+            if (stop) stop();
+        },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        []
+    );
+
+    useEffect(() => {
+        if (signalR && depositionID) {
+            sendMessage("SubscribeToDeposition", depositionID);
+        }
+    }, [signalR, depositionID, sendMessage]);
 
     useEffect(() => {
         const setDominantSpeaker = (participant: Participant | null) =>

@@ -14,6 +14,7 @@ import { rootReducer } from "../../state/GlobalState";
 import dataTrackMock from "../mocks/dataTrack";
 import getParticipant from "../mocks/participant";
 import { currentExhibit } from "../mocks/currentExhibit";
+jest.mock("@microsoft/signalr");
 
 jest.mock("audio-recorder-polyfill", () => {
     return jest.fn().mockImplementation(() => ({
@@ -412,6 +413,7 @@ describe("inDepo -> Exhibits view with a shared exhibit", () => {
                         },
                         currentExhibit,
                     },
+                    signalR: { signalR: null },
                 },
             },
             history
