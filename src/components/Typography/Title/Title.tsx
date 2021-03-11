@@ -14,10 +14,11 @@ export interface ITitleProps {
     noMargin?: boolean;
     children: string;
     dataTestId?: string;
+    textAlign?: "left" | "center" | "right";
 }
 
 const StyledHeader = styled.div<ITitleProps>`
-    ${({ level, weight, color, ellipsis, noMargin, theme }) => {
+    ${({ level, weight, color, ellipsis, noMargin, theme, textAlign }) => {
         const {
             textColor,
             headerFontFamilies,
@@ -44,14 +45,24 @@ const StyledHeader = styled.div<ITitleProps>`
             line-height: ${lineHeightBase};
             margin-bottom: ${getEM(typographyTitleMarginBottom)};
             ${ellipsisStyle}
-            ${noMargin ? "margin: 0;" : ""}
+            ${noMargin ? "margin: 0!important;" : ""}
+            ${textAlign ? `text-align: ${textAlign}` : ""}
         `;
 
         return styles;
     }}
 `;
 
-const title = ({ level = 1, weight, color, ellipsis = true, noMargin, children, dataTestId }: ITitleProps) => {
+const title = ({
+    level = 1,
+    weight,
+    color,
+    ellipsis = true,
+    noMargin,
+    children,
+    dataTestId,
+    textAlign,
+}: ITitleProps) => {
     const headerTag = level ? `h${level}` : "h1";
 
     return (
@@ -63,6 +74,7 @@ const title = ({ level = 1, weight, color, ellipsis = true, noMargin, children, 
             color={color}
             ellipsis={ellipsis}
             noMargin={noMargin}
+            textAlign={textAlign}
         >
             {children}
         </StyledHeader>

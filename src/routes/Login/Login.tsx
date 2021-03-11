@@ -8,7 +8,7 @@ import Alert from "../../components/Alert";
 import Button from "../../components/Button";
 import Title from "../../components/Typography/Title";
 import Text from "../../components/Typography/Text";
-import * as ERRORS from "../../constants/login";
+import * as CONSTANTS from "../../constants/login";
 import isInvalidEMail from "../../helpers/isInvalidEmail";
 import { useSignIn, useVerifyToken } from "../../hooks/auth";
 import Input from "../../components/Input";
@@ -16,7 +16,7 @@ import ColorStatus from "../../types/ColorStatus";
 
 interface LoginProps {
     location?: {
-        state: string;
+        state: any;
     };
 }
 
@@ -30,10 +30,11 @@ const Login = ({ location }: LoginProps) => {
     const { isAuthenticated, verificationHash, data, error } = useVerifyToken();
 
     const emailErrorMessage =
-        (emailInput.pristine && !emailInput.value.length && ERRORS.EMPTY_EMAIL_ERROR) ||
-        (emailInput.pristine && isInvalidEMail(emailInput.value) && ERRORS.INVALID_EMAIL_ERROR);
+        (emailInput.pristine && !emailInput.value.length && CONSTANTS.EMPTY_EMAIL_ERROR) ||
+        (emailInput.pristine && isInvalidEMail(emailInput.value) && CONSTANTS.INVALID_EMAIL_ERROR);
 
-    const passwordErrorMessage = !passwordInput.value.length && passwordInput.pristine && ERRORS.EMPTY_PASSWORD_ERROR;
+    const passwordErrorMessage =
+        !passwordInput.value.length && passwordInput.pristine && CONSTANTS.EMPTY_PASSWORD_ERROR;
 
     const handleSubmit = () => {
         setPasswordInput({ ...passwordInput, pristine: true });
@@ -60,20 +61,32 @@ const Login = ({ location }: LoginProps) => {
                                     Log in into your account
                                 </Text>
                             </Space.Item>
-                            {data && (
-                                <Alert
-                                    data-testid="successful_verification_message"
-                                    message="Your email has been verified successfully"
-                                    type="success"
-                                />
-                            )}
-                            {error && error !== 409 && (
-                                <Alert data-testid={ERRORS.NETWORK_ERROR} message={ERRORS.NETWORK_ERROR} type="error" />
-                            )}
+                            {data ||
+                                (typeof location?.state === "object" && location.state.changedPassword && (
+                                    <Alert
+                                        data-testid={
+                                            data ? "successful_verification_message" : "successful_password_message"
+                                        }
+                                        message={data ? CONSTANTS.EMAIL_VERIFIED : CONSTANTS.PASSWORD_CHANGED}
+                                        type="success"
+                                    />
+                                ))}
+                            {(error && error !== 409) ||
+                                (typeof location?.state === "object" && location.state.changedPassword === false && (
+                                    <Alert
+                                        data-testid={
+                                            error ? CONSTANTS.NETWORK_ERROR : CONSTANTS.PASSWORD_CHANGE_INVALID_HASH
+                                        }
+                                        message={
+                                            error ? CONSTANTS.NETWORK_ERROR : CONSTANTS.PASSWORD_CHANGE_INVALID_HASH
+                                        }
+                                        type="error"
+                                    />
+                                ))}
                             {error === 409 && (
                                 <Alert
-                                    data-testid={ERRORS.INVALID_CODE_ERROR}
-                                    message={ERRORS.INVALID_CODE_ERROR}
+                                    data-testid={CONSTANTS.INVALID_CODE_ERROR}
+                                    message={CONSTANTS.INVALID_CODE_ERROR}
                                     type="error"
                                 />
                             )}

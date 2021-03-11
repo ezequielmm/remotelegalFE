@@ -8,6 +8,7 @@ import { getEvents, getRecordResponse, getTranscription, getTranscriptionsWithOf
 import { CAPTION_MOCK } from "../constants/caption";
 import { getBreakrooms } from "../mocks/breakroom";
 import { getTranscriptFileList } from "../mocks/transcriptsFileList";
+import { MOCKED_EMAIL } from "../constants/changePassword";
 
 export default (): Deps => ({
     apiService: {
@@ -27,6 +28,9 @@ export default (): Deps => ({
         createDepositions: jest.fn().mockResolvedValue(true),
         signUp: jest.fn().mockResolvedValue(getUser1()),
         currentUser: jest.fn().mockResolvedValue(getUser1()),
+        verifyPasswordToken: jest.fn().mockResolvedValue({ email: MOCKED_EMAIL }),
+        changePassword: jest.fn().mockResolvedValue(true),
+        forgotPassword: jest.fn().mockResolvedValue(true),
         verifyUser: jest.fn().mockResolvedValue(true),
         verifyEmail: jest.fn().mockResolvedValue(true),
         addDepoParticipant: jest.fn().mockResolvedValue(true),

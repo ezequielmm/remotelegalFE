@@ -186,6 +186,15 @@ export class ApiService {
         });
     };
 
+    verifyPasswordToken = async (payload): Promise<{ email: string }> => {
+        return this.request<{ email: string }>({
+            path: "/api/Users/verifyPasswordToken",
+            payload,
+            withToken: false,
+            method: HTTP_METHOD.POST,
+        });
+    };
+
     checkUserDepoStatus = async (depositionID: string, email: string): Promise<UserModel.UserInfo> => {
         return this.request({
             path: `/api/Depositions/${depositionID}/checkParticipant?emailAddress=${encodeURIComponent(email)}`,
@@ -206,6 +215,24 @@ export class ApiService {
     addDepoParticipant = async (depositionID: string, payload) => {
         return this.request({
             path: `/api/Depositions/${depositionID}/addParticipant`,
+            payload,
+            withToken: false,
+            method: HTTP_METHOD.POST,
+        });
+    };
+
+    changePassword = async (payload): Promise<boolean> => {
+        return this.request<boolean>({
+            path: "/api/Users/changePassword",
+            payload,
+            withToken: false,
+            method: HTTP_METHOD.PUT,
+        });
+    };
+
+    forgotPassword = async (payload): Promise<boolean> => {
+        return this.request<boolean>({
+            path: "/api/Users/forgotPassword",
             payload,
             withToken: false,
             method: HTTP_METHOD.POST,

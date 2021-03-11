@@ -42,13 +42,29 @@ export const useSignIn = (location, emailValue, passwordValue) => {
         try {
             await Auth.signIn(emailValue.trim(), passwordValue);
             localStorage.removeItem(TEMP_TOKEN);
-            return history.push(params || "/dashboard");
+            return history.push(typeof params === "string" ? params : "/dashboard");
         } catch (e) {
             setLoading(false);
             return setSubmitError(ERRORS.AWS_ERRORS[e.message] || ERRORS.NETWORK_ERROR);
         }
     };
     return { onSubmit, loading, submitError };
+};
+
+export const useChangePassword = () => {
+    const { deps } = useContext(GlobalStateContext);
+    return useAsyncCallback(async (password, verificationHash) => {
+        const response = await deps.apiService.changePassword({ password, verificationHash });
+        return response;
+    }, []);
+};
+
+export const useResetPassword = () => {
+    const { deps } = useContext(GlobalStateContext);
+    return useAsyncCallback(async (email) => {
+        const response = await deps.apiService.forgotPassword({ email });
+        return response;
+    }, []);
 };
 
 export const useVerifyToken = () => {
@@ -78,6 +94,33 @@ export const useVerifyToken = () => {
     return { isAuthenticated, verificationHash, error, data };
 };
 
+export const useVerifyChangePasswordToken = () => {
+    const { isAuthenticated } = useAuthentication();
+    const queryParams = window.location.search;
+    const verificationHash = new URLSearchParams(queryParams).get("verificationHash");
+    const { deps } = useContext(GlobalStateContext);
+    const [verifyToken, loading, error, data] = useAsyncCallback(async (hash) => {
+        const response = await deps.apiService.verifyPasswordToken({ verificationHash: hash });
+        return response;
+    }, []);
+
+    const verifyTokenRef = useRef(verifyToken);
+    useEffect(() => {
+        const handleVerifyToken = async () => {
+            if (verificationHash && isAuthenticated) {
+                await Auth.signOut();
+                return verifyTokenRef.current(verificationHash);
+            }
+            if (verificationHash && isAuthenticated === false) {
+                verifyTokenRef.current(verificationHash);
+            }
+            return null;
+        };
+        handleVerifyToken();
+    }, [verificationHash, isAuthenticated]);
+    return { isAuthenticated, verificationHash, error, data, loading };
+};
+
 export const useSignUp = (requestBody) => {
     const { deps } = useContext(GlobalStateContext);
     const [signUp, loading, error, data] = useAsyncCallback(async () => {
@@ -93,7 +136,7 @@ export const useVerifyEmail = (email) => {
     const [verifyEmail, loading, error] = useAsyncCallback(async () => {
         const response = await deps.apiService.verifyEmail({ emailAddress: email });
         return response;
-    }, []);
+    }, [email]);
 
     return { error, loading, verifyEmail };
 };

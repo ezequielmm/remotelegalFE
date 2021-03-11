@@ -7,7 +7,7 @@ import Container from "../../components/Container";
 import Alert from "../../components/Alert";
 import Button from "../../components/Button";
 import * as ERRORS from "../../constants/signUp";
-import { useAuthentication, useSignUp } from "../../hooks/auth";
+import { useAuthentication, useSignUp, useVerifyEmail } from "../../hooks/auth";
 import isInputEmpty from "../../helpers/isInputEmpty";
 import isInvalidEMail from "../../helpers/isInvalidEmail";
 import isPasswordInvalid from "../../helpers/isPasswordInvalid";
@@ -65,6 +65,7 @@ const SignUp = ({ location }) => {
         placeholder: "Enter your password",
         type: "password",
     });
+    const { error: errorVerify, loading: loadingVerify, verifyEmail } = useVerifyEmail(emailValue);
 
     const {
         inputValue: confirmPasswordValue,
@@ -135,7 +136,12 @@ const SignUp = ({ location }) => {
                     <Form layout="vertical">
                         <Space direction="vertical" size="large" fullWidth>
                             {data ? (
-                                <CodeSent email={emailValue} />
+                                <CodeSent
+                                    error={errorVerify}
+                                    loading={loadingVerify}
+                                    linkFetch={verifyEmail}
+                                    email={emailValue}
+                                />
                             ) : (
                                 <>
                                     <Space.Item fullWidth>

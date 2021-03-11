@@ -24,6 +24,8 @@ import { ThemeMode } from "../types/ThemeType";
 import PreJoinDepo from "../routes/PreJoinDepo";
 import DepositionDetails from "../routes/DepositionDetails";
 import ActiveDepositionDetails from "../routes/ActiveDepoDetails";
+import ResetPassword from "../routes/ResetPassword";
+import ChangePassword from "../routes/ChangePassword";
 
 function App() {
     const tagManagerId = {
@@ -53,6 +55,8 @@ function App() {
             <GlobalStyle />
             <Router history={history}>
                 <Switch>
+                    <Route exact path="/changePassword" component={ChangePassword} />
+                    <Route exact path="/password-recovery" component={ResetPassword} />
                     <Route exact path="/" component={Login} />
                     <Route path="/verifyUser" component={Login} />
                     <Route exact path="/sign-up" component={SignUp} />

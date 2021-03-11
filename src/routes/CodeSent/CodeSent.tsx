@@ -1,6 +1,5 @@
 import React from "react";
 import { NETWORK_ERROR } from "../../constants/codeSent";
-import { useVerifyEmail } from "../../hooks/auth";
 import Space from "../../components/Space";
 import Alert from "../../components/Alert";
 import Title from "../../components/Typography/Title";
@@ -11,16 +10,17 @@ import ColorStatus from "../../types/ColorStatus";
 import { getREM } from "../../constants/styles/utils";
 
 interface CodeSentProps {
+    error: any;
+    loading: boolean;
+    linkFetch: () => any;
     email: string;
 }
-const CodeSent = ({ email }: CodeSentProps) => {
-    const { error, loading, verifyEmail } = useVerifyEmail(email);
-
+const CodeSent = ({ error, loading, linkFetch, email }: CodeSentProps) => {
     const handleLinkFetch = () => {
         if (loading) {
             return;
         }
-        verifyEmail();
+        linkFetch();
     };
     return (
         <Space
@@ -31,11 +31,11 @@ const CodeSent = ({ email }: CodeSentProps) => {
             fullWidth
         >
             {error && <Alert data-testid={error} message={NETWORK_ERROR} type="error" />}
-            <Space direction="vertical" justify="center">
-                <Title dataTestId="code_sent_title" level={3} weight="light" noMargin ellipsis={false}>
+            <Space direction="vertical" justify="center" align="stretch" fullWidth>
+                <Title dataTestId="code_sent_title" level={3} weight="light" noMargin textAlign="center">
                     Check your mailbox
                 </Title>
-                <Title dataTestId="code_sent_mail" level={4} weight="light" ellipsis={false}>
+                <Title dataTestId="code_sent_mail" level={4} weight="light" textAlign="center">
                     {email}
                 </Title>
             </Space>

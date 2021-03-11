@@ -14,3 +14,10 @@ export const EMPTY_EMAIL_ERROR = "Please enter your email";
 export const INVALID_EMAIL_ERROR = "Please enter a valid email";
 
 export const EMPTY_PASSWORD_ERROR = "Please enter your password";
+
+export const PASSWORD_CHANGED = "Your password has been reseted successfully";
+
+export const PASSWORD_CHANGE_INVALID_HASH =
+    "Your reset password link is no longer valid, please make sure you haven't already reset your password.";
+
+export const EMAIL_VERIFIED = "Your email has been verified successfully";
