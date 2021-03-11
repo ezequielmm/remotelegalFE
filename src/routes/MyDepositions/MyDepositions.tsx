@@ -1,27 +1,34 @@
 import { Row, Space } from "antd";
 import moment from "moment-timezone";
-import React from "react";
+import React, { useState } from "react";
 import { useHistory } from "react-router";
 import styled from "styled-components";
-import Button from "../../components/Button";
 import CardFetchError from "../../components/CardFetchError";
-import CardResult from "../../components/CardResult/CardResult";
-import { CustomStatus } from "../../components/Result/Result";
 import Spinner from "../../components/Spinner";
 import { Status } from "../../components/StatusPill/StatusPill";
 import Table from "../../components/Table";
+import Tabs from "../../components/Tabs";
 import Title from "../../components/Typography/Title";
 import * as CONSTANTS from "../../constants/depositions";
 import { useFetchDepositions } from "../../hooks/depositions/hooks";
 import { useUserIsAdmin } from "../../hooks/users/hooks";
 import useWindowSize from "../../hooks/useWindowSize";
 import { Roles } from "../../models/participant";
+import { FilterCriteria } from "../../types/DepositionFilterCriteriaType";
+import MyDepositionsEmptyTable from "./MyDepositionsEmptyTable";
 
 const StyledSpace = styled(Space)`
     width: 100%;
     height: 100%;
     > *:last-child {
         height: 100%;
+    }
+
+    .ant-table-wrapper {
+        margin-top: -24px;
+        table tbody.ant-table-tbody > tr.ant-table-placeholder {
+            cursor: default;
+        }
     }
 `;
 
@@ -46,8 +53,20 @@ const parseDate = ({ startDate, endDate }): { date: string; time: string } => {
 };
 
 const MyDepositions = () => {
-    const { handleListChange, sortedField, sortDirection, error, data, loading, refreshList } = useFetchDepositions();
+    const {
+        handleListChange,
+        sortedField,
+        sortDirection,
+        error,
+        depositions,
+        totalPast,
+        totalUpcoming,
+        loading,
+        refreshList,
+    } = useFetchDepositions();
     const [checkIfUserIsAdmin, loadingUserIsAdmin, errorUserIsAdmin, userIsAdmin] = useUserIsAdmin();
+    const [sorting, setSorting] = useState(null);
+    const [filterCriteria, setFilterCriteria] = useState<FilterCriteria>(FilterCriteria.UPCOMING);
     const [, windowHeight] = useWindowSize();
     const [tableScrollHeight, setTableScrollHeight] = React.useState<number>(0);
     const tableRef = React.useRef(null);
@@ -58,22 +77,22 @@ const MyDepositions = () => {
 
     const mappedDepositions = React.useMemo(
         () =>
-            data?.map(({ id, details, status, requester, witness, participants, job, ...depositions }) => {
+            depositions?.map(({ id, details, status, requester, witness, participants, job, ...depositionsData }) => {
                 const courtReporter = participants.find((participant) => participant.role === Roles.courtReporter);
                 return {
                     id,
                     status,
                     company: requester?.companyName,
                     requester: `${requester.firstName} ${requester.lastName}`,
-                    caseName: `${depositions.caseName} ${depositions.caseNumber}`,
-                    startDate: parseDate(depositions),
+                    caseName: `${depositionsData.caseName} ${depositionsData.caseNumber}`,
+                    startDate: parseDate(depositionsData),
                     witness: witness?.name,
                     courtReporter: courtReporter?.name,
                     job,
                     details: "-",
                 } as MappedDeposition;
             }),
-        [data]
+        [depositions]
     );
 
     React.useEffect(() => {
@@ -86,7 +105,7 @@ const MyDepositions = () => {
         const headerHeight: number = tableHeader?.offsetHeight || 0;
         const tableContentHeight: number = wrapperHeight && headerHeight ? wrapperHeight - headerHeight : 0;
         setTableScrollHeight(tableContentHeight);
-    }, [userIsAdmin, data, windowHeight]);
+    }, [userIsAdmin, depositions, windowHeight]);
 
     const handleRefresh = () => {
         if (error) refreshList();
@@ -108,18 +127,40 @@ const MyDepositions = () => {
         [userIsAdmin, history, sortedField, sortDirection]
     );
 
+    const getFilterParam = (key: FilterCriteria) => {
+        if (key === FilterCriteria.UPCOMING) {
+            return null;
+        }
+        return { MaxDate: new Date().toUTCString() };
+    };
+
+    const onDepositionTabChange = (key: FilterCriteria) => {
+        setFilterCriteria(key);
+        handleListChange(1, getFilterParam(key), sorting);
+    };
+
     return (
         <>
             {!loadingUserIsAdmin &&
                 !error &&
                 !errorUserIsAdmin &&
-                (mappedDepositions === undefined || mappedDepositions?.length > 0) && (
+                (mappedDepositions === undefined || mappedDepositions?.length >= 0) && (
                     <StyledSpace direction="vertical" size="large">
                         <Row justify="space-between">
                             <Title level={4} noMargin weight="light" dataTestId="deposition_title">
                                 My Depositions
                             </Title>
                         </Row>
+                        <Tabs defaultActiveKey="1" onChange={onDepositionTabChange}>
+                            <Tabs.TabPane
+                                tab={`${CONSTANTS.UPCOMING_DEPOSITION_TAB_TITLE} (${totalUpcoming})`}
+                                key={FilterCriteria.UPCOMING}
+                            />
+                            <Tabs.TabPane
+                                tab={`${CONSTANTS.PAST_DEPOSITION_TAB_TITLE} (${totalPast})`}
+                                key={FilterCriteria.PAST}
+                            />
+                        </Tabs>
                         <Table
                             data-testid="my_depositions_table"
                             cursorPointer={userIsAdmin}
@@ -140,28 +181,22 @@ const MyDepositions = () => {
                             loading={loading}
                             dataSource={mappedDepositions || []}
                             columns={depositionColumns}
-                            onChange={handleListChange}
+                            onChange={(page, filter, sorter) => {
+                                setSorting(sorter);
+                                handleListChange(page, getFilterParam(filterCriteria), sorter);
+                            }}
                             sortDirections={["descend", "ascend"]}
                             pagination={false}
                             scroll={mappedDepositions ? { y: tableScrollHeight } : null}
                             style={{ height: "100%" }}
+                            locale={{
+                                emptyText: <MyDepositionsEmptyTable type={filterCriteria} />,
+                            }}
                         />
                     </StyledSpace>
                 )}
             {loadingUserIsAdmin && <Spinner height="100%" />}
             {(error || errorUserIsAdmin) && <CardFetchError onClick={handleRefresh} />}
-            {!error && mappedDepositions?.length === 0 && (
-                <CardResult
-                    title={CONSTANTS.EMPTY_STATE_TITLE}
-                    subTitle={CONSTANTS.EMPTY_STATE_TEXT}
-                    status={CustomStatus.empty}
-                    extra={
-                        <Button onClick={() => history.push("/deposition/new")} type="primary">
-                            {CONSTANTS.EMPTY_STATE_BUTTON}
-                        </Button>
-                    }
-                />
-            )}
         </>
     );
 };

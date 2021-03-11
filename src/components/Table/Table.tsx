@@ -173,7 +173,7 @@ const StyledTable = styled(Table)<Pick<ITableProps, "cursorPointer">>`
                                 border-bottom-color: ${theme.mode === ThemeMode.inDepo ? disabled[9] : neutrals[3]};
                                 &:first-child {
                                     .ant-table-column-sorters {
-                                        padding-left: ${getREM(spaces[9])};
+                                        padding-left: ${getREM(spaces[6])};
                                     } 
                                 }
                                 &:last-child {
@@ -233,6 +233,7 @@ const StyledTable = styled(Table)<Pick<ITableProps, "cursorPointer">>`
                                             ? `0`
                                             : `${getREM(spaces[5])} 0 0 ${getREM(spaces[5])}`
                                     };
+                                    padding: ${getREM(spaces[4])} ${getREM(spaces[6])};
                                 }
                                 &:last-child {
                                     border-radius: ${

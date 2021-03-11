@@ -120,3 +120,7 @@ export const EMPTY_STATE_TEXT = "Currently, you don't have any deposition added 
 export const EMPTY_STATE_BUTTON = "SCHEDULE DEPOSITION";
 export const DEPOSITION_DETAILS_ROUTE = "/deposition/details/";
 export const DEPOSITION_POST_DEPO_ROUTE = "/deposition/post-depo-details/";
+export const EMPTY_UPCOMING_DEPOSITIONS_TITLE = "No upcoming depositions to show.";
+export const EMPTY_PAST_DEPOSITIONS_TITLE = "No past depositions to show.";
+export const UPCOMING_DEPOSITION_TAB_TITLE = "UPCOMING DEPOSITIONS";
+export const PAST_DEPOSITION_TAB_TITLE = "PAST DEPOSITIONS";

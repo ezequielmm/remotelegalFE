@@ -35,20 +35,23 @@ export const useFetchDepositions = () => {
     const [sortDirection, setSortDirection] = React.useState();
 
     const { deps } = React.useContext(GlobalStateContext);
-    const [fetchDepositions, loading, error, data] = useAsyncCallback<any, IDeposition[]>(async (payload) => {
+    const [fetchDepositions, loading, error, data] = useAsyncCallback<
+        any,
+        { depositions: IDeposition[]; totalPast: number; totalUpcoming: number }
+    >(async (payload) => {
         const response: IDeposition[] = await deps.apiService.fetchDepositions(payload);
         return response;
     }, []);
 
     const handleListChange = React.useCallback(
-        (pag, filter, sorter) => {
-            const newSortedField = sorter.field;
-            const newSortDirection = sorter.order;
+        (pag, filter = undefined, sorter = undefined) => {
+            const newSortedField = sorter?.field;
+            const newSortDirection = sorter?.order;
             setSortedField(newSortedField);
             setSortDirection(newSortDirection);
-            const urlParams =
+            const sortParams =
                 newSortDirection === undefined ? {} : { sortedField: newSortedField, sortDirection: newSortDirection };
-            fetchDepositions(urlParams);
+            fetchDepositions({ ...sortParams, ...filter });
         },
         [fetchDepositions]
     );
@@ -61,13 +64,18 @@ export const useFetchDepositions = () => {
         fetchDepositions({});
     }, [fetchDepositions]);
 
-    return React.useMemo(() => ({ handleListChange, sortedField, sortDirection, error, data, loading, refreshList }), [
-        data,
-        error,
-        handleListChange,
-        loading,
-        refreshList,
-        sortDirection,
-        sortedField,
-    ]);
+    return React.useMemo(
+        () => ({
+            handleListChange,
+            sortedField,
+            sortDirection,
+            error,
+            depositions: data?.depositions,
+            totalPast: data?.totalPast,
+            totalUpcoming: data?.totalUpcoming,
+            loading,
+            refreshList,
+        }),
+        [data, error, handleListChange, loading, refreshList, sortDirection, sortedField]
+    );
 };
