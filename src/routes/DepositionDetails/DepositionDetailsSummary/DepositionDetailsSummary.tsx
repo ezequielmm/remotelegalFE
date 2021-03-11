@@ -4,7 +4,6 @@ import { ThemeProvider } from "styled-components";
 import Title from "../../../components/Typography/Title";
 import Text from "../../../components/Typography/Text";
 import Space from "../../../components/Space";
-import Card from "../../../components/Card";
 import useGetEvents from "../../../hooks/InDepo/useGetEvents";
 import useGetTranscriptions from "../../../hooks/InDepo/useGetTranscriptions";
 import { TimeZones } from "../../../models/general";
@@ -26,6 +25,7 @@ import DepositionDetailsVideoSection from "./DepositionDetailsVideoSection";
 import { useGetRecordingInfo } from "../../../hooks/useGetRecordingInfo";
 import CardIcon from "../../../components/CardIcon";
 import { useEnteredExhibit } from "../../../hooks/useEnteredExhibits";
+import { StyledSummaryLayout, StyledCard, StyledRealTimeWrapper } from "./styles";
 
 interface IDepositionDetailsSummary {
     setActiveKey: (activeKey: string) => void;
@@ -78,108 +78,86 @@ export default function DepositionDetailsSummary({ setActiveKey }: IDepositionDe
 
     return (
         <>
-            <Space fullWidth size="middle" direction="vertical">
-                <Space fullWidth align="stretch" size={6}>
-                    <Space align="stretch" flex="1 0 48%">
-                        <CardIcon icon={CourtReporterIcon} fullWidth>
-                            <Text state={ColorStatus.disabled} ellipsis={false}>
-                                {CONSTANTS.DEPOSITION_DETAILS_COURT_REPORTER_TITLE}
-                            </Text>
-                            <Title level={5} weight="light" dataTestId="court_report_name">
-                                {courtReporterName}
+            <StyledSummaryLayout>
+                <CardIcon icon={CourtReporterIcon} fullWidth>
+                    <Text state={ColorStatus.disabled}>{CONSTANTS.DEPOSITION_DETAILS_COURT_REPORTER_TITLE}</Text>
+                    <Title level={5} weight="light" noMargin dataTestId="court_report_name">
+                        {courtReporterName}
+                    </Title>
+                </CardIcon>
+                <Space size="middle">
+                    <CardIcon
+                        icon={ParticipantsIcon}
+                        fullWidth
+                        onClick={() => setActiveKey(CONSTANTS.DEPOSITION_DETAILS_TABS.attendees)}
+                    >
+                        <Text state={ColorStatus.disabled}>{CONSTANTS.DEPOSITION_DETAILS_INVITED_PARTIES_TITLE}</Text>
+                        <Title level={5} weight="light" noMargin dataTestId="invited_parties_count">
+                            {currentDeposition?.participants?.length.toString()}
+                        </Title>
+                    </CardIcon>
+                    <CardIcon
+                        icon={ExhibitsIcon}
+                        fullWidth
+                        onClick={() => setActiveKey(CONSTANTS.DEPOSITION_DETAILS_TABS.enteredExhibits)}
+                    >
+                        <Text state={ColorStatus.disabled}>{CONSTANTS.DEPOSITION_DETAILS_ENTERED_EXHIBITS_TITLE}</Text>
+                        <Title level={5} weight="light" noMargin dataTestId="entered_exhibits_count">
+                            {enteredExhibits?.length?.toString() || 0}
+                        </Title>
+                    </CardIcon>
+                </Space>
+                <StyledCard hasShaddow={false} hasPadding={false} fullWidth>
+                    <Space p={9} direction="vertical" size="large">
+                        <Title level={5} noMargin weight="light">
+                            {CONSTANTS.DETAILS_SUMMARY_VIDEO_TITLE}
+                        </Title>
+                    </Space>
+                    <DepositionDetailsVideoSection recordingInfo={recordingInfo} />
+                </StyledCard>
+                <StyledCard hasShaddow={false} hasPadding={false} fullWidth>
+                    <Space p={9} pb={3} direction="vertical">
+                        <Space size="large" direction="vertical">
+                            <Title level={5} noMargin weight="light">
+                                {CONSTANTS.DETAILS_SUMMARY_TRANSCRIPT_TITLE}
                             </Title>
-                        </CardIcon>
-                    </Space>
-                    <Space align="stretch" flex="1 0 48%">
-                        <Space align="stretch" fullWidth size={6}>
-                            <CardIcon
-                                icon={ParticipantsIcon}
-                                fullWidth
-                                onClick={() => setActiveKey(CONSTANTS.DEPOSITION_DETAILS_TABS.attendees)}
-                            >
-                                <Text state={ColorStatus.disabled} ellipsis={false}>
-                                    {CONSTANTS.DEPOSITION_DETAILS_INVITED_PARTIES_TITLE}
-                                </Text>
-                                <Title level={5} weight="light" dataTestId="invited_parties_count">
-                                    {currentDeposition?.participants?.length.toString()}
-                                </Title>
-                            </CardIcon>
+                            <Text state={ColorStatus.disabled} ellipsis={false}>
+                                {CONSTANTS.DETAILS_SUMMARY_TRANSCRIPT_SUBTITLE}
+                            </Text>
                         </Space>
-                        <Space align="stretch" fullWidth size={6}>
-                            <CardIcon
-                                icon={ExhibitsIcon}
-                                fullWidth
-                                onClick={() => setActiveKey(CONSTANTS.DEPOSITION_DETAILS_TABS.enteredExhibits)}
-                            >
-                                <Text state={ColorStatus.disabled} ellipsis={false}>
-                                    {CONSTANTS.DEPOSITION_DETAILS_ENTERED_EXHIBITS_TITLE}
-                                </Text>
-                                <Title level={5} weight="light" dataTestId="entered_exhibits_count">
-                                    {enteredExhibits?.length?.toString() || 0}
-                                </Title>
-                            </CardIcon>
+                        <Space mt={6} fullWidth justify="space-between">
+                            <DashedLine side="left" />
+                            <RoughDraftDetailDepoPill>{CONSTANTS.REAL_TIME_PILL}</RoughDraftDetailDepoPill>
+                            <DashedLine side="right" />
                         </Space>
                     </Space>
-                </Space>
-                <Space fullWidth align="stretch" size={6}>
-                    <Space align="stretch" flex="1 0 48%">
-                        <Card hasShaddow={false} hasPadding={false} fullWidth style={{ overflow: "hidden" }}>
-                            <Space p={8} direction="vertical" size="large">
-                                <Title level={5} noMargin weight="light">
-                                    {CONSTANTS.DETAILS_SUMMARY_VIDEO_TITLE}
-                                </Title>
-                            </Space>
-                            <DepositionDetailsVideoSection recordingInfo={recordingInfo} />
-                        </Card>
-                    </Space>
-                    <Space align="stretch" flex="1 0 48%">
-                        <Card hasShaddow={false} hasPadding={false} fullWidth>
-                            <Space p={9} pb={3} direction="vertical">
-                                <Space size="large" direction="vertical">
-                                    <Title level={5} noMargin weight="light">
-                                        {CONSTANTS.DETAILS_SUMMARY_TRANSCRIPT_TITLE}
-                                    </Title>
-                                    <Text state={ColorStatus.disabled} ellipsis={false}>
-                                        {CONSTANTS.DETAILS_SUMMARY_TRANSCRIPT_SUBTITLE}
-                                    </Text>
-                                </Space>
-                                <Space mt={6} fullWidth justify="space-between">
-                                    <DashedLine side="left" />
-                                    <RoughDraftDetailDepoPill>{CONSTANTS.REAL_TIME_PILL}</RoughDraftDetailDepoPill>
-                                    <DashedLine side="right" />
-                                </Space>
-                            </Space>
-                            <Space>
-                                {loading ? (
-                                    <Spinner height="100%" />
-                                ) : (
-                                    transcriptions && (
-                                        <ThemeProvider theme={inDepoTheme}>
-                                            <RealTime
-                                                manageTranscriptionClicked={
-                                                    duration > 0 &&
-                                                    ((transcription) => {
-                                                        dispatch(
-                                                            actions.setChangeTime(transcription.prevEndTime + 0.0001)
-                                                        );
-                                                        dispatch(actions.setPlaying(true));
-                                                    })
-                                                }
-                                                disableAutoscroll
-                                                transcriptions={transcriptions}
-                                                visible
-                                                timeZone={TimeZones.EST}
-                                                playedSeconds={currentTime}
-                                                scrollToHighlighted
-                                            />
-                                        </ThemeProvider>
-                                    )
-                                )}
-                            </Space>
-                        </Card>
-                    </Space>
-                </Space>
-            </Space>
+                    <StyledRealTimeWrapper>
+                        {loading ? (
+                            <Spinner height="100%" />
+                        ) : (
+                            transcriptions && (
+                                <ThemeProvider theme={inDepoTheme}>
+                                    <RealTime
+                                        manageTranscriptionClicked={
+                                            duration > 0 &&
+                                            ((transcription) => {
+                                                dispatch(actions.setChangeTime(transcription.prevEndTime + 0.0001));
+                                                dispatch(actions.setPlaying(true));
+                                            })
+                                        }
+                                        disableAutoscroll
+                                        transcriptions={transcriptions}
+                                        visible
+                                        timeZone={TimeZones.EST}
+                                        playedSeconds={currentTime}
+                                        scrollToHighlighted
+                                    />
+                                </ThemeProvider>
+                            )
+                        )}
+                    </StyledRealTimeWrapper>
+                </StyledCard>
+            </StyledSummaryLayout>
         </>
     );
 }

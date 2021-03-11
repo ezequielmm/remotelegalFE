@@ -19,8 +19,8 @@ interface IDepositionDetailsVideoSection {
 
 export default function DepositionDetailsVideoSection({ recordingInfo }: IDepositionDetailsVideoSection): ReactElement {
     return (
-        <Space direction="vertical" justify="space-between">
-            <Space justify="space-between" px="20px" pb="20px" fullWidth>
+        <>
+            <Space justify="space-between" px={9} pb={9} fullWidth>
                 <Space.Item>
                     <RecordingInfo
                         title={CONSTANTS.DETAILS_SUMMARY_TOTAL_TIME_TEXT}
@@ -46,29 +46,20 @@ export default function DepositionDetailsVideoSection({ recordingInfo }: IDeposi
                     />
                 </Space.Item>
             </Space>
-            <Space justify="space-between" fullWidth>
-                {recordingInfo?.publicUrl && recordingInfo.status === RecordingStatus.Completed ? (
-                    <VideoPlayer
-                        url={recordingInfo?.publicUrl}
-                        fallback={
-                            <VideoPlaceholder
-                                width="100%"
-                                padding="126px 0"
-                                icon={<Spinner height="100%" />}
-                                title={CONSTANTS.VIDEO_PLACEHOLDER_TITLE}
-                            />
-                        }
-                    />
-                ) : (
-                    <VideoPlaceholder
-                        width="100%"
-                        padding="126px 0"
-                        icon={<Icon icon={VideoAlertIcon} />}
-                        title={CONSTANTS.VIDEO_PLACEHOLDER_TITLE}
-                        subTitle={CONSTANTS.VIDEO_PLACEHOLDER_SUBTITLE}
-                    />
-                )}
-            </Space>
-        </Space>
+            {recordingInfo?.publicUrl && recordingInfo.status === RecordingStatus.Completed ? (
+                <VideoPlayer
+                    url={recordingInfo?.publicUrl}
+                    fallback={
+                        <VideoPlaceholder icon={<Spinner height="100%" />} title={CONSTANTS.VIDEO_PLACEHOLDER_TITLE} />
+                    }
+                />
+            ) : (
+                <VideoPlaceholder
+                    icon={<Icon icon={VideoAlertIcon} />}
+                    title={CONSTANTS.VIDEO_PLACEHOLDER_TITLE}
+                    subTitle={CONSTANTS.VIDEO_PLACEHOLDER_SUBTITLE}
+                />
+            )}
+        </>
     );
 }

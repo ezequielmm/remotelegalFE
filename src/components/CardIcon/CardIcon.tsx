@@ -42,7 +42,7 @@ const CardIcon = ({ icon, to, onClick, children, hasShaddow = false, ...cardProp
                         <StyledIconWrapper>
                             <Icon icon={icon} size={8} color={ColorStatus.white} />
                         </StyledIconWrapper>
-                        <Space.Item>{children}</Space.Item>
+                        <Space.Item style={{ display: "grid" }}>{children}</Space.Item>
                     </Space>
                     {(to || onClick) && (
                         <Space.Item className="card-icon__action">

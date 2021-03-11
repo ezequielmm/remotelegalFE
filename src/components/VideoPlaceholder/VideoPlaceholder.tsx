@@ -4,20 +4,13 @@ import { theme } from "../../constants/styles/theme";
 import { getREM } from "../../constants/styles/utils";
 import Result, { IResultProps } from "../Result/Result";
 
-interface IVideoPlaceholderProps extends IResultProps {
-    padding?: string;
-    width?: string;
-}
-
-interface IStyledVideoPlaceholderProps extends IResultProps {
-    $padding?: string;
-    $width?: string;
-}
-
-const StyledVideoPlaceholder = styled(Result)<IStyledVideoPlaceholderProps>`
+const StyledVideoPlaceholder = styled(Result)<IResultProps>`
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     background-color: ${theme.default.disabledBg};
-    ${({ $padding }) => ($padding ? `padding: ${$padding};` : ``)}
-    ${({ $width }) => ($width ? `width: ${$width};` : ``)}
+    padding: ${getREM(theme.default.spaces[6] * 8)} 0;
     .ant-result-icon {
         margin-bottom: ${getREM(theme.default.spaces[6])};
         & > .anticon {
@@ -26,8 +19,8 @@ const StyledVideoPlaceholder = styled(Result)<IStyledVideoPlaceholderProps>`
     }
 `;
 
-const VideoPlaceholder = ({ padding, width, ...rest }: IVideoPlaceholderProps) => {
-    return <StyledVideoPlaceholder $padding={padding} $width={width} {...rest} />;
+const VideoPlaceholder = ({ ...rest }: IResultProps) => {
+    return <StyledVideoPlaceholder {...rest} />;
 };
 
 export default VideoPlaceholder;
