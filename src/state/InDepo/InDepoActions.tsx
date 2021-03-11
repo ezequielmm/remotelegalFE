@@ -1,9 +1,9 @@
-import { LocalDataTrack, Room } from "twilio-video";
+import { LocalDataTrack, Participant, Room } from "twilio-video";
+import { CoreControls } from "@pdftron/webviewer";
 import { TimeZones } from "../../models/general";
 import { DataTrackMessage, DisconnectRoomState } from "../types";
 import { EventModel, TranscriptionModel, BreakroomModel } from "../../models";
 import { EXHIBIT_TAB } from "../../constants/exhibits";
-import { CoreControls } from "@pdftron/webviewer";
 import { ExhibitFile } from "../../types/ExhibitFile";
 
 export enum ACTION_TYPE {
@@ -32,6 +32,7 @@ export enum ACTION_TYPE {
     SET_BREAKROOMS = "IN_DEPO_SET_BREAKROOMS",
     SET_IS_RECORDING = "IN_DEPO_SET_IS_RECORDING",
     CHANGE_EXHIBIT_TAB = "CHANGE_EXHIBIT_TAB",
+    ADD_DOMINANT_SPEAKER = "ADD_DOMINANT_SPEAKER",
 }
 
 const actions = {
@@ -138,6 +139,10 @@ const actions = {
     setExhibitDocument: (exhibitDocument: CoreControls.Document, rawAnnotations: string) => ({
         type: ACTION_TYPE.IN_DEPO_SET_EXHIBIT_DOCUMENT_INSTANCE,
         payload: { exhibitDocument, rawAnnotations },
+    }),
+    setAddDominantSpeaker: (payload: Participant | null) => ({
+        type: ACTION_TYPE.ADD_DOMINANT_SPEAKER,
+        payload,
     }),
 };
 

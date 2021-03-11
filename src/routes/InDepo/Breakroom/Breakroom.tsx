@@ -1,6 +1,7 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
+import { Participant } from "twilio-video";
 import BreakroomControlsBar from "../../../components/BreakroomControlsBar";
 import ErrorScreen from "../../../components/ErrorScreen";
 import RecordPill from "../../../components/RecordPill";
@@ -10,6 +11,7 @@ import { theme } from "../../../constants/styles/theme";
 import disconnectFromDepo from "../../../helpers/disconnectFromDepo";
 import { useJoinBreakroom } from "../../../hooks/InDepo/depositionLifeTimeHooks";
 import { GlobalStateContext } from "../../../state/GlobalState";
+import actions from "../../../state/InDepo/InDepoActions";
 import { ThemeMode } from "../../../types/ThemeType";
 import Exhibits from "../Exhibits";
 import { StyledInDepoContainer, StyledInDepoLayout, StyledRoomFooter } from "../styles";
@@ -36,7 +38,12 @@ const Breakroom = () => {
 
     useEffect(() => {
         let cleanUpFunction;
+        const setDominantSpeaker = (participant: Participant | null) => {
+            dispatch(actions.setAddDominantSpeaker(participant));
+        };
         if (currentBreakroom) {
+            currentBreakroom.on("dominantSpeakerChanged", setDominantSpeaker);
+
             cleanUpFunction = () => {
                 disconnectFromDepo(currentBreakroom, dispatch, null, null, depositionID);
             };
@@ -45,6 +52,7 @@ const Breakroom = () => {
 
         return () => {
             if (currentBreakroom) {
+                currentBreakroom.off("dominantSpeakerChange", setDominantSpeaker);
                 disconnectFromDepo(currentBreakroom, dispatch, null, null, depositionID);
                 window.removeEventListener("beforeunload", cleanUpFunction);
             }

@@ -43,6 +43,7 @@ jest.mock("twilio-video", () => ({
 
     connect: async () => ({
         on: jest.fn(),
+        off: jest.fn(),
         localParticipant: {
             videoTracks: new Map().set("item1", {
                 track: {
@@ -113,6 +114,7 @@ jest.mock("twilio-video", () => ({
             }),
             removeAllListeners: jest.fn(),
         }),
+        on: jest.fn(),
     }),
 }));
 
@@ -403,6 +405,8 @@ describe("inDepo -> Exhibits view with a shared exhibit", () => {
                         ...rootReducer.initialState.room,
                         dataTrack: dataTrackMock,
                         currentRoom: {
+                            on: jest.fn(),
+                            off: jest.fn(),
                             localParticipant: getParticipant("test"),
                             participants: [],
                         },

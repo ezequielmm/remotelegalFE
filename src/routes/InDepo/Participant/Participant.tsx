@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { LocalParticipant, RemoteParticipant } from "twilio-video";
 import useDataTrack from "../../../hooks/InDepo/useDataTrack";
 import useParticipantTracks from "../../../hooks/InDepo/useParticipantTracks";
@@ -8,6 +8,7 @@ import Text from "../../../components/Typography/Text";
 import { StyledIdentityBox, StyledParticipantMask, StyledTimeBox } from "./styles";
 import ColorStatus from "../../../types/ColorStatus";
 import { theme } from "../../../constants/styles/theme";
+import { GlobalStateContext } from "../../../state/GlobalState";
 
 const Participant = ({
     timeZone,
@@ -19,8 +20,24 @@ const Participant = ({
     isWitness?: boolean;
 }) => {
     const { videoRef, audioRef, dataTracks } = useParticipantTracks(participant);
+    const [hasBorder, setHasBorder] = useState(false);
+    const { state } = useContext(GlobalStateContext);
+    const { dominantSpeaker } = state.room;
     const identity = participant && JSON.parse(participant.identity);
     useDataTrack(dataTracks);
+
+    useEffect(() => {
+        const setParticipantBorder = () => {
+            if (!participant) {
+                return;
+            }
+            if (dominantSpeaker?.sid === participant.sid) {
+                setHasBorder(true);
+            }
+        };
+        setParticipantBorder();
+        return () => participant && setHasBorder(false);
+    }, [dominantSpeaker, participant]);
 
     const normalizedRoles = {
         CourtReporter: "Court Reporter",
@@ -28,7 +45,7 @@ const Participant = ({
     };
 
     return (
-        <StyledParticipantMask>
+        <StyledParticipantMask highlight={hasBorder}>
             <video ref={videoRef} autoPlay />
             <audio ref={audioRef} autoPlay />
             {timeZone && (

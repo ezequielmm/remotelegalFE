@@ -1,6 +1,6 @@
 import React from "react";
-import { Button } from "antd";
 import styled from "styled-components";
+import Button from "../Button";
 import { getREM, hexToRGBA } from "../../constants/styles/utils";
 
 const circleButton = ({ isActive, ...props }) => <Button shape="circle" type="default" {...props} />;
@@ -13,6 +13,7 @@ export const StyledCircleControl = styled(circleButton)`
     box-shadow: 2px 0 6px 0 ${({ theme }) => hexToRGBA(theme.colors.inDepoNeutrals[6], 0.57)};
     border: 0;
     transition: all 300ms ease-in-out;
+    text-transform: capitalize;
 
     &,
     &:focus {
@@ -39,6 +40,7 @@ export const StyledRoundedControl = styled(roundButton)`
     align-items: center;
     padding: ${({ theme }) => `0 ${getREM(theme.default.spaces[5])}`};
     border: ${({ isActive, theme }) => (isActive ? `1px solid ${theme.default.primaryColor}` : "none")};
+    text-transform: capitalize;
 
     &,
     &:focus {

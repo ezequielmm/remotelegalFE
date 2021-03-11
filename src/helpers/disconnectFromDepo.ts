@@ -10,6 +10,7 @@ const disconnectFromDepo = async (
 ) => {
     const initialState = {
         info: null,
+        dominantSpeaker: null,
         currentRoom: null,
         currentBreakroom: null,
         error: "",

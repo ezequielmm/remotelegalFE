@@ -1,5 +1,6 @@
 import { Reducer } from "react";
-import { LocalDataTrack, Room } from "twilio-video";
+import { LocalDataTrack, Participant, Room } from "twilio-video";
+import { CoreControls } from "@pdftron/webviewer";
 import { TimeZones } from "../../models/general";
 import { BreakroomModel, TranscriptionModel } from "../../models";
 import { IAction, DataTrackMessage } from "../types";
@@ -8,7 +9,6 @@ import { ExhibitFile } from "../../types/ExhibitFile";
 import { DEFAULT_ACTIVE_TAB, EXHIBIT_TAB } from "../../constants/exhibits";
 import { addTranscriptionMessages, setTranscriptionMessages } from "../../helpers/formatTranscriptionsMessages";
 import { IUser } from "../../models/user";
-import { CoreControls } from "@pdftron/webviewer";
 
 export interface IRoom {
     info?: object;
@@ -34,11 +34,13 @@ export interface IRoom {
     currentUser?: IUser;
     stampLabel?: string;
     exhibitDocument?: CoreControls.Document;
+    dominantSpeaker?: Participant | null;
 }
 
 export const RoomReducerInitialState: IRoom = {
     info: null,
     currentRoom: null,
+    dominantSpeaker: null,
     currentBreakroom: null,
     error: "",
     dataTrack: null,
@@ -194,6 +196,11 @@ const RoomReducer: Reducer<IRoom, IAction> = (state: IRoom, action: IAction): IR
                 ...state,
                 exhibitDocument: action.payload.exhibitDocument,
                 rawAnnotations: action.payload.rawAnnotations ?? state.rawAnnotations,
+            };
+        case ACTION_TYPE.ADD_DOMINANT_SPEAKER:
+            return {
+                ...state,
+                dominantSpeaker: action.payload,
             };
 
         default:

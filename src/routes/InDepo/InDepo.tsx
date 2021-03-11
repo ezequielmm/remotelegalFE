@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
+import { Participant } from "twilio-video";
 import Spinner from "../../components/Spinner";
 import Exhibits from "./Exhibits";
 import RealTime from "./RealTime";
@@ -42,12 +43,21 @@ const InDepo = () => {
     const history = useHistory();
 
     useEffect(() => {
+        const setDominantSpeaker = (participant: Participant | null) =>
+            dispatch(actions.setAddDominantSpeaker(participant));
+
+        if (currentRoom) {
+            currentRoom.on("dominantSpeakerChanged", setDominantSpeaker);
+        }
         const cleanUpFunction = () => {
             disconnectFromDepo(currentRoom, dispatch, null, null, depositionID);
         };
         window.addEventListener("beforeunload", cleanUpFunction);
 
         return () => {
+            if (currentRoom) {
+                currentRoom.off("dominantSpeakerChange", setDominantSpeaker);
+            }
             disconnectFromDepo(currentRoom, dispatch, null, null, depositionID);
             window.removeEventListener("beforeunload", cleanUpFunction);
         };

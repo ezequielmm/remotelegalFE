@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { getPX, getREM } from "../../../constants/styles/utils";
 
-export const StyledParticipantMask = styled.div`
+export const StyledParticipantMask = styled.div<{ highlight?: boolean }>`
     border-radius: ${({ theme }) => getPX(theme.default.borderRadiusBase, theme.default.baseUnit)};
     overflow: hidden;
     transform: translateZ(0); // Fix Safari stacking context problem
@@ -9,6 +9,7 @@ export const StyledParticipantMask = styled.div`
     height: 100%;
     background: ${({ theme }) => theme.colors.inDepoNeutrals[6]};
     position: relative;
+    border: ${({ theme, highlight }) => (highlight ? `3px solid ${theme.default.successColor}` : "unset")};
 
     video {
         width: 100%;

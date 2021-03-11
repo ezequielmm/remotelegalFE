@@ -64,7 +64,11 @@ export const useJoinBreakroom = () => {
 
         const room = await createLocalTracks({ audio: true, video: { aspectRatio: 1.777777777777778 } }).then(
             (localTracks) => {
-                return connect(token, { name: breakroomID, tracks: [...localTracks, dataTrack] });
+                return connect(token, {
+                    name: breakroomID,
+                    tracks: [...localTracks, dataTrack],
+                    dominantSpeaker: true,
+                });
             }
         );
         setBreakroom(room);
@@ -124,7 +128,11 @@ export const useJoinDeposition = () => {
         }
         const room = await createLocalTracks({ audio: true, video: { aspectRatio: 1.777777777777778 } }).then(
             (localTracks) => {
-                return connect(token, { name: depositionID, tracks: [...localTracks, dataTrack] });
+                return connect(token, {
+                    name: depositionID,
+                    tracks: [...localTracks, dataTrack],
+                    dominantSpeaker: true,
+                });
             }
         );
         setDepoRoom(room);

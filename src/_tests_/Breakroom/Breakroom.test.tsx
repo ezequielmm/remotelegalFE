@@ -38,6 +38,7 @@ jest.mock("twilio-video", () => ({
         if (token === undefined) throw Error();
         return {
             on: jest.fn(),
+            off: jest.fn(),
             localParticipant: {
                 videoTracks: new Map().set("item1", {
                     track: {
