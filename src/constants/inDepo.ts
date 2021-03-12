@@ -1,5 +1,25 @@
 import moment from "moment-timezone";
+import { ConnectOptions } from "twilio-video";
 
+export const TWILIO_VIDEO_CONFIG: ConnectOptions = {
+    video: { height: 720, frameRate: 24, width: 1280 },
+    bandwidthProfile: {
+        video: {
+            mode: "collaboration",
+            //    maxTracks: 10,
+            dominantSpeakerPriority: "standard",
+            renderDimensions: {
+                high: { height: 1080, width: 1920 },
+                standard: { height: 720, width: 1280 },
+                low: { height: 176, width: 144 },
+            },
+        },
+    },
+    maxAudioBitrate: 16000,
+    preferredVideoCodecs: [{ codec: "VP8", simulcast: true }],
+    networkQuality: { local: 1, remote: 1 },
+    dominantSpeaker: true,
+};
 export const FETCH_ERROR_RESULT_TITLE = "Sorry! We couldn't connect to the deposition.";
 export const FETCH_ERROR_RESULT_BODY = "Something went wrong, please refresh the page to try again.";
 export const FETCH_ERROR_RESULT_BUTTON = "Refresh Page";

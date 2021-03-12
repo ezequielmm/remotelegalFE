@@ -5042,10 +5042,10 @@
     "@types/testing-library__dom" "*"
     pretty-format "^25.1.0"
 
-"@types/twilio-video@^2.7.1":
-  version "2.7.1"
-  resolved "https://registry.yarnpkg.com/@types/twilio-video/-/twilio-video-2.7.1.tgz#7baf7b23b5b5b838e4c94eeb72e57761096f4ad0"
-  integrity sha512-Yt8x+xyvGKydtMNosrLP7sX/VswQsVZZoAXbBjPdCqV6T5PVFKWjwPGmgJqpsNzX9A93CAuCa22V3FfH6hNcKg==
+"@types/twilio-video@^2.7.3":
+  version "2.7.3"
+  resolved "https://registry.yarnpkg.com/@types/twilio-video/-/twilio-video-2.7.3.tgz#24a7a8caa97bc536f40d1d02105b84a7fff17fde"
+  integrity sha512-IDqG3hB1GSbtAoMqIV/sOT02hstBhGUrejpNd+1PbKm3tyhO62T2wwd4rFC2A+nKXTY3aC+2FoQwvR68d5j08g==
 
 "@types/uglify-js@*":
   version "3.11.0"
@@ -17523,10 +17523,10 @@ tweetnacl@^0.14.3, tweetnacl@~0.14.0:
   resolved "https://registry.yarnpkg.com/tweetnacl/-/tweetnacl-0.14.5.tgz#5ae68177f192d4456269d108afa93ff8743f4f64"
   integrity sha1-WuaBd/GS1EViadEIr6k/+HQ/T2Q=
 
-twilio-video@^2.7.2:
-  version "2.7.2"
-  resolved "https://registry.yarnpkg.com/twilio-video/-/twilio-video-2.7.2.tgz#9211fc85a41a352a32b540d91e07a9c97e862c51"
-  integrity sha512-x9Y7P03uc9xWwAIvKLLWsGRILOcAG88M5qH1p0K6DKGRCzfcX356K0rv25UINAmdq5uOOHlqaCYYUG1aVo7B5w==
+twilio-video@^2.13.0:
+  version "2.13.0"
+  resolved "https://registry.yarnpkg.com/twilio-video/-/twilio-video-2.13.0.tgz#cf3b5f2b20344724f4950d16357c60b07ba53ea9"
+  integrity sha512-s+lU6a1eL3zmropDDQu0LaqmBEasrZ34Pr7vftUBsy23oYApEhby54XvPb2+aWkM0vvoOez32jLRjE2YgwQ38A==
   dependencies:
     "@twilio/webrtc" "4.3.2"
     backoff "^2.5.0"

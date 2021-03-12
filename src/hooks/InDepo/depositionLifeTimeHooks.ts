@@ -12,6 +12,7 @@ import useGetTranscriptions from "./useGetTranscriptions";
 import useGetEvents from "./useGetEvents";
 import { useExhibitFileInfo } from "../exhibits/hooks";
 import useGetBreakrooms from "./useGetBreakrooms";
+import { TWILIO_VIDEO_CONFIG } from "../../constants/inDepo";
 
 export const useKillDepo = () => {
     const { deps } = useContext(GlobalStateContext);
@@ -65,9 +66,9 @@ export const useJoinBreakroom = () => {
         const room = await createLocalTracks({ audio: true, video: { aspectRatio: 1.777777777777778 } }).then(
             (localTracks) => {
                 return connect(token, {
+                    ...TWILIO_VIDEO_CONFIG,
                     name: breakroomID,
                     tracks: [...localTracks, dataTrack],
-                    dominantSpeaker: true,
                 });
             }
         );
@@ -129,9 +130,9 @@ export const useJoinDeposition = () => {
         const room = await createLocalTracks({ audio: true, video: { aspectRatio: 1.777777777777778 } }).then(
             (localTracks) => {
                 return connect(token, {
+                    ...TWILIO_VIDEO_CONFIG,
                     name: depositionID,
                     tracks: [...localTracks, dataTrack],
-                    dominantSpeaker: true,
                 });
             }
         );
