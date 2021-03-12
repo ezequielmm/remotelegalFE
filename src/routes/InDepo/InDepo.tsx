@@ -54,7 +54,7 @@ const InDepo = () => {
 
     useEffect(() => {
         if (signalR && depositionID) {
-            sendMessage("SubscribeToDeposition", depositionID);
+            sendMessage("SubscribeToDeposition", { depositionId: depositionID });
         }
     }, [signalR, depositionID, sendMessage]);
 

@@ -6,13 +6,16 @@ import actions from "../state/SignalR/SignalRActions";
 import useAsyncCallback from "./useAsyncCallback";
 
 const useSignalR = (url: string): any => {
-    const { state, dispatch } = React.useContext(GlobalStateContext);
+    const { state, dispatch, deps } = React.useContext(GlobalStateContext);
     const { signalR }: { signalR: HubConnection } = state.signalR;
 
     const [connect] = useAsyncCallback(async () => {
         if (signalR !== null) return signalR;
+        const token = await deps.apiService.getTokenSet();
         const newSignalR: HubConnection = new HubConnectionBuilder()
-            .withUrl(`${ENV.API.URL}${url}`)
+            .withUrl(`${ENV.API.URL}${url}`, {
+                accessTokenFactory: () => token,
+            })
             .withAutomaticReconnect()
             .build();
 
