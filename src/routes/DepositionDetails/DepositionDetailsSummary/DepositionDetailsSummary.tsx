@@ -26,6 +26,7 @@ import { useGetRecordingInfo } from "../../../hooks/useGetRecordingInfo";
 import CardIcon from "../../../components/CardIcon";
 import { useEnteredExhibit } from "../../../hooks/useEnteredExhibits";
 import { StyledSummaryLayout, StyledCard, StyledRealTimeWrapper } from "./styles";
+import { useFetchParticipants } from "../../../hooks/activeDepositionDetails/hooks";
 
 interface IDepositionDetailsSummary {
     setActiveKey: (activeKey: string) => void;
@@ -38,6 +39,7 @@ export default function DepositionDetailsSummary({ setActiveKey }: IDepositionDe
     const [getDepositionEvents] = useGetEvents();
     const { depositionID } = useParams<DepositionID>();
     const { handleFetchFiles, enteredExhibits } = useEnteredExhibit();
+    const [fetchParticipants, , , participants] = useFetchParticipants();
     const [courtReporterName, setCourtReporterName] = useState("");
     const { duration, currentTime, transcriptions, currentDeposition } = state.postDepo;
 
@@ -76,6 +78,10 @@ export default function DepositionDetailsSummary({ setActiveKey }: IDepositionDe
         handleFetchFiles();
     }, [handleFetchFiles]);
 
+    useEffect(() => {
+        fetchParticipants(depositionID);
+    }, [fetchParticipants, depositionID]);
+
     return (
         <>
             <StyledSummaryLayout>
@@ -93,7 +99,7 @@ export default function DepositionDetailsSummary({ setActiveKey }: IDepositionDe
                     >
                         <Text state={ColorStatus.disabled}>{CONSTANTS.DEPOSITION_DETAILS_INVITED_PARTIES_TITLE}</Text>
                         <Title level={5} weight="light" noMargin dataTestId="invited_parties_count">
-                            {currentDeposition?.participants?.length.toString()}
+                            {participants?.length ?? 0}
                         </Title>
                     </CardIcon>
                     <CardIcon

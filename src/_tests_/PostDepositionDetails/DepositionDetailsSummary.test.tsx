@@ -92,6 +92,9 @@ describe("DepositionDetailsSummary -> Cards", () => {
         customDeps.apiService.getDepositionTranscriptions = jest.fn().mockResolvedValue([]);
         customDeps.apiService.getDepositionEvents = jest.fn().mockResolvedValue([]);
         customDeps.apiService.getEnteredExhibits = jest.fn().mockResolvedValue([]);
+        customDeps.apiService.fetchParticipants = jest
+            .fn()
+            .mockResolvedValue(getCurrentDepositionTwoParticipants().participants);
         const { queryByTestId } = renderWithGlobalContext(
             <DepositionDetailsSummary setActiveKey={jest.fn()} />,
             customDeps,
@@ -114,6 +117,7 @@ describe("DepositionDetailsSummary -> Cards", () => {
         customDeps.apiService.getDepositionTranscriptions = jest.fn().mockResolvedValue([]);
         customDeps.apiService.getDepositionEvents = jest.fn().mockResolvedValue([]);
         customDeps.apiService.getEnteredExhibits = jest.fn().mockResolvedValue([]);
+        customDeps.apiService.fetchParticipants = jest.fn().mockResolvedValue([]);
         const { queryByTestId } = renderWithGlobalContext(
             <DepositionDetailsSummary setActiveKey={jest.fn()} />,
             customDeps,
