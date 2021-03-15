@@ -44,6 +44,15 @@ const MenuItem = styled(ANTMenu.Item)<{ $unsetDisabledCursor?: boolean }>`
     &.ant-menu-item-disabled {
         cursor: ${({ $unsetDisabledCursor }) => $unsetDisabledCursor && "unset !important"};
     }
+    ${({ theme }) => {
+        const { secondary } = theme.colors;
+        const { textColorInverse } = theme.default;
+        return `
+            &:active{
+                background-color: ${theme.mode === ThemeMode.inDepo ? secondary[5] : textColorInverse};
+            }
+        `;
+    }}
 `;
 
 Menu.Item = MenuItem;

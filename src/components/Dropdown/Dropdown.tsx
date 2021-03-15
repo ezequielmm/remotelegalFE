@@ -16,20 +16,48 @@ export interface IDropdownProps extends Omit<DropDownProps, "overlay"> {
 
 const StyledPopupContainer = styledComponent(PopupContainer)<{ $styled?: boolean }>`
     ${({ theme, $styled }) => {
-        const { secondary, neutrals } = theme.colors;
-        const { spaces } = theme.default;
-
+        const { secondary } = theme.colors;
+        const { spaces, whiteColor } = theme.default;
+        const arrowColor = theme.mode === ThemeMode.inDepo ? secondary[5] : whiteColor;
         return (
             $styled &&
             `
                 .ant-dropdown-arrow {
-                    border-color: ${theme.mode === ThemeMode.inDepo ? secondary[5] : neutrals[6]};
-                    width: ${spaces[4]};
-                    height: ${spaces[4]};
+                    border-color: transparent;
+                    width: 0;
+                    height: 0;
+                    border-width: ${getREM(spaces[5] / 2)};
+                    box-shadow: none;
+                    filter: drop-shadow(-${getREM(spaces[1])} -${getREM(spaces[1])} 0.313rem rgba(0,0,0,.06));
+                }
+                .ant-dropdown-placement-topCenter, .ant-dropdown-placement-topRight, .ant-dropdown-placement-topLeft{
+                    .ant-dropdown-arrow {
+                        border-top-color: ${arrowColor} ;
+                        bottom: 0.18rem;
+                        border-bottom: none;
+                    }
+                }
+                .ant-dropdown-placement-bottomCenter, .ant-dropdown-placement-bottomRight, .ant-dropdown-placement-bottomLeft{
+                    .ant-dropdown-arrow {
+                        border-bottom-color: ${arrowColor} ;
+                        top: 0.18rem;
+                        border-top: none;
+                    }
+                }
+                .ant-dropdown-placement-bottomCenter,  .ant-dropdown-placement-topCenter{
+                    .ant-dropdown-arrow{
+                        transform: translateX(-50%) rotate(0);
+                    }
+                }
+                .ant-dropdown-placement-topRight, .ant-dropdown-placement-topLeft, .ant-dropdown-placement-bottomRight, .ant-dropdown-placement-bottomLeft{
+                    .ant-dropdown-arrow{
+                        transform: rotate(0);
+                    }
                 }
             `
         );
     }}
+    
 `;
 
 const StyledDropdownOverlay = styledComponent.div`
