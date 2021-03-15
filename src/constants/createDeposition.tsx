@@ -60,6 +60,7 @@ export const WITNESS_TITLE = "Witness";
 export const WITNESS_SUBTITLE = "To add a witness please complete the information below. ";
 
 export const DETAILS_TITLE = "Details";
+export const DETAILS_SUBTITLE = "This information will be visible for all invited parties.";
 
 export const REQUESTER_TITLE = "Requester";
 

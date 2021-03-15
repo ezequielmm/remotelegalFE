@@ -18,14 +18,10 @@ export const EMPTY_STATE_TITLE = "No participants added yet.";
 export const EMPTY_STATE_TEXT = "Currently, you don't have any case added yet. Do you want to add a case?";
 
 export const OTHER_PARTICIPANTS_FIELDS = ["email", "name", "phone", "role", "action"];
-export const OTHER_PARTICIPANTS_ROLES = [
-    "Attorney",
-    "Observer",
-    "Paralegal",
-    "Tech Expert",
-    "Court Reporter",
-    "Interpreter",
-];
+export const getOtherParticipantsRoles = (userIsAdmin) =>
+    userIsAdmin
+        ? ["Attorney", "Observer", "Paralegal", "Tech Expert", "Court Reporter", "Interpreter"]
+        : ["Attorney", "Observer", "Paralegal"];
 
 export const OPTIONAL_EMAIL_LABEL = "Email Address (Optional)";
 export const EMAIL_LABEL = "Email Address";

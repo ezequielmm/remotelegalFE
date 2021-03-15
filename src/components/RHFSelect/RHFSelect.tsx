@@ -6,6 +6,7 @@ import Select from "../Select";
 
 interface RHFSelectProps extends RHFWrapperProps {
     disabled?: boolean;
+    filterChange?: (value: string) => void;
     loading?: boolean;
     placeholder?: string;
     renderUnselectableOption?: () => React.ReactNode;
@@ -20,6 +21,7 @@ export default function RHFSelect({
     loading,
     items,
     filter,
+    filterChange,
     placeholder,
     renderUnselectableOption,
     renderItem,
@@ -35,6 +37,7 @@ export default function RHFSelect({
         <RHFWrapper
             component={({ onChange, onBlur, value }) => (
                 <Select
+                    onSearch={filterChange}
                     data-testid={dataTestId}
                     defaultValue={wrapperProps.defaultValue}
                     disabled={disabled}

@@ -15,6 +15,7 @@ import { IParticipant } from "../../../../models/participant";
 import OtherParticipantsSchema from "../../../../schemas/OtherParticipantsSchema";
 import Select from "../../../../components/Select";
 import ColorStatus from "../../../../types/ColorStatus";
+import { useUserIsAdmin } from "../../../../hooks/users/hooks";
 
 export interface IModalProps {
     open: boolean;
@@ -35,6 +36,8 @@ export default function OtherParticipantsModal({
     handleRemoveParticipant,
     handleClose,
 }: IModalProps): ReactElement {
+    const userIsAdmin = useUserIsAdmin()[3];
+
     const handleCloseModal = () => {
         handleClose();
     };
@@ -126,10 +129,10 @@ export default function OtherParticipantsModal({
                                 errorMessage={errors.role?.message}
                                 items={
                                     isCourtReporterAlreadyAdded
-                                        ? CONSTANTS.OTHER_PARTICIPANTS_ROLES.filter(
+                                        ? CONSTANTS.getOtherParticipantsRoles(userIsAdmin).filter(
                                               (participant) => participant !== CONSTANTS.COURT_REPORTER_ROLE
                                           )
-                                        : CONSTANTS.OTHER_PARTICIPANTS_ROLES
+                                        : CONSTANTS.getOtherParticipantsRoles(userIsAdmin)
                                 }
                                 renderItem={(item) => (
                                     <Select.Option key={item.id} value={item.id}>

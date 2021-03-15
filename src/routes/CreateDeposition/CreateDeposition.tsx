@@ -12,14 +12,16 @@ import DetailsSection from "./DetailsSection";
 import RequesterSection from "./RequesterSection";
 import OtherParticipantsSection from "./OtherParticipantsSection";
 import * as CONSTANTS from "../../constants/createDeposition";
-import DepositionSchema from "../../schemas/DepositionSchema";
+import getDepositionSchema from "../../schemas/DepositionSchema";
 import { useFetchCases } from "../../hooks/cases/hooks";
 import { useScheduleDepositions } from "../../hooks/depositions/hooks";
 import CreateDepositionResultCard from "./CreateDepositionResultCard";
 import mapDepositions from "../../helpers/mapDepositions";
+import { useUserIsAdmin } from "../../hooks/users/hooks";
 
 const CreateDeposition = () => {
     const [createdDepositions, setCreatedDepositions] = React.useState(0);
+    const [checkIfUserIsAdmin, loadingUserIsAdmin, errorUserIsAdmin, userIsAdmin] = useUserIsAdmin();
 
     const { error: fetchingCasesError, data, loading: loadingCases, refreshList } = useFetchCases();
     const [scheduleDepositions, loading, error, response] = useScheduleDepositions();
@@ -29,7 +31,7 @@ const CreateDeposition = () => {
 
     const methods = useForm({
         mode: "onTouched",
-        resolver: yupResolver(DepositionSchema),
+        resolver: yupResolver(getDepositionSchema(userIsAdmin)),
         defaultValues: CONSTANTS.CREATE_DEPOSITION_DEFAULT_VALUES,
     });
 
@@ -37,6 +39,10 @@ const CreateDeposition = () => {
         if (response) setCreatedDepositions(methods.watch("depositions").length);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [response]);
+
+    React.useEffect(() => {
+        checkIfUserIsAdmin();
+    }, [checkIfUserIsAdmin]);
 
     const handleResetForm = () => {
         setCreatedDepositions(0);
@@ -55,6 +61,7 @@ const CreateDeposition = () => {
         } = values;
         const normalizedParticipants = otherParticipants?.map((participant) => ({
             ...participant,
+            email: participant.email === "" ? null : participant.email,
             role: participant?.role.replace(/\s/g, ""),
         }));
 
@@ -70,7 +77,7 @@ const CreateDeposition = () => {
         scheduleDepositions({ depositionList: mappedDepositions, files, caseId });
     };
 
-    return createdDepositions || fetchingCasesError ? (
+    return createdDepositions || fetchingCasesError || errorUserIsAdmin ? (
         <CreateDepositionResultCard
             addNewCase={handleResetForm}
             createdDepositions={createdDepositions}
@@ -91,7 +98,7 @@ const CreateDeposition = () => {
                     <WitnessesSection />
                     <OtherParticipantsSection />
                     <DetailsSection />
-                    <RequesterSection invalidRequester={error === 404 && "Invalid email"} />
+                    {userIsAdmin && <RequesterSection invalidRequester={error === 404 && "Invalid email"} />}
                     <Space size="large" justify="flex-end" fullWidth>
                         <Button
                             type="text"
@@ -106,7 +113,7 @@ const CreateDeposition = () => {
                         </Button>
                         <Button
                             data-testid="create_deposition_button"
-                            loading={loading}
+                            loading={loading || loadingUserIsAdmin}
                             htmlType="submit"
                             onClick={methods.handleSubmit(submitDepositions)}
                             type="primary"
