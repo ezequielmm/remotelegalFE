@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useRef, useState, useContext } from "react";
+import React, { memo, useRef, useState, useContext, useCallback } from "react";
 import styled, { ThemeContext } from "styled-components";
 import { Divider } from "antd";
 import Title from "../../Typography/Title";
@@ -43,21 +43,20 @@ const CopyLink = ({ closePopOver, link }: { closePopOver: () => void; link: stri
     const refHiddenInput = useRef(null);
     const [copyDone, setCopyDone] = useState(false);
     const [copyError, setCopyError] = useState(false);
-    const resetTimeOut = COPY_LINK_ALERT_DURATION * 1000;
-    const copyToClipboard = useCallback(() => {
+
+    const copyToClipboard = () => {
         if (copyDone) return;
+        if (copyError) setCopyError(false);
         try {
             refHiddenInput.current.select();
             document.execCommand("copy");
-
-            setCopyError(false);
+            setCopyDone(true);
         } catch (error) {
             setCopyError(true);
         }
-        setCopyDone(true);
-        setTimeout(() => setCopyDone(false), resetTimeOut);
-    }, [copyDone, resetTimeOut]);
+    };
 
+    const resetCopyState = useCallback(() => setCopyDone(false), []);
     return (
         <Card bg={ColorStatus.white}>
             <StyledCloseIcon icon={CloseIcon} onClick={closePopOver} data-testid="close-button" />
@@ -77,8 +76,9 @@ const CopyLink = ({ closePopOver, link }: { closePopOver: () => void; link: stri
                 {COPY_LINK_BUTTON}
             </Button>
             <StyledHiddenInput ref={refHiddenInput} value={link} readOnly data-testid="hidden-input" />
-            {copyDone && !copyError && (
+            {copyDone && (
                 <Alert
+                    onClose={resetCopyState}
                     fullWidth={false}
                     message={COPY_LINK_SUCCESS_MSG}
                     type="success"
@@ -88,8 +88,9 @@ const CopyLink = ({ closePopOver, link }: { closePopOver: () => void; link: stri
                     data-testid="copy-link-success-alert"
                 />
             )}
-            {copyDone && copyError && (
+            {copyError && (
                 <Alert
+                    fullWidth={false}
                     message={COPY_LINK_ERROR_MSG}
                     type="error"
                     float

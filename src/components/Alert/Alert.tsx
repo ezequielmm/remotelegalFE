@@ -9,9 +9,10 @@ export interface IAlertProps extends AlertProps {
     duration?: number;
     isVisible?: boolean;
     fullWidth?: boolean;
+    onClose?: () => void;
 }
 
-const Alert = ({ showIcon = true, duration, closable = false, ...rest }: IAlertProps) => {
+const Alert = ({ showIcon = true, duration, closable = false, onClose, ...rest }: IAlertProps) => {
     const [isVisible, setIsVisible] = useState(true);
     const timeOut = duration * 1000;
     let hasCloseIcon;
@@ -21,15 +22,20 @@ const Alert = ({ showIcon = true, duration, closable = false, ...rest }: IAlertP
     useEffect(() => {
         const handleClose = () => {
             setIsVisible(false);
+            if (onClose) {
+                onClose();
+            }
         };
         const timer = setTimeout(() => {
             handleClose();
         }, timeOut);
         return () => clearTimeout(timer);
-    }, [timeOut]);
+    }, [timeOut, onClose]);
+
     return duration ? (
         isVisible && (
             <StyledAlert
+                onClose={onClose}
                 closable={closable}
                 closeText={<Icon icon={closeIcon} size={9} />}
                 showIcon={showIcon}
@@ -37,7 +43,7 @@ const Alert = ({ showIcon = true, duration, closable = false, ...rest }: IAlertP
             />
         )
     ) : (
-        <StyledAlert closable={closable} closeText={hasCloseIcon} showIcon={showIcon} {...rest} />
+        <StyledAlert onClose={onClose} closable={closable} closeText={hasCloseIcon} showIcon={showIcon} {...rest} />
     );
 };
 
