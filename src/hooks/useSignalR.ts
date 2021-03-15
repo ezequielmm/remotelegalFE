@@ -1,4 +1,4 @@
-import { HubConnection, HubConnectionBuilder } from "@microsoft/signalr";
+import { HttpTransportType, HubConnection, HubConnectionBuilder } from "@microsoft/signalr";
 import React, { useCallback, useEffect } from "react";
 import ENV from "../constants/env";
 import { GlobalStateContext } from "../state/GlobalState";
@@ -15,6 +15,8 @@ const useSignalR = (url: string): any => {
         const newSignalR: HubConnection = new HubConnectionBuilder()
             .withUrl(`${ENV.API.URL}${url}`, {
                 accessTokenFactory: () => token,
+                skipNegotiation: true,
+                transport: HttpTransportType.WebSockets,
             })
             .withAutomaticReconnect()
             .build();
