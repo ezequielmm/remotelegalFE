@@ -22,7 +22,7 @@ const theme = {
         /** Ant Design */
         // Color
         primaryColor: colors.gold[5], // color base
-        infoColor: colors.gold[5],
+        infoColor: colors.inDepoNeutrals[9],
         processingColor: colors.gold[5],
         successColor: colors.pickleGreen[5],
         warningColor: colors.mustardYellow[5],

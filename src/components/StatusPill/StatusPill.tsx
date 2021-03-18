@@ -7,6 +7,8 @@ import { ReactComponent as Canceled } from "../../assets/icons/Error.svg";
 import { ReactComponent as Completed } from "../../assets/icons/Checkmark.svg";
 import Icon from "../Icon";
 import { ThemeMode } from "../../types/ThemeType";
+import Tag, { ITagProps } from "../Tag/Tag";
+import ColorStatus from "../../types/ColorStatus";
 
 export enum Status {
     pending = "Pending",
@@ -15,77 +17,61 @@ export enum Status {
     confirmed = "Confirmed",
 }
 
-export interface IStatusPillProps {
+const IconStatus = {
+    Pending,
+    Completed,
+    Canceled,
+    Confirmed,
+};
+
+const PillColorStatus = {
+    Pending: "warning",
+    Completed: "success",
+    Canceled: "error",
+    Confirmed: "info",
+};
+
+export interface IStatusPillProps extends Omit<ITagProps, "pill" | "color"> {
     status: Status;
 }
 
-const StyledPill = styled.span`
-    ${({ theme }) => {
+const StyledPill = styled(Tag)`
+    ${({ theme, color }) => {
         const inDepoStyles = `
             color: ${theme.colors.neutrals[6]};
-            &.Completed {
-                background-color: ${theme.colors.success[5]};
-            }
-            &.Confirmed {
-                background-color: ${theme.colors.inDepoNeutrals[9]};
-            }
-            &.Pending {
-                background-color: ${theme.colors.warning[5]};
-            }
-            &.Canceled {
-                background-color: ${theme.colors.error[5]};
-            }`;
+            `;
         const defaultStyles = `
-            &.Completed {
-                background-color: ${hexToRGBA(theme.colors.success[5], 0.1)};
-                color: ${theme.colors.success[5]};
-            }
-            &.Confirmed {
-                background-color: ${hexToRGBA(theme.colors.inDepoNeutrals[9], 0.1)};
-                color: ${theme.colors.inDepoNeutrals[9]};
-            }
-            &.Pending {
-                background-color: ${hexToRGBA(theme.colors.warning[5], 0.1)};
-                color: ${theme.colors.warning[5]};
-            }
-            &.Canceled {
-                background-color: ${hexToRGBA(theme.colors.error[5], 0.1)};
-                color: ${theme.colors.error[5]};
-            }`;
+            color: ${theme.default[`${color}Color`]};
+            background-color: ${hexToRGBA(theme.default[`${color}Color`], 0.1)};
+            `;
 
         const styles = `
-            display: flex;
-            align-items: center;
             line-height: 1.625rem;
             padding: 0 ${getREM(theme.default.spaces[3])};
-            border-radius: ${getREM(theme.default.borderRadiusBase)};
-            font-size: ${getREM(theme.default.fontSizes[8])};
+            font-weight: normal;
+            display: flex;
+            align-items: center;
             width: 6rem;
-
             .anticon {
-                margin-right: ${getREM(theme.default.spaces[2])};
-                font-size: ${getREM(theme.default.fontSizes[6])};
-                color: inherit;
+                & + span{
+                    margin-left: ${getREM(theme.default.spaces[2])};
+                }
             }
             
             ${theme.mode === ThemeMode.inDepo ? inDepoStyles : defaultStyles};
         `;
-
         return styles;
     }}
 `;
 
 const StatusPill = ({ status, ...rest }: IStatusPillProps) => {
     return (
-        <StyledPill {...rest} className={status}>
-            {
-                {
-                    Completed: <Icon icon={Completed} />,
-                    Confirmed: <Icon icon={Confirmed} />,
-                    Pending: <Icon icon={Pending} />,
-                    Canceled: <Icon icon={Canceled} />,
-                }[status]
-            }
+        <StyledPill
+            color={ColorStatus[PillColorStatus[status]]}
+            icon={<Icon icon={IconStatus[status]} size={6} />}
+            pill
+            {...rest}
+        >
             {status}
         </StyledPill>
     );
