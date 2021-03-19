@@ -19,3 +19,7 @@ export const DashedLine = styled.div<{ side: string }>`
     flex: 0 1 auto;
     width: 25%;
 `;
+
+export const CustomGridSpace = styled.div`
+    display: grid;
+`;

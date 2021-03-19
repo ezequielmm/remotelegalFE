@@ -17,6 +17,7 @@ import { theme } from "../../../constants/styles/theme";
 import { ThemeMode } from "../../../types/ThemeType";
 import { DepositionModel } from "../../../models";
 import * as CONSTANTS from "../../../constants/depositionDetails";
+import { CustomGridSpace } from "../styles";
 
 const DepositionDetailsHeader = ({ deposition }: { deposition: DepositionModel.IDeposition }) => {
     const [formattedDates, setFormattedDates] = useState<string[]>([]);
@@ -38,11 +39,11 @@ const DepositionDetailsHeader = ({ deposition }: { deposition: DepositionModel.I
     return (
         <Card bg={theme.colors.neutrals[0]} hasPadding={false} fullWidth>
             <Space px={9} py={6} fullWidth>
-                <Row style={{ width: "100%" }}>
+                <Row style={{ width: "100%" }} gutter={theme.default.baseUnit}>
                     <Col xl={7}>
                         <Space>
                             <Icon icon={CasesIcon} size={8} color={ColorStatus.primary} />
-                            <Space direction="vertical" size="0">
+                            <CustomGridSpace>
                                 <Text size="small" uppercase state={ColorStatus.white} lineHeight={1.25}>
                                     {CONSTANTS.DEPOSITION_DETAILS_HEADER_CASE}
                                 </Text>
@@ -51,6 +52,7 @@ const DepositionDetailsHeader = ({ deposition }: { deposition: DepositionModel.I
                                     level={6}
                                     weight="light"
                                     color={ColorStatus.white}
+                                    noMargin
                                 >
                                     {caseName}
                                 </Title>
@@ -63,13 +65,13 @@ const DepositionDetailsHeader = ({ deposition }: { deposition: DepositionModel.I
                                 >
                                     {caseNumber}
                                 </Text>
-                            </Space>
+                            </CustomGridSpace>
                         </Space>
                     </Col>
                     <Col xl={5}>
                         <Space>
                             <Icon icon={DepositionsIcon} size={8} color={ColorStatus.primary} />
-                            <Space direction="vertical" size="0">
+                            <CustomGridSpace>
                                 <Text size="small" uppercase state={ColorStatus.white} lineHeight={1.25}>
                                     {CONSTANTS.DEPOSITION_DETAILS_HEADER_WITNESS}
                                 </Text>
@@ -78,16 +80,17 @@ const DepositionDetailsHeader = ({ deposition }: { deposition: DepositionModel.I
                                     level={6}
                                     weight="light"
                                     color={ColorStatus.white}
+                                    noMargin
                                 >
                                     {witness?.name}
                                 </Title>
-                            </Space>
+                            </CustomGridSpace>
                         </Space>
                     </Col>
                     <Col xl={5}>
                         <Space>
                             <Icon icon={CalendarIcon} size={8} color={ColorStatus.primary} />
-                            <Space direction="vertical" size="0">
+                            <CustomGridSpace>
                                 <Text size="small" uppercase state={ColorStatus.white} lineHeight={1.25}>
                                     {CONSTANTS.DEPOSITION_DETAILS_HEADER_DATE}
                                 </Text>
@@ -96,6 +99,7 @@ const DepositionDetailsHeader = ({ deposition }: { deposition: DepositionModel.I
                                     level={6}
                                     weight="light"
                                     color={ColorStatus.white}
+                                    noMargin
                                 >
                                     {startDate && moment(startDate).format("MMM D, YYYY")}
                                 </Title>
@@ -110,13 +114,13 @@ const DepositionDetailsHeader = ({ deposition }: { deposition: DepositionModel.I
                                         formattedDates[1] ? `to ${formattedDates[1]}` : ""
                                     } ${timeZone}`}
                                 </Text>
-                            </Space>
+                            </CustomGridSpace>
                         </Space>
                     </Col>
-                    <Col xl={2}>
+                    <Col xl={3}>
                         <Space>
                             <Icon icon={JobIcon} size={8} color={ColorStatus.primary} />
-                            <Space direction="vertical" size="0">
+                            <CustomGridSpace>
                                 <Text size="small" uppercase state={ColorStatus.white} lineHeight={1.25}>
                                     {CONSTANTS.DEPOSITION_DETAILS_HEADER_JOB}
                                 </Text>
@@ -125,13 +129,14 @@ const DepositionDetailsHeader = ({ deposition }: { deposition: DepositionModel.I
                                     level={6}
                                     weight="light"
                                     color={ColorStatus.white}
+                                    noMargin
                                 >
                                     {job}
                                 </Title>
-                            </Space>
+                            </CustomGridSpace>
                         </Space>
                     </Col>
-                    <Col xl={5}>
+                    <Col xl={4}>
                         <Space justify="flex-end">
                             <ThemeProvider theme={{ ...theme, mode: ThemeMode.inDepo }}>
                                 <StatusPill status={status} />
