@@ -400,10 +400,28 @@ export class ApiService {
         });
     };
 
+    getDocumentsUrlList = async ({ depositionID, documentIds }): Promise<boolean> => {
+        return this.request<boolean>({
+            path: `/api/Depositions/${depositionID}/documents/PreSignedUrl?documentIds=${documentIds.join(
+                "&documentIds="
+            )}`,
+            withContentType: true,
+            method: HTTP_METHOD.GET,
+        });
+    };
+
     deleteExhibit = async ({ depositionID, documentId }): Promise<boolean> => {
         return this.request<boolean>({
             path: `/api/Depositions/${depositionID}/documents/${documentId}`,
             payload: {},
+            withToken: true,
+            method: HTTP_METHOD.DELETE,
+        });
+    };
+
+    removeTranscript = async (depositionID: string, transcriptID: string) => {
+        return this.request({
+            path: `/api/depositions/${depositionID}/transcripts/${transcriptID}`,
             withToken: true,
             method: HTTP_METHOD.DELETE,
         });
@@ -477,13 +495,5 @@ export class ApiService {
             }
             throw error;
         }
-    };
-
-    removeTranscript = async (depositionID: string, transcriptID: string) => {
-        return this.request({
-            path: `/api/depositions/${depositionID}/transcripts/${transcriptID}`,
-            withToken: true,
-            method: HTTP_METHOD.DELETE,
-        });
     };
 }

@@ -25,6 +25,11 @@ import DepositionDetailsVideoSection from "./DepositionDetailsVideoSection";
 import { useGetRecordingInfo } from "../../../hooks/useGetRecordingInfo";
 import CardIcon from "../../../components/CardIcon";
 import { useEnteredExhibit } from "../../../hooks/useEnteredExhibits";
+import Button from "../../../components/Button";
+import Icon from "../../../components/Icon";
+import { ReactComponent as DownloadIcon } from "../../../assets/icons/download.svg";
+import downloadFile from "../../../helpers/downloadFile";
+import { useTranscriptFileList, useGetSignedUrl } from "../../../hooks/transcripts/hooks";
 import { StyledSummaryLayout, StyledCard, StyledRealTimeWrapper } from "./styles";
 import { useFetchParticipants } from "../../../hooks/activeDepositionDetails/hooks";
 
@@ -36,11 +41,16 @@ export default function DepositionDetailsSummary({ setActiveKey }: IDepositionDe
     const inDepoTheme = { ...theme, mode: ThemeMode.inDepo };
     const { dispatch, state } = useContext(GlobalStateContext);
     const [getTranscriptions, loading] = useGetTranscriptions(true);
+    const { getRecordingInfo, recordingInfo } = useGetRecordingInfo();
     const [getDepositionEvents] = useGetEvents();
     const { depositionID } = useParams<DepositionID>();
-    const { handleFetchFiles, enteredExhibits } = useEnteredExhibit();
-    const [fetchParticipants, , , participants] = useFetchParticipants();
+    const { handleFetchFiles: handleFetchExhibitsFiles, enteredExhibits } = useEnteredExhibit();
     const [courtReporterName, setCourtReporterName] = useState("");
+    const [downloadRecordingDisabled, setDownloadRecordingDisabled] = useState<boolean>(true);
+    const [downloadTranscripDisabled, setDownloadTranscripDisabled] = useState<boolean>(true);
+    const { handleFetchFiles: handleFetchTranscriptFileList, transcriptFileList } = useTranscriptFileList(depositionID);
+    const { getSignedUrl, documentData: transcriptFileData } = useGetSignedUrl();
+    const [fetchParticipants, , , participants] = useFetchParticipants();
     const { transcriptions, currentDeposition } = state.postDepo;
 
     const [setTranscriptions] = useAsyncCallback(async () => {
@@ -48,6 +58,27 @@ export default function DepositionDetailsSummary({ setActiveKey }: IDepositionDe
         const events = await getDepositionEvents(depositionID);
         dispatch(actions.setTranscriptions({ transcriptions: newTranscriptions || [], events: events || [] }));
     }, [depositionID, dispatch, getDepositionEvents, getTranscriptions]);
+
+    useEffect(() => {
+        handleFetchTranscriptFileList();
+    }, [handleFetchTranscriptFileList]);
+
+    useEffect(() => {
+        if (transcriptFileList) {
+            const transcriptFileDetails = transcriptFileList.find(
+                (transcriptFile) => transcriptFile.documentType === CONSTANTS.DEPOSITION_DETAILS_TRANSCRIPT_ROUGH_TYPE
+            );
+
+            if (transcriptFileDetails) {
+                getSignedUrl(transcriptFileDetails.id);
+            }
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [transcriptFileList]);
+
+    useEffect(() => {
+        if (transcriptFileData) setDownloadTranscripDisabled(false);
+    }, [transcriptFileData]);
 
     useEffect(() => {
         let delay;
@@ -60,7 +91,6 @@ export default function DepositionDetailsSummary({ setActiveKey }: IDepositionDe
         };
     }, [setTranscriptions, dispatch]);
 
-    const { getRecordingInfo, recordingInfo } = useGetRecordingInfo();
     useEffect(() => {
         getRecordingInfo();
     }, [getRecordingInfo]);
@@ -75,8 +105,24 @@ export default function DepositionDetailsSummary({ setActiveKey }: IDepositionDe
     }, [currentDeposition]);
 
     useEffect(() => {
-        handleFetchFiles();
-    }, [handleFetchFiles]);
+        handleFetchExhibitsFiles();
+    }, [handleFetchExhibitsFiles]);
+
+    useEffect(() => {
+        if (recordingInfo && recordingInfo.publicUrl) setDownloadRecordingDisabled(false);
+    }, [recordingInfo]);
+
+    const handleDownloadRecording = () => {
+        if (recordingInfo?.publicUrl) {
+            downloadFile(recordingInfo.publicUrl);
+        }
+    };
+
+    const handleDownloadTranscript = async () => {
+        if (transcriptFileData?.url) {
+            downloadFile(transcriptFileData.url);
+        }
+    };
 
     useEffect(() => {
         fetchParticipants(depositionID);
@@ -113,20 +159,50 @@ export default function DepositionDetailsSummary({ setActiveKey }: IDepositionDe
                         </Title>
                     </CardIcon>
                 </Space>
-                <StyledCard hasShaddow={false} hasPadding={false} fullWidth>
-                    <Space p={9} direction="vertical" size="large">
+                <StyledCard
+                    hasShaddow={false}
+                    hasPadding={false}
+                    fullWidth
+                    extra={
+                        <Button
+                            type="link"
+                            icon={<Icon icon={DownloadIcon} size={9} />}
+                            onClick={handleDownloadRecording}
+                            disabled={downloadRecordingDisabled}
+                        >
+                            {CONSTANTS.DEPOSITION_DETAILS_SUMMARY_DOWNLOAD_RECORDING_TITLE}
+                        </Button>
+                    }
+                >
+                    <Space p={9} direction="horizontal" size="large">
                         <Title level={5} noMargin weight="light">
                             {CONSTANTS.DETAILS_SUMMARY_VIDEO_TITLE}
                         </Title>
                     </Space>
                     <DepositionDetailsVideoSection recordingInfo={recordingInfo} />
                 </StyledCard>
-                <StyledCard hasShaddow={false} hasPadding={false} fullWidth>
-                    <Space p={9} pb={3} direction="vertical">
+                <StyledCard
+                    hasShaddow={false}
+                    hasPadding={false}
+                    fullWidth
+                    extra={
+                        <Button
+                            type="link"
+                            icon={<Icon icon={DownloadIcon} size={9} />}
+                            onClick={handleDownloadTranscript}
+                            disabled={downloadTranscripDisabled}
+                        >
+                            {CONSTANTS.DEPOSITION_DETAILS_SUMMARY_DOWNLOAD_ROUGH_DRAFT_TITLE}
+                        </Button>
+                    }
+                >
+                    <Space p={9} direction="vertical">
                         <Space size="large" direction="vertical">
-                            <Title level={5} noMargin weight="light">
-                                {CONSTANTS.DETAILS_SUMMARY_TRANSCRIPT_TITLE}
-                            </Title>
+                            <Space.Item>
+                                <Title level={5} noMargin weight="light">
+                                    {CONSTANTS.DETAILS_SUMMARY_TRANSCRIPT_TITLE}
+                                </Title>
+                            </Space.Item>
                             <Text state={ColorStatus.disabled} ellipsis={false}>
                                 {CONSTANTS.DETAILS_SUMMARY_TRANSCRIPT_SUBTITLE}
                             </Text>

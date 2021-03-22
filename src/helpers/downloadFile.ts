@@ -4,7 +4,9 @@ const downloadFile = (fileUrl: string) => {
     document.body.appendChild(link);
     link.setAttribute("download", "download");
     link.setAttribute("target", "_blank");
-    link.click();
-    document.body.removeChild(link);
+    setTimeout(() => {
+        link.click();
+        document.body.removeChild(link);
+    }, 500);
 };
 export default downloadFile;

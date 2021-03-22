@@ -22,6 +22,7 @@ export const DETAILS_SUMMARY_OFF_THE_RECORD_TEXT = "off the record";
 export const DETAILS_TRANSCRIPT_TITLE = "Transcript";
 export const DETAILS_TRANSCRIPT_BUTTON_NOTIFY = "Notify parties";
 export const DETAILS_TRANSCRIPT_BUTTON_DOWNLOAD = "Download";
+export const DETAILS_TRANSCRIPT_BUTTON_TEST_ID = "deposition_details_download_button";
 export const DETAILS_TRANSCRIPT_BUTTON_UPLOAD = "Upload transcript";
 
 export const DEFAULT_ACTIVE_TAB = "summary";
@@ -129,6 +130,8 @@ export const DEPOSITION_DETAILS_TRANSCRIPTS_COLUMNS = [
     },
 ];
 
+export const DEPOSITION_DETAILS_TRANSCRIPT_ROUGH_TYPE = "DraftTranscription";
+export const DEPOSITION_DETAILS_SUMMARY_DOWNLOAD_RECORDING_TITLE = "RECORDING";
 export const NETWORK_ERROR = "An unexpected error occurred! Please try again";
 export const DEPOSITION_DETAILS_REMOVE_TRANSCRIPT_TOAST = "The transcript was successfully removed";
 
@@ -137,6 +140,5 @@ export const DEPOSITION_DETAILS_DELETE_MODAL_SUBTITLE = "This action cannot be u
 export const DEPOSITION_DETAILS_DELETE_MODAL_NO = "NO, KEEP IT";
 export const DEPOSITION_DETAILS_DELETE_MODAL_YES = "YES, DELETE FILE";
 
-export const DEPOSITION_DETAILS_TRANSCRIPT_ROUGH_TYPE = "DraftTranscription";
 export const DEPOSITION_DETAILS_SUMMARY_DOWNLOAD_TITLE = "RECORDING";
 export const DEPOSITION_DETAILS_SUMMARY_DOWNLOAD_ROUGH_DRAFT_TITLE = "ROUGH DRAFT TRANSCRIPT";

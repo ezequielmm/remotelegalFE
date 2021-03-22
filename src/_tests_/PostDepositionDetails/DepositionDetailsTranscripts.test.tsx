@@ -1,13 +1,26 @@
-import { waitForElement, waitForDomChange } from "@testing-library/react";
+import { waitForElement, waitForDomChange, fireEvent } from "@testing-library/react";
 import React from "react";
 import renderWithGlobalContext from "../utils/renderWithGlobalContext";
 import * as SIGN_UP_CONSTANTS from "../constants/signUp";
+import * as TEST_CONSTANTS from "../constants/depositionDetails";
 import DepositionDetailsTranscript from "../../routes/DepositionDetails/DepositionDetailsTranscript/DepositionDetailsTranscript";
 import * as CONSTANTS from "../../constants/depositionDetails";
 import getMockDeps from "../utils/getMockDeps";
 import { getTranscriptFileListOnlyOne } from "../mocks/transcriptsFileList";
+import downloadFile from "../../helpers/downloadFile";
+import { wait } from "../../helpers/wait";
 
 const customDeps = getMockDeps();
+
+jest.mock("../../helpers/downloadFile", () => ({
+    __esModule: true,
+    default: jest.fn(),
+}));
+
+jest.mock("react-router", () => ({
+    ...jest.requireActual("react-router"),
+    useParams: () => ({ depositionID: "depoId" }),
+}));
 
 describe("Deposition Details Transcripts", () => {
     it("show a title with CONSTANTS.DETAILS_TRANSCRIPT_TITLE constant", async () => {
@@ -32,5 +45,48 @@ describe("Deposition Details Transcripts", () => {
         const { getByTestId } = renderWithGlobalContext(<DepositionDetailsTranscript />, customDeps);
         await waitForDomChange();
         expect(getByTestId(mockDataTestId)).toBeTruthy();
+    });
+    it("shows transcript button disabled if no transcript is selected", async () => {
+        customDeps.apiService.currentUser = jest.fn().mockResolvedValue(SIGN_UP_CONSTANTS.getUser1());
+        const { getByTestId } = renderWithGlobalContext(<DepositionDetailsTranscript />, customDeps);
+        await waitForDomChange();
+        expect(getByTestId(CONSTANTS.DETAILS_TRANSCRIPT_BUTTON_TEST_ID)).toBeDisabled();
+    });
+    it("shows transcript button enabled if a transcript is selected", async () => {
+        customDeps.apiService.currentUser = jest.fn().mockResolvedValue(SIGN_UP_CONSTANTS.getUser1());
+        const { getByTestId, getAllByRole } = renderWithGlobalContext(<DepositionDetailsTranscript />, customDeps);
+        await waitForDomChange();
+        fireEvent.click(getAllByRole("checkbox")[0]);
+        expect(getByTestId(CONSTANTS.DETAILS_TRANSCRIPT_BUTTON_TEST_ID)).toBeEnabled();
+    });
+    it("calls download file with the proper params when clicking download", async () => {
+        customDeps.apiService.currentUser = jest.fn().mockResolvedValue(SIGN_UP_CONSTANTS.getUser1());
+        const { getByTestId, getAllByRole } = renderWithGlobalContext(<DepositionDetailsTranscript />, customDeps);
+        await waitForDomChange();
+        fireEvent.click(getAllByRole("checkbox")[0]);
+        fireEvent.click(getByTestId(CONSTANTS.DETAILS_TRANSCRIPT_BUTTON_TEST_ID));
+        await wait(200);
+        expect(customDeps.apiService.getDocumentsUrlList).toHaveBeenCalledWith(
+            TEST_CONSTANTS.DEPOSITION_DETAILS_TRANSCRIPT_DOWNLOAD_RESPONSE_BODY
+        );
+        expect(downloadFile).toHaveBeenCalledWith(TEST_CONSTANTS.DEPOSITION_DETAILS_TRANSCRIPT_DOWNLOAD_FILE_URL);
+    });
+    it("shows error toast if download fails", async () => {
+        customDeps.apiService.getDocumentsUrlList = jest.fn().mockRejectedValue(async () => {
+            throw Error("Something wrong");
+        });
+        customDeps.apiService.currentUser = jest.fn().mockResolvedValue(SIGN_UP_CONSTANTS.getUser1());
+        const { getByTestId, getAllByRole, getByText } = renderWithGlobalContext(
+            <DepositionDetailsTranscript />,
+            customDeps
+        );
+        await waitForDomChange();
+        fireEvent.click(getAllByRole("checkbox")[0]);
+        fireEvent.click(getByTestId(CONSTANTS.DETAILS_TRANSCRIPT_BUTTON_TEST_ID));
+        await wait(200);
+        expect(customDeps.apiService.getDocumentsUrlList).toHaveBeenCalledWith(
+            TEST_CONSTANTS.DEPOSITION_DETAILS_TRANSCRIPT_DOWNLOAD_RESPONSE_BODY
+        );
+        expect(getByText(CONSTANTS.NETWORK_ERROR)).toBeInTheDocument();
     });
 });

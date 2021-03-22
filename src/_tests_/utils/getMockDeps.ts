@@ -9,6 +9,7 @@ import { CAPTION_MOCK } from "../constants/caption";
 import { getBreakrooms } from "../mocks/breakroom";
 import { getTranscriptFileList } from "../mocks/transcriptsFileList";
 import { MOCKED_EMAIL } from "../constants/changePassword";
+import fileUrlList from "../mocks/fileUrlList";
 
 export default (): Deps => ({
     apiService: {
@@ -37,5 +38,6 @@ export default (): Deps => ({
         getRecordingInfo: jest.fn().mockResolvedValue(true),
         getEnteredExhibits: jest.fn().mockResolvedValue([]),
         fetchTranscriptsFiles: jest.fn().mockResolvedValue(getTranscriptFileList()),
+        getDocumentsUrlList: jest.fn().mockResolvedValue(fileUrlList),
     } as any,
 });

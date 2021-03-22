@@ -2,7 +2,6 @@ import { waitForDomChange, waitForElement } from "@testing-library/react";
 import React from "react";
 import { act } from "react-dom/test-utils";
 import { wait } from "../../helpers/wait";
-import { Roles } from "../../models/participant";
 import DepositionDetailsSummary from "../../routes/DepositionDetails/DepositionDetailsSummary/DepositionDetailsSummary";
 import { rootReducer } from "../../state/GlobalState";
 import {
@@ -31,7 +30,7 @@ describe("DepositionDetailsSummary -> RealTime", () => {
             <DepositionDetailsSummary setActiveKey={jest.fn()} />,
             customDeps
         );
-        expect(await waitForElement(() => expect(getByTestId("spinner")))).toBeTruthy();
+        await waitForElement(() => getByTestId("spinner"));
         await waitForDomChange();
         await wait(100);
         act(() => expect(queryByTestId("spinner")).toBeFalsy());
@@ -50,7 +49,7 @@ describe("DepositionDetailsSummary -> RealTime", () => {
         act(() => expect(queryByTestId("transcription_paused")).toBeTruthy());
     });
 
-    it("shows no transcriptions when when joinDeposition returns a transcriptions empty", async () => {
+    it("shows no transcriptions when joinDeposition returns a transcriptions empty", async () => {
         customDeps.apiService.getDepositionTranscriptionsWithOffsets = jest.fn().mockResolvedValue([]);
         customDeps.apiService.getDepositionEvents = jest.fn().mockResolvedValue([]);
         const { queryByTestId } = renderWithGlobalContext(

@@ -4,6 +4,7 @@ import IRecording from "../models/recording";
 import { GlobalStateContext } from "../state/GlobalState";
 import useAsyncCallback from "./useAsyncCallback";
 
+// eslint-disable-next-line import/prefer-default-export
 export const useGetRecordingInfo = (): {
     getRecordingInfo: () => void;
     recordingInfo: IRecording;
@@ -14,7 +15,7 @@ export const useGetRecordingInfo = (): {
     const { depositionID } = useParams<{ depositionID: string }>();
 
     const [getRecordingInfo, pendingGetRecordingInfo, errorRecordingInfo, recordingInfo] = useAsyncCallback(
-        async () => await deps.apiService.getRecordingInfo({ depositionID }),
+        async () => deps.apiService.getRecordingInfo({ depositionID }),
         []
     );
 

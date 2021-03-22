@@ -1,6 +1,12 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
-import { useTranscriptList, useUploadFile, useRemoveTranscript } from "../../../hooks/transcripts/hooks";
+import { RowSelectionType } from "antd/lib/table/interface.d";
+import {
+    useTranscriptFileList,
+    useUploadFile,
+    useRemoveTranscript,
+    useGetDocumentsUrlList,
+} from "../../../hooks/transcripts/hooks";
 import { useUserIsAdmin } from "../../../hooks/users/hooks";
 import Table from "../../../components/Table";
 import Space from "../../../components/Space";
@@ -13,6 +19,7 @@ import { ReactComponent as MessageIcon } from "../../../assets/icons/Messages.sv
 import * as CONSTANTS from "../../../constants/depositionDetails";
 import UploadButton from "./UploadButton";
 import ProgressBar from "../../../components/ProgressBar";
+import downloadFile from "../../../helpers/downloadFile";
 import { ReactComponent as DeleteIcon } from "../../../assets/icons/delete.svg";
 import ColorStatus from "../../../types/ColorStatus";
 import Confirm from "../../../components/Confirm";
@@ -27,11 +34,20 @@ const DepositionDetailsTranscripts = () => {
 
     const { depositionID } = useParams<{ depositionID: string }>();
     const { upload } = useUploadFile(depositionID);
-    const { handleFetchFiles, files, loading } = useTranscriptList(depositionID);
+    const { handleFetchFiles, transcriptFileList, loading } = useTranscriptFileList(depositionID);
     const [checkIfUserIsAdmin, loadingUserIsAdmin, errorUserIsAdmin, userIsAdmin] = useUserIsAdmin();
+    const [selectedRows, setSelectedRows] = useState([]);
+    const rowSelection = {
+        type: "checkbox" as RowSelectionType,
+        onChange: (selection: []) => {
+            setSelectedRows(selection);
+        },
+    };
+    const isDownloadDisabled = !selectedRows.length;
     const [removeTranscript, removeTranscriptLoading, removeTranscriptError] = useRemoveTranscript();
     const toggleDeleteModal = () => setOpenDeleteModal(!openDeleteModal);
     const selectedRecord = useRef<TranscriptFile>(null);
+    const { getDocumentsUrlList, errorGetTranscriptsUrlList, documentsUrlList } = useGetDocumentsUrlList();
 
     const refreshList = () => {
         setShowProgressBar(false);
@@ -57,6 +73,26 @@ const DepositionDetailsTranscripts = () => {
     }, [file]);
 
     useEffect(() => {
+        if (documentsUrlList && !errorGetTranscriptsUrlList) {
+            documentsUrlList.urLs.forEach((url) => {
+                downloadFile(url);
+            });
+        }
+        if (errorGetTranscriptsUrlList) {
+            Message({
+                content: CONSTANTS.NETWORK_ERROR,
+                type: "error",
+                duration: 3,
+            });
+        }
+    }, [documentsUrlList, errorGetTranscriptsUrlList]);
+
+    const handleDownload = async () => {
+        const documentIds = selectedRows.map((id) => id);
+        getDocumentsUrlList(documentIds);
+    };
+
+    useEffect(() => {
         if (removeTranscriptError) {
             Message({
                 content: CONSTANTS.NETWORK_ERROR,
@@ -65,6 +101,12 @@ const DepositionDetailsTranscripts = () => {
             });
         }
     }, [removeTranscriptError]);
+
+    const handleRemoveTranscript = async () => {
+        toggleDeleteModal();
+        await removeTranscript(depositionID, selectedRecord.current.id);
+        handleFetchFiles();
+    };
 
     const columns = [
         ...CONSTANTS.DEPOSITION_DETAILS_TRANSCRIPTS_COLUMNS,
@@ -90,12 +132,6 @@ const DepositionDetailsTranscripts = () => {
             width: 50,
         },
     ];
-
-    const handleRemoveTranscript = async () => {
-        toggleDeleteModal();
-        await removeTranscript(depositionID, selectedRecord.current.id);
-        handleFetchFiles();
-    };
 
     return (
         <>
@@ -127,11 +163,16 @@ const DepositionDetailsTranscripts = () => {
                                 </Button>
                             )}
 
-                        {false && ( // TODO: remove this when this feature is enabled
-                            <Button type="primary" icon={<Icon icon={DownloadIcon} size={9} />} size="middle">
-                                {CONSTANTS.DETAILS_TRANSCRIPT_BUTTON_DOWNLOAD}
-                            </Button>
-                        )}
+                        <Button
+                            type="primary"
+                            data-testid={CONSTANTS.DETAILS_TRANSCRIPT_BUTTON_TEST_ID}
+                            icon={<Icon icon={DownloadIcon} size={8} />}
+                            size="middle"
+                            disabled={isDownloadDisabled}
+                            onClick={handleDownload}
+                        >
+                            {CONSTANTS.DETAILS_TRANSCRIPT_BUTTON_DOWNLOAD}
+                        </Button>
                         {!loadingUserIsAdmin && !errorUserIsAdmin && userIsAdmin && (
                             <UploadButton
                                 name="file"
@@ -152,10 +193,11 @@ const DepositionDetailsTranscripts = () => {
                     ref={tableRef}
                     rowKey="id"
                     loading={loading}
-                    dataSource={files || []}
+                    dataSource={transcriptFileList || []}
                     columns={columns}
                     pagination={false}
                     style={{ height: "100%" }}
+                    rowSelection={rowSelection}
                 />
             </Space>
         </>
