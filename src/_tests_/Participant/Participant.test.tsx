@@ -34,3 +34,21 @@ test("Expect Tech Expert to appear as role with a space in between", async () =>
     const { queryByText } = renderWithGlobalContext(<Participant participant={participant} />);
     expect(queryByText(CONSTANTS.TECH_EXPERT)).toBeTruthy();
 });
+
+test("Not Expect muted microphone icon by default", async () => {
+    const participant = getParticipant("test1", "TechExpert");
+    const { queryByTestId } = renderWithGlobalContext(<Participant participant={participant} />);
+    expect(queryByTestId("participant_muted")).toBeFalsy();
+});
+
+test("Expect muted microphone icon when the participant is muted", async () => {
+    const participant = getParticipant("test1", "TechExpert");
+    const { queryByTestId } = renderWithGlobalContext(<Participant participant={participant} isMuted />);
+    expect(queryByTestId("participant_muted")).toBeTruthy();
+});
+
+test("Expect muted microphone icon when the witness is muted", async () => {
+    const participant = getParticipant("test1", "Witness");
+    const { queryByTestId } = renderWithGlobalContext(<Participant participant={participant} isMuted />);
+    expect(queryByTestId("participant_muted")).toBeTruthy();
+});

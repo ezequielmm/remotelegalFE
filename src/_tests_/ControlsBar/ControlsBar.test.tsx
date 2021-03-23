@@ -1,10 +1,11 @@
-import { fireEvent } from "@testing-library/react";
+import { fireEvent, waitForDomChange } from "@testing-library/react";
 import React from "react";
 import ControlsBar from "../../components/ControlsBar";
 import { getBreakrooms } from "../mocks/breakroom";
 import * as CONSTANTS from "../../constants/inDepo";
 import getParticipant from "../mocks/participant";
 import renderWithGlobalContext from "../utils/renderWithGlobalContext";
+import getMockDeps from "../utils/getMockDeps";
 
 jest.mock("audio-recorder-polyfill", () => {
     return jest.fn().mockImplementation(() => ({
@@ -111,4 +112,25 @@ test("Trigger handleJoinBreakroom when click on JOIN Breakroom if is not recordi
     fireEvent.click(queryByTestId("breakrooms"));
     fireEvent.click(queryAllByTestId("join_breakroom")[0]);
     expect(props.handleJoinBreakroom).toBeCalledWith(breakrooms[0].id);
+});
+
+test("Should not call setParticipantStatus endpoint when click on mute icon by default", async () => {
+    const customDeps = getMockDeps();
+    customDeps.apiService.setParticipantStatus = jest.fn().mockResolvedValue({});
+    const { findByTestId } = renderWithGlobalContext(<ControlsBar {...props} exhibitsOpen realTimeOpen />, customDeps);
+    fireEvent.click(await findByTestId("audio"));
+    await waitForDomChange();
+    expect(customDeps.apiService.setParticipantStatus).not.toBeCalled();
+});
+
+test("Call setParticipantStatus endpoint when click on mute icon and isRecording is true", async () => {
+    const customDeps = getMockDeps();
+    customDeps.apiService.setParticipantStatus = jest.fn().mockResolvedValue({});
+    const { findByTestId } = renderWithGlobalContext(
+        <ControlsBar {...props} exhibitsOpen realTimeOpen isRecording />,
+        customDeps
+    );
+    fireEvent.click(await findByTestId("audio"));
+    await waitForDomChange();
+    expect(customDeps.apiService.setParticipantStatus).toBeCalled();
 });

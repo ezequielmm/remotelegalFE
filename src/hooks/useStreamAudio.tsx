@@ -1,20 +1,25 @@
 import AudioRecorder from "audio-recorder-polyfill";
 import React, { useCallback, useEffect, useState } from "react";
+import useSendParticipantStatus from "./InDepo/useSendParticipantStatus";
 import useTranscriptAudio from "./InDepo/useTranscriptAudio";
 
 export default () => {
     const [recorder, setRecorder] = useState(null);
     const [sampleRate, setSampleRate] = useState<number>(undefined);
     const [stopAudio, transcriptAudio] = useTranscriptAudio();
+    const [sendToggledMuted] = useSendParticipantStatus();
 
-    const stopMicrophone = useCallback(() => {
+    const stopMicrophone = useCallback(async () => {
         if (recorder) {
             recorder.stop();
             if (sampleRate) {
-                setTimeout(() => stopAudio(sampleRate), 500);
+                sendToggledMuted(true);
+                setTimeout(() => {
+                    stopAudio(sampleRate);
+                }, 500);
             }
         }
-    }, [stopAudio, sampleRate, recorder]);
+    }, [stopAudio, sampleRate, recorder, sendToggledMuted]);
 
     useEffect(() => {
         return () => {
@@ -60,9 +65,10 @@ export default () => {
         newRecorder.start(1000);
 
         setRecorder(newRecorder);
+        sendToggledMuted(false);
 
         // Start recording
-    }, [recorder]);
+    }, [recorder, sendToggledMuted]);
 
     const toggleMicrophone = useCallback(
         (start) => {

@@ -5,19 +5,25 @@ import useParticipantTracks from "../../../hooks/InDepo/useParticipantTracks";
 import { TimeZones } from "../../../models/general";
 import Clock from "../../../components/Clock";
 import Text from "../../../components/Typography/Text";
-import { StyledIdentityBox, StyledParticipantMask, StyledTimeBox } from "./styles";
+import { StyledIdentityBox, StyledParticipantMask, StyledParticipantMicContainer, StyledTimeBox } from "./styles";
 import ColorStatus from "../../../types/ColorStatus";
 import { theme } from "../../../constants/styles/theme";
 import { GlobalStateContext } from "../../../state/GlobalState";
+import { ReactComponent as MuteIcon } from "../../../assets/in-depo/Participant.muted.svg";
+
+import Icon from "../../../components/Icon";
+import Space from "../../../components/Space";
 
 const Participant = ({
     timeZone,
     participant,
     isWitness,
+    isMuted = false,
 }: {
     timeZone?: TimeZones;
     participant: LocalParticipant | RemoteParticipant;
     isWitness?: boolean;
+    isMuted?: boolean;
 }) => {
     const { videoRef, audioRef, dataTracks } = useParticipantTracks(participant);
     const [hasBorder, setHasBorder] = useState(false);
@@ -53,37 +59,54 @@ const Participant = ({
                     <Clock timeZone={timeZone} />
                 </StyledTimeBox>
             )}
-            <StyledIdentityBox>
-                {isWitness && (
-                    <Text
-                        data-testid="participant_name"
-                        size="small"
-                        lineHeight={theme.default.spaces[8]}
-                        weight="bold"
-                        state={ColorStatus.white}
-                    >
-                        {isWitness && identity ? identity.name || "Guest" : "waiting for witness"}
-                    </Text>
-                )}
-                {!isWitness && (
-                    <Text
-                        data-testid="participant_name"
-                        size="small"
-                        lineHeight={theme.default.spaces[8]}
-                        weight="bold"
-                        state={ColorStatus.white}
-                    >
-                        {!isWitness ? identity?.name : "Guest"}
-                    </Text>
-                )}
-                <Text
-                    data-testid="participant_role"
-                    size="small"
-                    lineHeight={theme.default.spaces[8]}
-                    state={ColorStatus.white}
-                >
-                    {identity && normalizedRoles[identity.role] ? normalizedRoles[identity.role] : identity?.role}
-                </Text>
+            <StyledIdentityBox showMicStatus={isMuted}>
+                <Space align="center">
+                    {isMuted && (
+                        <StyledParticipantMicContainer>
+                            <Icon
+                                data-testid="participant_muted"
+                                color={theme.default.whiteColor}
+                                icon={MuteIcon}
+                                size={9}
+                            />
+                        </StyledParticipantMicContainer>
+                    )}
+                    <Space direction="vertical" size="0">
+                        {isWitness && (
+                            <Text
+                                data-testid="participant_name"
+                                size="small"
+                                lineHeight={theme.default.spaces[8]}
+                                weight="bold"
+                                state={ColorStatus.white}
+                                block
+                            >
+                                {isWitness && identity ? identity.name || "Guest" : "waiting for witness"}
+                            </Text>
+                        )}
+                        {!isWitness && (
+                            <Text
+                                data-testid="participant_name"
+                                size="small"
+                                lineHeight={theme.default.spaces[8]}
+                                weight="bold"
+                                state={ColorStatus.white}
+                            >
+                                {!isWitness ? identity?.name : "Guest"}
+                            </Text>
+                        )}
+                        <Text
+                            data-testid="participant_role"
+                            size="small"
+                            lineHeight={theme.default.spaces[8]}
+                            state={ColorStatus.white}
+                        >
+                            {identity && normalizedRoles[identity.role]
+                                ? normalizedRoles[identity.role]
+                                : identity?.role}
+                        </Text>
+                    </Space>
+                </Space>
             </StyledIdentityBox>
         </StyledParticipantMask>
     );

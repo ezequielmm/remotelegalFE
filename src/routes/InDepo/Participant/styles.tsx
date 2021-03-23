@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { getPX, getREM } from "../../../constants/styles/utils";
+import { Theme } from "../../../types/ThemeType";
 
 export const StyledParticipantMask = styled.div<{ highlight?: boolean }>`
     border-radius: ${({ theme }) => getPX(theme.default.borderRadiusBase, theme.default.baseUnit)};
@@ -37,7 +38,7 @@ export const StyledParticipantMask = styled.div<{ highlight?: boolean }>`
     }
 `;
 
-export const StyledIdentityBox = styled.div`
+export const StyledIdentityBox = styled.div<{ theme: Theme; showMicStatus?: boolean }>`
     position: absolute;
     bottom: 0;
     left: 0;
@@ -73,4 +74,13 @@ export const StyledTimeBox = styled.div`
     max-width: 100%;
     background: linear-gradient(0, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.5) 100%);
     text-shadow: 0px 0px 2px rgba(0, 0, 0, 0.3), 0px 0px 8px rgba(0, 0, 0, 0.5);
+`;
+
+export const StyledParticipantMicContainer = styled.div`
+    ${({ theme }) =>
+        `
+        &:not(:last-child) {
+            margin-right: ${getREM(theme.default.spaces[1])};
+        }
+    `}
 `;

@@ -427,6 +427,15 @@ export class ApiService {
         });
     };
 
+    setParticipantStatus = async ({ depositionID, isMuted }): Promise<boolean> => {
+        return this.request<boolean>({
+            path: `/api/Depositions/${depositionID}/participantStatus`,
+            payload: { isMuted },
+            withToken: true,
+            method: HTTP_METHOD.PUT,
+        });
+    };
+
     private request = async <T>({
         path,
         payload = {},
