@@ -81,6 +81,7 @@ const CopyLink = ({ closePopOver, link }: { closePopOver: () => void; link: stri
                     onClose={resetCopyState}
                     fullWidth={false}
                     message={COPY_LINK_SUCCESS_MSG}
+                    closable
                     type="success"
                     float
                     showIcon={false}

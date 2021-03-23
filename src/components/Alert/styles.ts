@@ -6,6 +6,7 @@ import { ThemeMode } from "../../types/ThemeType";
 
 const StyledAlert = styled(ANTDAlert)<IAlertProps>`
     ${({ theme, type, float, fullWidth = true }) => {
+        const alertPadding = `${getREM(theme.default.spaces[4])} ${getREM(theme.default.spaces[5])}`;
         const inDepotTheme = () => {
             const inDepoStyles = () => {
                 const typeColor = type === "info" ? theme.colors.inDepoBlue[6] : theme.default[`${type}Color`];
@@ -48,7 +49,7 @@ const StyledAlert = styled(ANTDAlert)<IAlertProps>`
 
         const styles = `
             width: ${fullWidth ? "100%" : "auto"};
-            padding: ${getREM(theme.default.spaces[4])} ${getREM(theme.default.spaces[5])};
+            padding: ${alertPadding};
             padding-left: ${getREM(theme.default.spaces[12] + theme.default.spaces[5])};
 
             .ant-alert-icon {
@@ -62,15 +63,21 @@ const StyledAlert = styled(ANTDAlert)<IAlertProps>`
                 display: block;
             }
 
-            .ant-alert-close-icon{ 
-                top: calc(${getREM(theme.default.spaces[9])} - 1px); 
-                right: ${getREM(theme.default.spaces[5])}; 
+            .ant-alert-close-icon, &.ant-alert-no-icon .ant-alert-close-icon{ 
+                top: calc(${getREM(theme.default.spaces[9])} - 2px); 
+                right: ${getREM(theme.default.spaces[4])}; 
                 transform: translateY(-50%); 
             }
 
             .ant-alert-description {
                 line-height: 1.5;
                 margin-top: ${getREM(theme.default.spaces[4])};
+            }
+            &.ant-alert-no-icon{
+                padding: ${alertPadding};
+            }
+            &.ant-alert-closable{
+                padding-right: ${getREM(theme.default.spaces[12] + theme.default.spaces[5])};
             }
 
             ${inDepotTheme()}
