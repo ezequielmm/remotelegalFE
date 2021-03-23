@@ -99,5 +99,5 @@ jobs:
                   echo "BUCKET=prp-fe-uat" >> $GITHUB_ENV                  
             - name: Upload publish to S3
               run: |
-                  aws s3 sync ./build s3://$BUCKET --delete
+                  aws s3 sync ./build s3://$BUCKET --metadata-directive REPLACE --cache-control 'max-age=86400,must-revalidate,public' --delete
                   aws cloudfront create-invalidation --distribution-id $DISTRIBUTION --paths "/*"
