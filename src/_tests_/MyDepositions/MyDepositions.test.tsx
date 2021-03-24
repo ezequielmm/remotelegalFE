@@ -13,6 +13,14 @@ import * as AUTH from "../mocks/Auth";
 import getMockDeps from "../utils/getMockDeps";
 import renderWithGlobalContext from "../utils/renderWithGlobalContext";
 
+import { dateToUTCString } from "../../helpers/dateToUTCString";
+
+const MOCKED_DATE = "mocked_date";
+
+jest.mock("../../helpers/dateToUTCString", () => ({
+    dateToUTCString: jest.fn(() => MOCKED_DATE),
+}));
+
 const customDeps = getMockDeps();
 const history = createMemoryHistory();
 
@@ -211,7 +219,7 @@ describe("MyDepositions", () => {
         expect(pastTab).toBeInTheDocument();
         expect(pastTab).toHaveAttribute("aria-selected", "true");
         await waitForDomChange();
-        expect(deps.apiService.fetchDepositions).toHaveBeenCalledWith({ MaxDate: new Date().toUTCString() });
+        expect(deps.apiService.fetchDepositions).toHaveBeenCalledWith({ MaxDate: MOCKED_DATE });
     });
     it("should filter depositions by upcoming depositions and sorting by status", async () => {
         const totalUpcoming = 1;

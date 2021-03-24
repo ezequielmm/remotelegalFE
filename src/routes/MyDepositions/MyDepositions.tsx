@@ -10,6 +10,7 @@ import Table from "../../components/Table";
 import Tabs from "../../components/Tabs";
 import Title from "../../components/Typography/Title";
 import * as CONSTANTS from "../../constants/depositions";
+import { dateToUTCString } from "../../helpers/dateToUTCString";
 import { useFetchDepositions } from "../../hooks/depositions/hooks";
 import { useUserIsAdmin } from "../../hooks/users/hooks";
 import useWindowSize from "../../hooks/useWindowSize";
@@ -131,7 +132,7 @@ const MyDepositions = () => {
         if (key === FilterCriteria.UPCOMING) {
             return null;
         }
-        return { MaxDate: new Date().toUTCString() };
+        return { MaxDate: dateToUTCString() };
     };
 
     const onDepositionTabChange = (key: FilterCriteria) => {
