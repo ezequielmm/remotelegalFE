@@ -19,6 +19,7 @@ import {
 import CardFetchError from "../../../components/CardFetchError";
 import { UserInfo } from "../../../models/user";
 import Message from "../../../components/Message";
+import { Status } from "../../../components/StatusPill/StatusPill";
 
 const ParticipantListTable = ({
     deposition,
@@ -75,21 +76,26 @@ const ParticipantListTable = ({
     const columns = [
         ...CONSTANTS.DEPOSITION_DETAILS_INVITED_PARTIES_COLUMNS,
         {
-            render: (record: UserInfo["participant"]) =>
-                record.role !== Roles.witness && (
-                    <Space justify="flex-end" fullWidth>
-                        <Icon
-                            data-testid={`${record.name}_delete_icon`}
-                            icon={DeleteIcon}
-                            onClick={() => {
-                                selectedParticipant.current = record;
-                                toggleDeleteModal();
-                            }}
-                            color={ColorStatus.primary}
-                            size={8}
-                        />
-                    </Space>
-                ),
+            render: (record: UserInfo["participant"]) => {
+                const depo = deposition;
+                if (depo.status !== Status.canceled && record.role !== Roles.witness) {
+                    return (
+                        <Space justify="flex-end" fullWidth>
+                            <Icon
+                                data-testid={`${record.name}_delete_icon`}
+                                icon={DeleteIcon}
+                                onClick={() => {
+                                    selectedParticipant.current = record;
+                                    toggleDeleteModal();
+                                }}
+                                color={ColorStatus.primary}
+                                size={8}
+                            />
+                        </Space>
+                    );
+                }
+                return null;
+            },
         },
     ];
 
@@ -140,7 +146,6 @@ const ParticipantListTable = ({
             />
 
             <Confirm
-                negativeLoading={removeParticipantLoading}
                 positiveLoading={removeParticipantLoading}
                 visible={openDeleteModal}
                 title={CONSTANTS.DEPOSITION_DETAILS_DELETE_MODAL_TITLE}
@@ -169,6 +174,7 @@ const ParticipantListTable = ({
                     </Title>
                     {mappedParticipants.length < 22 && (
                         <Button
+                            disabled={deposition.status === Status.canceled}
                             type="primary"
                             icon={<Icon icon={AddIcon} size={9} />}
                             size="small"

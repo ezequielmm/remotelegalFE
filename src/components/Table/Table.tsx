@@ -203,6 +203,11 @@ const StyledTable = styled(Table)<Pick<ITableProps, "cursorPointer">>`
                         > tr {
                             cursor: ${cursorPointer ? "pointer" : "auto"};
                             background-color: ${theme.mode === ThemeMode.inDepo ? `transparent` : neutrals[6]};
+
+                            &.ant-table-row.rowCanceled {
+                                background-color: ${theme.colors.error[0]};
+                            }
+
                             &.ant-table-row:hover > td {
                                 background-color: ${
                                     theme.mode === ThemeMode.inDepo
@@ -270,14 +275,15 @@ const StyledTable = styled(Table)<Pick<ITableProps, "cursorPointer">>`
                                 background: transparent
                             }
 
-                        &.ant-table-placeholder {
-                            > td {
-                                box-shadow: 0 ${getREM(spaces[5])} ${getREM(spaces[9])} 0 ${hexToRGBA(
+                            &.ant-table-placeholder {
+                                > td {
+                                    box-shadow: 0 ${getREM(spaces[5])} ${getREM(spaces[9])} 0 ${hexToRGBA(
             neutrals[2],
             0.08
         )};
-                                padding-left: ${getREM(spaces[9])};
-                                border-radius: ${getREM(spaces[5])};
+                                    padding-left: ${getREM(spaces[9])};
+                                    border-radius: ${getREM(spaces[5])};
+                                }
                             }
                         }
                     }

@@ -76,6 +76,7 @@ export const getActionColumns = (history) => ({
         return (
             <Space justify="flex-end">
                 <Button
+                    disabled={status === Status.canceled}
                     onClick={(e) => {
                         e.stopPropagation();
                         history.push(isCompleted ? `/deposition/post-depo-details/${id}` : `/deposition/join/${id}`);

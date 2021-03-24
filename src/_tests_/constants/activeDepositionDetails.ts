@@ -7,3 +7,9 @@ export const EXPECTED_EDIT_DEPOSITION_BODY = {
 export const EXPECTED_EDIT_REQUESTER_BODY = {
     requesterNotes: "test123",
 };
+export const EXPECTED_REACTIVATED_TO_PENDING_DEPO_BODY = {
+    details: "test details",
+    isVideoRecordingNeeded: true,
+    job: "testJob1234",
+    status: "Pending",
+};

@@ -16,6 +16,8 @@ import ParticipantListTable from "../../routes/ActiveDepoDetails/components/Part
 import DEPO_PARTICIPANT_MOCK, { getDepoParticipantWithOverrideValues } from "../mocks/depoParticipant";
 import { Roles } from "../../models/participant";
 import { PARTICIPANT_MOCK } from "../constants/preJoinDepo";
+import getModalTextContent from "../../routes/ActiveDepoDetails/helpers/getModalTextContent";
+import { Status } from "../../components/StatusPill/StatusPill";
 
 const customDeps = getMockDeps();
 jest.mock("../../helpers/downloadFile");
@@ -775,5 +777,360 @@ describe("Tests Edit Deposition Modal", () => {
             fireEvent.click(getByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_REQUESTER_MODAL_CONFIRM_BUTTON_TEST_ID));
             await waitForElement(() => getAllByText(CONSTANTS.NETWORK_ERROR));
         });
+    });
+});
+
+describe("tests the cancel depo flows", () => {
+    test("Shows toast when properly canceled and depo status is pending", async () => {
+        const startDate = moment(new Date()).add(30, "minutes").utc();
+        const fullDeposition = getDepositionWithOverrideValues({ startDate });
+        customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
+            return fullDeposition;
+        });
+        customDeps.apiService.cancelDeposition = jest.fn().mockImplementation(async () => {
+            return {};
+        });
+        const { getAllByTestId, getAllByText, getByText, getByTestId } = renderWithGlobalContext(
+            <ActiveDepositionDetails />,
+            customDeps
+        );
+        await waitForDomChange();
+        const editButton = getAllByTestId(CONSTANTS.DEPOSITION_CARD_DETAILS_EDIT_BUTTON_DATA_TEST_ID);
+        fireEvent.click(editButton[0]);
+        const options = getAllByText("pending");
+        userEvent.click(options[2]);
+        const canceled = await waitForElement(() => getByText("Canceled"));
+        userEvent.click(canceled);
+        await wait(200);
+        userEvent.click(getByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_CONFIRM_BUTTON_TEST_ID));
+        await waitForDomChange();
+        await waitForElement(() => getByText(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_SUCCESS_TOAST));
+        expect(customDeps.apiService.cancelDeposition).toHaveBeenCalledWith(fullDeposition.id);
+    });
+    test("Shows validation error message if start date is invalid", async () => {
+        const startDate = moment(new Date()).add(0.5, "minutes").utc();
+        const fullDeposition = getDepositionWithOverrideValues({ startDate });
+        customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
+            return fullDeposition;
+        });
+        customDeps.apiService.cancelDeposition = jest.fn().mockImplementation(async () => {
+            return {};
+        });
+        const { getAllByTestId, getAllByText, getByText, getByTestId } = renderWithGlobalContext(
+            <ActiveDepositionDetails />,
+            customDeps
+        );
+        await waitForDomChange();
+        const editButton = getAllByTestId(CONSTANTS.DEPOSITION_CARD_DETAILS_EDIT_BUTTON_DATA_TEST_ID);
+        fireEvent.click(editButton[0]);
+        const options = getAllByText("pending");
+        userEvent.click(options[2]);
+        const canceled = await waitForElement(() => getByText("Canceled"));
+        userEvent.click(canceled);
+        await wait(200);
+        userEvent.click(getByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_CONFIRM_BUTTON_TEST_ID));
+        await waitForElement(() =>
+            getByText(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_INVALID_CANCEL_DATE_MESSAGE)
+        );
+        expect(customDeps.apiService.cancelDeposition).not.toHaveBeenCalled();
+    });
+    test("Shows error toast if cancel endpoint fails and depo status is pending", async () => {
+        const startDate = moment(new Date()).add(30, "minutes").utc();
+        const fullDeposition = getDepositionWithOverrideValues({ startDate });
+        customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
+            return fullDeposition;
+        });
+        customDeps.apiService.cancelDeposition = jest.fn().mockRejectedValue(async () => {
+            throw Error("Something wrong");
+        });
+        const { getAllByTestId, getAllByText, getByText, getByTestId } = renderWithGlobalContext(
+            <ActiveDepositionDetails />,
+            customDeps
+        );
+        await waitForDomChange();
+        const editButton = getAllByTestId(CONSTANTS.DEPOSITION_CARD_DETAILS_EDIT_BUTTON_DATA_TEST_ID);
+        fireEvent.click(editButton[0]);
+        const options = getAllByText("pending");
+        userEvent.click(options[2]);
+        const canceled = await waitForElement(() => getByText("Canceled"));
+        userEvent.click(canceled);
+        await wait(200);
+        userEvent.click(getByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_CONFIRM_BUTTON_TEST_ID));
+        await waitForElement(() => getByText(CONSTANTS.NETWORK_ERROR));
+    });
+    test("Shows modal when canceling a confirmed depo and a toast if the cancel succeeds", async () => {
+        const startDate = moment(new Date()).add(30, "minutes").utc();
+        const fullDeposition = getDepositionWithOverrideValues({ startDate, status: "Confirmed" });
+        const modalText = getModalTextContent(Status.canceled, fullDeposition);
+        customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
+            return fullDeposition;
+        });
+        customDeps.apiService.cancelDeposition = jest.fn().mockImplementation(async () => {
+            return {};
+        });
+        const { getAllByTestId, getAllByText, getByText, getByTestId } = renderWithGlobalContext(
+            <ActiveDepositionDetails />,
+            customDeps
+        );
+        await waitForDomChange();
+        const editButton = getAllByTestId(CONSTANTS.DEPOSITION_CARD_DETAILS_EDIT_BUTTON_DATA_TEST_ID);
+        fireEvent.click(editButton[0]);
+        const options = getAllByText("Confirmed");
+        userEvent.click(options[2]);
+        const canceled = await waitForElement(() => getByText("Canceled"));
+        userEvent.click(canceled);
+        await wait(200);
+        userEvent.click(getByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_CONFIRM_BUTTON_TEST_ID));
+        await waitForDomChange();
+        expect(getByText(modalText.cancelButton)).toBeInTheDocument();
+        expect(getByText(modalText.confirmButton)).toBeInTheDocument();
+        expect(getByText(modalText.message)).toBeInTheDocument();
+        expect(getByText(modalText.title)).toBeInTheDocument();
+        fireEvent.click(getByText(modalText.confirmButton));
+        await waitForDomChange();
+        await waitForElement(() => getByText(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_SUCCESS_TOAST));
+        expect(customDeps.apiService.cancelDeposition).toHaveBeenCalledWith(fullDeposition.id);
+    });
+    test("Shows modal when canceling a confirmed depo and a toast if the cancel endpoint fails", async () => {
+        const startDate = moment(new Date()).add(30, "minutes").utc();
+        const fullDeposition = getDepositionWithOverrideValues({ startDate, status: "Confirmed" });
+        const modalText = getModalTextContent(Status.canceled, fullDeposition);
+        customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
+            return fullDeposition;
+        });
+        customDeps.apiService.cancelDeposition = jest.fn().mockImplementation(async () => {
+            throw Error("something went wrong");
+        });
+        const { getAllByTestId, getAllByText, getByText, getByTestId } = renderWithGlobalContext(
+            <ActiveDepositionDetails />,
+            customDeps
+        );
+        await waitForDomChange();
+        const editButton = getAllByTestId(CONSTANTS.DEPOSITION_CARD_DETAILS_EDIT_BUTTON_DATA_TEST_ID);
+        fireEvent.click(editButton[0]);
+        const options = getAllByText("Confirmed");
+        userEvent.click(options[2]);
+        const canceled = await waitForElement(() => getByText("Canceled"));
+        userEvent.click(canceled);
+        await wait(200);
+        userEvent.click(getByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_CONFIRM_BUTTON_TEST_ID));
+        await waitForDomChange();
+        expect(getByText(modalText.cancelButton)).toBeInTheDocument();
+        expect(getByText(modalText.confirmButton)).toBeInTheDocument();
+        expect(getByText(modalText.message)).toBeInTheDocument();
+        expect(getByText(modalText.title)).toBeInTheDocument();
+        fireEvent.click(getByText(modalText.confirmButton));
+        await waitForDomChange();
+        await waitForElement(() => getByText(CONSTANTS.NETWORK_ERROR));
+        expect(customDeps.apiService.cancelDeposition).toHaveBeenCalledWith(fullDeposition.id);
+    });
+    test("Shows modal when reverting a canceled depo and a toast if the revert fails", async () => {
+        const startDate = moment(new Date()).add(30, "minutes").utc();
+        const fullDeposition = getDepositionWithOverrideValues({ startDate, status: "Canceled" });
+        const modalText = getModalTextContent(Status.pending, fullDeposition);
+        customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
+            return fullDeposition;
+        });
+        customDeps.apiService.revertCancelDeposition = jest.fn().mockImplementation(async () => {
+            throw Error("something went wrong");
+        });
+        const { getAllByTestId, getAllByText, getByText, getByTestId } = renderWithGlobalContext(
+            <ActiveDepositionDetails />,
+            customDeps
+        );
+        await waitForDomChange();
+        const editButton = getAllByTestId(CONSTANTS.DEPOSITION_CARD_DETAILS_EDIT_BUTTON_DATA_TEST_ID);
+        fireEvent.click(editButton[0]);
+        const options = getAllByText("Canceled");
+        userEvent.click(options[2]);
+        const pending = await waitForElement(() => getByText("Pending"));
+        userEvent.click(pending);
+        await wait(200);
+        userEvent.click(getByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_CONFIRM_BUTTON_TEST_ID));
+        await waitForDomChange();
+        expect(getByText(modalText.cancelButton)).toBeInTheDocument();
+        expect(getByText(modalText.confirmButton)).toBeInTheDocument();
+        expect(getByText(modalText.message)).toBeInTheDocument();
+        expect(getByText(modalText.title)).toBeInTheDocument();
+        fireEvent.click(getByText(modalText.confirmButton));
+        await waitForDomChange();
+        await waitForElement(() => getByText(CONSTANTS.NETWORK_ERROR));
+        expect(customDeps.apiService.revertCancelDeposition).toHaveBeenCalledWith(
+            fullDeposition.id,
+            TEST_CONSTANTS.EXPECTED_REACTIVATED_TO_PENDING_DEPO_BODY,
+            null,
+            false
+        );
+    });
+    test("Shows modal when reverting a canceled depo and a toast if the revert succeeds", async () => {
+        const startDate = moment(new Date()).add(30, "minutes").utc();
+        const fullDeposition = getDepositionWithOverrideValues({ startDate, status: "Canceled" });
+        const modalText = getModalTextContent(Status.pending, fullDeposition);
+        customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
+            return fullDeposition;
+        });
+        customDeps.apiService.revertCancelDeposition = jest.fn().mockImplementation(async () => {
+            return {};
+        });
+        const { getAllByTestId, getAllByText, getByText, getByTestId } = renderWithGlobalContext(
+            <ActiveDepositionDetails />,
+            customDeps
+        );
+        await waitForDomChange();
+        const editButton = getAllByTestId(CONSTANTS.DEPOSITION_CARD_DETAILS_EDIT_BUTTON_DATA_TEST_ID);
+        fireEvent.click(editButton[0]);
+        const options = getAllByText("Canceled");
+        userEvent.click(options[2]);
+        const pending = await waitForElement(() => getByText("Pending"));
+        userEvent.click(pending);
+        await wait(200);
+        userEvent.click(getByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_CONFIRM_BUTTON_TEST_ID));
+        await waitForDomChange();
+        expect(getByText(modalText.cancelButton)).toBeInTheDocument();
+        expect(getByText(modalText.confirmButton)).toBeInTheDocument();
+        expect(getByText(modalText.message)).toBeInTheDocument();
+        expect(getByText(modalText.title)).toBeInTheDocument();
+        fireEvent.click(getByText(modalText.confirmButton));
+        await waitForDomChange();
+        await waitForElement(() => getByText(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_SUCCESS_TOAST));
+        expect(customDeps.apiService.revertCancelDeposition).toHaveBeenCalledWith(
+            fullDeposition.id,
+            TEST_CONSTANTS.EXPECTED_REACTIVATED_TO_PENDING_DEPO_BODY,
+            null,
+            false
+        );
+    });
+    test("Shows modal when reverting a canceled depo to confirmed and a toast if the revert succeeds", async () => {
+        const startDate = moment(new Date()).add(30, "minutes").utc();
+        const fullDeposition = getDepositionWithOverrideValues({ startDate, status: "Canceled" });
+        const modalText = getModalTextContent(Status.confirmed, fullDeposition);
+        customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
+            return fullDeposition;
+        });
+        customDeps.apiService.revertCancelDeposition = jest.fn().mockImplementation(async () => {
+            return {};
+        });
+        const { getAllByTestId, getAllByText, getByText, getByTestId } = renderWithGlobalContext(
+            <ActiveDepositionDetails />,
+            customDeps
+        );
+        await waitForDomChange();
+        const editButton = getAllByTestId(CONSTANTS.DEPOSITION_CARD_DETAILS_EDIT_BUTTON_DATA_TEST_ID);
+        fireEvent.click(editButton[0]);
+        const options = getAllByText("Canceled");
+        userEvent.click(options[2]);
+        const confirmed = await waitForElement(() => getAllByText("Confirmed"));
+        userEvent.click(confirmed[1]);
+        await wait(200);
+        userEvent.click(getByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_CONFIRM_BUTTON_TEST_ID));
+        await waitForDomChange();
+        expect(getByText(modalText.cancelButton)).toBeInTheDocument();
+        expect(getByText(modalText.confirmButton)).toBeInTheDocument();
+        expect(getByText(modalText.message)).toBeInTheDocument();
+        expect(getByText(modalText.title)).toBeInTheDocument();
+        fireEvent.click(getByText(modalText.confirmButton));
+        await waitForDomChange();
+        await waitForElement(() => getByText(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_SUCCESS_TOAST));
+        expect(customDeps.apiService.revertCancelDeposition).toHaveBeenCalledWith(
+            fullDeposition.id,
+            { ...TEST_CONSTANTS.EXPECTED_REACTIVATED_TO_PENDING_DEPO_BODY, status: "Confirmed" },
+            null,
+            false
+        );
+    });
+    test("Shows modal when reverting a canceled depo to confirmed and a toast if the revert fails", async () => {
+        const startDate = moment(new Date()).add(30, "minutes").utc();
+        const fullDeposition = getDepositionWithOverrideValues({ startDate, status: "Canceled" });
+        const modalText = getModalTextContent(Status.confirmed, fullDeposition);
+        customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
+            return fullDeposition;
+        });
+        customDeps.apiService.revertCancelDeposition = jest.fn().mockImplementation(async () => {
+            throw Error("Something went wrong");
+        });
+        const { getAllByTestId, getAllByText, getByText, getByTestId } = renderWithGlobalContext(
+            <ActiveDepositionDetails />,
+            customDeps
+        );
+        await waitForDomChange();
+        const editButton = getAllByTestId(CONSTANTS.DEPOSITION_CARD_DETAILS_EDIT_BUTTON_DATA_TEST_ID);
+        fireEvent.click(editButton[0]);
+        const options = getAllByText("Canceled");
+        userEvent.click(options[2]);
+        const confirmed = await waitForElement(() => getAllByText("Confirmed"));
+        userEvent.click(confirmed[1]);
+        await wait(200);
+        userEvent.click(getByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_CONFIRM_BUTTON_TEST_ID));
+        await waitForDomChange();
+        expect(getByText(modalText.cancelButton)).toBeInTheDocument();
+        expect(getByText(modalText.confirmButton)).toBeInTheDocument();
+        expect(getByText(modalText.message)).toBeInTheDocument();
+        expect(getByText(modalText.title)).toBeInTheDocument();
+        fireEvent.click(getByText(modalText.confirmButton));
+        await waitForDomChange();
+        await waitForElement(() => getByText(CONSTANTS.NETWORK_ERROR));
+        expect(customDeps.apiService.revertCancelDeposition).toHaveBeenCalledWith(
+            fullDeposition.id,
+            { ...TEST_CONSTANTS.EXPECTED_REACTIVATED_TO_PENDING_DEPO_BODY, status: "Confirmed" },
+            null,
+            false
+        );
+    });
+
+    test("Fields are disabled if depo is canceled", async () => {
+        const startDate = moment(new Date()).add(30, "minutes").utc();
+        const fullDeposition = getDepositionWithOverrideValues({ startDate, status: "Canceled" });
+        customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
+            return fullDeposition;
+        });
+        const { getAllByTestId, getByTestId } = renderWithGlobalContext(<ActiveDepositionDetails />, customDeps);
+        await waitForDomChange();
+        const testIds = [
+            CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_DATA_TEST_ID_JOB,
+            CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_CAPTION_BUTTON_TEST_ID,
+            "false NO",
+            "true YES",
+            CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_DATA_TEST_ID_DETAILS,
+        ];
+        const editButton = getAllByTestId(CONSTANTS.DEPOSITION_CARD_DETAILS_EDIT_BUTTON_DATA_TEST_ID);
+        fireEvent.click(editButton[0]);
+        testIds.map((item) => expect(getByTestId(item)).toBeDisabled());
+    });
+    test("shouldn´t revert a depo if the file is invalid", async () => {
+        const startDate = moment(new Date()).add(30, "minutes").utc();
+        const fullDeposition = getDepositionWithOverrideValues({ startDate, status: "Canceled" });
+        customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
+            return fullDeposition;
+        });
+        customDeps.apiService.revertCancelDeposition = jest.fn().mockImplementation(async () => {
+            return {};
+        });
+        const { getAllByTestId, getAllByText, getByTestId } = renderWithGlobalContext(
+            <ActiveDepositionDetails />,
+            customDeps
+        );
+        await waitForDomChange();
+        const editButton = getAllByTestId(CONSTANTS.DEPOSITION_CARD_DETAILS_EDIT_BUTTON_DATA_TEST_ID);
+        fireEvent.click(editButton[0]);
+        await waitForDomChange();
+        const options = getAllByText("Canceled");
+        userEvent.click(options[2]);
+        const confirmed = await waitForElement(() => getAllByText("Confirmed"));
+        userEvent.click(confirmed[1]);
+        await wait(200);
+        fireEvent.click(
+            getByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_CAPTION_BUTTON_REMOVE_FILE_TEST_ID)
+        );
+        const file = new File(["file"], "file.png", { type: "application/image" });
+        await act(async () => {
+            await fireEvent.change(
+                getByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_UPLOAD_COMPONENT_DATA_TEST_ID),
+                {
+                    target: { files: [file] },
+                }
+            );
+        });
+        userEvent.click(getByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_CONFIRM_BUTTON_TEST_ID));
+        expect(customDeps.apiService.revertCancelDeposition).not.toHaveBeenCalled();
     });
 });

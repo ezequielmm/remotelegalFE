@@ -19,10 +19,18 @@ import { ReactComponent as InformationIcon } from "../../../assets/icons/informa
 import { ReactComponent as AttachClipIcon } from "../../../assets/icons/attach-clip.svg";
 import { DepositionModel } from "../../../models";
 import * as CONSTANTS from "../../../constants/activeDepositionDetails";
-import { useEditDeposition } from "../../../hooks/activeDepositionDetails/hooks";
+import {
+    useEditDeposition,
+    useCancelDeposition,
+    useRevertCancelDeposition,
+} from "../../../hooks/activeDepositionDetails/hooks";
 import Message from "../../../components/Message";
 import { getREM } from "../../../constants/styles/utils";
 import ColorStatus from "../../../types/ColorStatus";
+import { Status } from "../../../components/StatusPill/StatusPill";
+import getModalTextContent from "../helpers/getModalTextContent";
+import Confirm from "../../../components/Confirm";
+import isCanceledDateInvalid from "../helpers/isCanceledDateInvalid";
 
 interface IModalProps {
     open: boolean;
@@ -37,7 +45,7 @@ const StyledCloseIcon = styled(CloseIcon)`
 `;
 
 const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModalProps) => {
-    const [formStatus, setFormStatus] = useState({
+    const INITIAL_STATE = {
         status: deposition.status,
         job: deposition.job,
         caption: deposition.caption,
@@ -45,10 +53,29 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
         details: deposition.details,
         file: null,
         deleteCaption: false,
-    });
+    };
+    const [formStatus, setFormStatus] = useState(INITIAL_STATE);
     const [invalidFile, setInvalidFile] = useState(false);
-
-    const [editDeposition, loading, error, editedDeposition] = useEditDeposition();
+    const [invalidCancelDate, setInvalidCancelDate] = useState(false);
+    const [editDeposition, editLoading, editError, editedDeposition] = useEditDeposition();
+    const [cancelDeposition, cancelLoading, cancelError, canceledDeposition] = useCancelDeposition();
+    const [
+        revertCancelDeposition,
+        revertCancelLoading,
+        revertCancelError,
+        revertedCanceledDeposition,
+    ] = useRevertCancelDeposition();
+    const [openStatusModal, setStatusModal] = useState({
+        open: false,
+        modalContent: {
+            title: "",
+            message: "",
+            cancelButton: "",
+            confirmButton: "",
+        },
+    });
+    const { file, caption, deleteCaption, ...bodyWithoutFile } = formStatus;
+    const isStatusCanceled = formStatus.status === Status.canceled;
 
     const handleCloseModalAndResetFormStatus = () => {
         handleClose(false);
@@ -56,19 +83,11 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
             if (invalidFile) {
                 setInvalidFile(false);
             }
-            setFormStatus({
-                status: deposition.status,
-                job: deposition.job,
-                caption: deposition.caption,
-                isVideoRecordingNeeded: deposition.isVideoRecordingNeeded,
-                details: deposition.details,
-                file: null,
-                deleteCaption: false,
-            });
+            setFormStatus(INITIAL_STATE);
         }, 200);
     };
     useEffect(() => {
-        if (editedDeposition) {
+        if (editedDeposition || canceledDeposition || revertedCanceledDeposition) {
             Message({
                 content: CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_SUCCESS_TOAST,
                 type: "success",
@@ -77,24 +96,36 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
             handleClose(false);
             setTimeout(() => fetchDeposition(), 200);
         }
-    }, [editedDeposition, fetchDeposition, handleClose]);
+    }, [editedDeposition, fetchDeposition, handleClose, canceledDeposition, revertedCanceledDeposition]);
 
     useEffect(() => {
-        if (error) {
+        if (editError || revertCancelError || cancelError) {
             Message({
                 content: CONSTANTS.NETWORK_ERROR,
                 type: "error",
                 duration: 3,
             });
         }
-    }, [error]);
+    }, [editError, revertCancelError, cancelError]);
 
     const handleSubmit = () => {
-        const { file, caption, deleteCaption, ...bodyWithoutFile } = formStatus;
-        if (invalidFile) {
-            return;
+        const isDepoConfirmedAndNowCanceled = isStatusCanceled && deposition.status === Status.confirmed;
+        const isDepoReverted = deposition.status === Status.canceled && !isStatusCanceled && !invalidFile;
+
+        if (isDepoConfirmedAndNowCanceled || isDepoReverted) {
+            return setStatusModal({
+                open: true,
+                modalContent: getModalTextContent(formStatus.status, deposition),
+            });
         }
-        editDeposition(deposition.id, bodyWithoutFile, file, deleteCaption);
+        if (isStatusCanceled) {
+            const isDateInvalid = isCanceledDateInvalid(deposition.startDate);
+            return isDateInvalid ? setInvalidCancelDate(true) : cancelDeposition(deposition.id);
+        }
+        if (invalidFile) {
+            return null;
+        }
+        return editDeposition(deposition.id, bodyWithoutFile, file, deleteCaption);
     };
 
     return (
@@ -104,12 +135,26 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
             centered
             onlyBody
             onCancel={() => {
-                if (loading) {
+                if (editLoading || cancelLoading || revertCancelLoading) {
                     return;
                 }
                 handleCloseModalAndResetFormStatus();
             }}
         >
+            <Confirm
+                onNegativeClick={() => setStatusModal({ ...openStatusModal, open: false })}
+                onPositiveClick={() => {
+                    setStatusModal({ ...openStatusModal, open: false });
+                    return isStatusCanceled
+                        ? cancelDeposition(deposition.id)
+                        : revertCancelDeposition(deposition.id, bodyWithoutFile, file, deleteCaption);
+                }}
+                visible={openStatusModal.open}
+                title={openStatusModal.modalContent.title}
+                subTitle={openStatusModal.modalContent.message}
+                positiveLabel={openStatusModal.modalContent.confirmButton}
+                negativeLabel={openStatusModal.modalContent.cancelButton}
+            />
             <Space direction="vertical" size="large" fullWidth>
                 <Space.Item fullWidth>
                     <Title
@@ -133,7 +178,12 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
                                             }
                                             aria-label="status"
                                             value={formStatus.status}
-                                            onChange={(value) => setFormStatus({ ...formStatus, status: value })}
+                                            onChange={(status) => {
+                                                if (invalidCancelDate && status !== Status.canceled) {
+                                                    setInvalidCancelDate(false);
+                                                }
+                                                return setFormStatus({ ...formStatus, status });
+                                            }}
                                         >
                                             {CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_STATUS_OPTIONS.map(
                                                 (item) => (
@@ -148,6 +198,7 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
                                 <Form.Item label="JOB #" htmlFor="job">
                                     <InputWrapper>
                                         <Input
+                                            disabled={isStatusCanceled}
                                             data-testid={
                                                 CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_DATA_TEST_ID_JOB
                                             }
@@ -166,6 +217,7 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
                                 <Form.Item label="Caption (optional)">
                                     {formStatus.caption ? (
                                         <Button
+                                            disabled={isStatusCanceled}
                                             data-testid={
                                                 CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_CAPTION_BUTTON_TEST_ID
                                             }
@@ -183,20 +235,22 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
                                         </Button>
                                     ) : (
                                         <Upload
+                                            disabled={isStatusCanceled}
                                             data-testid={
                                                 CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_UPLOAD_COMPONENT_DATA_TEST_ID
                                             }
-                                            customRequest={({ file }) => {
-                                                const isInvalid = file.type !== "application/pdf";
+                                            customRequest={({ file: newFile }) => {
+                                                const isInvalid = newFile.type !== "application/pdf";
                                                 if (isInvalid) {
                                                     setInvalidFile(true);
                                                 }
-                                                return setFormStatus({ ...formStatus, file });
+                                                return setFormStatus({ ...formStatus, file: newFile });
                                             }}
                                             accept=".pdf"
                                             showUploadList={false}
                                         >
                                             <ButtonUpload
+                                                disabled={isStatusCanceled}
                                                 fileName={formStatus.file?.name}
                                                 label={formStatus.file ? formStatus.file.name : "Upload Caption"}
                                                 removeFile={(e) => {
@@ -209,7 +263,7 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
                                             />
                                         </Upload>
                                     )}
-                                    {invalidFile && (
+                                    {invalidFile && !isStatusCanceled && (
                                         <Text
                                             size="small"
                                             dataTestId={
@@ -249,6 +303,7 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
                             >
                                 {CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_RADIO_OPTIONS.map((value) => (
                                     <Radio
+                                        disabled={isStatusCanceled}
                                         data-testid={`${value.value} ${value.label}`}
                                         value={value.value}
                                         key={value.label}
@@ -260,6 +315,7 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
                         </Form.Item>
                         <Form.Item label="Special Request" htmlFor="special_request">
                             <TextArea
+                                disabled={isStatusCanceled}
                                 name="special_request"
                                 data-testid={CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_DATA_TEST_ID_DETAILS}
                                 value={formStatus.details}
@@ -279,7 +335,7 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
                                     data-testid={
                                         CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_CANCEL_BUTTON_TEST_ID
                                     }
-                                    disabled={loading}
+                                    disabled={editLoading || cancelLoading || revertCancelLoading}
                                     onClick={handleCloseModalAndResetFormStatus}
                                 >
                                     {CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_CANCEL_BUTTON_TEXT}
@@ -288,8 +344,8 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
                                     data-testid={
                                         CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_CONFIRM_BUTTON_TEST_ID
                                     }
-                                    disabled={loading}
-                                    loading={loading}
+                                    disabled={editLoading || cancelLoading || revertCancelLoading}
+                                    loading={editLoading || cancelLoading || revertCancelLoading}
                                     htmlType="submit"
                                     type="primary"
                                     onClick={handleSubmit}
@@ -298,6 +354,17 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
                                 </Button>
                             </Space>
                         </Row>
+                        {invalidCancelDate && isStatusCanceled && (
+                            <Text
+                                size="small"
+                                dataTestId={
+                                    CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_INVALID_CANCEL_DATE_MESSAGE_DATA_TEST_ID
+                                }
+                                state={ColorStatus.error}
+                            >
+                                {CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_INVALID_CANCEL_DATE_MESSAGE}
+                            </Text>
+                        )}
                     </Form>
                 </Space.Item>
             </Space>

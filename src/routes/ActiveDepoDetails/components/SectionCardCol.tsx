@@ -11,10 +11,11 @@ interface SectionCardColProps {
     title: string;
     text?: string;
     children?: React.ReactNode;
+    testId?: string;
     colProps?: ColProps;
 }
 
-const SectionCardCol = ({ icon, title, text, children, colProps }: SectionCardColProps) => (
+const SectionCardCol = ({ icon, title, text, children, colProps, testId }: SectionCardColProps) => (
     <Col {...colProps}>
         <Space>
             <Icon icon={icon} size={8} color={ColorStatus.disabled} />
@@ -23,7 +24,7 @@ const SectionCardCol = ({ icon, title, text, children, colProps }: SectionCardCo
                     {title}
                 </Text>
                 {text ? (
-                    <Text dataTestId={`deposition_details_${text}`} ellipsis={false}>
+                    <Text dataTestId={testId || `deposition_details_${text}`} ellipsis={false}>
                         {text}
                     </Text>
                 ) : (

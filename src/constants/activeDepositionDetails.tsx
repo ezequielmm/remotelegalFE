@@ -153,7 +153,7 @@ export const DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_DATA_TEST_ID_TITLE =
     "deposition_details_edit_deposition_modal_title";
 export const DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_DATA_TEST_ID_STATUS =
     "deposition_details_edit_deposition_modal_status";
-export const DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_STATUS_OPTIONS = ["Pending", "Confirmed"];
+export const DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_STATUS_OPTIONS = ["Pending", "Confirmed", "Canceled"];
 export const DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_DATA_TEST_ID_JOB = "deposition_details_edit_deposition_modal_job";
 export const DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_RADIO_LABEL =
     "DOES THE WITNESS TESTIMONY NEED TO BE VIDEO RECORDED?";
@@ -194,3 +194,16 @@ export const DEPOSITION_DETAILS_EDIT_REQUESTER_MODAL_CONFIRM_BUTTON_TEXT = "Save
 export const DEPOSITION_DETAILS_EDIT_REQUESTER_MODAL_CONFIRM_BUTTON_TEST_ID =
     "deposition_details_edit_requester_confirm_button";
 export const DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_SUCCESS_TOAST = "The deposition was successfully updated";
+export const DEPOSITION_DETAILS_CANCEL_DEPOSITION_MODAL_TITLE = "Cancel Deposition";
+export const DEPOSITION_DETAILS_CONFIRM_DEPOSITION_MODAL_TITLE = "Confirm Deposition";
+export const DEPOSITION_DETAILS_RESCHEDULE_DEPOSITION_MODAL_TITLE = "Reschedule Deposition";
+export const DEPOSITION_DETAILS_CANCEL_DEPOSITION_MODAL_CANCEL_BUTTON = "No, keep it";
+export const DEPOSITION_DETAILS_CANCEL_DEPOSITION_MODAL_CONFIRM_BUTTON = "Yes, cancel";
+export const DEPOSITION_DETAILS_CONFIRM_DEPOSITION_MODAL_CANCEL_BUTTON = "No, keep it";
+export const DEPOSITION_DETAILS_CONFIRM_DEPOSITION_MODAL_CONFIRM_BUTTON = "Yes, confirm";
+export const DEPOSITION_DETAILS_RESCHEDULE_DEPOSITION_MODAL_CANCEL_BUTTON = "No, keep it";
+export const DEPOSITION_DETAILS_RESCHEDULE_DEPOSITION_MODAL_CONFIRM_BUTTON = "Yes, reschedule";
+export const DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_INVALID_CANCEL_DATE_MESSAGE_DATA_TEST_ID =
+    "deposition_details_edit_deposition_invalid_cancel_date_message";
+export const DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_INVALID_CANCEL_DATE_MESSAGE =
+    "You can´t cancel a deposition that will start in a minute";

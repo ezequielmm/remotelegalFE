@@ -192,6 +192,7 @@ const MyDepositions = () => {
                             locale={{
                                 emptyText: <MyDepositionsEmptyTable type={filterCriteria} />,
                             }}
+                            rowClassName={(record) => (record.status === Status.canceled ? "rowCanceled" : "")}
                         />
                     </StyledSpace>
                 )}

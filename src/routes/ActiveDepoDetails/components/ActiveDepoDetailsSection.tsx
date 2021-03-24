@@ -105,7 +105,7 @@ const DepositionDetailsSection = ({
     };
 
     if (loading) {
-        return <Spinner height="50vh" width="50vw" />;
+        return <Spinner height="50vh" width="100%" />;
     }
 
     if (error) {
@@ -194,6 +194,7 @@ const DepositionDetailsSection = ({
                             }
                         />
                         <SectionCardCol
+                            testId="deposition_details_notes"
                             colProps={{ xl: 6 }}
                             icon={CommentIcon}
                             title={CONSTANTS.DEPOSITION_SPECIAL_REQUEST_TITLE}
@@ -246,6 +247,7 @@ const DepositionDetailsSection = ({
                             text={phoneNumber}
                         />
                         <SectionCardCol
+                            testId="deposition_details_requester_notes"
                             colProps={{ xl: 9 }}
                             icon={NotesIcon}
                             title={CONSTANTS.DEPOSITION_REQUESTER_NOTES}
