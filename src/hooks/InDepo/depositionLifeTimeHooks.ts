@@ -123,7 +123,8 @@ export const useJoinDeposition = () => {
         const transcriptions = await getTranscriptions();
         const breakrooms = await getBreakrooms();
         const events = await getDepositionEvents(depositionID);
-        const { isOnTheRecord, timeZone, token, isSharing }: any = await generateToken();
+        const { isOnTheRecord, timeZone, token, isSharing, participants }: any = await generateToken();
+
         if (isSharing) {
             fetchExhibitFileInfo(depositionID);
         }
@@ -142,6 +143,7 @@ export const useJoinDeposition = () => {
             return disconnectFromDepo(room, dispatch);
         }
         dispatch(actions.joinToRoom(room));
+        dispatch(actions.setParticipantsData(participants));
         dispatch(actions.setIsRecording(isOnTheRecord));
         dispatch(actions.setPermissions(permissions));
         dispatch(actions.setBreakrooms(breakrooms || []));

@@ -39,10 +39,12 @@ const InDepo = () => {
         timeZone,
         dataTrack,
         currentExhibit,
+        participants,
     } = state.room;
     const { depositionID } = useParams<DepositionID>();
     const [realTimeOpen, togglerRealTime] = useState<boolean>(false);
     const [exhibitsOpen, togglerExhibits] = useState<boolean>(false);
+    const [initialAudioEnabled, setInitialAudioEnabled] = useState<boolean>(false);
     const [videoLayoutSize, setVideoLayoutSize] = useState<number>(0);
     const [atendeesVisibility, setAtendeesVisibility] = useState<boolean>(true);
     const history = useHistory();
@@ -117,6 +119,14 @@ const InDepo = () => {
         }
     }, [currentExhibit]);
 
+    React.useEffect(() => {
+        if (participants.length && currentRoom.localParticipant) {
+            const localParticipantEmail = JSON.parse(currentRoom?.localParticipant.identity).email;
+            const isMuted = participants.find((participant) => participant?.email === localParticipantEmail).isMuted;
+            setInitialAudioEnabled(!isMuted);
+        }
+    }, [participants, currentRoom]);
+
     if (loading || loadingUserIsAdmin) {
         return <Spinner />;
     }
@@ -167,6 +177,7 @@ const InDepo = () => {
                         exhibitsOpen={exhibitsOpen}
                         togglerExhibits={togglerExhibits}
                         localParticipant={currentRoom.localParticipant}
+                        initialAudioEnabled={initialAudioEnabled}
                     />
                 </StyledRoomFooter>
             </StyledInDepoContainer>

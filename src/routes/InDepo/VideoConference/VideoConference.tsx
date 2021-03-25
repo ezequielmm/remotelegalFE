@@ -1,8 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { LocalParticipant, RemoteParticipant, Room } from "twilio-video";
-import useSignalR from "../../../hooks/useSignalR";
+import { useGetParticipantStatus } from "../../../hooks/InDepo/useParticipantStatus";
 import { TimeZones } from "../../../models/general";
-import { NotificationEntityType, Notification } from "../../../types/Notification";
 import Participant from "../Participant";
 import {
     StyledVideoConference,
@@ -41,19 +40,7 @@ const VideoConference = ({
     const videoConferenceContainer = useRef<HTMLDivElement>(null);
     const participants = [localParticipant, ...Array.from(attendees.values())];
     const witness = participants.find((participant) => JSON.parse(participant.identity).role === "Witness");
-    const { subscribeToGroup, signalR } = useSignalR("/depositionHub");
-    const [participantsStatus, setParticipantsStatus] = useState({});
-
-    useEffect(() => {
-        if (signalR) {
-            subscribeToGroup("ReceiveNotification", (message: Notification) => {
-                if (message?.entityType === NotificationEntityType.participantStatus) {
-                    const { content } = message;
-                    setParticipantsStatus((status) => ({ ...status, [`${content.email}`]: content }));
-                }
-            });
-        }
-    }, [signalR, subscribeToGroup]);
+    const { participantsStatus } = useGetParticipantStatus();
 
     useEffect(() => {
         switch (layoutSize) {

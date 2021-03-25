@@ -7,6 +7,7 @@ export const JOIN_DEPOSITION_MOCK = {
     witnessEmail: "test@test.com",
     timeZone,
     isOnTheRecord: false,
+    participants: [],
 };
 export const JOIN_BREAKROOM_MOCK = "1234";
 export const JOIN_DEPOSITION_MOCK_EMPTY_DEPOSITION = {

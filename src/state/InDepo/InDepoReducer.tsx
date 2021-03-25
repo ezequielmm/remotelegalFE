@@ -35,6 +35,7 @@ export interface IRoom {
     stampLabel?: string;
     exhibitDocument?: CoreControls.Document;
     dominantSpeaker?: Participant | null;
+    participants?: [];
 }
 
 export const RoomReducerInitialState: IRoom = {
@@ -59,6 +60,7 @@ export const RoomReducerInitialState: IRoom = {
     currentUser: null,
     stampLabel: "",
     exhibitDocument: null,
+    participants: [],
 };
 
 const RoomReducer: Reducer<IRoom, IAction> = (state: IRoom, action: IAction): IRoom => {
@@ -201,6 +203,11 @@ const RoomReducer: Reducer<IRoom, IAction> = (state: IRoom, action: IAction): IR
             return {
                 ...state,
                 dominantSpeaker: action.payload,
+            };
+        case ACTION_TYPE.IN_DEPO_SET_PARTICIPANTS_DATA:
+            return {
+                ...state,
+                participants: action.payload,
             };
 
         default:

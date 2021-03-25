@@ -39,9 +39,9 @@ import * as CONSTANTS from "../../constants/inDepo";
 import { ThemeMode } from "../../types/ThemeType";
 import { getREM } from "../../constants/styles/utils";
 import Confirm from "../Confirm";
-import useSendParticipantStatus from "../../hooks/InDepo/useSendParticipantStatus";
 import { useAuthentication } from "../../hooks/auth";
 import getLeaveModalTextContent from "./helpers/getLeaveModalTextContent";
+import { useSendParticipantStatus } from "../../hooks/InDepo/useParticipantStatus";
 
 interface IControlsBar {
     breakrooms?: BreakroomModel.Breakroom[];
@@ -54,6 +54,7 @@ interface IControlsBar {
     isRecording: boolean;
     togglerRealTime: React.Dispatch<React.SetStateAction<boolean>> | ((value: React.SetStateAction<boolean>) => void);
     handleJoinBreakroom: (roomNumber: string) => void;
+    initialAudioEnabled?: boolean;
 }
 
 export default function ControlsBar({
@@ -67,6 +68,7 @@ export default function ControlsBar({
     canEnd,
     canRecord,
     handleJoinBreakroom,
+    initialAudioEnabled,
 }: IControlsBar): ReactElement {
     const { videoTracks, audioTracks } = useParticipantTracks(localParticipant);
     const { isAudioEnabled, isCameraEnabled, setAudioEnabled, setCameraEnabled } = useTracksStatus(
@@ -116,6 +118,12 @@ export default function ControlsBar({
         toggleMicrophone(isRecording && isAudioEnabled);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isRecording, isAudioEnabled]);
+
+    React.useEffect(() => {
+        if (initialAudioEnabled !== undefined) {
+            setAudioEnabled(initialAudioEnabled);
+        }
+    }, [initialAudioEnabled, setAudioEnabled]);
 
     const summaryTheme = { ...theme, mode: ThemeMode.default };
 

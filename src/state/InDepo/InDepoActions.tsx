@@ -25,6 +25,7 @@ export enum ACTION_TYPE {
     IN_DEPO_SET_CURRENT_USER = "IN_DEPO_SET_CURRENT_USER",
     IN_DEPO_SET_STAMP_LABEL = "IN_DEPO_SET_STAMP_LABEL",
     IN_DEPO_SET_EXHIBIT_DOCUMENT_INSTANCE = "IN_DEPO_SET_EXHIBIT_DOCUMENT_INSTANCE",
+    IN_DEPO_SET_PARTICIPANTS_DATA = "IN_DEPO_SET_PARTICIPANTS_DATA",
     ADD_WITNESS = "IN_DEPO_ADD_WITNESS",
     SET_TIMEZONE = "IN_DEPO_SET_TIMEZONE",
     IN_DEPO_SET_PERMISSIONS = "IN_DEPO_SET_PERMISSIONS",
@@ -142,6 +143,10 @@ const actions = {
     }),
     setAddDominantSpeaker: (payload: Participant | null) => ({
         type: ACTION_TYPE.ADD_DOMINANT_SPEAKER,
+        payload,
+    }),
+    setParticipantsData: (payload) => ({
+        type: ACTION_TYPE.IN_DEPO_SET_PARTICIPANTS_DATA,
         payload,
     }),
 };

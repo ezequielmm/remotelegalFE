@@ -88,6 +88,22 @@ test("Muted icon is toggled when clicking the mute button", async () => {
     expect(queryByTestId("muted")).toBeFalsy();
 });
 
+test("Audio icon is toggled to unmuted when the initialAudioEnabled is true", async () => {
+    const { findByTestId, queryByTestId } = renderWithGlobalContext(
+        <ControlsBar {...props} exhibitsOpen realTimeOpen initialAudioEnabled />
+    );
+    expect(await findByTestId("unmuted")).toBeInTheDocument();
+    expect(queryByTestId("muted")).toBeFalsy();
+});
+
+test("Audio icon is toggled to muted when the initialAudioEnabled is false", async () => {
+    const { findByTestId, queryByTestId } = renderWithGlobalContext(
+        <ControlsBar {...props} exhibitsOpen realTimeOpen initialAudioEnabled={false} />
+    );
+    expect(await findByTestId("muted")).toBeInTheDocument();
+    expect(queryByTestId("unmuted")).toBeFalsy();
+});
+
 test("Camera icon is toggled when clicking the camera button", async () => {
     const { findByTestId, queryByTestId } = renderWithGlobalContext(
         <ControlsBar {...props} exhibitsOpen realTimeOpen />
