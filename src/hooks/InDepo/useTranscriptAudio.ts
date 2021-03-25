@@ -11,18 +11,23 @@ const useTranscriptAudio = () => {
     const { dispatch, state } = useContext(GlobalStateContext);
     const { isRecording } = state.room;
     const { depositionID } = useParams<DepositionID>();
-    const { subscribeToGroup, signalR } = useSignalR("/depositionHub");
+    const { unsubscribeMethodFromGroup, subscribeToGroup, signalR } = useSignalR("/depositionHub");
 
     useEffect(() => {
-        if (dispatch && signalR) {
-            subscribeToGroup("ReceiveNotification", (message) => {
+        let manageReceiveNotification;
+        if (dispatch && signalR && unsubscribeMethodFromGroup && subscribeToGroup) {
+            manageReceiveNotification = (message) => {
                 const { id, transcriptDateTime, text, userName } = message.content;
                 if (!text) return;
                 const parsedTranscription = { id, text, userName, transcriptDateTime };
                 dispatch(actions.addTranscription(parsedTranscription));
-            });
+            };
+            subscribeToGroup("ReceiveNotification", manageReceiveNotification);
         }
-    }, [signalR, subscribeToGroup, dispatch]);
+        return () => {
+            if (manageReceiveNotification) unsubscribeMethodFromGroup("ReceiveNotification", manageReceiveNotification);
+        };
+    }, [signalR, subscribeToGroup, dispatch, unsubscribeMethodFromGroup]);
 
     const [sendMessage] = useWebSocket(`/transcriptions`, undefined, true);
 
