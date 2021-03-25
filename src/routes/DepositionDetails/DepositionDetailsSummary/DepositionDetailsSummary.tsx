@@ -51,7 +51,7 @@ export default function DepositionDetailsSummary({ setActiveKey }: IDepositionDe
     const { handleFetchFiles: handleFetchTranscriptFileList, transcriptFileList } = useTranscriptFileList(depositionID);
     const { getSignedUrl, documentData: transcriptFileData } = useGetSignedUrl();
     const [fetchParticipants, , , participants] = useFetchParticipants();
-    const { transcriptions, currentDeposition } = state.postDepo;
+    const { duration, currentTime, transcriptions, currentDeposition } = state.postDepo;
 
     const [setTranscriptions] = useAsyncCallback(async () => {
         const newTranscriptions = await getTranscriptions();
@@ -220,18 +220,18 @@ export default function DepositionDetailsSummary({ setActiveKey }: IDepositionDe
                             transcriptions && (
                                 <ThemeProvider theme={inDepoTheme}>
                                     <RealTime
-                                        // manageTranscriptionClicked={
-                                        //     duration > 0 &&
-                                        //     ((transcription) => {
-                                        //         dispatch(actions.setChangeTime(transcription.prevEndTime + 0.0001));
-                                        //         dispatch(actions.setPlaying(true));
-                                        //     })
-                                        // }
+                                        manageTranscriptionClicked={
+                                            duration > 0 &&
+                                            ((transcription) => {
+                                                dispatch(actions.setChangeTime(transcription.prevEndTime + 0.0001));
+                                                dispatch(actions.setPlaying(true));
+                                            })
+                                        }
                                         disableAutoscroll
                                         transcriptions={transcriptions}
                                         visible
                                         timeZone={TimeZones.EST}
-                                        // playedSeconds={currentTime}
+                                        playedSeconds={currentTime}
                                         scrollToHighlighted
                                     />
                                 </ThemeProvider>
