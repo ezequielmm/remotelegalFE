@@ -114,23 +114,22 @@ test("Trigger handleJoinBreakroom when click on JOIN Breakroom if is not recordi
     expect(props.handleJoinBreakroom).toBeCalledWith(breakrooms[0].id);
 });
 
-test("Should not call setParticipantStatus endpoint when click on mute icon by default", async () => {
+test("Should call setParticipantStatus endpoint with muted in true by default", async () => {
     const customDeps = getMockDeps();
     customDeps.apiService.setParticipantStatus = jest.fn().mockResolvedValue({});
-    const { findByTestId } = renderWithGlobalContext(<ControlsBar {...props} exhibitsOpen realTimeOpen />, customDeps);
+    const { findByTestId } = renderWithGlobalContext(<ControlsBar {...props} exhibitsOpen />, customDeps);
     fireEvent.click(await findByTestId("audio"));
     await waitForDomChange();
-    expect(customDeps.apiService.setParticipantStatus).not.toBeCalled();
+    expect(customDeps.apiService.setParticipantStatus).toHaveBeenCalledWith({ isMuted: true });
 });
 
-test("Call setParticipantStatus endpoint when click on mute icon and isRecording is true", async () => {
+test("Should call setParticipantStatus endpoint with muted in false when it is already muted", async () => {
     const customDeps = getMockDeps();
     customDeps.apiService.setParticipantStatus = jest.fn().mockResolvedValue({});
-    const { findByTestId } = renderWithGlobalContext(
-        <ControlsBar {...props} exhibitsOpen realTimeOpen isRecording />,
-        customDeps
-    );
+    const { findByTestId } = renderWithGlobalContext(<ControlsBar {...props} exhibitsOpen />, customDeps);
     fireEvent.click(await findByTestId("audio"));
     await waitForDomChange();
-    expect(customDeps.apiService.setParticipantStatus).toBeCalled();
+    fireEvent.click(await findByTestId("audio"));
+    await waitForDomChange();
+    expect(customDeps.apiService.setParticipantStatus).toHaveBeenCalledWith({ isMuted: false });
 });

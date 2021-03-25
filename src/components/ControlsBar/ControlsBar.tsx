@@ -39,6 +39,7 @@ import * as CONSTANTS from "../../constants/inDepo";
 import { ThemeMode } from "../../types/ThemeType";
 import { getREM } from "../../constants/styles/utils";
 import Confirm from "../Confirm";
+import useSendParticipantStatus from "../../hooks/InDepo/useSendParticipantStatus";
 
 interface IControlsBar {
     breakrooms?: BreakroomModel.Breakroom[];
@@ -79,6 +80,7 @@ export default function ControlsBar({
     const { setEndDepo } = useEndDepo();
     const toggleMicrophone = useStreamAudio();
     const joinDepositionLink = useJoinDepositionLink();
+    const [sendToggledMuted] = useSendParticipantStatus();
 
     const toggleBreakrooms = () => togglerBreakrooms((prevState) => !prevState);
     const toggleSummary = () => togglerSummary((prevState) => !prevState);
@@ -157,7 +159,10 @@ export default function ControlsBar({
                     <Control
                         data-testid="audio"
                         type="circle"
-                        onClick={() => setAudioEnabled(!isAudioEnabled)}
+                        onClick={() => {
+                            setAudioEnabled(!isAudioEnabled);
+                            sendToggledMuted(isAudioEnabled);
+                        }}
                         isActive={isAudioEnabled}
                         icon={
                             isAudioEnabled ? (
