@@ -1,12 +1,12 @@
 import React, { ReactElement, useState } from "react";
 import { LocalAudioTrack, LocalParticipant, LocalVideoTrack } from "twilio-video";
+import { useHistory } from "react-router";
 import useParticipantTracks from "../../hooks/InDepo/useParticipantTracks";
 import useRecording from "../../hooks/InDepo/useRecording";
 import useTracksStatus from "../../hooks/InDepo/useTracksStatus";
 import EndDepoModal from "./components/EndDepoModal";
 import CopyLink from "./components/CopyLink";
 import { theme } from "../../constants/styles/theme";
-
 import { StyledContainer, StyledLogo, StyledComposedIconContainer } from "./styles";
 import Icon from "../Icon";
 import { ReactComponent as MuteIcon } from "../../assets/in-depo/Mute.svg";
@@ -40,6 +40,8 @@ import { ThemeMode } from "../../types/ThemeType";
 import { getREM } from "../../constants/styles/utils";
 import Confirm from "../Confirm";
 import useSendParticipantStatus from "../../hooks/InDepo/useSendParticipantStatus";
+import { useAuthentication } from "../../hooks/auth";
+import getLeaveModalTextContent from "./helpers/getLeaveModalTextContent";
 
 interface IControlsBar {
     breakrooms?: BreakroomModel.Breakroom[];
@@ -77,16 +79,38 @@ export default function ControlsBar({
     const [breakroomsOpen, togglerBreakrooms] = useState(false);
     const [modal, setModal] = useState(false);
     const [breakroomModal, setBreakroomModal] = useState(false);
+    const [openLeaveModal, setOpenLeaveModal] = useState(false);
     const { setEndDepo } = useEndDepo();
     const toggleMicrophone = useStreamAudio();
     const joinDepositionLink = useJoinDepositionLink();
     const [sendToggledMuted] = useSendParticipantStatus();
+    const isWitness = localParticipant && JSON.parse(localParticipant.identity)?.role === "Witness";
+    const history = useHistory();
+    const { isAuthenticated } = useAuthentication();
+    const leaveModalTextContent = getLeaveModalTextContent(isRecording, isWitness);
 
     const toggleBreakrooms = () => togglerBreakrooms((prevState) => !prevState);
     const toggleSummary = () => togglerSummary((prevState) => !prevState);
     const toggleSupport = () => togglerSupport((prevState) => !prevState);
     const toggleExhibits = () => togglerExhibits((prevState) => !prevState);
     const toggleRealTime = () => togglerRealTime((prevState) => !prevState);
+    const toggleLeaveModal = () => setOpenLeaveModal((prevState) => !prevState);
+
+    const handleRedirection = () => {
+        return isWitness && !isAuthenticated
+            ? history.push({
+                  pathname: "/deposition/end",
+                  state: { isWitness: true },
+              })
+            : history.push(
+                  isAuthenticated
+                      ? "/depositions"
+                      : {
+                            pathname: "/sign-up",
+                            state: { email: JSON.parse(localParticipant.identity).email },
+                        }
+              );
+    };
 
     React.useEffect(() => {
         toggleMicrophone(isRecording && isAudioEnabled);
@@ -133,13 +157,25 @@ export default function ControlsBar({
     };
 
     return (
-        <StyledContainer px={6} align="center" data-testid="controls_container">
+        <StyledContainer pl={6} pr={3} align="center" data-testid="controls_container">
             <Confirm
                 visible={breakroomModal}
                 title={CONSTANTS.BREAKROOM_ON_THE_RECORD_TITLE}
                 subTitle={CONSTANTS.BREAKROOM_ON_THE_RECORD_MESSAGE}
                 positiveLabel="Ok"
                 onPositiveClick={() => setBreakroomModal(false)}
+            />
+            <Confirm
+                visible={openLeaveModal}
+                title={leaveModalTextContent.title}
+                subTitle={leaveModalTextContent.subTitle}
+                positiveLabel={leaveModalTextContent.positiveLabel}
+                negativeLabel={leaveModalTextContent.negativeLabel}
+                onNegativeClick={toggleLeaveModal}
+                onPositiveClick={() => {
+                    toggleLeaveModal();
+                    return isRecording && isWitness ? null : setTimeout(handleRedirection, 500);
+                }}
             />
             <EndDepoModal
                 endDepoFunc={() => {
@@ -294,6 +330,21 @@ export default function ControlsBar({
                             icon={<Icon icon={SupportIcon} size="1.625rem" />}
                         />
                     </Space>
+                    {!canEnd && !canRecord && (
+                        <Control
+                            data-testid={CONSTANTS.CONTROLS_BAR_LEAVE_DEPOSITION_BUTTON_TEST_ID}
+                            isActive={openLeaveModal}
+                            color="red"
+                            onClick={toggleLeaveModal}
+                            type="simple"
+                            label={CONSTANTS.CONTROLS_BAR_LEAVE_DEPOSITION_BUTTON}
+                            icon={
+                                <Space px={4}>
+                                    <Icon icon={BreakroomsIcon} size="1.625rem" />
+                                </Space>
+                            }
+                        />
+                    )}
                 </Space>
             </Space.Item>
         </StyledContainer>

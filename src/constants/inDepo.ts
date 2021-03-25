@@ -42,7 +42,8 @@ export const CONTROLS_BAR_BREAKROOMS_LABEL = "Breakrooms";
 export const CONTROLS_BAR_SUMMARY_LABEL = "Summary";
 export const CONTROLS_BAR_SUPPORT_LABEL = "Support";
 export const CONTROLS_BAR_JOIN_BUTTON = "JOIN";
-
+export const CONTROLS_BAR_LEAVE_DEPOSITION_BUTTON = "Leave";
+export const CONTROLS_BAR_LEAVE_DEPOSITION_BUTTON_TEST_ID = "in_deposition_leave_deposition_button";
 export const CONTROLS_BAR_BREAKROOMS_PRIVACITY_DESCRIPTION = "Not recorded - Everything you say will remain private.";
 
 export const COPY_LINK_ALERT_DURATION = 4;
@@ -73,3 +74,14 @@ export const GUEST_REQUESTS_NOTIFICATION_TITLE = " wants to join.";
 export const GUEST_REQUESTS_MODAL_NEGATIVE_LABEL = "Cancel";
 
 export const NETWORK_ERROR = "An unexpected error occurred! Please try again";
+export const LEAVE_DEPOSITION_MODAL_NO_WITNESS_TITLE = "Leave deposition before it ends?";
+export const LEAVE_DEPOSITION_MODAL_NO_WITNESS_SUB_TITLE =
+    "You will not be able to access the exhibits, transcripts, or video until the deposition ends. You will receive an email notification once the files are available. Do you still want to leave the deposition before it has ended?";
+export const LEAVE_DEPOSITION_MODAL_WITNESS_TITLE = "Leave deposition?";
+export const LEAVE_DEPOSITION_MODAL_WITNESS_SUB_TITLE = "Are you sure you want to leave the deposition before it ends?";
+export const LEAVE_DEPOSITION_MODAL_WITNESS_ON_THE_RECORD_TITLE = "The deposition is ON the record.";
+export const LEAVE_DEPOSITION_MODAL_WITNESS_ON_THE_RECORD_SUB_TITLE =
+    "You cannot leave the deposition while it´s ON the record.";
+export const LEAVE_DEPOSITION_MODAL_POSITIVE_BUTTON_LABEL = "Yes, leave";
+export const LEAVE_DEPOSITION_MODAL_WITNESS_ON_THE_RECORD_POSITIVE_BUTTON_LABEL = "Ok";
+export const LEAVE_DEPOSITION_MODAL_NEGATIVE_BUTTON_LABEL = "No, stay";

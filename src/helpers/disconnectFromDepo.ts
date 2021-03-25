@@ -39,6 +39,6 @@ const disconnectFromDepo = async (
         room.disconnect();
         dispatch(actions.disconnect(initialState));
     }
-    return history?.push("/deposition/end", { depositionID });
+    return history?.push("/deposition/end", { depositionID, isWitness: false });
 };
 export default disconnectFromDepo;

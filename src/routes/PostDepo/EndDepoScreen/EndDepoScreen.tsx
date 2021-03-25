@@ -11,6 +11,7 @@ import ColorStatus from "../../../types/ColorStatus";
 import Button from "../../../components/Button";
 import { useEndDepoCurrentUser, useEndDepoDownloadAssets } from "../../../hooks/endDepo/hooks";
 import { StyledEndDepoScreenLayout } from "./styles";
+import EndDepoScreenForWitness from "./EndDepoScreenForWitness";
 import Spinner from "../../../components/Spinner";
 import * as CONSTANTS from "../../../_tests_/constants/postDepo";
 import { displayName } from "../../../helpers/displayName";
@@ -18,7 +19,9 @@ import { displayName } from "../../../helpers/displayName";
 export default function EndDepoScreen({ location }) {
     const { userInfo, loadingUserInfo } = useEndDepoCurrentUser();
     const { downloadAssets } = useEndDepoDownloadAssets(location?.state?.depositionID);
-
+    if (location?.state?.isWitness) {
+        return <EndDepoScreenForWitness />;
+    }
     return (
         <StyledEndDepoScreenLayout>
             {loadingUserInfo && !userInfo ? (

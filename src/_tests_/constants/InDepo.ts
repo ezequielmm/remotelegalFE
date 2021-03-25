@@ -51,3 +51,5 @@ export const getParticipant = (number) => ({
 });
 
 export const getWaitingRoomParticipants = () => [getParticipant(0)];
+export const NON_WITNESS_NON_REGISTERED_EXPECTED_REDIRECT_BODY = { pathname: "/sign-up", state: { email: undefined } };
+export const WITNESS_EXPECTED_REDIRECT_BODY = { pathname: "/deposition/end", state: { isWitness: true } };
