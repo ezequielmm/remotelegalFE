@@ -279,6 +279,23 @@ export class ApiService {
         });
     };
 
+    joinResponse = async (depositionID: string, participantId: string, isAdmitted: boolean) => {
+        return this.request({
+            path: `/api/Depositions/${depositionID}/joinResponse/${participantId}`,
+            withToken: true,
+            payload: { isAdmitted },
+            method: HTTP_METHOD.POST,
+        });
+    };
+
+    waitingRoomParticipants = async (depositionID: string): Promise<ParticipantModel.IParticipant[]> => {
+        return this.request({
+            path: `/api/Depositions/${depositionID}/waitingRoomParticipants`,
+            withToken: true,
+            method: HTTP_METHOD.GET,
+        });
+    };
+
     fetchDepositionsFiles = async ({ depositionID, ...payload }): Promise<boolean> => {
         return this.request<boolean>({
             path: `/api/Depositions/${depositionID}/MyExhibits`,

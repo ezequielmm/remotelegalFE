@@ -44,7 +44,9 @@ const useSignalR = (url: string): any => {
 
     const unsubscribeToGroup = useCallback((group) => signalR.off(group), [signalR]);
 
-    return { connect, stop, sendMessage, subscribeToGroup, unsubscribeToGroup, signalR };
+    const unsubscribeMethodFromGroup = useCallback((group, method) => signalR.off(group, method), [signalR]);
+
+    return { connect, stop, sendMessage, subscribeToGroup, unsubscribeToGroup, unsubscribeMethodFromGroup, signalR };
 };
 
 export default useSignalR;

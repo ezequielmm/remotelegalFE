@@ -20,11 +20,15 @@ import actions from "../../state/InDepo/InDepoActions";
 import { ThemeMode } from "../../types/ThemeType";
 import { EventModel } from "../../models";
 import useSignalR from "../../hooks/useSignalR";
+import GuestRequests from "./GuestRequests";
+import { Roles } from "../../models/participant";
+import { useUserIsAdmin } from "../../hooks/users/hooks";
 
 const InDepo = () => {
     const inDepoTheme = { ...theme, mode: ThemeMode.inDepo };
     const { state, dispatch } = useContext(GlobalStateContext);
     const [joinDeposition, loading, error] = useJoinDeposition();
+    const [checkIfUserIsAdmin, loadingUserIsAdmin, errorUserIsAdmin, userIsAdmin] = useUserIsAdmin();
     const {
         breakrooms,
         isRecording,
@@ -45,8 +49,11 @@ const InDepo = () => {
     const { stop, sendMessage, signalR } = useSignalR("/depositionHub");
 
     useEffect(
-        () => () => {
-            if (stop) stop();
+        () => {
+            checkIfUserIsAdmin();
+            return () => {
+                if (stop) stop();
+            };
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
         []
@@ -110,11 +117,11 @@ const InDepo = () => {
         }
     }, [currentExhibit]);
 
-    if (loading) {
+    if (loading || loadingUserIsAdmin) {
         return <Spinner />;
     }
 
-    if (error) {
+    if (error || errorUserIsAdmin) {
         return (
             <ErrorScreen
                 texts={{
@@ -130,6 +137,10 @@ const InDepo = () => {
     return currentRoom && dataTrack ? (
         <ThemeProvider theme={inDepoTheme}>
             <StyledInDepoContainer data-testid="videoconference">
+                {(userIsAdmin ||
+                    JSON.parse(currentRoom?.localParticipant?.identity || "{}").role === Roles.courtReporter) && (
+                    <GuestRequests depositionID={depositionID} />
+                )}
                 <StyledInDepoLayout>
                     <RecordPill on={isRecording} />
                     <Exhibits visible={exhibitsOpen} />

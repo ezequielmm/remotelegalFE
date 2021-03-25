@@ -29,3 +29,14 @@ export const FETCH_ERROR_RESULT_BODY = "Something went wrong, please refresh the
 export const FETCH_ERROR_RESULT_BUTTON = "Refresh Page";
 export const WITNESS_ALREADY_PRESENT_ERROR =
     "There is another witness assigned to this deposition. Please select another role.";
+
+export const ACCESS_DENIED_TITLE = "Access Denied";
+export const ACCESS_DENIED_DETAILS_START =
+    "Sorry, the Court reporter has denied your access to the deposition. If you think this is a mistake, please email ";
+export const ACCESS_DENIED_DETAILS_EMAIL = "info@remotelegal.com";
+export const ACCESS_DENIED_DETAILS_MIDDLE = " or call ";
+export const ACCESS_DENIED_DETAILS_NUMBER = "(646) 461-3400";
+export const ACCESS_DENIED_BUTTON_TEXT = "Ok";
+export const ACCESS_DENIED_BUTTON_TEST_ID = "access_denied_button";
+export const WAITING_ROOM_TITLE = "Hi ";
+export const WAITING_ROOM_SUBTITLE = "The Court Reporter will let you enter soon.";

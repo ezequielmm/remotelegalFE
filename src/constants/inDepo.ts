@@ -57,3 +57,19 @@ export const REAL_TIME_PILL = "ROUGH DRAFT: NOT FOR OFFICIAL USE";
 export const BREAKROOM_ON_THE_RECORD_TITLE = "Deposition is on the record";
 export const BREAKROOM_ON_THE_RECORD_MESSAGE =
     "Deposition needs to be off the record in order to have access to breakrooms.";
+
+export const GUEST_REQUESTS_DENY_BUTTON_TEST_ID = "guest_request_notificatio_deny";
+export const GUEST_REQUESTS_ALLOW_BUTTON_TEST_ID = "guest_request_notificatio_allow";
+export const GUEST_REQUESTS_DENY_TEXT = "DENY ENTRY";
+export const GUEST_REQUESTS_DENY_MODAL_TITLE = "Deny entry?";
+export const GUEST_REQUESTS_DENY_MODAL_SUBTITLE = "won't be able to enter the deposition.";
+export const GUEST_REQUESTS_DENY_MODAL_POSITIVE_LABEL = "YES, DENY";
+export const GUEST_REQUESTS_ALLOW_TEXT = "ADMIT";
+export const GUEST_REQUESTS_ALLOW_MODAL_TITLE = "Admit entry?";
+export const GUEST_REQUESTS_ALLOW_MODAL_SUBTITLE =
+    "will enter the deposition. Once admitted, you wont be able to remove the participant.";
+export const GUEST_REQUESTS_ALLOW_MODAL_POSITIVE_LABEL = "YES, ADMIT";
+export const GUEST_REQUESTS_NOTIFICATION_TITLE = " wants to join.";
+export const GUEST_REQUESTS_MODAL_NEGATIVE_LABEL = "Cancel";
+
+export const NETWORK_ERROR = "An unexpected error occurred! Please try again";

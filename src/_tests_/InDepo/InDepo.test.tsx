@@ -413,6 +413,7 @@ describe("inDepo -> Exhibits view with a shared exhibit", () => {
                         },
                         currentExhibit,
                     },
+                    userPermissions: { isAdmin: undefined },
                     signalR: { signalR: null },
                 },
             },

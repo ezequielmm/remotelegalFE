@@ -22,6 +22,8 @@ export type UserInfo = {
         email: string;
         phone: string;
         role: string;
-        user: boolean;
+        hasJoined: boolean;
+        isAdmitted: boolean;
+        user?: IUser;
     } | null;
 };

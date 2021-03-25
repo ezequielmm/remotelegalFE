@@ -20,6 +20,8 @@ export interface IParticipant {
     name?: string;
     role?: Roles;
     phone?: string;
+    hasJoined?: boolean;
+    isAdmitted?: boolean;
     creationDate?: DateLike;
     user?: IUser;
 }

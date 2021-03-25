@@ -15,9 +15,9 @@ import { CAPTION_MOCK } from "../constants/caption";
 import ParticipantListTable from "../../routes/ActiveDepoDetails/components/ParticipantListTable";
 import DEPO_PARTICIPANT_MOCK, { getDepoParticipantWithOverrideValues } from "../mocks/depoParticipant";
 import { Roles } from "../../models/participant";
-import { PARTICIPANT_MOCK } from "../constants/preJoinDepo";
 import getModalTextContent from "../../routes/ActiveDepoDetails/helpers/getModalTextContent";
 import { Status } from "../../components/StatusPill/StatusPill";
+import { PARTICIPANT_MOCK, PARTICIPANT_MOCK_NAME } from "../constants/preJoinDepo";
 
 const customDeps = getMockDeps();
 jest.mock("../../helpers/downloadFile");
@@ -376,7 +376,7 @@ describe("Tests the Invited Parties tab", () => {
             customDeps
         );
         await waitForDomChange();
-        expect(getByTestId(`${PARTICIPANT_MOCK.name}_delete_icon`)).toBeInTheDocument();
+        expect(getByTestId(`${PARTICIPANT_MOCK_NAME}_delete_icon`)).toBeInTheDocument();
     });
     test("Should close remove participant toast when clicking the cancel button", async () => {
         customDeps.apiService.fetchParticipants = jest.fn().mockImplementation(async () => {
@@ -394,7 +394,7 @@ describe("Tests the Invited Parties tab", () => {
             customDeps
         );
         await waitForDomChange();
-        fireEvent.click(getByTestId(`${PARTICIPANT_MOCK.name}_delete_icon`));
+        fireEvent.click(getByTestId(`${PARTICIPANT_MOCK_NAME}_delete_icon`));
         ModalTextsArray.map((text) => expect(getByText(text)).toBeInTheDocument());
         fireEvent.click(getByText(CONSTANTS.DEPOSITION_DETAILS_DELETE_MODAL_CANCEL_BUTTON_LABEL));
         ModalTextsArray.map((text) => expect(queryByText(text)).toBeFalsy());
@@ -413,7 +413,7 @@ describe("Tests the Invited Parties tab", () => {
             customDeps
         );
         await waitForDomChange();
-        fireEvent.click(getByTestId(`${PARTICIPANT_MOCK.name}_delete_icon`));
+        fireEvent.click(getByTestId(`${PARTICIPANT_MOCK_NAME}_delete_icon`));
         fireEvent.click(getByText(CONSTANTS.DEPOSITION_DETAILS_DELETE_MODAL_CONFIRM_BUTTON_LABEL));
         await waitForDomChange();
         expect(getByText(CONSTANTS.DEPOSITION_DETAILS_REMOVE_PARTICIPANT_TOAST));
@@ -435,7 +435,7 @@ describe("Tests the Invited Parties tab", () => {
             customDeps
         );
         await waitForDomChange();
-        fireEvent.click(getByTestId(`${PARTICIPANT_MOCK.name}_delete_icon`));
+        fireEvent.click(getByTestId(`${PARTICIPANT_MOCK_NAME}_delete_icon`));
         fireEvent.click(getByText(CONSTANTS.DEPOSITION_DETAILS_DELETE_MODAL_CONFIRM_BUTTON_LABEL));
         await waitForDomChange();
         expect(getByText(CONSTANTS.NETWORK_ERROR));

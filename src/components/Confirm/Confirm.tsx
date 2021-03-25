@@ -74,7 +74,7 @@ const confirm = (props: IConfirmProps) => {
                 <>
                     {!!negativeLabel && (
                         <Button
-                            data-testid="confirm_nagative_button"
+                            data-testid="confirm_negative_button"
                             type="text"
                             loading={negativeLoading}
                             disabled={positiveLoading}
