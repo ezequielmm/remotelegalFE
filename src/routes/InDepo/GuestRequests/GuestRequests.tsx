@@ -1,12 +1,20 @@
-import { Button, notification } from "antd";
+import { notification } from "antd";
 import React, { useEffect, useState } from "react";
+import { ThemeProvider } from "styled-components";
+import { theme } from "../../../constants/styles/theme";
+import { ThemeMode } from "../../../types/ThemeType";
 import Confirm from "../../../components/Confirm";
 import Message from "../../../components/Message";
+import Space from "../../../components/Space";
+import Button from "../../../components/Button";
+import Text from "../../../components/Typography/Text";
 import * as CONSTANTS from "../../../constants/inDepo";
 import useJoinResponse from "../../../hooks/InDepo/useJoinResponse";
 import useWaitingRoomParticipants from "../../../hooks/InDepo/useWaitingRoomParticipants";
 import useSignalR from "../../../hooks/useSignalR";
 import { ParticipantModel } from "../../../models";
+import { getREM } from "../../../constants/styles/utils";
+import ColorStatus from "../../../types/ColorStatus";
 
 export default function GuestRequests({ depositionID }: { depositionID: string }) {
     const { subscribeToGroup, signalR, unsubscribeMethodFromGroup } = useSignalR("/depositionHub");
@@ -34,35 +42,45 @@ export default function GuestRequests({ depositionID }: { depositionID: string }
         const args = {
             key: participant.id,
             message: (
-                <div>
-                    {`[${participant.role}] ${participant.user.firstName}${
-                        participant.user.lastName ? ` ${participant.user.lastName}` : ""
-                    }${CONSTANTS.GUEST_REQUESTS_NOTIFICATION_TITLE}`}{" "}
-                </div>
+                <ThemeProvider theme={{ ...theme, mode: ThemeMode[theme.mode] }}>
+                    <Text>
+                        <>
+                            <strong>{`[${participant.role}]`}</strong>{" "}
+                            {`${participant.name}${CONSTANTS.GUEST_REQUESTS_NOTIFICATION_TITLE}`}
+                        </>
+                    </Text>
+                </ThemeProvider>
             ),
-            description: <div>{participant.email} </div>,
+            description: (
+                <ThemeProvider theme={{ ...theme, mode: ThemeMode[theme.mode] }}>
+                    <Text state={ColorStatus.disabled}>{participant.email}</Text>
+                </ThemeProvider>
+            ),
             btn: (
-                <>
-                    <Button
-                        data-testid={CONSTANTS.GUEST_REQUESTS_DENY_BUTTON_TEST_ID}
-                        onClick={() => showConfirmation(participant, false)}
-                        type="link"
-                        size="middle"
-                    >
-                        {CONSTANTS.GUEST_REQUESTS_DENY_TEXT}
-                    </Button>
-                    <Button
-                        data-testid={CONSTANTS.GUEST_REQUESTS_ALLOW_BUTTON_TEST_ID}
-                        onClick={() => showConfirmation(participant, true)}
-                        type="link"
-                        size="middle"
-                    >
-                        {CONSTANTS.GUEST_REQUESTS_ALLOW_TEXT}
-                    </Button>
-                </>
+                <ThemeProvider theme={{ ...theme, mode: ThemeMode[theme.mode] }}>
+                    <Space justify="flex-end" size={9}>
+                        <Button
+                            data-testid={CONSTANTS.GUEST_REQUESTS_DENY_BUTTON_TEST_ID}
+                            onClick={() => showConfirmation(participant, false)}
+                            type="link"
+                        >
+                            {CONSTANTS.GUEST_REQUESTS_DENY_TEXT}
+                        </Button>
+                        <Button
+                            data-testid={CONSTANTS.GUEST_REQUESTS_ALLOW_BUTTON_TEST_ID}
+                            onClick={() => showConfirmation(participant, true)}
+                            type="link"
+                        >
+                            {CONSTANTS.GUEST_REQUESTS_ALLOW_TEXT}
+                        </Button>
+                    </Space>
+                </ThemeProvider>
             ),
             duration: 0,
             closeIcon: <></>,
+            style: {
+                width: `${getREM(20)}`,
+            },
         };
         notification.open(args);
     };

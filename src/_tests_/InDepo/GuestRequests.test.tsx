@@ -96,8 +96,6 @@ test("should add a notification when signalR message with joinResponse entityTyp
             content: newParticipant,
         });
     });
-    const allowButtons = await findByText(
-        `[${newParticipant.role}] ${newParticipant.name}${CONSTANTS.GUEST_REQUESTS_NOTIFICATION_TITLE}`
-    );
+    const allowButtons = await findByText(`${newParticipant.name}${CONSTANTS.GUEST_REQUESTS_NOTIFICATION_TITLE}`);
     expect(allowButtons).toBeInTheDocument();
 });

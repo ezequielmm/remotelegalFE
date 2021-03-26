@@ -8,6 +8,7 @@ import LatoLight from "../../assets/fonts/Lato/Lato-Light.ttf";
 import LatoBold from "../../assets/fonts/Lato/Lato-Bold.ttf";
 import PTMonoRegular from "../../assets/fonts/PT Mono/PTMono-Regular.ttf";
 import PTMonoBold from "../../assets/fonts/PT Mono/PTMono-Bold.ttf";
+import { getREM } from "../../constants/styles/utils";
 
 const GlobalStyle = createGlobalStyle`
     ${FontFace("Merriweather", MerriweatherRegular)};
@@ -52,6 +53,16 @@ const GlobalStyle = createGlobalStyle`
     .ant-result {
         padding: 0;
     }
+    ${({ theme }) => `
+        .ant-notification-notice-message{
+            margin-bottom: 0;
+            line-height: normal;
+        }
+        .ant-notification-notice-btn{
+            margin-top: ${getREM(theme.default.spaces[3])}
+        }
+    `}
+    
 `;
 
 export default GlobalStyle;
