@@ -49,13 +49,15 @@ const CaseModal = ({ open, handleClose, fetchCases }: IModalProps) => {
         if (loading) {
             return;
         }
+        if (caseNumber.length) {
+            setCaseNumber("");
+        }
+        if (caseNameValue.length) {
+            setValue("");
+        }
         if (data) {
-            if (caseNumber.length) {
-                setCaseNumber("");
-            }
             fetchCases();
             setDisplaySuccess(false);
-            setValue("");
         }
         handleClose();
     };
@@ -117,7 +119,7 @@ const CaseModal = ({ open, handleClose, fetchCases }: IModalProps) => {
                                 </Form.Item>
                                 <Row justify="end">
                                     <Space size="large">
-                                        <Button type="text" disabled={loading} onClick={handleClose}>
+                                        <Button type="text" disabled={loading} onClick={handleCloseAndRedirect}>
                                             Cancel
                                         </Button>
                                         <Button
