@@ -120,9 +120,9 @@ const InDepo = () => {
     }, [currentExhibit]);
 
     React.useEffect(() => {
-        if (participants.length && currentRoom.localParticipant) {
-            const localParticipantEmail = JSON.parse(currentRoom?.localParticipant.identity).email;
-            const isMuted = participants.find((participant) => participant?.email === localParticipantEmail).isMuted;
+        if (participants.length && currentRoom?.localParticipant) {
+            const localParticipantEmail = JSON.parse(currentRoom?.localParticipant?.identity)?.email;
+            const isMuted = participants.find((participant) => participant?.email === localParticipantEmail)?.isMuted;
             setInitialAudioEnabled(!isMuted);
         }
     }, [participants, currentRoom]);
