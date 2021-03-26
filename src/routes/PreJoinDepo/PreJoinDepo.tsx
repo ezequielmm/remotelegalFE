@@ -17,7 +17,7 @@ import WaitingRoom from "./WaitingRoom";
 
 const PreJoinDepo = () => {
     const { depositionID } = useParams<DepositionID>();
-    const { isAuthenticated, currentEmail } = useAuthentication();
+    const { checkAuthentication, isAuthenticated, currentEmail } = useAuthentication();
     const [step, setStep] = useState(1);
     const [waiting, setWaiting] = useState(false);
     const emailRef = useRef("");
@@ -112,15 +112,18 @@ const PreJoinDepo = () => {
             participantType: role,
         };
         passwordRef.current = password;
-        return !userStatus.participant?.isAdmitted
+        return (!userStatus.participant?.isAdmitted
             ? loginUser(emailRef.current, passwordRef.current, body)
-            : loginUser(emailRef.current, passwordRef.current);
+            : loginUser(emailRef.current, passwordRef.current)
+        ).then(() => {
+            checkAuthentication();
+        });
     };
 
     if (isAuthenticated === null || (isAuthenticated && userStatusLoading)) {
         return <Spinner />;
     }
-    if (userStatus?.participant?.isAdmitted && (userStatus.isUser || tempToken)) {
+    if (userStatus?.participant?.isAdmitted && ((isAuthenticated && userStatus.isUser) || tempToken)) {
         return <Redirect to={`${CONSTANTS.DEPOSITION_ROUTE}${depositionID}`} />;
     }
     if (isAuthenticated && userStatusError) {

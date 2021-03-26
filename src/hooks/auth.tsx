@@ -12,20 +12,22 @@ export const useAuthentication = () => {
     const location = useLocation();
     const currentEmail = useRef("");
 
+    const [checkAuthentication] = useAsyncCallback(async () => {
+        try {
+            currentEmail.current = (await Auth.currentSession()).getIdToken().decodePayload().email;
+            await Auth.currentAuthenticatedUser();
+            await Auth.currentSession();
+            return setUserIsAuthenticated(true);
+        } catch {
+            return setUserIsAuthenticated(false);
+        }
+    }, []);
+
     useEffect(() => {
-        const checkAuthentication = async () => {
-            try {
-                currentEmail.current = (await Auth.currentSession()).getIdToken().decodePayload().email;
-                await Auth.currentAuthenticatedUser();
-                await Auth.currentSession();
-                return setUserIsAuthenticated(true);
-            } catch {
-                return setUserIsAuthenticated(false);
-            }
-        };
-        checkAuthentication();
-    }, [location]);
-    return { isAuthenticated, currentEmail };
+        if (checkAuthentication) checkAuthentication();
+    }, [checkAuthentication, location]);
+
+    return { checkAuthentication, isAuthenticated, currentEmail };
 };
 
 export const useSignIn = (location, emailValue, passwordValue) => {

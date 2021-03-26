@@ -690,7 +690,7 @@ describe("It tests the registered and  not logged in user and participant flow",
         AUTH.SUCCESSFUL_SIGN_IN();
         deps.apiService.checkUserDepoStatus = jest
             .fn()
-            .mockResolvedValue(TEST_CONSTANTS.getUserDepoStatusWithParticipantNotAdmitted(true));
+            .mockResolvedValue(TEST_CONSTANTS.getUserDepoStatusWithParticipantAdmitted(true));
     });
 
     test("should show user´s email and there should only be a password input", async () => {
@@ -716,7 +716,8 @@ describe("It tests the registered and  not logged in user and participant flow",
         expect(getByText(CONSTANTS.INVALID_PASSWORD_MESSAGE)).toBeInTheDocument();
         await waitForDomChange();
     });
-    test("should call services with the right params and display waiting room", async () => {
+    test("should call services with the right params and redirect to depo", async () => {
+        Auth.signIn = jest.fn().mockImplementation(() => AUTH.VALID());
         const { getByTestId, getByText } = renderWithGlobalContext(<PreJoinDepo />, deps);
         await waitForDomChange();
         fireEvent.change(getByTestId(CONSTANTS.EMAIL_INPUT_ID), { target: { value: TEST_CONSTANTS.MOCKED_EMAIL } });
@@ -728,7 +729,7 @@ describe("It tests the registered and  not logged in user and participant flow",
         userEvent.click(getByTestId(CONSTANTS.STEP_2_BUTTON_ID));
         await waitForDomChange();
         expect(Auth.signIn).toHaveBeenCalledWith(TEST_CONSTANTS.MOCKED_EMAIL, TEST_CONSTANTS.MOCKED_PASSWORD);
-        expect(getByText(CONSTANTS.WAITING_ROOM_SUBTITLE)).toBeInTheDocument();
+        expect(getByText(`Redirected to ${CONSTANTS.DEPOSITION_ROUTE}${TEST_CONSTANTS.DEPO_ID}`)).toBeInTheDocument();
     });
     test("should show error toast if login service fails", async () => {
         AUTH.REJECTED_SIGN_IN();
@@ -743,45 +744,6 @@ describe("It tests the registered and  not logged in user and participant flow",
         userEvent.click(getByTestId(CONSTANTS.STEP_2_BUTTON_ID));
         await waitForDomChange();
         await waitForElement(() => getByText(TEST_CONSTANTS.SIGN_IN_ERROR));
-    });
-    test("should display WaitingRoom and show deny text when is not admitted", async () => {
-        const { getByTestId, getByText } = renderWithGlobalContext(<PreJoinDepo />, deps);
-        await waitForDomChange();
-        fireEvent.change(getByTestId(CONSTANTS.EMAIL_INPUT_ID), { target: { value: TEST_CONSTANTS.MOCKED_EMAIL } });
-        userEvent.click(getByTestId(CONSTANTS.STEP_1_BUTTON_ID));
-        await waitForDomChange();
-        fireEvent.change(getByTestId(CONSTANTS.PASSWORD_INPUT_ID), {
-            target: { value: TEST_CONSTANTS.MOCKED_PASSWORD },
-        });
-        userEvent.click(getByTestId(CONSTANTS.STEP_2_BUTTON_ID));
-        await waitForDomChange();
-        act(() => {
-            signalREventTriggered({
-                entityType: "joinResponse",
-                content: { isAdmitted: false },
-            });
-        });
-        const denyText = await waitForElement(() => getByText(CONSTANTS.ACCESS_DENIED_TITLE));
-        expect(denyText).toBeInTheDocument();
-    });
-    test("should display WaitingRoom and redirect to indepo when admitted", async () => {
-        const { getByTestId, getByText } = renderWithGlobalContext(<PreJoinDepo />, deps);
-        await waitForDomChange();
-        fireEvent.change(getByTestId(CONSTANTS.EMAIL_INPUT_ID), { target: { value: TEST_CONSTANTS.MOCKED_EMAIL } });
-        userEvent.click(getByTestId(CONSTANTS.STEP_1_BUTTON_ID));
-        await waitForDomChange();
-        fireEvent.change(getByTestId(CONSTANTS.PASSWORD_INPUT_ID), {
-            target: { value: TEST_CONSTANTS.MOCKED_PASSWORD },
-        });
-        userEvent.click(getByTestId(CONSTANTS.STEP_2_BUTTON_ID));
-        await waitForDomChange();
-        act(() => {
-            signalREventTriggered({
-                entityType: "joinResponse",
-                content: { isAdmitted: true },
-            });
-        });
-        expect(getByText(`Redirected to ${CONSTANTS.DEPOSITION_ROUTE}${TEST_CONSTANTS.DEPO_ID}`)).toBeInTheDocument();
     });
 });
 
