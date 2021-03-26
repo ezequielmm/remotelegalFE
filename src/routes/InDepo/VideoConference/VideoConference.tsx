@@ -98,7 +98,7 @@ const VideoConference = ({
                 {moveParticipantToFrontOfArray(participants).map((participant: RemoteParticipant, i) => (
                     <StyledParticipantContainer key={participant.sid} ref={i === 0 ? participantContainer : null}>
                         <Participant
-                            isMuted={!!(witness && participantsStatus[JSON.parse(witness?.identity)?.email]?.isMuted)}
+                            isMuted={!!participantsStatus[JSON.parse(participant.identity)?.email]?.isMuted}
                             participant={participant}
                         />
                     </StyledParticipantContainer>
