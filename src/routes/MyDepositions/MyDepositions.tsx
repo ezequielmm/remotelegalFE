@@ -1,8 +1,8 @@
 import { Row } from "antd";
 import moment from "moment-timezone";
 import React, { useState } from "react";
-import { useHistory } from "react-router";
 import styled from "styled-components";
+import { useHistory } from "react-router";
 import CardFetchError from "../../components/CardFetchError";
 import Spinner from "../../components/Spinner";
 import { Status } from "../../components/StatusPill/StatusPill";
@@ -18,12 +18,11 @@ import { Roles } from "../../models/participant";
 import { FilterCriteria } from "../../types/DepositionFilterCriteriaType";
 import MyDepositionsEmptyTable from "./MyDepositionsEmptyTable";
 
-const StyledSpace = styled(Space)`
-    width: 100%;
+const StyledSpaceItem = styled(Space.Item)`
+    overflow: hidden;
     height: 100%;
-    > *:last-child {
-        height: 100%;
-    }
+    display: flex;
+    flex-direction: column;
 `;
 
 export interface MappedDeposition {
@@ -124,7 +123,7 @@ const MyDepositions = () => {
                 !error &&
                 !errorUserIsAdmin &&
                 (mappedDepositions === undefined || mappedDepositions?.length >= 0) && (
-                    <StyledSpace direction="vertical" size="large">
+                    <Space direction="vertical" size="large" fullHeight fullWidth>
                         <Space.Item fullWidth>
                             <Row justify="space-between" style={{ width: "100%" }}>
                                 <Title level={4} noMargin weight="light" dataTestId="deposition_title">
@@ -132,7 +131,7 @@ const MyDepositions = () => {
                                 </Title>
                             </Row>
                         </Space.Item>
-                        <Space.Item fullWidth style={{ overflow: "hidden" }}>
+                        <StyledSpaceItem fullWidth>
                             <Tabs defaultActiveKey="1" onChange={onDepositionTabChange}>
                                 <Tabs.TabPane
                                     tab={`${CONSTANTS.UPCOMING_DEPOSITION_TAB_TITLE} (${totalUpcoming || 0})`}
@@ -175,8 +174,8 @@ const MyDepositions = () => {
                                 }}
                                 rowClassName={(record) => (record.status === Status.canceled ? "rowCanceled" : "")}
                             />
-                        </Space.Item>
-                    </StyledSpace>
+                        </StyledSpaceItem>
+                    </Space>
                 )}
             {loadingUserIsAdmin && <Spinner height="100%" />}
             {(error || errorUserIsAdmin) && <CardFetchError onClick={handleRefresh} />}
