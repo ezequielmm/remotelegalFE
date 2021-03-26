@@ -1,7 +1,8 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { LocalParticipant, RemoteParticipant, Room } from "twilio-video";
 import { useGetParticipantStatus } from "../../../hooks/InDepo/useParticipantStatus";
 import { TimeZones } from "../../../models/general";
+import { GlobalStateContext } from "../../../state/GlobalState";
 import Participant from "../Participant";
 import {
     StyledVideoConference,
@@ -42,6 +43,8 @@ const VideoConference = ({
     const witness = participants.find((participant) => JSON.parse(participant.identity).role === "Witness");
     const { participantsStatus } = useGetParticipantStatus();
 
+    const { state } = useContext(GlobalStateContext);
+    const { dominantSpeaker } = state.room;
     useEffect(() => {
         switch (layoutSize) {
             case LayoutSize.vertical:
@@ -55,6 +58,21 @@ const VideoConference = ({
                 break;
         }
     }, [layoutSize]);
+
+    const moveParticipantToFrontOfArray = (participantsArray) => {
+        const participantsWithoutWitnessOrBreakrooms = participantsArray.filter(
+            (participant) => isBreakroom || JSON.parse(participant.identity).role !== "Witness"
+        );
+        if (dominantSpeaker && JSON.parse(dominantSpeaker.identity).role !== "Witness") {
+            const filteredParticipantArray = participantsWithoutWitnessOrBreakrooms.filter(
+                (participant) => participant.sid !== dominantSpeaker.sid
+            );
+
+            const participantArrayWithDominantOnFront = [dominantSpeaker, ...filteredParticipantArray];
+            return participantArrayWithDominantOnFront;
+        }
+        return participantsWithoutWitnessOrBreakrooms;
+    };
 
     return (
         <StyledVideoConference
@@ -77,16 +95,14 @@ const VideoConference = ({
                     participants.filter((participant) => JSON.parse(participant.identity).role !== "Witness").length
                 }
             >
-                {participants
-                    .filter((participant) => isBreakroom || JSON.parse(participant.identity).role !== "Witness")
-                    .map((participant: RemoteParticipant, i) => (
-                        <StyledParticipantContainer key={participant.sid} ref={i === 0 ? participantContainer : null}>
-                            <Participant
-                                participant={participant}
-                                isMuted={!!participantsStatus[JSON.parse(participant.identity)?.email]?.isMuted}
-                            />
-                        </StyledParticipantContainer>
-                    ))}
+                {moveParticipantToFrontOfArray(participants).map((participant: RemoteParticipant, i) => (
+                    <StyledParticipantContainer key={participant.sid} ref={i === 0 ? participantContainer : null}>
+                        <Participant
+                            isMuted={!!(witness && participantsStatus[JSON.parse(witness?.identity)?.email]?.isMuted)}
+                            participant={participant}
+                        />
+                    </StyledParticipantContainer>
+                ))}
             </StyledAttendeesContainer>
         </StyledVideoConference>
     );
