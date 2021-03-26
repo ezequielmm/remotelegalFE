@@ -28,7 +28,6 @@ export interface IRoom {
     isCurrentExhibitOwner?: boolean;
     exhibitTab?: EXHIBIT_TAB;
     currentExhibitTabName?: string;
-    annotations?: [];
     rawAnnotations?: string;
     lastAnnotationId?: string;
     currentUser?: IUser;
@@ -55,7 +54,6 @@ export const RoomReducerInitialState: IRoom = {
     isCurrentExhibitOwner: false,
     exhibitTab: DEFAULT_ACTIVE_TAB,
     currentExhibitTabName: "",
-    annotations: [],
     lastAnnotationId: "",
     currentUser: null,
     stampLabel: "",
@@ -166,22 +164,12 @@ const RoomReducer: Reducer<IRoom, IAction> = (state: IRoom, action: IAction): IR
                 exhibitDocument: null,
                 isCurrentExhibitOwner: false,
                 stampLabel: "",
-                annotations: [],
                 lastAnnotationId: "",
             };
         case ACTION_TYPE.IN_DEPO_SET_EXHIBIT_TAB_NAME:
             return {
                 ...state,
                 currentExhibitTabName: action.payload,
-            };
-        case ACTION_TYPE.IN_DEPO_SET_EXHIBIT_ANNOTATIONS:
-            const lastAnnotationId = action.payload.annotations.length
-                ? action.payload.annotations[action.payload.annotations.length - 1]?.id
-                : state.lastAnnotationId;
-            return {
-                ...state,
-                annotations: action.payload.annotations,
-                lastAnnotationId,
             };
         case ACTION_TYPE.IN_DEPO_SET_CURRENT_USER:
             return {

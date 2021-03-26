@@ -38,13 +38,13 @@ const useSignalR = (url: string): any => {
         return null;
     }, [dispatch, signalR]);
 
-    const sendMessage = useCallback((hub, message) => signalR.send(hub, message), [signalR]);
+    const sendMessage = useCallback((hub, message) => signalR?.send(hub, message), [signalR]);
 
-    const subscribeToGroup = useCallback((group, onMessage) => signalR.on(group, onMessage), [signalR]);
+    const subscribeToGroup = useCallback((group, onMessage) => signalR?.on(group, onMessage), [signalR]);
 
-    const unsubscribeToGroup = useCallback((group) => signalR.off(group), [signalR]);
+    const unsubscribeToGroup = useCallback((group) => signalR?.off(group), [signalR]);
 
-    const unsubscribeMethodFromGroup = useCallback((group, method) => signalR.off(group, method), [signalR]);
+    const unsubscribeMethodFromGroup = useCallback((group, method) => signalR?.off(group, method), [signalR]);
 
     return { connect, stop, sendMessage, subscribeToGroup, unsubscribeToGroup, unsubscribeMethodFromGroup, signalR };
 };

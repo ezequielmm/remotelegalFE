@@ -1,5 +1,5 @@
 import { Col, Row } from "antd";
-import React, { ReactElement, useContext } from "react";
+import React, { ReactElement, useContext, useState } from "react";
 import Icon from "../../../../components/Icon";
 import PDFTronViewer from "../../../../components/PDFTronViewer";
 import Result from "../../../../components/Result";
@@ -25,7 +25,8 @@ interface Props extends PdfTronViewerProps {
     showBackButtonOnHeader?: boolean;
     showCloseButtonOnHeader?: boolean;
     showShareButtonOnHeader?: boolean;
-    annotations?: [];
+    shouldGetAnnotations?: boolean;
+    realTimeAnnotations?: boolean;
     onAnnotationChange?: (data: AnnotationPayload) => void;
     pdfTronDisableElements?: string[];
     readOnly?: boolean;
@@ -37,17 +38,20 @@ export const ExhibitViewer = ({
     showBackButtonOnHeader = true,
     showCloseButtonOnHeader = false,
     showShareButtonOnHeader = false,
-    annotations,
+    shouldGetAnnotations = false,
+    realTimeAnnotations = false,
     onAnnotationChange,
     pdfTronDisableElements = [],
     readOnly = false,
 }: Props): ReactElement => {
     const { state } = useContext(GlobalStateContext);
     const { exhibitTab, permissions } = state.room;
-    const { pending, error, documentUrl, isPublic } = useSignedUrl(file, readOnly);
+    const { error, documentUrl, isPublic } = useSignedUrl(file, readOnly);
+    const [showSpinner, setShowSpinner] = useState(true);
 
     return (
         <StyledExhibitViewerContainer>
+            {showSpinner && <Spinner className="spinner" height="100%" />}
             <ExhibitViewerHeader
                 file={file}
                 onClose={onClose}
@@ -56,7 +60,6 @@ export const ExhibitViewer = ({
                 showShareButton={showShareButtonOnHeader}
                 readOnly={isPublic}
             />
-            {pending && <Spinner />}
             {documentUrl && (
                 <PDFTronViewer
                     canStamp={
@@ -65,10 +68,12 @@ export const ExhibitViewer = ({
                     showStamp={exhibitTab === LIVE_EXHIBIT_TAB}
                     document={documentUrl}
                     filename={file?.displayName}
-                    annotations={annotations}
                     onAnnotationChange={onAnnotationChange}
                     disableElements={pdfTronDisableElements}
                     readOnly={isPublic}
+                    shouldGetAnnotations={shouldGetAnnotations}
+                    realTimeAnnotations={realTimeAnnotations}
+                    onDocumentReadyToDisplay={() => setShowSpinner(false)}
                 />
             )}
             {!!error && (

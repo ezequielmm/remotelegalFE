@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Row, Col } from "antd";
 import Space from "../../../../components/Space";
 import Result from "../../../../components/Result";
@@ -10,13 +10,11 @@ import {
     ENTERED_EXHIBITS_EMPTY_STATE_SUBTITLE,
     ENTERED_EXHIBITS_EMPTY_STATE_TITLE,
     ENTERED_EXHIBITS_TITLE,
-    EXHIBIT_TABS,
 } from "../../../../constants/exhibits";
 import { ReactComponent as EnteredExhibitsIcon } from "../../../../assets/icons/EnteredExhibits-empty.svg";
 import { ExhibitTabPaneSpacer, ScrollTableContainer } from "../styles";
 import { theme } from "../../../../constants/styles/theme";
 import ColorStatus from "../../../../types/ColorStatus";
-import { GlobalStateContext } from "../../../../state/GlobalState";
 import EnteredExhibitsTable from "./EnteredExhibitsTable";
 import { ExhibitFile } from "../../../../types/ExhibitFile";
 import ExhibitViewer from "../ExhibitViewer";
@@ -24,15 +22,16 @@ import { useEnteredExhibit } from "../../../../hooks/useEnteredExhibits";
 import { TOOLBAR_GROUP_ANNOTATE, TOOLBAR_GROUP_VIEW } from "../../../../constants/PDFTronViewer";
 
 export default function EnteredExhibits() {
-    const { state } = useContext(GlobalStateContext);
-    const { currentExhibitTabName } = state.room;
-    const { handleFetchFiles, enteredExhibits = [], enteredExhibitsPending, enteredExhibitsError } = useEnteredExhibit();
+    const {
+        handleFetchFiles,
+        enteredExhibits = [],
+        enteredExhibitsPending,
+        enteredExhibitsError,
+    } = useEnteredExhibit();
     const [selectedFile, setSelectedFile] = useState<ExhibitFile>(null);
     useEffect(() => {
-        if (currentExhibitTabName === EXHIBIT_TABS.enteredExhibits) {
-            handleFetchFiles();
-        }
-    }, [currentExhibitTabName, handleFetchFiles]);
+        handleFetchFiles();
+    }, [handleFetchFiles]);
     return (
         <ExhibitTabPaneSpacer direction="vertical" size="large">
             {!selectedFile && (

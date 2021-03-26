@@ -15,6 +15,7 @@ const Exhibits = ({ visible }: ContainerProps) => {
             <StyledLayoutContent>
                 <Tabs
                     activeKey={activeKey}
+                    destroyInactiveTabPane
                     renderTabBar={({ panes, onTabClick }) => {
                         return (
                             <ExhibitTabs

@@ -21,7 +21,6 @@ export enum ACTION_TYPE {
     IN_DEPO_START_SHARE_EXHIBIT = "IN_DEPO_START_SHARE_EXHIBIT",
     IN_DEPO_STOP_SHARE_EXHIBIT = "IN_DEPO_STOP_SHARE_EXHIBIT",
     IN_DEPO_SET_EXHIBIT_TAB_NAME = "IN_DEPO_SET_EXHIBIT_TAB_NAME",
-    IN_DEPO_SET_EXHIBIT_ANNOTATIONS = "IN_DEPO_SET_EXHIBIT_ANNOTATIONS",
     IN_DEPO_SET_CURRENT_USER = "IN_DEPO_SET_CURRENT_USER",
     IN_DEPO_SET_STAMP_LABEL = "IN_DEPO_SET_STAMP_LABEL",
     IN_DEPO_SET_EXHIBIT_DOCUMENT_INSTANCE = "IN_DEPO_SET_EXHIBIT_DOCUMENT_INSTANCE",
@@ -119,10 +118,6 @@ const actions = {
     }),
     setExhibitTabName: (payload: string) => ({
         type: ACTION_TYPE.IN_DEPO_SET_EXHIBIT_TAB_NAME,
-        payload,
-    }),
-    setExhibitAnnotations: (payload) => ({
-        type: ACTION_TYPE.IN_DEPO_SET_EXHIBIT_ANNOTATIONS,
         payload,
     }),
     removeRemoteParticipantBreakroom: (payload: Room) => ({

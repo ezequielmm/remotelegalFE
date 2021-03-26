@@ -23,10 +23,11 @@ import {
     useSignedUrl,
     useShareExhibitFile,
     useExhibitTabs,
-    useExhibitAnnotation,
+    useExhibitGetAnnotations,
+    useExhibitRealTimeAnnotations,
+    useExhibitSendAnnotation,
 } from "../../hooks/exhibits/hooks";
-import LiveExhibits from "../../routes/InDepo/Exhibits/LiveExhibits";
-import EnteredExhibits from "../../routes/InDepo/Exhibits/EnteredExhibits";
+
 jest.mock("../../hooks/exhibits/hooks", () => ({
     useUploadFile: jest.fn(),
     useFileList: jest.fn(),
@@ -34,6 +35,9 @@ jest.mock("../../hooks/exhibits/hooks", () => ({
     useShareExhibitFile: jest.fn(),
     useExhibitTabs: jest.fn(),
     useExhibitAnnotation: jest.fn(),
+    useExhibitGetAnnotations: jest.fn(),
+    useExhibitRealTimeAnnotations: jest.fn(),
+    useExhibitSendAnnotation: jest.fn(),
 }));
 
 jest.mock("react-router-dom", () => ({
@@ -77,7 +81,7 @@ beforeEach(() => {
         error: null,
         documentUrl: "",
     }));
-    useExhibitAnnotation.mockImplementation(() => ({
+    useExhibitGetAnnotations.mockImplementation(() => ({
         sendAnnotation: jest.fn(),
         annotations: [],
     }));
@@ -85,6 +89,16 @@ beforeEach(() => {
         getEnteredExhibits: jest.fn(),
         enteredExhibits: [],
         enteredExhibitsPending: false,
+    }));
+    useExhibitRealTimeAnnotations.mockImplementation(() => ({
+        realTimeAnnotation: null,
+    }));
+    useExhibitSendAnnotation.mockImplementation(() => ({
+        sendAnnotation: jest.fn(),
+    }));
+
+    useEnteredExhibit.mockImplementation(() => ({
+        handleFetchFiles: jest.fn(),
     }));
 });
 
@@ -432,138 +446,5 @@ describe("Exhibits", () => {
         expect(fileViewButton).not.toBeInTheDocument();
         const shareButton = getByTestId("view_document_share_button");
         expect(shareButton).not.toBeDisabled();
-    });
-
-    it("should display the close shared exhibit docuent when has the allowed permissions", () => {
-        useShareExhibitFile.mockImplementation(() => ({
-            sharedExhibit: { displayName: "fileName.jpg", preSignedURL: "preSignedURL", id: "documentId", close: true },
-            closeSharedExhibit: jest.fn(),
-        }));
-        useExhibitAnnotation.mockImplementation(() => ({
-            sendAnnotation: jest.fn(),
-            annotations: [],
-        }));
-        const { queryByTestId } = renderWithGlobalContext(
-            <ThemeProvider theme={theme}>
-                <LiveExhibits />
-            </ThemeProvider>
-        );
-        const fileViewButton = queryByTestId("close_document_button");
-        expect(fileViewButton).toBeInTheDocument();
-    });
-    it("should not display the close shared exhibit document when has not the allowed permissions", () => {
-        useShareExhibitFile.mockImplementation(() => ({
-            sharedExhibit: { displayName: "fileName.jpg", preSignedURL: "preSignedURL", id: "documentId" },
-            closeSharedExhibit: jest.fn(),
-        }));
-        useExhibitAnnotation.mockImplementation(() => ({
-            sendAnnotation: jest.fn(),
-            annotations: [],
-        }));
-        const { queryByTestId } = renderWithGlobalContext(
-            <ThemeProvider theme={theme}>
-                <LiveExhibits />
-            </ThemeProvider>
-        );
-        const fileViewButton = queryByTestId("close_document_button");
-        expect(fileViewButton).not.toBeInTheDocument();
-    });
-    it("should display the close shared exhibit docuent modal when after click the button", () => {
-        useShareExhibitFile.mockImplementation(() => ({
-            sharedExhibit: { displayName: "fileName.jpg", preSignedURL: "preSignedURL", id: "documentId", close: true },
-            closeSharedExhibit: jest.fn(),
-        }));
-        useExhibitAnnotation.mockImplementation(() => ({
-            sendAnnotation: jest.fn(),
-            annotations: [],
-        }));
-        const { queryByTestId, queryByText } = renderWithGlobalContext(
-            <ThemeProvider theme={theme}>
-                <LiveExhibits />
-            </ThemeProvider>
-        );
-        const closeButton = queryByTestId("close_document_button");
-        expect(closeButton).toBeInTheDocument();
-        fireEvent.click(closeButton);
-        const closeSharedExhibitModal = queryByTestId("close_shared_exhibit_modal");
-        expect(closeSharedExhibitModal).toBeInTheDocument();
-    });
-    it("should display the close shared exhibit document modal with stamped exhibit texts when is stamped", () => {
-        useShareExhibitFile.mockImplementation(() => ({
-            sharedExhibit: { displayName: "fileName.jpg", preSignedURL: "preSignedURL", id: "documentId", close: true },
-            closeSharedExhibit: jest.fn(),
-        }));
-        useExhibitAnnotation.mockImplementation(() => ({
-            sendAnnotation: jest.fn(),
-            annotations: [],
-        }));
-        const { queryByTestId, queryByText } = renderWithGlobalContext(
-            <ThemeProvider theme={theme}>
-                <LiveExhibits />
-            </ThemeProvider>,
-            getMockDeps(),
-            {
-                ...rootReducer,
-                initialState: {
-                    room: {
-                        ...rootReducer.initialState.room,
-                        isRecording: true,
-                        stampLabel: "Stamp Label",
-                    },
-                },
-            }
-        );
-        const closeButton = queryByTestId("close_document_button");
-        expect(closeButton).toBeInTheDocument();
-        fireEvent.click(closeButton);
-        const closeSharedExhibitModal = queryByTestId("close_shared_exhibit_modal");
-        expect(closeSharedExhibitModal).toBeInTheDocument();
-        const closeSharedStampedButtonTitle = queryByText(CONSTANTS.MY_EXHIBITS_CLOSE_MODAL_TITLE);
-        expect(closeSharedStampedButtonTitle).toBeInTheDocument();
-        const closeSharedStampedButtonSubtitle = queryByText(CONSTANTS.MY_EXHIBITS_CLOSE_MODAL_SUBTITLE);
-        expect(closeSharedStampedButtonSubtitle).toBeInTheDocument();
-        const closeSharedStampedPositiveButton = queryByText(CONSTANTS.MY_EXHIBITS_CLOSE_MODAL_OK_BUTTON_LABEL);
-        expect(closeSharedStampedPositiveButton).toBeInTheDocument();
-        const closeSharedStampedNegativeButton = queryByText(CONSTANTS.MY_EXHIBITS_CLOSE_MODAL_CANCEL_BUTTON_LABEL);
-        expect(closeSharedStampedNegativeButton).toBeInTheDocument();
-    });
-    it("should display the close shared exhibit document modal with not stamped exhibit texts when is not stamped", () => {
-        useShareExhibitFile.mockImplementation(() => ({
-            sharedExhibit: { displayName: "fileName.jpg", preSignedURL: "preSignedURL", id: "documentId", close: true },
-            closeSharedExhibit: jest.fn(),
-        }));
-        useExhibitAnnotation.mockImplementation(() => ({
-            sendAnnotation: jest.fn(),
-            annotations: [],
-        }));
-        const { queryByTestId, queryByText } = renderWithGlobalContext(
-            <ThemeProvider theme={theme}>
-                <LiveExhibits />
-            </ThemeProvider>,
-            getMockDeps(),
-            {
-                ...rootReducer,
-                initialState: {
-                    room: {
-                        ...rootReducer.initialState.room,
-                        isRecording: true,
-                        stampLabel: "",
-                    },
-                },
-            }
-        );
-        const closeButton = queryByTestId("close_document_button");
-        expect(closeButton).toBeInTheDocument();
-        fireEvent.click(closeButton);
-        const closeSharedExhibitModal = queryByTestId("close_shared_exhibit_modal");
-        expect(closeSharedExhibitModal).toBeInTheDocument();
-        const closeSharedStampedButtonTitle = queryByText(CONSTANTS.MY_EXHIBITS_CLOSE_NOT_STAMPED_MODAL_TITLE);
-        expect(closeSharedStampedButtonTitle).toBeInTheDocument();
-        const closeSharedStampedButtonSubtitle = queryByText(CONSTANTS.MY_EXHIBITS_CLOSE_NOT_STAMPED_MODAL_SUBTITLE);
-        expect(closeSharedStampedButtonSubtitle).toBeInTheDocument();
-        const closeSharedStampedPositiveButton = queryByText(CONSTANTS.MY_EXHIBITS_CLOSE_MODAL_CANCEL_BUTTON_LABEL);
-        expect(closeSharedStampedPositiveButton).toBeInTheDocument();
-        const closeSharedStampedNegativeButton = queryByText(CONSTANTS.MY_EXHIBITS_CLOSE_MODAL_OK_BUTTON_LABEL);
-        expect(closeSharedStampedNegativeButton).toBeInTheDocument();
     });
 });

@@ -9,6 +9,8 @@ import * as CONSTANTS from "../../constants/exhibits";
 import actions from "../../state/InDepo/InDepoActions";
 import { CoreControls } from "@pdftron/webviewer";
 import { SortOrder } from "antd/lib/table/interface";
+import useSignalR from "../useSignalR";
+import { NotificationEntityType } from "../../types/Notification";
 interface HandleFetchFilesSorterType {
     field?: Key | Key[];
     order?: SortOrder;
@@ -85,21 +87,25 @@ export const useFileList = (
 export const useSignedUrl = (file: ExhibitFile, isPublic?: boolean) => {
     const { deps } = useContext(GlobalStateContext);
     const { depositionID } = useParams<{ depositionID: string }>();
-    const [getURL, pending, error, documentData] = useAsyncCallback(async (payload) => {
-        if (file?.preSignedUrl)
-            return {
-                url: file.preSignedUrl,
-                isPublic: file.isPublic,
-            };
-        return isPublic
-            ? await deps.apiService.getSignedUrl({ depositionID, documentId: file?.id, ...payload })
-            : await deps.apiService.getPrivateSignedUrl({ documentId: file?.id, ...payload });
+    const [documentUrl, setDocumentUrl] = useState(null);
+    const [documentIsPublic, setDocumentIsPublic] = useState(null);
+    const getURLSigned = isPublic ? deps.apiService.getSignedUrl : deps.apiService.getPrivateSignedUrl;
+    const [getURL, , error] = useAsyncCallback(async (payload) => {
+        const result = await getURLSigned({ depositionID, documentId: file?.id, ...payload });
+        setDocumentUrl(result?.url);
+        setDocumentIsPublic(result.isPublic);
+        return result;
     }, []);
     useEffect(() => {
-        getURL();
-    }, [getURL]);
+        if (file?.preSignedUrl) {
+            setDocumentUrl(file?.preSignedUrl);
+            setDocumentIsPublic(file.isPublic);
+        } else {
+            getURL();
+        }
+    }, [getURL, file]);
 
-    return { getURL, pending, error, documentUrl: documentData?.url, isPublic: documentData?.isPublic };
+    return { error, documentUrl: documentUrl, isPublic: documentIsPublic };
 };
 
 export const useExhibitFileInfo = () => {
@@ -213,59 +219,58 @@ export const useShareExhibitFile = () => {
         pendingCloseSharedExhibit,
     };
 };
-export const useExhibitAnnotation = () => {
-    const [hasPollingError, setHasPollingError] = useState(false);
-    const { state, deps, dispatch } = useContext(GlobalStateContext);
+export const useExhibitGetAnnotations = () => {
+    const { deps } = useContext(GlobalStateContext);
     const { depositionID } = useParams<{ depositionID: string }>();
-    const { currentExhibit, currentExhibitTabName, annotations, lastAnnotationId } = state.room;
 
-    const [getAnnotations] = useAsyncCallback(async (payload) => {
-        const annotations = await deps.apiService.getAnnotations({ depositionID, ...payload });
-        return annotations;
+    const [getAllLatestAnnotations, , , savedAnnotations] = useAsyncCallback(async () => {
+        const annotationsResult = await deps.apiService.getAnnotations({ depositionID });
+        return annotationsResult;
     }, []);
 
-    const [sendAnnotation, sending] = useAsyncCallback(async (payload) => {
+    return {
+        getAllLatestAnnotations,
+        savedAnnotations: useMemo(() => savedAnnotations?.map((annotation) => annotation.details), [
+            savedAnnotations,
+        ]) as [],
+    };
+};
+
+export const useExhibitSendAnnotation = () => {
+    const { deps } = useContext(GlobalStateContext);
+    const { depositionID } = useParams<{ depositionID: string }>();
+    const [sendAnnotation] = useAsyncCallback(async (payload) => {
         const annotate = await deps.apiService.sendAnnotation({ depositionID, ...payload });
         return annotate;
     }, []);
 
-    useEffect(() => {
-        if (currentExhibit && currentExhibitTabName === CONSTANTS.LIVE_EXHIBIT_TAB) {
-            getAnnotations();
-        }
-    }, [currentExhibitTabName, getAnnotations, currentExhibit]);
-
-    useEffect(
-        () => {
-            const delay = setInterval(async () => {
-                try {
-                    if (sending || !currentExhibit) return;
-                    const annotationsResult = await deps.apiService.getAnnotations({
-                        depositionID,
-                        startingAnnotationId: lastAnnotationId || undefined,
-                    });
-
-                    if (annotationsResult.length) {
-                        dispatch(
-                            actions.setExhibitAnnotations({
-                                annotations: annotationsResult,
-                            })
-                        );
-                    }
-                } catch (e) {
-                    setHasPollingError(true);
-                }
-            }, CONSTANTS.EXHIBITS_SYNC_ANNOTATION_POLLING_INTERVAL);
-            if (currentExhibitTabName !== CONSTANTS.LIVE_EXHIBIT_TAB || hasPollingError) {
-                clearTimeout(delay);
-            }
-            return () => clearTimeout(delay);
-        },
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        [lastAnnotationId, currentExhibit, currentExhibitTabName, sending]
-    );
     return {
         sendAnnotation,
-        annotations: useMemo(() => annotations?.map((annotation) => annotation.details), [annotations]) as [],
+    };
+};
+
+export const useExhibitRealTimeAnnotations = () => {
+    const { state } = useContext(GlobalStateContext);
+    const { currentUser } = state.room;
+    const { subscribeToGroup, unsubscribeMethodFromGroup } = useSignalR("/depositionHub");
+    const [realTimeAnnotation, setRealTimeAnnotation] = useState(null);
+
+    useEffect(() => {
+        const onReceiveAnnotations = (message) => {
+            if (
+                message.entityType !== NotificationEntityType.annotation ||
+                (currentUser?.id && currentUser?.id === message?.content?.author?.id)
+            )
+                return;
+            setRealTimeAnnotation(message?.content?.details);
+        };
+        subscribeToGroup("ReceiveNotification", onReceiveAnnotations);
+        return () => {
+            unsubscribeMethodFromGroup("ReceiveNotification", onReceiveAnnotations);
+        };
+    }, [subscribeToGroup, unsubscribeMethodFromGroup, currentUser]);
+
+    return {
+        realTimeAnnotation,
     };
 };

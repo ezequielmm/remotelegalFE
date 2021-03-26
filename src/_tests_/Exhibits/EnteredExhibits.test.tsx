@@ -100,7 +100,7 @@ describe("Entered Exhibits", () => {
     });
     test("should be display the exhibit viewer after click on the view button", async () => {
         customDeps.apiService.getEnteredExhibits = jest.fn().mockResolvedValue(exhibits);
-        const { queryByTestId, queryByText, debug } = renderWithGlobalContext(
+        const { queryByTestId } = renderWithGlobalContext(
             <ThemeProvider theme={theme}>
                 <EnteredExhibits />
             </ThemeProvider>,
@@ -125,7 +125,7 @@ describe("Entered Exhibits", () => {
     test("should be display the exhibit share modal after click on the share button", async () => {
         customDeps.apiService.getEnteredExhibits = jest.fn().mockResolvedValue(exhibits);
         customDeps.apiService.shareExhibit = jest.fn().mockResolvedValue(true);
-        const { queryByTestId, queryByText, debug } = renderWithGlobalContext(
+        const { queryByTestId } = renderWithGlobalContext(
             <ThemeProvider theme={theme}>
                 <EnteredExhibits />
             </ThemeProvider>,
@@ -153,7 +153,7 @@ describe("Entered Exhibits", () => {
         customDeps.apiService.getEnteredExhibits = jest.fn().mockResolvedValue(exhibits);
         customDeps.apiService.getSignedUrl = jest.fn().mockResolvedValue("url");
         customDeps.apiService.getPrivateSignedUrl = jest.fn().mockResolvedValue("url");
-        const { queryByTestId, queryByText, debug } = renderWithGlobalContext(
+        const { queryByTestId } = renderWithGlobalContext(
             <ThemeProvider theme={theme}>
                 <EnteredExhibits />
             </ThemeProvider>,

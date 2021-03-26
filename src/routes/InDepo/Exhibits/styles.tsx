@@ -7,6 +7,14 @@ export const ExhibitTabPaneSpacer = styled(AntSpace)`
     width: 100%;
     overflow: hidden;
 
+    .ant-space-item {
+        position: relative;
+        .spinner {
+            position: absolute;
+            left: 50%;
+        }
+    }
+
     > :last-child {
         height: inherit;
         overflow: hidden;

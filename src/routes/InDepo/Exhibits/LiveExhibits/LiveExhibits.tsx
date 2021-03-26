@@ -8,15 +8,15 @@ import { ReactComponent as LiveExhibitsIcon } from "../../../../assets/icons/Liv
 import { ExhibitTabPaneSpacer } from "../styles";
 import { theme } from "../../../../constants/styles/theme";
 import ExhibitViewer from "../ExhibitViewer";
-import { useExhibitAnnotation, useShareExhibitFile } from "../../../../hooks/exhibits/hooks";
+import { useExhibitSendAnnotation, useShareExhibitFile } from "../../../../hooks/exhibits/hooks";
 import { TOOLBAR_GROUP_ANNOTATE, TOOLBAR_GROUP_VIEW } from "../../../../constants/PDFTronViewer";
 
 export default function LiveExhibits() {
     const { sharedExhibit, closeSharedExhibit } = useShareExhibitFile();
-    const { sendAnnotation, annotations } = useExhibitAnnotation();
+    const { sendAnnotation } = useExhibitSendAnnotation();
 
     return (
-        <ExhibitTabPaneSpacer direction="vertical" size="large">
+        <ExhibitTabPaneSpacer direction="vertical" size="large" className="live-exhibit">
             {sharedExhibit && (
                 <ExhibitViewer
                     showShareButtonOnHeader={!sharedExhibit}
@@ -24,10 +24,11 @@ export default function LiveExhibits() {
                     showCloseButtonOnHeader={sharedExhibit?.close}
                     file={sharedExhibit}
                     onClose={closeSharedExhibit}
-                    annotations={annotations}
                     onAnnotationChange={sendAnnotation}
                     pdfTronDisableElements={sharedExhibit?.isPublic ? [TOOLBAR_GROUP_ANNOTATE, TOOLBAR_GROUP_VIEW] : []}
                     readOnly={sharedExhibit?.isPublic}
+                    shouldGetAnnotations
+                    realTimeAnnotations
                 />
             )}
             {!sharedExhibit && (
