@@ -1,7 +1,7 @@
 import dataTrackMock from "./dataTrack";
 import buildTrack, { TRACK_TYPE } from "./videoTrack";
 
-export const getParticipant = (name = "test", role?): any => ({
+export const getParticipant = (name = "test", role?, email?: string): any => ({
     sid: name,
     videoTracks: new Map().set("item1", { track: buildTrack(TRACK_TYPE.video, true) }),
     audioTracks: new Map().set("item2", { track: buildTrack(TRACK_TYPE.audio, true) }),
@@ -10,6 +10,7 @@ export const getParticipant = (name = "test", role?): any => ({
     identity: JSON.stringify({
         name,
         role,
+        email,
     }),
     removeAllListeners: jest.fn(),
 });

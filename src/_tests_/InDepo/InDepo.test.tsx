@@ -77,6 +77,7 @@ jest.mock("twilio-video", () => ({
             identity: JSON.stringify({
                 name: "test1234",
                 role: "Attorney",
+                email: "test@test.com",
             }),
             removeAllListeners: jest.fn(),
         },
@@ -427,5 +428,115 @@ describe("inDepo -> Exhibits view with a shared exhibit", () => {
         expect(queryByTestId("view_document_header")).toBeInTheDocument();
         expect(queryByTestId("live_exhibits_tab")).toHaveAttribute("highlight");
         expect(queryByText("LIVE EXHIBITS")).toBeInTheDocument();
+    });
+
+    it("should the mic status be unmuted by default", async () => {
+        customDeps.apiService.getDepositionTranscriptions = jest.fn().mockResolvedValue([]);
+        customDeps.apiService.getDepositionEvents = jest.fn().mockResolvedValue([]);
+        const { queryByTestId, queryByText } = renderWithGlobalContext(
+            <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,
+            customDeps,
+            {
+                ...rootReducer,
+                initialState: {
+                    room: {
+                        ...rootReducer.initialState.room,
+                        dataTrack: dataTrackMock,
+                        currentRoom: {
+                            on: jest.fn(),
+                            off: jest.fn(),
+                            localParticipant: getParticipant("test"),
+                            participants: [],
+                        },
+                        currentExhibit,
+                    },
+                    userPermissions: { isAdmin: undefined },
+                    signalR: { signalR: null },
+                },
+            },
+            history
+        );
+
+        history.push(TESTS_CONSTANTS.TEST_ROUTE);
+        await waitForDomChange();
+
+        expect(queryByTestId("unmuted")).toBeInTheDocument();
+    });
+
+    it("should the mic status be unmuted if the current participant is unmuted after join to the deposition", async () => {
+        customDeps.apiService.getDepositionTranscriptions = jest.fn().mockResolvedValue([]);
+        customDeps.apiService.getDepositionEvents = jest.fn().mockResolvedValue([]);
+        const { queryByTestId, queryByText } = renderWithGlobalContext(
+            <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,
+            customDeps,
+            {
+                ...rootReducer,
+                initialState: {
+                    room: {
+                        ...rootReducer.initialState.room,
+                        dataTrack: dataTrackMock,
+                        currentRoom: {
+                            on: jest.fn(),
+                            off: jest.fn(),
+                            localParticipant: getParticipant("test", "Witness", "test@test.com"),
+                            participants: [],
+                        },
+                        participants: [
+                            {
+                                email: "test@test.com",
+                                isMuted: false,
+                            },
+                        ],
+                        currentExhibit,
+                    },
+                    userPermissions: { isAdmin: undefined },
+                    signalR: { signalR: null },
+                },
+            },
+            history
+        );
+
+        history.push(TESTS_CONSTANTS.TEST_ROUTE);
+        await waitForDomChange();
+
+        expect(queryByTestId("unmuted")).toBeInTheDocument();
+    });
+    it("should the mic status be muted if the current participant is muted after join to the deposition", async () => {
+        customDeps.apiService.getDepositionTranscriptions = jest.fn().mockResolvedValue([]);
+        customDeps.apiService.getDepositionEvents = jest.fn().mockResolvedValue([]);
+        const { queryByTestId, queryByText } = renderWithGlobalContext(
+            <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,
+            customDeps,
+            {
+                ...rootReducer,
+                initialState: {
+                    room: {
+                        ...rootReducer.initialState.room,
+                        dataTrack: dataTrackMock,
+                        currentRoom: {
+                            on: jest.fn(),
+                            off: jest.fn(),
+                            localParticipant: getParticipant("test", "Witness", "test@test.com"),
+                            participants: [],
+                        },
+                        participants: [
+                            {
+                                email: "test@test.com",
+                                isMuted: true,
+                            },
+                        ],
+                        currentExhibit,
+                    },
+                    userPermissions: { isAdmin: undefined },
+                    signalR: { signalR: null },
+                },
+            },
+            history
+        );
+
+        history.push(TESTS_CONSTANTS.TEST_ROUTE);
+        await waitForDomChange();
+
+        expect(queryByTestId("muted")).toBeInTheDocument();
     });
 });
