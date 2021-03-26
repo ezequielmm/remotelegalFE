@@ -4,6 +4,8 @@ import moment from "moment";
 import Space from "../../../components/Space";
 import Title from "../../../components/Typography/Title";
 import { ReactComponent as SuccessIcon } from "../../../assets/icons/Success.svg";
+import { ReactComponent as CalendarIcon } from "../../../assets/icons/calendar.svg";
+import { ReactComponent as TimeIcon } from "../../../assets/icons/time.svg";
 import { ReactComponent as CourtReporterIcon } from "../../../assets/icons/Court.Reporter.svg";
 import { ReactComponent as JobIcon } from "../../../assets/icons/job_detail.svg";
 import { ReactComponent as CaptionIcon } from "../../../assets/icons/attach-clip.svg";
@@ -44,12 +46,14 @@ const DepositionDetailsSection = ({
     const {
         participants,
         status,
+        startDate,
+        endDate,
+        timeZone,
         job,
         caption,
         isVideoRecordingNeeded,
         details,
         creationDate,
-        addedBy,
         requester,
         requesterNotes,
     } = deposition || {};
@@ -93,15 +97,21 @@ const DepositionDetailsSection = ({
         }
     }, [captionUrl]);
 
-    const getCreatedByText = () => {
-        const { firstName: creatorFirstName, lastName: creatorLastName } = addedBy || {};
+    const getFormattedDay = () => {
         const month = moment(creationDate).format("MMMM");
         const day = moment(creationDate).format("Do");
-        return `Created by ${creatorFirstName} ${creatorLastName} on ${month} ${day}`;
+        const year = moment(creationDate).format("YYYY");
+        return `${month} ${day}, ${year}`;
     };
 
     const getCaptionText = () => {
         return caption?.displayName.length > 25 ? `${caption.displayName.slice(0, 25)}...` : caption.displayName;
+    };
+
+    const getTimeText = () => {
+        return `${moment(startDate).format("HH:MM")} ${
+            endDate ? ` to ${moment(endDate).format("HH:MM")} ${timeZone}` : ""
+        }`;
     };
 
     if (loading) {
@@ -148,26 +158,38 @@ const DepositionDetailsSection = ({
                     <Row style={{ width: "100%" }}>
                         <SectionCardCol
                             colProps={{ xl: 9 }}
+                            icon={CalendarIcon}
+                            title={CONSTANTS.DEPOSITION_DETAILS_SUMMARY_SECTION_DATE_TITLE}
+                            text={moment(startDate).format(CONSTANTS.DEPOSITION_DETAILS_SUMMARY_SECTION_DATE_FORMAT)}
+                        />
+                        <SectionCardCol
+                            colProps={{ xl: 9 }}
+                            icon={TimeIcon}
+                            title={CONSTANTS.DEPOSITION_DETAILS_SUMMARY_SECTION_TIME_TITLE}
+                            text={getTimeText()}
+                        />
+                        <SectionCardCol
+                            colProps={{ xl: 6 }}
+                            icon={SuccessIcon}
+                            title={CONSTANTS.DEPOSITION_DETAILS_STATUS_TITLE}
+                            text={status}
+                        />
+                    </Row>
+                    <Row style={{ width: "100%" }}>
+                        <SectionCardCol
+                            colProps={{ xl: 9 }}
                             icon={CourtReporterIcon}
                             title={CONSTANTS.DEPOSITION_DETAILS_COURT_REPORTER_TITLE}
                             text={courtReporter?.name || CONSTANTS.DEPOSITION_NO_PARTICIPANT_TEXT}
                         />
                         <SectionCardCol
                             colProps={{ xl: 9 }}
-                            icon={SuccessIcon}
-                            title={CONSTANTS.DEPOSITION_DETAILS_STATUS_TITLE}
-                            text={status}
-                        />
-                        <SectionCardCol
-                            colProps={{ xl: 6 }}
                             icon={JobIcon}
                             title={CONSTANTS.DEPOSITION_DETAILS_JOB_TITLE}
                             text={job || CONSTANTS.DEPOSITION_NO_JOB_TEXT}
                         />
-                    </Row>
-                    <Row style={{ width: "100%" }}>
                         <SectionCardCol
-                            colProps={{ xl: 9 }}
+                            colProps={{ xl: 6 }}
                             icon={CaptionIcon}
                             title={CONSTANTS.DEPOSITION_DETAILS_CAPTION_TITLE}
                             text={!caption ? CONSTANTS.DEPOSITION_NO_TEXT : null}
@@ -183,6 +205,8 @@ const DepositionDetailsSection = ({
                                 </Button>
                             ) : null}
                         </SectionCardCol>
+                    </Row>
+                    <Row style={{ width: "100%" }}>
                         <SectionCardCol
                             colProps={{ xl: 9 }}
                             icon={VideoIcon}
@@ -206,13 +230,8 @@ const DepositionDetailsSection = ({
                     <Divider fitContent hasMargin={false} />
                 </Space>
                 <Text state={ColorStatus.disabled} block dataTestId={CONSTANTS.DEPOSITION_CREATED_TEXT_DATA_TEST_ID}>
-                    {getCreatedByText()}
+                    {`Requested by ${firstName} ${lastName} - ${companyName} on ${getFormattedDay()}`}
                 </Text>
-                <Text
-                    state={ColorStatus.disabled}
-                    block
-                    dataTestId={CONSTANTS.DEPOSITION_REQUESTED_TEXT_DATA_TEST_ID}
-                >{`Requested by ${firstName} ${lastName} | ${companyName}`}</Text>
             </SectionCard>
             <SectionCard
                 title={CONSTANTS.DEPOSITION_REQUESTER_TITLE}

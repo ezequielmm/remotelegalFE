@@ -163,6 +163,18 @@ export class ApiService {
         });
     };
 
+    rescheduleDeposition = async (depoID: string, data) => {
+        const formData = new FormData();
+        formData.set("json", JSON.stringify({ deposition: data }));
+
+        return this.request<boolean>({
+            path: `/api/depositions/${depoID}/reschedule`,
+            formData,
+            withContentType: false,
+            method: HTTP_METHOD.POST,
+        });
+    };
+
     revertCancelDeposition = async (depoID: string, data, file?, deleteCaption?) => {
         const formData = new FormData();
         if (file) {

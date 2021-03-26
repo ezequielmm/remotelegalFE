@@ -27,4 +27,23 @@ const getModalTextContent = (status: Status, deposition: DepositionModel.IDeposi
         confirmButton: CONSTANTS.DEPOSITION_DETAILS_RESCHEDULE_DEPOSITION_MODAL_CONFIRM_BUTTON,
     };
 };
+
+export const getConfirmTextContent = (status: Status, deposition: DepositionModel.IDeposition) => {
+    const witnessText = deposition.witness?.name ? `the deposition of ${deposition.witness.name}` : "the deposition";
+
+    if (status === Status.pending) {
+        return {
+            title: CONSTANTS.DEPOSITIONS_DETAILS_EDIT_MODAL_CONFIRM_RESCHEDULE_TITLE,
+            message: `Are you sure you want to reschedule ${witnessText} in the case of ${deposition.caseName}? This is still in pending status and none of the participants will be notified until the rescheduled deposition is confirmed.`,
+            cancelButton: CONSTANTS.DEPOSITION_DETAILS_EDIT_MODAL_CONFIRM_NO,
+            confirmButton: CONSTANTS.DEPOSITION_DETAILS_EDIT_MODAL_CONFIRM_YES,
+        };
+    }
+    return {
+        title: CONSTANTS.DEPOSITIONS_DETAILS_EDIT_MODAL_CONFIRM_RESCHEDULE_TITLE,
+        message: `Are you sure you want to reschedule ${witnessText} in the case of ${deposition.caseName}? All the participants will be notified by email about this update.`,
+        cancelButton: CONSTANTS.DEPOSITION_DETAILS_EDIT_MODAL_CONFIRM_NO,
+        confirmButton: CONSTANTS.DEPOSITION_DETAILS_EDIT_MODAL_CONFIRM_YES,
+    };
+};
 export default getModalTextContent;

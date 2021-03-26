@@ -44,6 +44,16 @@ export const useEditDeposition = () => {
     }, []);
 };
 
+export const useRescheduleDeposition = () => {
+    const { deps } = React.useContext(GlobalStateContext);
+
+    return useAsyncCallback(
+        async (depositionID: string, payload, file?, deleteCaption?) =>
+            deps.apiService.rescheduleDeposition(depositionID, payload, file, deleteCaption),
+        []
+    );
+};
+
 export const useRevertCancelDeposition = () => {
     const { deps } = React.useContext(GlobalStateContext);
     return useAsyncCallback(async (depositionID: string, payload, file?, deleteCaption?) => {

@@ -83,6 +83,9 @@ describe("Tests the Additional Information tab", () => {
         ];
         const month = moment(fullDeposition.creationDate).format("MMMM");
         const day = moment(fullDeposition.creationDate).format("Do");
+        const year = moment(fullDeposition.creationDate).format("YYYY");
+        const formattedDay = `${month} ${day}, ${year}`;
+
         customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
             return fullDeposition;
         });
@@ -121,17 +124,7 @@ describe("Tests the Additional Information tab", () => {
         expect(getByText(fullDeposition.details)).toBeInTheDocument();
         expect(
             getByText(
-                `Requested by ${fullDeposition.requester.firstName} ${fullDeposition.requester.lastName} | ${fullDeposition.requester.companyName}`
-            )
-        ).toBeInTheDocument();
-        expect(
-            getByText(
-                `Requested by ${fullDeposition.requester.firstName} ${fullDeposition.requester.lastName} | ${fullDeposition.requester.companyName}`
-            )
-        ).toBeInTheDocument();
-        expect(
-            getByText(
-                `Created by ${fullDeposition.addedBy.firstName} ${fullDeposition.addedBy.lastName} on ${month} ${day}`
+                `Requested by ${fullDeposition.requester.firstName} ${fullDeposition.requester.lastName} - ${fullDeposition.requester.companyName} on ${formattedDay}`
             )
         ).toBeInTheDocument();
         expect(getByText(fullDeposition.requester.emailAddress)).toBeInTheDocument();
@@ -140,7 +133,6 @@ describe("Tests the Additional Information tab", () => {
         expect(getByText(fullDeposition.participants[0].name)).toBeInTheDocument();
         expect(getAllByText(fullDeposition.status)).toHaveLength(2);
         expect(getByTestId(CONSTANTS.DEPOSITION_CREATED_TEXT_DATA_TEST_ID)).toBeInTheDocument();
-        expect(getByTestId(CONSTANTS.DEPOSITION_REQUESTED_TEXT_DATA_TEST_ID)).toBeInTheDocument();
         arrayConstants.map((constant) => expect(getByText(constant)).toBeInTheDocument());
     });
 
@@ -613,7 +605,8 @@ describe("Tests Edit Deposition Modal", () => {
         );
     });
     test("Shows toast when submitting", async () => {
-        const fullDeposition = getDepositionWithOverrideValues();
+        const { startDate } = TEST_CONSTANTS.EXPECTED_EDIT_DEPOSITION_BODY;
+        const fullDeposition = getDepositionWithOverrideValues({ startDate });
         customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
             return fullDeposition;
         });
@@ -925,7 +918,7 @@ describe("tests the cancel depo flows", () => {
         expect(customDeps.apiService.cancelDeposition).toHaveBeenCalledWith(fullDeposition.id);
     });
     test("Shows modal when reverting a canceled depo and a toast if the revert fails", async () => {
-        const startDate = moment(new Date()).add(30, "minutes").utc();
+        const { startDate } = TEST_CONSTANTS.EXPECTED_REACTIVATED_TO_PENDING_DEPO_BODY;
         const fullDeposition = getDepositionWithOverrideValues({ startDate, status: "Canceled" });
         const modalText = getModalTextContent(Status.pending, fullDeposition);
         customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
@@ -963,7 +956,7 @@ describe("tests the cancel depo flows", () => {
         );
     });
     test("Shows modal when reverting a canceled depo and a toast if the revert succeeds", async () => {
-        const startDate = moment(new Date()).add(30, "minutes").utc();
+        const { startDate } = TEST_CONSTANTS.EXPECTED_REACTIVATED_TO_PENDING_DEPO_BODY;
         const fullDeposition = getDepositionWithOverrideValues({ startDate, status: "Canceled" });
         const modalText = getModalTextContent(Status.pending, fullDeposition);
         customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
@@ -1001,7 +994,7 @@ describe("tests the cancel depo flows", () => {
         );
     });
     test("Shows modal when reverting a canceled depo to confirmed and a toast if the revert succeeds", async () => {
-        const startDate = moment(new Date()).add(30, "minutes").utc();
+        const { startDate } = TEST_CONSTANTS.EXPECTED_REACTIVATED_TO_PENDING_DEPO_BODY;
         const fullDeposition = getDepositionWithOverrideValues({ startDate, status: "Canceled" });
         const modalText = getModalTextContent(Status.confirmed, fullDeposition);
         customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
@@ -1039,7 +1032,7 @@ describe("tests the cancel depo flows", () => {
         );
     });
     test("Shows modal when reverting a canceled depo to confirmed and a toast if the revert fails", async () => {
-        const startDate = moment(new Date()).add(30, "minutes").utc();
+        const { startDate } = TEST_CONSTANTS.EXPECTED_REACTIVATED_TO_PENDING_DEPO_BODY;
         const fullDeposition = getDepositionWithOverrideValues({ startDate, status: "Canceled" });
         const modalText = getModalTextContent(Status.confirmed, fullDeposition);
         customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
@@ -1078,7 +1071,7 @@ describe("tests the cancel depo flows", () => {
     });
 
     test("Fields are disabled if depo is canceled", async () => {
-        const startDate = moment(new Date()).add(30, "minutes").utc();
+        const { startDate } = TEST_CONSTANTS.EXPECTED_REACTIVATED_TO_PENDING_DEPO_BODY;
         const fullDeposition = getDepositionWithOverrideValues({ startDate, status: "Canceled" });
         customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
             return fullDeposition;
@@ -1097,7 +1090,7 @@ describe("tests the cancel depo flows", () => {
         testIds.map((item) => expect(getByTestId(item)).toBeDisabled());
     });
     test("shouldn´t revert a depo if the file is invalid", async () => {
-        const startDate = moment(new Date()).add(30, "minutes").utc();
+        const { startDate } = TEST_CONSTANTS.EXPECTED_REACTIVATED_TO_PENDING_DEPO_BODY;
         const fullDeposition = getDepositionWithOverrideValues({ startDate, status: "Canceled" });
         customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
             return fullDeposition;

@@ -207,3 +207,46 @@ export const DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_INVALID_CANCEL_DATE_MESSAG
     "deposition_details_edit_deposition_invalid_cancel_date_message";
 export const DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_INVALID_CANCEL_DATE_MESSAGE =
     "You can´t cancel a deposition that will start in a minute";
+
+export const DATE_FORMAT = "MM/DD/YYYY";
+export const DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_DATA_TEST_ID_DATE = "date_test_id";
+export const DATE_LABEL = "Date";
+export const DATE_PLACEHOLDER = "MM/DD/YYYY";
+export const START_LABEL = "START";
+export const START_PLACEHOLDER = "hh:mm AM";
+export const END_LABEL = "END (OPTIONAL)";
+export const END_PLACEHOLDER = "hh:mm AM";
+
+export const TIME_PICKER_PROPS = {
+    allowClear: false,
+    minuteStep: 30,
+    hideDisabledOptions: true,
+    use12Hours: true,
+    format: "hh:mm A",
+    showNow: false,
+};
+
+export const DATE_PICKER_PROPS = {
+    allowClear: false,
+    format: DATE_FORMAT,
+};
+
+export const DEPOSITIONS_DETAILS_EDIT_MODAL_INVALID_DATE_DATA_TEST_ID = "deposition_details_edit_modal_invalid_date";
+export const DEPOSITIONS_DETAILS_EDIT_MODAL_INVALID_DATE = "Invalid date";
+
+export const DEPOSITIONS_DETAILS_EDIT_MODAL_INVALID_START_TIME_TEST_ID = "invalid-start-time";
+export const DEPOSITIONS_DETAILS_EDIT_MODAL_INVALID_START_TIME = "Invalid start time";
+export const DEPOSITIONS_DETAILS_EDIT_MODAL_INVALID_END_TIME_TEST_ID = "invalid-end-time";
+export const DEPOSITIONS_DETAILS_EDIT_MODAL_INVALID_END_TIME = "Invalid end time";
+
+export const DEPOSITIONS_DETAILS_EDIT_MODAL_CONFIRM_RESCHEDULE_TITLE = "Reschedule Deposition";
+export const DEPOSITION_DETAILS_EDIT_MODAL_CONFIRM_NO = "NO, KEEP IT";
+export const DEPOSITION_DETAILS_EDIT_MODAL_CONFIRM_YES = "YES, RESCHEDULE";
+export const DEPOSITION_DETAILS_EDIT_MODAL_CONFIRM_TEST_ID = "deposition_modal_edit_modal_confirm_test_id";
+
+export const DEPOSITION_DETAILS_EDIT_MODAL_TIMEZONE_LABEL = "TIME ZONE";
+
+export const DEPOSITION_DETAILS_SUMMARY_SECTION_DATE_TITLE = "DATE";
+export const DEPOSITION_DETAILS_SUMMARY_SECTION_DATE_FORMAT = "MMMM DD, YYYY";
+
+export const DEPOSITION_DETAILS_SUMMARY_SECTION_TIME_TITLE = "TIME";

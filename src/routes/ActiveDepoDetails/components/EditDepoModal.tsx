@@ -1,6 +1,7 @@
 import React, { SetStateAction, useEffect, useState } from "react";
 import { Row, Form, Tooltip, Upload, Col } from "antd";
 import styled from "styled-components";
+import moment from "moment-timezone";
 import { ReactComponent as CloseIcon } from "../../../assets/icons/close.svg";
 import { InputWrapper } from "../../../components/Input/styles";
 import Space from "../../../components/Space";
@@ -23,14 +24,20 @@ import {
     useEditDeposition,
     useCancelDeposition,
     useRevertCancelDeposition,
+    useRescheduleDeposition,
 } from "../../../hooks/activeDepositionDetails/hooks";
 import Message from "../../../components/Message";
 import { getREM } from "../../../constants/styles/utils";
 import ColorStatus from "../../../types/ColorStatus";
 import { Status } from "../../../components/StatusPill/StatusPill";
-import getModalTextContent from "../helpers/getModalTextContent";
+import getModalTextContent, { getConfirmTextContent } from "../helpers/getModalTextContent";
 import Confirm from "../../../components/Confirm";
 import isCanceledDateInvalid from "../helpers/isCanceledDateInvalid";
+import DatePicker from "../../../components/DatePicker";
+import TimePicker from "../../../components/TimePicker";
+import { TimeZones } from "../../../models/general";
+import formatToDateOffset from "../../../helpers/formatToDateOffset";
+import { theme } from "../../../constants/styles/theme";
 
 interface IModalProps {
     open: boolean;
@@ -46,6 +53,9 @@ const StyledCloseIcon = styled(CloseIcon)`
 
 const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModalProps) => {
     const INITIAL_STATE = {
+        startDate: deposition.startDate,
+        endDate: deposition.endDate,
+        timeZone: deposition.timeZone,
         status: deposition.status,
         job: deposition.job,
         caption: deposition.caption,
@@ -58,6 +68,12 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
     const [invalidFile, setInvalidFile] = useState(false);
     const [invalidCancelDate, setInvalidCancelDate] = useState(false);
     const [editDeposition, editLoading, editError, editedDeposition] = useEditDeposition();
+    const [
+        rescheduleDeposition,
+        rescheduleDepositionLoading,
+        rescheduleDepositionError,
+        rescheduledDeposition,
+    ] = useRescheduleDeposition();
     const [cancelDeposition, cancelLoading, cancelError, canceledDeposition] = useCancelDeposition();
     const [
         revertCancelDeposition,
@@ -76,6 +92,17 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
     });
     const { file, caption, deleteCaption, ...bodyWithoutFile } = formStatus;
     const isStatusCanceled = formStatus.status === Status.canceled;
+    const [invalidStartTime, setInvalidStartTime] = useState(false);
+    const [invalidEndTime, setInvalidEndTime] = useState(false);
+    const [openRescheduleModal, setRescheduleModal] = useState({
+        open: false,
+        modalContent: {
+            title: "",
+            message: "",
+            cancelButton: "",
+            confirmButton: "",
+        },
+    });
 
     const handleCloseModalAndResetFormStatus = () => {
         handleClose(false);
@@ -87,7 +114,7 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
         }, 200);
     };
     useEffect(() => {
-        if (editedDeposition || canceledDeposition || revertedCanceledDeposition) {
+        if (editedDeposition || canceledDeposition || revertedCanceledDeposition || rescheduledDeposition) {
             Message({
                 content: CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_SUCCESS_TOAST,
                 type: "success",
@@ -96,21 +123,30 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
             handleClose(false);
             setTimeout(() => fetchDeposition(), 200);
         }
-    }, [editedDeposition, fetchDeposition, handleClose, canceledDeposition, revertedCanceledDeposition]);
+    }, [
+        editedDeposition,
+        fetchDeposition,
+        handleClose,
+        canceledDeposition,
+        revertedCanceledDeposition,
+        rescheduledDeposition,
+    ]);
 
     useEffect(() => {
-        if (editError || revertCancelError || cancelError) {
+        if (editError || revertCancelError || cancelError || rescheduleDepositionError) {
             Message({
                 content: CONSTANTS.NETWORK_ERROR,
                 type: "error",
                 duration: 3,
             });
         }
-    }, [editError, revertCancelError, cancelError]);
+    }, [editError, revertCancelError, cancelError, rescheduleDepositionError]);
 
     const handleSubmit = () => {
         const isDepoConfirmedAndNowCanceled = isStatusCanceled && deposition.status === Status.confirmed;
         const isDepoReverted = deposition.status === Status.canceled && !isStatusCanceled && !invalidFile;
+        const isRescheduled =
+            deposition.startDate !== formStatus.startDate || deposition.endDate !== formStatus.endDate;
 
         if (isDepoConfirmedAndNowCanceled || isDepoReverted) {
             return setStatusModal({
@@ -125,7 +161,95 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
         if (invalidFile) {
             return null;
         }
+        if (isRescheduled) {
+            return setRescheduleModal({
+                open: true,
+                modalContent: getConfirmTextContent(formStatus.status, deposition),
+            });
+        }
         return editDeposition(deposition.id, bodyWithoutFile, file, deleteCaption);
+    };
+
+    const disabledDate = (current: any) => {
+        return (
+            current &&
+            (current.isBefore(moment().startOf("day")) || current.isAfter(moment().startOf("day").add(1, "y")))
+        );
+    };
+
+    const handleChangeDate = (current: any) => {
+        setFormStatus({ ...formStatus, startDate: current?.toString() });
+        if (current && current.isBefore(moment(new Date()).subtract(5, "m"))) {
+            setInvalidStartTime(true);
+        } else {
+            setInvalidStartTime(false);
+        }
+    };
+
+    const handleChangeStartTime = (current: any) => {
+        setFormStatus({ ...formStatus, startDate: current?.toString() });
+        if (current && formStatus.endDate && current.isAfter(formStatus.endDate)) {
+            setInvalidEndTime(true);
+        } else {
+            setInvalidEndTime(false);
+        }
+        if (current && current.isBefore(moment(new Date()).subtract(5, "m"))) {
+            setInvalidStartTime(true);
+            return;
+        }
+        setInvalidStartTime(false);
+    };
+
+    const handleChangeEndTime = (current: any) => {
+        const endTime = moment(
+            `${moment(formStatus.startDate).format("MM-DD-YY")}-${moment(current).format("HH:mm:ss")}`
+        );
+        setFormStatus({ ...formStatus, endDate: current?.toString() });
+        if (endTime && moment(endTime).isBefore(moment(formStatus.startDate))) {
+            setInvalidEndTime(true);
+            return;
+        }
+        setInvalidEndTime(false);
+    };
+
+    const handleCloseConfirmAndResetFormStatus = () => {
+        setTimeout(() => {
+            setRescheduleModal({ ...openRescheduleModal, open: false });
+            setFormStatus({
+                startDate: deposition.startDate,
+                endDate: deposition.endDate,
+                timeZone: deposition.timeZone,
+                status: formStatus.status,
+                job: formStatus.job,
+                caption: formStatus.caption,
+                isVideoRecordingNeeded: formStatus.isVideoRecordingNeeded,
+                details: formStatus.details,
+                file: formStatus.file,
+                deleteCaption: formStatus.deleteCaption,
+            });
+        }, 200);
+    };
+
+    const handleSubmitWithReschedule = () => {
+        // eslint-disable-next-line no-shadow
+        const { file, caption, deleteCaption, ...bodyWithoutFile } = formStatus;
+        setRescheduleModal({ ...openRescheduleModal, open: false });
+        if (invalidFile) {
+            return;
+        }
+        bodyWithoutFile.startDate = formatToDateOffset(
+            String(formStatus.startDate),
+            moment(formStatus.startDate).format("HH:mm:ss"),
+            formStatus.timeZone
+        );
+        if (formStatus.endDate) {
+            bodyWithoutFile.endDate = formatToDateOffset(
+                String(formStatus.startDate),
+                moment(formStatus.endDate).format("HH:mm:ss"),
+                formStatus.timeZone
+            );
+        }
+        rescheduleDeposition(deposition.id, bodyWithoutFile, file, deleteCaption);
     };
 
     return (
@@ -135,7 +259,7 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
             centered
             onlyBody
             onCancel={() => {
-                if (editLoading || cancelLoading || revertCancelLoading) {
+                if (editLoading || cancelLoading || revertCancelLoading || rescheduleDepositionLoading) {
                     return;
                 }
                 handleCloseModalAndResetFormStatus();
@@ -155,6 +279,17 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
                 positiveLabel={openStatusModal.modalContent.confirmButton}
                 negativeLabel={openStatusModal.modalContent.cancelButton}
             />
+            <Confirm
+                onNegativeClick={handleCloseConfirmAndResetFormStatus}
+                onPositiveClick={handleSubmitWithReschedule}
+                visible={!openStatusModal.open && openRescheduleModal.open}
+                title={openRescheduleModal.modalContent.title}
+                subTitle={openRescheduleModal.modalContent.message}
+                positiveLabel={openRescheduleModal.modalContent.confirmButton}
+                negativeLabel={openRescheduleModal.modalContent.cancelButton}
+            >
+                <span data-testid={CONSTANTS.DEPOSITION_DETAILS_EDIT_MODAL_CONFIRM_TEST_ID} />
+            </Confirm>
             <Space direction="vertical" size="large" fullWidth>
                 <Space.Item fullWidth>
                     <Title
@@ -168,7 +303,7 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
                 </Space.Item>
                 <Space.Item fullWidth>
                     <Form layout="vertical">
-                        <Row>
+                        <Row gutter={theme.default.baseUnit}>
                             <Col span={11}>
                                 <Form.Item label="Status" htmlFor="status">
                                     <InputWrapper>
@@ -195,6 +330,106 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
                                         </Select>
                                     </InputWrapper>
                                 </Form.Item>
+                                <Form.Item label={CONSTANTS.DATE_LABEL}>
+                                    <InputWrapper>
+                                        <DatePicker
+                                            disabled={isStatusCanceled}
+                                            data-testid={
+                                                CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_DATA_TEST_ID_DATE
+                                            }
+                                            ariel-label="start date"
+                                            value={moment(new Date(formStatus.startDate))}
+                                            format={CONSTANTS.FORMAT_DATE}
+                                            name="date"
+                                            onChange={handleChangeDate}
+                                            allowClear={false}
+                                            disabledDate={disabledDate}
+                                        />
+                                    </InputWrapper>
+                                </Form.Item>
+                            </Col>
+                        </Row>
+                        <Row gutter={theme.default.baseUnit}>
+                            <Col span={9}>
+                                <Form.Item label={CONSTANTS.START_LABEL}>
+                                    <InputWrapper>
+                                        <TimePicker
+                                            disabled={isStatusCanceled}
+                                            defaultValue={moment(formStatus.startDate)}
+                                            onChange={handleChangeStartTime}
+                                            placeholder={CONSTANTS.START_PLACEHOLDER}
+                                            value={moment(formStatus.startDate)}
+                                            invalid={invalidStartTime}
+                                            {...CONSTANTS.TIME_PICKER_PROPS}
+                                        />
+                                        {invalidStartTime && (
+                                            <Text
+                                                dataTestId={
+                                                    CONSTANTS.DEPOSITIONS_DETAILS_EDIT_MODAL_INVALID_START_TIME_TEST_ID
+                                                }
+                                                block
+                                                height={1}
+                                                size="small"
+                                                state={ColorStatus.error}
+                                            >
+                                                {CONSTANTS.DEPOSITIONS_DETAILS_EDIT_MODAL_INVALID_START_TIME}
+                                            </Text>
+                                        )}
+                                    </InputWrapper>
+                                </Form.Item>
+                            </Col>
+                            <Col span={9}>
+                                <Form.Item label={CONSTANTS.END_LABEL}>
+                                    <InputWrapper>
+                                        <TimePicker
+                                            disabled={isStatusCanceled}
+                                            defaultValue={formStatus.endDate ? moment(formStatus.endDate) : null}
+                                            value={formStatus.endDate ? moment(formStatus.endDate) : null}
+                                            onChange={handleChangeEndTime}
+                                            placeholder={CONSTANTS.END_PLACEHOLDER}
+                                            {...CONSTANTS.TIME_PICKER_PROPS}
+                                            allowClear
+                                        />
+                                        {invalidEndTime && (
+                                            <Text
+                                                dataTestId={
+                                                    CONSTANTS.DEPOSITIONS_DETAILS_EDIT_MODAL_INVALID_END_TIME_TEST_ID
+                                                }
+                                                block
+                                                height={1}
+                                                size="small"
+                                                state={ColorStatus.error}
+                                            >
+                                                {CONSTANTS.DEPOSITIONS_DETAILS_EDIT_MODAL_INVALID_END_TIME}
+                                            </Text>
+                                        )}
+                                    </InputWrapper>
+                                </Form.Item>
+                            </Col>
+                            <Col span={6}>
+                                <Form.Item label={CONSTANTS.DEPOSITION_DETAILS_EDIT_MODAL_TIMEZONE_LABEL}>
+                                    <InputWrapper>
+                                        <Select
+                                            disabled={isStatusCanceled}
+                                            data-testid={
+                                                CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_DATA_TEST_ID_STATUS
+                                            }
+                                            aria-label="time zone"
+                                            value={formStatus.timeZone}
+                                            onChange={(value) => setFormStatus({ ...formStatus, timeZone: value })}
+                                        >
+                                            {Object.keys(TimeZones).map((item) => (
+                                                <Select.Option data-testid={item} value={item} key={item}>
+                                                    {item}
+                                                </Select.Option>
+                                            ))}
+                                        </Select>
+                                    </InputWrapper>
+                                </Form.Item>
+                            </Col>
+                        </Row>
+                        <Row gutter={theme.default.baseUnit}>
+                            <Col span={11}>
                                 <Form.Item label="JOB #" htmlFor="job">
                                     <InputWrapper>
                                         <Input
@@ -344,7 +579,13 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
                                     data-testid={
                                         CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_CONFIRM_BUTTON_TEST_ID
                                     }
-                                    disabled={editLoading || cancelLoading || revertCancelLoading}
+                                    disabled={
+                                        editLoading ||
+                                        cancelLoading ||
+                                        revertCancelLoading ||
+                                        invalidStartTime ||
+                                        invalidEndTime
+                                    }
                                     loading={editLoading || cancelLoading || revertCancelLoading}
                                     htmlType="submit"
                                     type="primary"
