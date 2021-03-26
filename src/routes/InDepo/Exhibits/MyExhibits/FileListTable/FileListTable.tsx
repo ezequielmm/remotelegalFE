@@ -1,7 +1,5 @@
 import React, { useContext, useState } from "react";
 import { Tooltip } from "antd";
-import { TableProps } from "antd/lib/table";
-import { DefaultRecordType } from "rc-table/lib/interface";
 import Column from "antd/lib/table/Column";
 import { theme as GlobalTheme } from "../../../../../constants/styles/theme";
 import { getREM } from "../../../../../constants/styles/utils";
@@ -24,8 +22,9 @@ import ExhibitSharingModal from "../../ExhibitViewer/ExhibitSharingModal";
 import ColorStatus from "../../../../../types/ColorStatus";
 import { GlobalStateContext } from "../../../../../state/GlobalState";
 import { useShareExhibitFile } from "../../../../../hooks/exhibits/hooks";
+import { ITableProps } from "../../../../../components/Table/Table";
 
-interface IFileListTable extends TableProps<DefaultRecordType> {
+interface IFileListTable extends ITableProps {
     onClickViewFile: (item: any) => void;
     onOptionsConfirmOk?: () => void;
 }

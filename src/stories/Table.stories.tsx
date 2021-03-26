@@ -304,3 +304,57 @@ ExhibitsTable.args = {
 ExhibitsTable.parameters = {
     backgrounds: { default: ThemeMode.default },
 };
+
+const data = [
+    {
+        title: "Text of example",
+        action: false,
+    },
+    {
+        title: "Text of example",
+        action: true,
+    },
+    {
+        title: "Text of example",
+        description: "Sample long text to display two lines of text",
+        action: true,
+    },
+    {
+        title: "Sample long text to display two lines of text",
+        action: true,
+    },
+];
+
+const columns = [
+    {
+        title: "Title",
+        dataIndex: "title",
+        key: "title",
+        width: theme.default.baseUnit * theme.default.spaces[6] * 12,
+    },
+    {
+        title: "Description",
+        key: "description",
+        dataIndex: "description",
+        render: (text) => <small>{text}</small>,
+        width: theme.default.baseUnit * theme.default.spaces[6] * 12,
+    },
+    {
+        title: "Action",
+        key: "action",
+        render: (d) =>
+            d.action && (
+                <Button size="small" type="primary">
+                    CTA
+                </Button>
+            ),
+    },
+];
+
+export const TableRowSizes = Template.bind({});
+TableRowSizes.args = {
+    dataSource: data,
+    columns,
+    sortDirections: ["descend", "ascend"],
+    pagination: false,
+};

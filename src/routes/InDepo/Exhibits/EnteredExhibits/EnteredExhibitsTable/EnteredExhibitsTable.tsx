@@ -1,7 +1,5 @@
 import React, { useContext, useState } from "react";
 import { Tooltip } from "antd";
-import { TableProps } from "antd/lib/table";
-import { DefaultRecordType } from "rc-table/lib/interface";
 import Column from "antd/lib/table/Column";
 import { theme as GlobalTheme } from "../../../../../constants/styles/theme";
 import { getREM } from "../../../../../constants/styles/utils";
@@ -17,12 +15,12 @@ import moment from "moment-timezone";
 import { mapTimeZone } from "../../../../../models/general";
 import ExhibitSharingModal from "../../ExhibitViewer/ExhibitSharingModal";
 import { useShareExhibitFile } from "../../../../../hooks/exhibits/hooks";
+import { ITableProps } from "../../../../../components/Table/Table";
 
-interface IEnteredExhibitsTable extends TableProps<DefaultRecordType> {
+interface IEnteredExhibitsTable extends ITableProps {
     onClickViewFile: (item: any) => void;
 }
-
-const EnteredExhibitsTable = (props: IEnteredExhibitsTable) => {
+const EnteredExhibitsTable = ({ onClickViewFile, ...props }: IEnteredExhibitsTable) => {
     const { state } = useContext(GlobalStateContext);
     const { timeZone } = state.room;
     const { isRecording } = state.room;
@@ -99,7 +97,7 @@ const EnteredExhibitsTable = (props: IEnteredExhibitsTable) => {
                             type="text"
                             size="small"
                             data-testid="file_list_view_button"
-                            onClick={() => props.onClickViewFile(file)}
+                            onClick={() => onClickViewFile(file)}
                         >
                             View
                         </Button>

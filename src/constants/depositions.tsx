@@ -24,10 +24,13 @@ export const REQUESTER_BY_COLUMN = {
     title: "REQUESTER",
     field: "requester",
     render: (text) => <small>{text}</small>,
+    width: "13%",
 };
 export const LAW_COLUMN = {
     title: "LAW FIRM",
     field: "company",
+    ellipsis: true,
+    width: "11%",
     render: (text) => (
         <small>
             <b>{text || "-"}</b>
@@ -38,8 +41,8 @@ export const CASE_COLUMN = {
     title: "CASE",
     field: "caseName",
     ellipsis: true,
-    render: (text) => <small>{text}</small>,
     width: "13%",
+    render: (text) => <small>{text}</small>,
 };
 export const DATE_COLUMN = {
     title: "DATE AND TIME",
@@ -50,7 +53,7 @@ export const DATE_COLUMN = {
             <small>{time}</small>
         </>
     ),
-    width: 170,
+    width: "15%",
 };
 export const WITNESS_COLUMN = {
     title: "WITNESS",
@@ -67,9 +70,10 @@ export const COURT_REPORTER_COLUMN = {
     title: "COURT REPORTER",
     sorter: false,
     field: "courtReporter",
-    render: (text) => text || "-",
+    render: (text) => <small>{text || "-"}</small>,
+    width: "13%",
 };
-export const JOB_COLUMN = { title: "JOB#", field: "job", render: (text) => text || "-", width: "6.5%" };
+export const JOB_COLUMN = { title: "JOB#", field: "job", render: (text) => <small>{text || "-"}</small>, width: "8%" };
 export const getActionColumns = (history) => ({
     render: ({ id, status }: MappedDeposition) => {
         const isCompleted = status === Status.completed;
@@ -91,7 +95,7 @@ export const getActionColumns = (history) => ({
         );
     },
     sorter: false,
-    width: 60,
+    width: 90,
 });
 
 export const getDepositionColumns = (history: History, isAdmin?: boolean) =>

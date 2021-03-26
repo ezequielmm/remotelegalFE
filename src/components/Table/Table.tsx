@@ -5,19 +5,22 @@ import { TableProps } from "antd/lib/table/Table";
 import styled from "styled-components";
 import { getREM, hexToRGBA, getWeightNumber, getPX } from "../../constants/styles/utils";
 import { ThemeMode } from "../../types/ThemeType";
+import useWindowSize from "../../hooks/useWindowSize";
 
-interface ITableProps extends TableProps<DefaultRecordType> {
-    ref?: React.MutableRefObject<any>;
+export interface ITableProps extends Omit<TableProps<DefaultRecordType>, "scroll"> {
     cursorPointer?: boolean;
+    scroll?: boolean;
 }
 
-const StyledTable = styled(Table)<Pick<ITableProps, "cursorPointer">>`
+const StyledTable = styled(Table)<TableProps<DefaultRecordType> & Pick<ITableProps, "cursorPointer">>`
     ${({ theme, scroll, cursorPointer }) => {
         const { fontSizes, spaces, borderRadiusBase } = theme.default;
         const { neutrals, disabled, primary, inDepoBlue, inDepoNeutrals } = theme.colors;
 
         const styles = `
             &.ant-table-wrapper {
+                ${scroll ? "height: 100%;" : ""}
+
                 ${
                     theme.mode === ThemeMode.inDepo
                         ? `
@@ -135,19 +138,32 @@ const StyledTable = styled(Table)<Pick<ITableProps, "cursorPointer">>`
                     }
                 }
 
+                .ant-table-header {
+                    ${
+                        scroll
+                            ? `
+                            colgroup col:last-child {
+                                width: 24px !important;
+                                min-width: 24px !important;
+                            }
+                            `
+                            : ""
+                    }
+                }
+
                 table {
                     border-radius: 0;
                     border-spacing: ${theme.mode === ThemeMode.inDepo ? "" : `0 ${getREM(spaces[3])};`};
 
                     .ant-table-thead > tr > th:not(.ant-table-column-has-sorters), 
                     .ant-table tfoot > tr > th:not(.ant-table-column-has-sorters) {
-                        padding: 10px 0 10px ${getREM(spaces[4])};
+                        padding: 10px ${getREM(spaces[6])};
                     }
 
                     thead.ant-table-thead > tr > th.ant-table-cell.ant-table-selection-column,
                     tbody.ant-table-tbody > tr > td.ant-table-cell.ant-table-selection-column {
                         text-align: center;
-                        padding-left: ${getREM(spaces[8])};
+                        padding-left: ${getREM(spaces[6])};
                         padding-right: ${getREM(spaces[6])};
 
                         .ant-checkbox-wrapper {
@@ -178,11 +194,11 @@ const StyledTable = styled(Table)<Pick<ITableProps, "cursorPointer">>`
                                 }
                                 &:last-child {
                                     .ant-table-column-sorters {
-                                        padding-right: ${getREM(spaces[9])};
+                                        padding-right: ${getREM(spaces[6])};
                                     } 
                                 }
                                 .ant-table-column-sorters {
-                                    padding: 10px 0 10px ${getREM(spaces[4])};
+                                    padding: 10px ${getREM(spaces[4])};
                                     .active {
                                         color: ${theme.mode === ThemeMode.inDepo ? inDepoBlue[4] : ""};
                                     }
@@ -230,6 +246,7 @@ const StyledTable = styled(Table)<Pick<ITableProps, "cursorPointer">>`
                                           )}`
                                 };
                                 padding: ${getREM(spaces[4])};
+                                height: ${getREM(spaces[10] * 2)};
                                 color: ${theme.mode === ThemeMode.inDepo ? neutrals[6] : ""};
                                 border-bottom-color: ${theme.mode === ThemeMode.inDepo ? disabled[9] : ""};
                                 &:first-child {
@@ -295,10 +312,25 @@ const StyledTable = styled(Table)<Pick<ITableProps, "cursorPointer">>`
     }}
 `;
 
-const table = forwardRef((props: ITableProps, ref: React.MutableRefObject<any>) => {
+const table = forwardRef(({ scroll, ...props }: ITableProps) => {
+    const [windowHeight] = useWindowSize();
+    const [tableScrollHeight, setTableScrollHeight] = React.useState<number>(0);
+    const tableRef = React.useRef(null);
+
+    React.useEffect(() => {
+        const tableWrapper: HTMLElement =
+            (tableRef.current?.getElementsByClassName("ant-table-wrapper")[0] as HTMLElement) || null;
+        const tableHeader: HTMLElement =
+            (tableRef.current?.getElementsByClassName("ant-table-thead")[0] as HTMLElement) || null;
+        const wrapperHeight: number = tableWrapper?.offsetHeight || 0;
+        const headerHeight: number = tableHeader?.offsetHeight || 0;
+        const tableContentHeight: number = wrapperHeight && headerHeight ? wrapperHeight - headerHeight : 0;
+        setTableScrollHeight(tableContentHeight);
+    }, [props.dataSource, windowHeight]);
+
     return (
-        <div ref={ref} style={{ height: "100%", width: "100%" }}>
-            <StyledTable {...props} />
+        <div ref={tableRef} style={{ height: "100%", width: "100%" }}>
+            <StyledTable {...props} scroll={scroll && props.dataSource ? { y: tableScrollHeight } : null} />
         </div>
     );
 });

@@ -1,16 +1,14 @@
 import React from "react";
 import { Tooltip } from "antd";
-import { TableProps } from "antd/lib/table";
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { DefaultRecordType } from "rc-table/lib/interface";
 import Column from "antd/lib/table/Column";
 import Table from "../../../../components/Table";
 import { StyledFileNameCell } from "./styles";
 import FileIcon from "../../../../components/FileIcon";
 import Text from "../../../../components/Typography/Text";
 import ColorStatus from "../../../../types/ColorStatus";
+import { ITableProps } from "../../../../components/Table/Table";
 
-interface IEnteredExhibitsTable extends TableProps<DefaultRecordType> {}
+interface IEnteredExhibitsTable extends ITableProps {}
 
 const EnteredExhibitsTable = (props: IEnteredExhibitsTable) => {
     return (

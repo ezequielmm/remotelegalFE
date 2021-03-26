@@ -1,4 +1,4 @@
-import { Row, Space } from "antd";
+import { Row } from "antd";
 import moment from "moment-timezone";
 import React, { useState } from "react";
 import { useHistory } from "react-router";
@@ -7,13 +7,13 @@ import CardFetchError from "../../components/CardFetchError";
 import Spinner from "../../components/Spinner";
 import { Status } from "../../components/StatusPill/StatusPill";
 import Table from "../../components/Table";
+import Space from "../../components/Space";
 import Tabs from "../../components/Tabs";
 import Title from "../../components/Typography/Title";
 import * as CONSTANTS from "../../constants/depositions";
 import { dateToUTCString } from "../../helpers/dateToUTCString";
 import { useFetchDepositions } from "../../hooks/depositions/hooks";
 import { useUserIsAdmin } from "../../hooks/users/hooks";
-import useWindowSize from "../../hooks/useWindowSize";
 import { Roles } from "../../models/participant";
 import { FilterCriteria } from "../../types/DepositionFilterCriteriaType";
 import MyDepositionsEmptyTable from "./MyDepositionsEmptyTable";
@@ -23,13 +23,6 @@ const StyledSpace = styled(Space)`
     height: 100%;
     > *:last-child {
         height: 100%;
-    }
-
-    .ant-table-wrapper {
-        margin-top: -24px;
-        table tbody.ant-table-tbody > tr.ant-table-placeholder {
-            cursor: default;
-        }
     }
 `;
 
@@ -68,9 +61,6 @@ const MyDepositions = () => {
     const [checkIfUserIsAdmin, loadingUserIsAdmin, errorUserIsAdmin, userIsAdmin] = useUserIsAdmin();
     const [sorting, setSorting] = useState(null);
     const [filterCriteria, setFilterCriteria] = useState<FilterCriteria>(FilterCriteria.UPCOMING);
-    const [, windowHeight] = useWindowSize();
-    const [tableScrollHeight, setTableScrollHeight] = React.useState<number>(0);
-    const tableRef = React.useRef(null);
 
     React.useEffect(() => {
         checkIfUserIsAdmin();
@@ -95,18 +85,6 @@ const MyDepositions = () => {
             }),
         [depositions]
     );
-
-    React.useEffect(() => {
-        if (userIsAdmin === undefined) return;
-        const tableWrapper: HTMLElement =
-            (tableRef.current?.getElementsByClassName("ant-table-wrapper")[0] as HTMLElement) || null;
-        const tableHeader: HTMLElement =
-            (tableRef.current?.getElementsByClassName("ant-table-header")[0] as HTMLElement) || null;
-        const wrapperHeight: number = tableWrapper?.offsetHeight || 0;
-        const headerHeight: number = tableHeader?.offsetHeight || 0;
-        const tableContentHeight: number = wrapperHeight && headerHeight ? wrapperHeight - headerHeight : 0;
-        setTableScrollHeight(tableContentHeight);
-    }, [userIsAdmin, depositions, windowHeight]);
 
     const handleRefresh = () => {
         if (error) refreshList();
@@ -147,54 +125,57 @@ const MyDepositions = () => {
                 !errorUserIsAdmin &&
                 (mappedDepositions === undefined || mappedDepositions?.length >= 0) && (
                     <StyledSpace direction="vertical" size="large">
-                        <Row justify="space-between">
-                            <Title level={4} noMargin weight="light" dataTestId="deposition_title">
-                                My Depositions
-                            </Title>
-                        </Row>
-                        <Tabs defaultActiveKey="1" onChange={onDepositionTabChange}>
-                            <Tabs.TabPane
-                                tab={`${CONSTANTS.UPCOMING_DEPOSITION_TAB_TITLE} (${totalUpcoming})`}
-                                key={FilterCriteria.UPCOMING}
+                        <Space.Item fullWidth>
+                            <Row justify="space-between" style={{ width: "100%" }}>
+                                <Title level={4} noMargin weight="light" dataTestId="deposition_title">
+                                    My Depositions
+                                </Title>
+                            </Row>
+                        </Space.Item>
+                        <Space.Item fullWidth style={{ overflow: "hidden" }}>
+                            <Tabs defaultActiveKey="1" onChange={onDepositionTabChange}>
+                                <Tabs.TabPane
+                                    tab={`${CONSTANTS.UPCOMING_DEPOSITION_TAB_TITLE} (${totalUpcoming || 0})`}
+                                    key={FilterCriteria.UPCOMING}
+                                />
+                                <Tabs.TabPane
+                                    tab={`${CONSTANTS.PAST_DEPOSITION_TAB_TITLE} (${totalPast || 0})`}
+                                    key={FilterCriteria.PAST}
+                                />
+                            </Tabs>
+                            <Table
+                                data-testid="my_depositions_table"
+                                cursorPointer={userIsAdmin}
+                                onRow={({ id, status }) => {
+                                    return {
+                                        onClick: () => {
+                                            if (userIsAdmin) {
+                                                return status !== Status.completed
+                                                    ? history.push(`${CONSTANTS.DEPOSITION_DETAILS_ROUTE}${id}`)
+                                                    : history.push(`${CONSTANTS.DEPOSITION_POST_DEPO_ROUTE}${id}`);
+                                            }
+                                            return null;
+                                        },
+                                    };
+                                }}
+                                rowKey="id"
+                                loading={loading}
+                                dataSource={mappedDepositions || []}
+                                columns={depositionColumns}
+                                onChange={(page, filter, sorter) => {
+                                    setSorting(sorter);
+                                    handleListChange(page, getFilterParam(filterCriteria), sorter);
+                                }}
+                                sortDirections={["descend", "ascend"]}
+                                pagination={false}
+                                scroll
+                                style={{ height: "100%" }}
+                                locale={{
+                                    emptyText: <MyDepositionsEmptyTable type={filterCriteria} />,
+                                }}
+                                rowClassName={(record) => (record.status === Status.canceled ? "rowCanceled" : "")}
                             />
-                            <Tabs.TabPane
-                                tab={`${CONSTANTS.PAST_DEPOSITION_TAB_TITLE} (${totalPast})`}
-                                key={FilterCriteria.PAST}
-                            />
-                        </Tabs>
-                        <Table
-                            data-testid="my_depositions_table"
-                            cursorPointer={userIsAdmin}
-                            onRow={({ id, status }) => {
-                                return {
-                                    onClick: () => {
-                                        if (userIsAdmin) {
-                                            return status !== Status.completed
-                                                ? history.push(`${CONSTANTS.DEPOSITION_DETAILS_ROUTE}${id}`)
-                                                : history.push(`${CONSTANTS.DEPOSITION_POST_DEPO_ROUTE}${id}`);
-                                        }
-                                        return null;
-                                    },
-                                };
-                            }}
-                            ref={tableRef}
-                            rowKey="id"
-                            loading={loading}
-                            dataSource={mappedDepositions || []}
-                            columns={depositionColumns}
-                            onChange={(page, filter, sorter) => {
-                                setSorting(sorter);
-                                handleListChange(page, getFilterParam(filterCriteria), sorter);
-                            }}
-                            sortDirections={["descend", "ascend"]}
-                            pagination={false}
-                            scroll={mappedDepositions ? { y: tableScrollHeight } : null}
-                            style={{ height: "100%" }}
-                            locale={{
-                                emptyText: <MyDepositionsEmptyTable type={filterCriteria} />,
-                            }}
-                            rowClassName={(record) => (record.status === Status.canceled ? "rowCanceled" : "")}
-                        />
+                        </Space.Item>
                     </StyledSpace>
                 )}
             {loadingUserIsAdmin && <Spinner height="100%" />}
