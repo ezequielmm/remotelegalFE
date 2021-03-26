@@ -27,8 +27,16 @@ const useWebSocket = (url: string, onMessage: (evt: MessageEvent) => void, withA
     );
 
     const [sendMessage] = useAsyncCallback(
-        async ({ message, extraUrl }: { message: ArrayBuffer | string; extraUrl: string }) => {
-            if (ws === null || ws.readyState === ws.CLOSED || ws.readyState === ws.CLOSED) {
+        async ({
+            message,
+            extraUrl,
+            reconnect,
+        }: {
+            message: ArrayBuffer | string;
+            extraUrl: string;
+            reconnect: boolean;
+        }) => {
+            if (reconnect || ws === null || ws.readyState === ws.CLOSED || ws.readyState === ws.CLOSED) {
                 const newWs: WebSocket = await connectWebSocket(extraUrl || "");
                 newWs.onopen = () => newWs.send(message);
                 setWs(newWs);

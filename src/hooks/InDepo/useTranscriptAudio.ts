@@ -32,18 +32,23 @@ const useTranscriptAudio = () => {
     const [sendMessage] = useWebSocket(`/transcriptions`, undefined, true);
 
     const [transcriptAudio] = useAsyncCallback(
-        async (audio: ArrayBuffer | string, sampleRate: number) => {
-            if (isRecording)
-                sendMessage({ message: audio, extraUrl: `depositionId=${depositionID}&sampleRate=${sampleRate}` });
+        async (audio: ArrayBuffer | string, newSampleRate: number, reconnect: boolean) => {
+            if (isRecording) {
+                sendMessage({
+                    message: audio,
+                    extraUrl: `depositionId=${depositionID}&sampleRate=${newSampleRate}`,
+                    reconnect,
+                });
+            }
         },
         [isRecording, sendMessage]
     );
 
     const [stopAudio] = useAsyncCallback(
-        async (sampleRate: number) => {
+        async (newSampleRate: number) => {
             sendMessage({
                 message: JSON.stringify({ offRecord: true }),
-                extraUrl: `depositionId=${depositionID}&sampleRate=${sampleRate}`,
+                extraUrl: `depositionId=${depositionID}&sampleRate=${newSampleRate}`,
             });
         },
         [sendMessage]

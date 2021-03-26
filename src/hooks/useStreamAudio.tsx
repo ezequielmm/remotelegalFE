@@ -36,8 +36,11 @@ export default () => {
                     const buffer: ArrayBuffer =
                         typeof event.target.result !== "string" ? event.target.result : new ArrayBuffer(0);
                     const newSampleRate = new Int32Array(buffer.slice(24, 28))[0];
-                    if (newSampleRate !== sampleRate) setSampleRate(newSampleRate);
-                    transcriptAudio(buffer, newSampleRate);
+                    const reconnect = newSampleRate !== sampleRate;
+                    if (reconnect) {
+                        setSampleRate(newSampleRate);
+                    }
+                    transcriptAudio(buffer, newSampleRate, reconnect);
                 };
                 fileReader.readAsArrayBuffer(e.data);
             };
