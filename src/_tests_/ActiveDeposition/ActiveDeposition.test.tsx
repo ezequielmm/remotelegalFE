@@ -705,7 +705,71 @@ describe("Tests Edit Deposition Modal", () => {
         await waitForDomChange();
         await waitForElement(() => getAllByText(CONSTANTS.NETWORK_ERROR));
     });
-
+    test("Show an invalid time label when the date is before startDate", async () => {
+        const startDate = moment().add(1, "d").format(CONSTANTS.FORMAT_DATE);
+        const newDate = moment().format(CONSTANTS.FORMAT_DATE);
+        const fullDeposition = getDepositionWithOverrideValues({ startDate });
+        customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
+            return fullDeposition;
+        });
+        const { getAllByTestId, queryByTestId } = renderWithGlobalContext(<ActiveDepositionDetails />, customDeps);
+        await waitForDomChange();
+        const editButton = getAllByTestId(CONSTANTS.DEPOSITION_CARD_DETAILS_EDIT_BUTTON_DATA_TEST_ID);
+        fireEvent.click(editButton[0]);
+        const startDateInput = queryByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_DATA_TEST_ID_DATE);
+        await act(async () => {
+            userEvent.click(startDateInput);
+            await fireEvent.change(startDateInput, {
+                target: { value: newDate },
+            });
+            await fireEvent.keyDown(startDateInput, { key: "enter", keyCode: 13 });
+        });
+        expect(queryByTestId(CONSTANTS.DEPOSITIONS_DETAILS_EDIT_MODAL_INVALID_START_TIME_TEST_ID)).toBeInTheDocument();
+    });
+    test("Show an invalid end time label when the end time is befor start time", async () => {
+        const startDate = moment().add(30, "m").format(CONSTANTS.FORMAT_DATE);
+        const endDate = moment().format(CONSTANTS.TIME_FORMAT);
+        const fullDeposition = getDepositionWithOverrideValues({ startDate });
+        customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
+            return fullDeposition;
+        });
+        const { getAllByTestId, queryByTestId } = renderWithGlobalContext(<ActiveDepositionDetails />, customDeps);
+        await waitForDomChange();
+        const editButton = getAllByTestId(CONSTANTS.DEPOSITION_CARD_DETAILS_EDIT_BUTTON_DATA_TEST_ID);
+        fireEvent.click(editButton[0]);
+        const endTimeInput = queryByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_END_TIME_TEST_ID);
+        expect(endTimeInput).toBeInTheDocument();
+        await act(async () => {
+            userEvent.click(endTimeInput);
+            await fireEvent.change(endTimeInput, {
+                target: { value: endDate },
+            });
+            await fireEvent.keyDown(endTimeInput, { key: "enter", keyCode: 13 });
+        });
+        expect(queryByTestId(CONSTANTS.DEPOSITIONS_DETAILS_EDIT_MODAL_INVALID_END_TIME_TEST_ID)).toBeInTheDocument();
+    });
+    test("Submit button should be disabled with invalid date is entered ", async () => {
+        const startDate = moment().add(1, "d").format(CONSTANTS.FORMAT_DATE);
+        const newDate = moment().format(CONSTANTS.FORMAT_DATE);
+        const fullDeposition = getDepositionWithOverrideValues({ startDate });
+        customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
+            return fullDeposition;
+        });
+        const { getAllByTestId, queryByTestId } = renderWithGlobalContext(<ActiveDepositionDetails />, customDeps);
+        await waitForDomChange();
+        const editButton = getAllByTestId(CONSTANTS.DEPOSITION_CARD_DETAILS_EDIT_BUTTON_DATA_TEST_ID);
+        fireEvent.click(editButton[0]);
+        const startDateInput = queryByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_DATA_TEST_ID_DATE);
+        await act(async () => {
+            userEvent.click(startDateInput);
+            await fireEvent.change(startDateInput, {
+                target: { value: newDate },
+            });
+            await fireEvent.keyDown(startDateInput, { key: "enter", keyCode: 13 });
+        });
+        const submitButton = queryByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_CONFIRM_BUTTON_TEST_ID);
+        expect(submitButton).toBeDisabled();
+    });
     describe("Tests Edit Requester Modal", () => {
         test("Shows correct info when modal pops up after clicking the edit icon on the requester info", async () => {
             const fullDeposition = getDepositionWithOverrideValues();

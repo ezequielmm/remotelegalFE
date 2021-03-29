@@ -354,6 +354,9 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
                                 <Form.Item label={CONSTANTS.START_LABEL}>
                                     <InputWrapper>
                                         <TimePicker
+                                            data-testid={
+                                                CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_END_TIME_TEST_ID
+                                            }
                                             disabled={isStatusCanceled}
                                             defaultValue={moment(formStatus.startDate)}
                                             onChange={handleChangeStartTime}

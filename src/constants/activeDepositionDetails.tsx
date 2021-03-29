@@ -209,7 +209,10 @@ export const DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_INVALID_CANCEL_DATE_MESSAG
     "You can´t cancel a deposition that will start in a minute";
 
 export const DATE_FORMAT = "MM/DD/YYYY";
+export const TIME_FORMAT = "hh:mm A";
 export const DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_DATA_TEST_ID_DATE = "deposition_details_edit_deposition_date_id";
+export const DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_END_TIME_TEST_ID =
+    "deposition_details_edit_deposition_modal_end_time_test_id";
 export const DATE_LABEL = "Date";
 export const DATE_PLACEHOLDER = "MM/DD/YYYY";
 export const START_LABEL = "START";
@@ -234,9 +237,9 @@ export const DATE_PICKER_PROPS = {
 export const DEPOSITIONS_DETAILS_EDIT_MODAL_INVALID_DATE_DATA_TEST_ID = "deposition_details_edit_modal_invalid_date";
 export const DEPOSITIONS_DETAILS_EDIT_MODAL_INVALID_DATE = "Invalid date";
 
-export const DEPOSITIONS_DETAILS_EDIT_MODAL_INVALID_START_TIME_TEST_ID = "invalid-start-time";
+export const DEPOSITIONS_DETAILS_EDIT_MODAL_INVALID_START_TIME_TEST_ID = "invalid_start_time";
 export const DEPOSITIONS_DETAILS_EDIT_MODAL_INVALID_START_TIME = "Invalid start time";
-export const DEPOSITIONS_DETAILS_EDIT_MODAL_INVALID_END_TIME_TEST_ID = "invalid-end-time";
+export const DEPOSITIONS_DETAILS_EDIT_MODAL_INVALID_END_TIME_TEST_ID = "invalid_end_time";
 export const DEPOSITIONS_DETAILS_EDIT_MODAL_INVALID_END_TIME = "Invalid end time";
 
 export const DEPOSITIONS_DETAILS_EDIT_MODAL_CONFIRM_RESCHEDULE_TITLE = "Reschedule Deposition";
