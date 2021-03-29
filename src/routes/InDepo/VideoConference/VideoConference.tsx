@@ -26,6 +26,7 @@ interface IVideoConferenceProps {
     isBreakroom?: boolean;
     localParticipant: LocalParticipant;
     atendeesVisibility?: boolean;
+    enableMuteUnmute?: boolean;
 }
 
 const VideoConference = ({
@@ -35,6 +36,7 @@ const VideoConference = ({
     layoutSize,
     localParticipant,
     atendeesVisibility = true,
+    enableMuteUnmute = false,
 }: IVideoConferenceProps) => {
     const [layoutClass, setLayoutClass] = useState<TLayoutClass>(null);
     const participantContainer = useRef<HTMLDivElement>(null);
@@ -86,7 +88,10 @@ const VideoConference = ({
                         timeZone={timeZone}
                         participant={isBreakroom ? participants[1] : witness}
                         isWitness
-                        isMuted={!!(witness && participantsStatus[JSON.parse(witness?.identity)?.email]?.isMuted)}
+                        isMuted={
+                            enableMuteUnmute &&
+                            !!(witness && participantsStatus[JSON.parse(witness?.identity)?.email]?.isMuted)
+                        }
                     />
                 </StyledDeponentContainer>
             )}
@@ -98,7 +103,10 @@ const VideoConference = ({
                 {moveParticipantToFrontOfArray(participants).map((participant: RemoteParticipant, i) => (
                     <StyledParticipantContainer key={participant.sid} ref={i === 0 ? participantContainer : null}>
                         <Participant
-                            isMuted={!!participantsStatus[JSON.parse(participant.identity)?.email]?.isMuted}
+                            isMuted={
+                                enableMuteUnmute &&
+                                !!participantsStatus[JSON.parse(participant.identity)?.email]?.isMuted
+                            }
                             participant={participant}
                         />
                     </StyledParticipantContainer>
