@@ -209,7 +209,7 @@ export const DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_INVALID_CANCEL_DATE_MESSAG
     "You can´t cancel a deposition that will start in a minute";
 
 export const DATE_FORMAT = "MM/DD/YYYY";
-export const DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_DATA_TEST_ID_DATE = "date_test_id";
+export const DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_DATA_TEST_ID_DATE = "deposition_details_edit_deposition_date_id";
 export const DATE_LABEL = "Date";
 export const DATE_PLACEHOLDER = "MM/DD/YYYY";
 export const START_LABEL = "START";

@@ -109,8 +109,8 @@ const DepositionDetailsSection = ({
     };
 
     const getTimeText = () => {
-        return `${moment(startDate).format("HH:MM")} ${
-            endDate ? ` to ${moment(endDate).format("HH:MM")} ${timeZone}` : ""
+        return `${moment(startDate).format("hh:mm A")} ${
+            endDate ? ` to ${moment(endDate).format("hh:mm A")} ${timeZone}` : ""
         }`;
     };
 
