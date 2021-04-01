@@ -63,6 +63,21 @@ const PDFTronViewer = ({
         await PDFTron?.annotManager.drawAnnotationsFromList(importedAnnotations);
     };
 
+    const handleStampLabel = () => {
+        const stamp = PDFTron?.annotManager.getAnnotationById("STAMP");
+        const stampLabel = stamp?.getCustomData("STAMP_LABEL");
+        if (stamp) {
+            if (!canStamp) {
+                stamp.ReadOnly = true;
+            }
+            dispatch(actions.setStampLabel(stampLabel));
+            stampRef.current = stamp;
+        } else {
+            stampRef.current = null;
+            dispatch(actions.setStampLabel(""));
+        }
+    };
+
     useEffect(() => {
         if (!showStamp && PDFTron) {
             PDFTron.setHeaderItems((header) => header.delete("rubberStampToolGroupButton"));
@@ -181,6 +196,7 @@ const PDFTronViewer = ({
     useEffect(() => {
         if (realTimeAnnotations) {
             drawAnnotationsFromList(realTimeAnnotation);
+            handleStampLabel();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [realTimeAnnotation]);
@@ -189,14 +205,7 @@ const PDFTronViewer = ({
         // handle initial annotations
         savedAnnotations?.forEach(async (row) => {
             drawAnnotationsFromList(row);
-            const stamp = PDFTron?.annotManager.getAnnotationById("STAMP");
-            if (stamp) {
-                if (!canStamp) {
-                    stamp.ReadOnly = true;
-                }
-                dispatch(actions.setStampLabel(stamp.getCustomData("STAMP_LABEL")));
-                stampRef.current = stamp;
-            }
+            handleStampLabel();
         });
         if (!savedAnnotations?.length) {
             setAnnotationsToExport();
