@@ -29,9 +29,11 @@ export default function ActiveDepositionDetails() {
     return (
         <>
             <Space direction="vertical" size="large">
-                <Title level={4} noMargin weight="light">
-                    {DEPOSITION_DETAILS_TITLE}
-                </Title>
+                <Space.Item>
+                    <Title level={4} noMargin weight="light">
+                        {DEPOSITION_DETAILS_TITLE}
+                    </Title>
+                </Space.Item>
                 <ActiveDepositionDetailsHeader deposition={updatedDeposition || deposition} />
             </Space>
             <ActiveDepositionDetailsTabs

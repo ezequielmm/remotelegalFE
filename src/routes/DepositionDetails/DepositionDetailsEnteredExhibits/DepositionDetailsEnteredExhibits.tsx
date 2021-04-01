@@ -6,9 +6,7 @@ import { useEnteredExhibit } from "../../../hooks/useEnteredExhibits";
 import Button from "../../../components/Button";
 import Icon from "../../../components/Icon";
 import { ReactComponent as DownloadIcon } from "../../../assets/icons/download.svg";
-
 import EnteredExhibitsTable from "./EnteredExhibitsTable";
-import { StyledEnteredContainer } from "./styles";
 import Space from "../../../components/Space";
 import downloadFile from "../../../helpers/downloadFile";
 import { useGetDocumentsUrlList } from "../../../hooks/transcripts/hooks";
@@ -52,8 +50,8 @@ export default function DepositionDetailsEnteredExhibits() {
     }, [documentsUrlList, errorGetTranscriptsUrlList]);
 
     return (
-        <StyledEnteredContainer>
-            <Space mb={4} mt={6} justify="space-between" align="flex-end">
+        <Space direction="vertical" size="middle" pt={6} fullWidth>
+            <Space justify="space-between" fullWidth>
                 <Space.Item>
                     <Title level={5} weight="regular" dataTestId="entered_exhibits_title">
                         {DEPOSITION_DETAILS_ENTERED_EXHIBITS_TITLE}
@@ -75,6 +73,6 @@ export default function DepositionDetailsEnteredExhibits() {
                 dataSource={enteredExhibits || []}
                 rowSelection={rowSelection}
             />
-        </StyledEnteredContainer>
+        </Space>
     );
 }

@@ -177,7 +177,7 @@ const ParticipantListTable = ({
                             disabled={deposition.status === Status.canceled}
                             type="primary"
                             icon={<Icon icon={AddIcon} size={9} />}
-                            size="small"
+                            size="middle"
                             onClick={toggleAddParticipantModal}
                         >
                             {CONSTANTS.DEPOSITION_DETAILS_ADD_PARTICIPANT_BUTTON}

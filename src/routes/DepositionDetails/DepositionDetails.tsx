@@ -39,9 +39,11 @@ export default function DepositionDetails() {
     return (
         <>
             <Space direction="vertical" size="large">
-                <Title level={4} noMargin weight="light">
-                    {DEPOSITON_DETAILS_TITLE}
-                </Title>
+                <Space.Item>
+                    <Title level={4} noMargin weight="light">
+                        {DEPOSITON_DETAILS_TITLE}
+                    </Title>
+                </Space.Item>
                 <DepositionDetailsHeader deposition={deposition} />
             </Space>
             <DepositionDetailsTabs />
