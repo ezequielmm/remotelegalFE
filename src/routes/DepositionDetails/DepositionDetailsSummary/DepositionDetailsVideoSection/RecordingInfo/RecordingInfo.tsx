@@ -14,9 +14,9 @@ interface IRecordingInfo extends Pick<ITextProps, "dataTestId"> {
 export default function RecordingInfo({ title, value, icon, dataTestId = "" }: IRecordingInfo) {
     return (
         <RecordingInfoContainer data-testid={dataTestId}>
-            <Icon icon={icon} style={{ fontSize: "1.3rem" }}></Icon>
+            <Icon icon={icon} size={8} />
             <RecordingInfoTextsContainer>
-                <Text uppercase state={ColorStatus.disabled} weight="light" dataTestId={`${dataTestId}_title`}>
+                <Text uppercase state={ColorStatus.disabled} size="small" dataTestId={`${dataTestId}_title`}>
                     {title}
                 </Text>
                 <Text dataTestId={`${dataTestId}_value`}>{value}</Text>
