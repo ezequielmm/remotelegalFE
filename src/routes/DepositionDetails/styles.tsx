@@ -23,3 +23,7 @@ export const DashedLine = styled.div<{ side: string }>`
 export const CustomGridSpace = styled.div`
     display: grid;
 `;
+
+export const TitleWrapper = styled.div`
+    overflow: hidden;
+`;

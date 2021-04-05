@@ -1,5 +1,6 @@
 import { History } from "history";
 import React from "react";
+import { Tooltip } from "antd";
 import Button from "../components/Button";
 import Space from "../components/Space";
 import StatusPill from "../components/StatusPill";
@@ -23,7 +24,11 @@ export const STATUS_COLUMN = {
 export const REQUESTER_BY_COLUMN = {
     title: "REQUESTER",
     field: "requester",
-    render: (text) => <small>{text}</small>,
+    render: (text) => (
+        <Tooltip title={text}>
+            <small>{text}</small>
+        </Tooltip>
+    ),
     width: "13%",
 };
 export const LAW_COLUMN = {
@@ -31,18 +36,29 @@ export const LAW_COLUMN = {
     field: "company",
     ellipsis: true,
     width: "11%",
-    render: (text) => (
-        <small>
-            <b>{text || "-"}</b>
-        </small>
-    ),
+    render: (text) =>
+        text ? (
+            <Tooltip title={text}>
+                <small>
+                    <b>{text}</b>
+                </small>
+            </Tooltip>
+        ) : (
+            <small>
+                <b>-</b>
+            </small>
+        ),
 };
 export const CASE_COLUMN = {
     title: "CASE",
     field: "caseName",
     ellipsis: true,
     width: "13%",
-    render: (text) => <small>{text}</small>,
+    render: (text) => (
+        <Tooltip title={text}>
+            <small>{text}</small>
+        </Tooltip>
+    ),
 };
 export const DATE_COLUMN = {
     title: "DATE AND TIME",
@@ -59,18 +75,36 @@ export const WITNESS_COLUMN = {
     title: "WITNESS",
     sorter: false,
     field: "witness",
-    render: (text) => (
-        <small>
-            <b>{text || "-"}</b>
-        </small>
-    ),
+    render: (text) =>
+        text ? (
+            <Tooltip title={text}>
+                <small>
+                    <b>{text}</b>
+                </small>
+            </Tooltip>
+        ) : (
+            <small>
+                <b>-</b>
+            </small>
+        ),
     width: "12%",
 };
 export const COURT_REPORTER_COLUMN = {
     title: "COURT REPORTER",
     sorter: false,
     field: "courtReporter",
-    render: (text) => <small>{text || "-"}</small>,
+    render: (text) =>
+        text ? (
+            <Tooltip title={text}>
+                <small>
+                    <b>{text}</b>
+                </small>
+            </Tooltip>
+        ) : (
+            <small>
+                <b>-</b>
+            </small>
+        ),
     width: "13%",
 };
 export const JOB_COLUMN = { title: "JOB#", field: "job", render: (text) => <small>{text || "-"}</small>, width: "8%" };

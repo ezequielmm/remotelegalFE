@@ -1,5 +1,5 @@
 import React from "react";
-import { Row } from "antd";
+import { Row, Tooltip } from "antd";
 import styled from "styled-components";
 import Table from "../../components/Table";
 import Button from "../../components/Button";
@@ -30,6 +30,7 @@ const MyCases = () => {
                 title: CONSTANTS.CASE_COLUMNS_TITLES[0],
                 dataIndex: CONSTANTS.CASE_COLUMNS_FIELDS[0],
                 sortOrder: sortedField === CONSTANTS.CASE_COLUMNS_FIELDS[0] && sortDirection,
+                render: (text) => <Tooltip title={text}>{text}</Tooltip>,
                 sorter: true,
             },
             {
@@ -43,6 +44,7 @@ const MyCases = () => {
                 title: CONSTANTS.CASE_COLUMNS_TITLES[2],
                 dataIndex: CONSTANTS.CASE_COLUMNS_FIELDS[2],
                 sortOrder: sortedField === CONSTANTS.CASE_COLUMNS_FIELDS[2] && sortDirection,
+                render: (text) => <Tooltip title={text}>{text}</Tooltip>,
                 sorter: true,
             },
         ],

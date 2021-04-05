@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import moment from "moment-timezone";
 import { ThemeProvider } from "styled-components";
-import { Col, Row } from "antd";
+import { Col, Row, Tooltip } from "antd";
 import Card from "../../../components/Card";
 import Space from "../../../components/Space";
 import Icon from "../../../components/Icon";
@@ -17,7 +17,7 @@ import { theme } from "../../../constants/styles/theme";
 import { ThemeMode } from "../../../types/ThemeType";
 import { DepositionModel } from "../../../models";
 import * as CONSTANTS from "../../../constants/activeDepositionDetails";
-import { CustomGridSpace } from "../../DepositionDetails/styles";
+import { CustomGridSpace, TitleWrapper } from "../../DepositionDetails/styles";
 
 const ActiveDepositionDetailsHeader = ({ deposition }: { deposition: DepositionModel.IDeposition }) => {
     const [formattedDates, setFormattedDates] = useState<string[]>([]);
@@ -48,15 +48,19 @@ const ActiveDepositionDetailsHeader = ({ deposition }: { deposition: DepositionM
                                 <Text size="small" uppercase state={ColorStatus.white} lineHeight={1.25}>
                                     {CONSTANTS.DEPOSITION_DETAILS_HEADER_CASE}
                                 </Text>
-                                <Title
-                                    dataTestId="deposition_details_header_case_name"
-                                    level={6}
-                                    weight="light"
-                                    color={ColorStatus.white}
-                                    noMargin
-                                >
-                                    {caseName}
-                                </Title>
+                                <Tooltip title={caseName}>
+                                    <TitleWrapper>
+                                        <Title
+                                            dataTestId="deposition_details_header_case_name"
+                                            level={6}
+                                            weight="light"
+                                            color={ColorStatus.white}
+                                            noMargin
+                                        >
+                                            {caseName}
+                                        </Title>
+                                    </TitleWrapper>
+                                </Tooltip>
                                 <Text
                                     dataTestId="deposition_details_header_case_number"
                                     size="small"
@@ -76,15 +80,19 @@ const ActiveDepositionDetailsHeader = ({ deposition }: { deposition: DepositionM
                                 <Text size="small" uppercase state={ColorStatus.white} lineHeight={1.25}>
                                     {CONSTANTS.DEPOSITION_DETAILS_HEADER_WITNESS}
                                 </Text>
-                                <Title
-                                    dataTestId="deposition_details_header_witness_name"
-                                    level={6}
-                                    weight="light"
-                                    color={ColorStatus.white}
-                                    noMargin
-                                >
-                                    {witness?.name || CONSTANTS.DEPOSITION_NO_PARTICIPANT_TEXT}
-                                </Title>
+                                <Tooltip title={witness?.name || CONSTANTS.DEPOSITION_NO_PARTICIPANT_TEXT}>
+                                    <TitleWrapper>
+                                        <Title
+                                            dataTestId="deposition_details_header_witness_name"
+                                            level={6}
+                                            weight="light"
+                                            color={ColorStatus.white}
+                                            noMargin
+                                        >
+                                            {witness?.name || CONSTANTS.DEPOSITION_NO_PARTICIPANT_TEXT}
+                                        </Title>
+                                    </TitleWrapper>
+                                </Tooltip>
                             </CustomGridSpace>
                         </Space>
                     </Col>
@@ -95,15 +103,19 @@ const ActiveDepositionDetailsHeader = ({ deposition }: { deposition: DepositionM
                                 <Text size="small" uppercase state={ColorStatus.white} lineHeight={1.25}>
                                     {CONSTANTS.DEPOSITION_DETAILS_HEADER_DATE}
                                 </Text>
-                                <Title
-                                    dataTestId="deposition_details_header_date"
-                                    level={6}
-                                    weight="light"
-                                    color={ColorStatus.white}
-                                    noMargin
-                                >
-                                    {startDate && moment(startDate).format("MMM D, YYYY")}
-                                </Title>
+                                <Tooltip title={startDate && moment(startDate).format("MMM D, YYYY")}>
+                                    <TitleWrapper>
+                                        <Title
+                                            dataTestId="deposition_details_header_date"
+                                            level={6}
+                                            weight="light"
+                                            color={ColorStatus.white}
+                                            noMargin
+                                        >
+                                            {startDate && moment(startDate).format("MMM D, YYYY")}
+                                        </Title>
+                                    </TitleWrapper>
+                                </Tooltip>
                                 <Text
                                     dataTestId="deposition_details_header_time"
                                     size="small"
@@ -125,15 +137,19 @@ const ActiveDepositionDetailsHeader = ({ deposition }: { deposition: DepositionM
                                 <Text size="small" uppercase state={ColorStatus.white} lineHeight={1.25}>
                                     {CONSTANTS.DEPOSITION_DETAILS_HEADER_JOB}
                                 </Text>
-                                <Title
-                                    dataTestId="deposition_details_header_job"
-                                    level={6}
-                                    weight="light"
-                                    color={ColorStatus.white}
-                                    noMargin
-                                >
-                                    {job || CONSTANTS.DEPOSITION_NO_JOB_TEXT}
-                                </Title>
+                                <Tooltip title={job || CONSTANTS.DEPOSITION_NO_JOB_TEXT}>
+                                    <TitleWrapper>
+                                        <Title
+                                            dataTestId="deposition_details_header_job"
+                                            level={6}
+                                            weight="light"
+                                            color={ColorStatus.white}
+                                            noMargin
+                                        >
+                                            {job || CONSTANTS.DEPOSITION_NO_JOB_TEXT}
+                                        </Title>
+                                    </TitleWrapper>
+                                </Tooltip>
                             </CustomGridSpace>
                         </Space>
                     </Col>

@@ -1,4 +1,4 @@
-import { notification } from "antd";
+import { notification, Tooltip } from "antd";
 import React, { useEffect, useState } from "react";
 import { ThemeProvider } from "styled-components";
 import { theme } from "../../../constants/styles/theme";
@@ -43,12 +43,16 @@ export default function GuestRequests({ depositionID }: { depositionID: string }
             key: participant.id,
             message: (
                 <ThemeProvider theme={{ ...theme, mode: ThemeMode[theme.mode] }}>
-                    <Text>
-                        <>
-                            <strong>{`[${participant.role}]`}</strong>{" "}
-                            {`${participant.name}${CONSTANTS.GUEST_REQUESTS_NOTIFICATION_TITLE}`}
-                        </>
-                    </Text>
+                    <Tooltip
+                        title={`[${participant.role}] ${participant.name}${CONSTANTS.GUEST_REQUESTS_NOTIFICATION_TITLE}`}
+                    >
+                        <Text>
+                            <>
+                                <strong>{`[${participant.role}]`}</strong>{" "}
+                                {`${participant.name}${CONSTANTS.GUEST_REQUESTS_NOTIFICATION_TITLE}`}
+                            </>
+                        </Text>
+                    </Tooltip>
                 </ThemeProvider>
             ),
             description: (
