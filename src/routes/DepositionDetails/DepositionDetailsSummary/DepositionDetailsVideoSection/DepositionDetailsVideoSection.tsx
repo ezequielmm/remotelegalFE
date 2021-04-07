@@ -53,7 +53,7 @@ export default function DepositionDetailsVideoSection({ recordingInfo }: IDeposi
                     fallback={
                         <VideoPlaceholder icon={<Spinner height="100%" />} title={CONSTANTS.VIDEO_PLACEHOLDER_TITLE} />
                     }
-                    isOnlyAudio={isAudioFromUrl(recordingInfo?.publicUrl)}
+                    isOnlyAudio={isAudioFromUrl(recordingInfo?.outputFormat)}
                 />
             ) : (
                 <VideoPlaceholder

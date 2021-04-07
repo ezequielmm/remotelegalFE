@@ -138,4 +138,36 @@ describe("DepositionDetailsVideoSection", () => {
         );
         expect(queryByTestId("video_player")).toBeInTheDocument();
     });
+
+    it("not show an image for video files", async () => {
+        const recordInfoData = {
+            totalTime: 0,
+            onTheRecordTime: 0,
+            offTheRecordTime: 120,
+            publicUrl: "url.mp4",
+            outputFormat: "mp4",
+            status: RecordingStatus.Completed,
+        };
+        const { queryByTestId } = renderWithGlobalContext(
+            <DepositionDetailsVideoSection recordingInfo={recordInfoData} />,
+            customDeps
+        );
+        expect(queryByTestId("only_audio_image")).not.toBeInTheDocument();
+    });
+
+    it("shows an image for non video files", async () => {
+        const recordInfoData = {
+            totalTime: 0,
+            onTheRecordTime: 0,
+            offTheRecordTime: 120,
+            publicUrl: "url.mp3",
+            outputFormat: "mp3",
+            status: RecordingStatus.Completed,
+        };
+        const { queryByTestId } = renderWithGlobalContext(
+            <DepositionDetailsVideoSection recordingInfo={recordInfoData} />,
+            customDeps
+        );
+        expect(queryByTestId("only_audio_image")).toBeInTheDocument();
+    });
 });

@@ -145,8 +145,11 @@ const VideoPlayer = ({ fullScreen, fallback, isOnlyAudio, ...rest }: IVideoPlaye
 
     return (
         <StyledVideoPlayer ref={styledPlayerRef} data-testid="video_player">
-            {isOnlyAudio && isVideoReady && (
-                <StyledOnlyAudioPlaceHolder data-testid="only_audio_image">
+            {isOnlyAudio && (
+                <StyledOnlyAudioPlaceHolder
+                    data-testid="only_audio_image"
+                    style={{ visibility: isVideoReady ? "visible" : "hidden", height: isVideoReady ? "100%" : "0" }}
+                >
                     <Icon width="2em" size={getREM(theme.default.spaces[11] * 10)} icon={AudioIcon} />
                 </StyledOnlyAudioPlaceHolder>
             )}

@@ -31,4 +31,5 @@ export default interface IRecording {
     offTheRecordTime: number | 0;
     publicUrl: string | "";
     status: RecordingStatus;
+    outputFormat: string;
 }
