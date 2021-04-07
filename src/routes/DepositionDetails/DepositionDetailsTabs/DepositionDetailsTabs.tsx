@@ -3,9 +3,10 @@ import { useParams } from "react-router";
 import Space from "../../../components/Space";
 import Tabs from "../../../components/Tabs";
 import * as CONSTANTS from "../../../constants/depositionDetails";
+import { IDeposition } from "../../../models/deposition";
 import { DepositionID } from "../../../state/types";
 
-export default function DepositionDetailsTabs() {
+export default function DepositionDetailsTabs({ deposition }: { deposition: IDeposition }) {
     const [activeKey, setActiveKey] = useState<string>(CONSTANTS.DEFAULT_ACTIVE_TAB);
     const { depositionID } = useParams<DepositionID>();
 
@@ -36,6 +37,7 @@ export default function DepositionDetailsTabs() {
                                     <DepositionDetailsComponent
                                         activeKey={activeKey}
                                         depositionID={depositionID}
+                                        deposition={deposition}
                                         setActiveKey={setActiveKey}
                                     />
                                 </div>

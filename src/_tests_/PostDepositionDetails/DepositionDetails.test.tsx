@@ -15,6 +15,7 @@ import DEPO_PARTICIPANT_MOCK from "../mocks/depoParticipant";
 import renderWithGlobalContext from "../utils/renderWithGlobalContext";
 import DepositionDetailsAttendees from "../../routes/DepositionDetails/DepositionDetailsAttendees";
 import { Roles } from "../../models/participant";
+import { mapTimeZone } from "../../models/general";
 
 jest.mock("audio-recorder-polyfill", () => {
     return jest.fn().mockImplementation(() => ({
@@ -51,9 +52,14 @@ describe("DepositionDetails", () => {
         expect(getByText(deposition.caseName)).toBeInTheDocument();
         expect(getByText(deposition.caseNumber)).toBeInTheDocument();
         expect(getByText(deposition.witness.name)).toBeInTheDocument();
-        expect(getByText(moment(deposition.startDate).tz(deposition.timeZone).format(FORMAT_DATE))).toBeInTheDocument();
-        const startDate = moment(deposition.startDate).tz(deposition.timeZone).format(FORMAT_TIME).split(" ");
-        const completeDate = moment(deposition.completeDate).tz(deposition.timeZone).format(FORMAT_TIME);
+        expect(
+            getByText(moment(deposition.startDate).tz(mapTimeZone[deposition.timeZone]).format(FORMAT_DATE))
+        ).toBeInTheDocument();
+        const startDate = moment(deposition.startDate)
+            .tz(mapTimeZone[deposition.timeZone])
+            .format(FORMAT_TIME)
+            .split(" ");
+        const completeDate = moment(deposition.completeDate).tz(mapTimeZone[deposition.timeZone]).format(FORMAT_TIME);
         expect(
             getByText(
                 `${

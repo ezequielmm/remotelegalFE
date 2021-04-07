@@ -170,7 +170,7 @@ const WitnessItem = ({ deposition, removeWitness, witnessNumber }: WitnessItemPr
                             name={`depositions[${witnessNumber}].timeZone`}
                             label={CONSTANTS.TIME_ZONE_LABEL}
                             placeholder={CONSTANTS.TIME_ZONE_PLACEHOLDER}
-                            items={["EST", "CST", "MST", "PST"]}
+                            items={["ET", "AT", "CT", "MT", "PT", "AKT", "HST", "AZ"]}
                         />
                     </Col>
                 </Row>

@@ -18,6 +18,7 @@ import { ThemeMode } from "../../../types/ThemeType";
 import { DepositionModel } from "../../../models";
 import * as CONSTANTS from "../../../constants/activeDepositionDetails";
 import { CustomGridSpace, TitleWrapper } from "../../DepositionDetails/styles";
+import { mapTimeZone } from "../../../models/general";
 
 const ActiveDepositionDetailsHeader = ({ deposition }: { deposition: DepositionModel.IDeposition }) => {
     const [formattedDates, setFormattedDates] = useState<string[]>([]);
@@ -25,9 +26,11 @@ const ActiveDepositionDetailsHeader = ({ deposition }: { deposition: DepositionM
 
     useEffect(() => {
         if (!startDate) return;
-        const formattedStartDate = startDate && moment(startDate).tz(timeZone).format(CONSTANTS.FORMAT_TIME).split(" ");
+        const formattedStartDate =
+            startDate && moment(startDate).tz(mapTimeZone[timeZone]).format(CONSTANTS.FORMAT_TIME).split(" ");
 
-        const formattedCompleteDate = endDate && moment(endDate).tz(timeZone).format(CONSTANTS.FORMAT_TIME);
+        const formattedCompleteDate =
+            endDate && moment(endDate).tz(mapTimeZone[timeZone]).format(CONSTANTS.FORMAT_TIME);
         setFormattedDates([
             (formattedCompleteDate?.split(" ")[1] === formattedStartDate[1]
                 ? formattedStartDate[0]

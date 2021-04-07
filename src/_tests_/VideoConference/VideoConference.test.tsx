@@ -4,6 +4,8 @@ import VideoConference from "../../routes/InDepo/VideoConference";
 import * as CONSTANTS from "../constants/InDepo";
 import { getParticipant, participantMap, participantMapIdentity } from "../mocks/participant";
 import { useGetParticipantStatus } from "../../hooks/InDepo/useParticipantStatus";
+import renderWithGlobalContext from "../utils/renderWithGlobalContext";
+
 jest.mock("../../hooks/InDepo/useParticipantStatus", () => ({
     useGetParticipantStatus: jest.fn(() => ({
         participantsStatus: {
@@ -15,14 +17,12 @@ jest.mock("../../hooks/InDepo/useParticipantStatus", () => ({
     })),
 }));
 
-import renderWithGlobalContext from "../utils/renderWithGlobalContext";
-
 test("Shows waiting for witness and participant identity", async () => {
     const participant = getParticipant("test1", "Attorney");
     const { queryByTestId, queryByText } = renderWithGlobalContext(
         <VideoConference
             attendees={participantMap}
-            timeZone={TimeZones.EST}
+            timeZone={TimeZones.ET}
             layoutSize={1}
             localParticipant={participant}
         />
@@ -37,7 +37,7 @@ test("Shows both participants´ identities", async () => {
     const { queryByTestId, queryByText } = renderWithGlobalContext(
         <VideoConference
             attendees={participantMap}
-            timeZone={TimeZones.EST}
+            timeZone={TimeZones.ET}
             layoutSize={1}
             localParticipant={participant}
         />
@@ -62,7 +62,7 @@ test("Should display the muted microphone icon when the enableMuteUnmute is true
     const { queryByTestId } = renderWithGlobalContext(
         <VideoConference
             attendees={participantMap}
-            timeZone={TimeZones.EST}
+            timeZone={TimeZones.ET}
             layoutSize={1}
             localParticipant={participant}
             enableMuteUnmute
@@ -84,7 +84,7 @@ test("Should not display the muted microphone icon when the enableMuteUnmute is 
     const { queryByTestId } = renderWithGlobalContext(
         <VideoConference
             attendees={participantMap}
-            timeZone={TimeZones.EST}
+            timeZone={TimeZones.ET}
             layoutSize={1}
             localParticipant={participant}
         />
@@ -105,7 +105,7 @@ test("Should not display the muted microphone icon when the enableMuteUnmute is 
     const { queryByTestId } = renderWithGlobalContext(
         <VideoConference
             attendees={participantMap}
-            timeZone={TimeZones.EST}
+            timeZone={TimeZones.ET}
             layoutSize={1}
             localParticipant={participant}
             enableMuteUnmute
@@ -127,7 +127,7 @@ test("Should not display the muted microphone icon when the enableMuteUnmute is 
     const { queryByTestId } = renderWithGlobalContext(
         <VideoConference
             attendees={participantMap}
-            timeZone={TimeZones.EST}
+            timeZone={TimeZones.ET}
             layoutSize={1}
             localParticipant={participant}
             enableMuteUnmute

@@ -1,5 +1,6 @@
 import moment from "moment-timezone";
 import { ConnectOptions } from "twilio-video";
+import { mapTimeZone } from "../models/general";
 
 export const TWILIO_VIDEO_CONFIG: ConnectOptions = {
     video: { height: 720, frameRate: 24, width: 1280 },
@@ -27,8 +28,8 @@ export const FETCH_ERROR_RESULT_BUTTON = "Refresh Page";
 export const TRANSCRIPTIONS_PAUSED =
     "Transcription paused - Once the deposition is on the record, transcript will resume.";
 export const getPauseText = (from, to, timeZone) =>
-    `Transcript paused from ${moment(from).tz(timeZone).format("hh:mm:ss A")} to ${
-        to && moment(to).tz(timeZone).format("hh:mm:ss A")
+    `Transcript paused from ${moment(from).tz(mapTimeZone[timeZone])?.format("hh:mm:ss A")} to ${
+        to && moment(to).tz(mapTimeZone[timeZone])?.format("hh:mm:ss A")
     }`;
 
 export const CLOCK_SECOND = 1000;

@@ -10,7 +10,7 @@ import { ContainerProps, StyledLayoutContent, StyledLayoutCotainer } from "../st
 import { HiddenRef, RoughDraftPill, StyledRealTimeContainer, TranscriptionText } from "./styles";
 import * as CONSTANTS from "../../../constants/inDepo";
 import ColorStatus from "../../../types/ColorStatus";
-import { TimeZones } from "../../../models/general";
+import { mapTimeZone, TimeZones } from "../../../models/general";
 import { TranscriptionModel } from "../../../models";
 
 const RealTime = ({
@@ -95,8 +95,8 @@ const RealTime = ({
                                                     <>
                                                         {`${transcription.userName || "Guest"} `}
                                                         {moment(transcription.transcriptDateTime)
-                                                            .tz(timeZone)
-                                                            .format("hh:mm:ss A")}
+                                                            .tz(mapTimeZone[timeZone])
+                                                            ?.format("hh:mm:ss A")}
                                                     </>
                                                 </Text>
                                                 <TranscriptionText
@@ -110,10 +110,11 @@ const RealTime = ({
                                                         (i === 0 || playedSeconds - transcription.prevEndTime >= 0) &&
                                                         playedSeconds - transcription.transcriptionVideoTime < 0
                                                     }
-                                                    onClick={
-                                                        manageTranscriptionClicked &&
-                                                        (() => manageTranscriptionClicked(transcription))
-                                                    }
+                                                    pointer={!!manageTranscriptionClicked}
+                                                    onClick={() => {
+                                                        if (manageTranscriptionClicked)
+                                                            manageTranscriptionClicked(transcription);
+                                                    }}
                                                 >
                                                     {transcription.text}
                                                 </TranscriptionText>

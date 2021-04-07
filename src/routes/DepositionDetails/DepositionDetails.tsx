@@ -46,7 +46,7 @@ export default function DepositionDetails() {
                 </Space.Item>
                 <DepositionDetailsHeader deposition={deposition} />
             </Space>
-            <DepositionDetailsTabs />
+            <DepositionDetailsTabs deposition={deposition} />
         </>
     );
 }

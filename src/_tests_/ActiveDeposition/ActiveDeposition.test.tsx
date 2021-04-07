@@ -18,6 +18,7 @@ import { Roles } from "../../models/participant";
 import getModalTextContent from "../../routes/ActiveDepoDetails/helpers/getModalTextContent";
 import { Status } from "../../components/StatusPill/StatusPill";
 import { PARTICIPANT_MOCK, PARTICIPANT_MOCK_NAME } from "../constants/preJoinDepo";
+import { mapTimeZone } from "../../models/general";
 
 const customDeps = getMockDeps();
 jest.mock("../../helpers/downloadFile");
@@ -98,13 +99,17 @@ describe("Tests the Additional Information tab", () => {
         expect(getByText(fullDeposition.caseNumber)).toBeInTheDocument();
         expect(getByText(fullDeposition.witness.name)).toBeInTheDocument();
         expect(
-            getByText(moment(fullDeposition.startDate).tz(fullDeposition.timeZone).format(CONSTANTS.FORMAT_DATE))
+            getByText(
+                moment(fullDeposition.startDate).tz(mapTimeZone[fullDeposition.timeZone]).format(CONSTANTS.FORMAT_DATE)
+            )
         ).toBeInTheDocument();
         const startDate = moment(fullDeposition.startDate)
-            .tz(fullDeposition.timeZone)
+            .tz(mapTimeZone[fullDeposition.timeZone])
             .format(CONSTANTS.FORMAT_TIME)
             .split(" ");
-        const completeDate = moment(fullDeposition.endDate).tz(fullDeposition.timeZone).format(CONSTANTS.FORMAT_TIME);
+        const completeDate = moment(fullDeposition.endDate)
+            .tz(mapTimeZone[fullDeposition.timeZone])
+            .format(CONSTANTS.FORMAT_TIME);
         expect(
             getByText(
                 `${
@@ -183,11 +188,11 @@ describe("Tests the Additional Information tab", () => {
             const { queryByText, getByText } = renderWithGlobalContext(<ActiveDepositionDetails />, customDeps);
             await waitForDomChange();
             const startDate = moment(fullDeposition.startDate)
-                .tz(fullDeposition.timeZone)
+                .tz(mapTimeZone[fullDeposition.timeZone])
                 .format(CONSTANTS.FORMAT_TIME)
                 .split(" ");
             const completeDate = moment(fullDeposition.endDate)
-                .tz(fullDeposition.timeZone)
+                .tz(mapTimeZone[fullDeposition.timeZone])
                 .format(CONSTANTS.FORMAT_TIME);
             expect(
                 queryByText(

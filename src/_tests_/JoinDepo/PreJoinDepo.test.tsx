@@ -146,9 +146,8 @@ describe("It tests the non-registered and non-participant flow", () => {
         await waitForDomChange();
         fireEvent.change(getByTestId(CONSTANTS.EMAIL_INPUT_ID), { target: { value: TEST_CONSTANTS.MOCKED_EMAIL } });
         userEvent.click(getByTestId(CONSTANTS.STEP_1_BUTTON_ID));
-        await waitForDomChange();
-        userEvent.click(getByTestId(CONSTANTS.BACK_BUTTON_ID));
-        await waitForDomChange();
+        const backButton = await waitForElement(() => getByTestId(CONSTANTS.BACK_BUTTON_ID));
+        userEvent.click(backButton);
         expect(getByText(TEST_CONSTANTS.STEP_1_TEXT)).toBeInTheDocument();
     });
 

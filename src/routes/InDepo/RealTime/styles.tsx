@@ -37,9 +37,11 @@ export const HiddenRef = styled.span`
     display: none;
 `;
 
-export const TranscriptionText = styled(Text)<ITextProps & { highlighted: boolean; onClick: () => void }>`
+export const TranscriptionText = styled(Text)<
+    ITextProps & { highlighted: boolean; pointer: boolean; onClick: () => void }
+>`
     background-color: ${({ highlighted, theme }) => highlighted && theme.colors.warning[2]};
-    cursor: ${({ onClick }) => onClick && "pointer"};
+    cursor: ${({ pointer }) => pointer && "pointer"};
 `;
 
 export const RoughDraftPill = styled.div`

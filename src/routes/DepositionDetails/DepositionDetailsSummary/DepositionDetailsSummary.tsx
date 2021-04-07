@@ -6,7 +6,6 @@ import Text from "../../../components/Typography/Text";
 import Space from "../../../components/Space";
 import useGetEvents from "../../../hooks/InDepo/useGetEvents";
 import useGetTranscriptions from "../../../hooks/InDepo/useGetTranscriptions";
-import { TimeZones } from "../../../models/general";
 import { GlobalStateContext } from "../../../state/GlobalState";
 import actions from "../../../state/PostDepo/PostDepoActions";
 import { DepositionID } from "../../../state/types";
@@ -32,12 +31,13 @@ import downloadFile from "../../../helpers/downloadFile";
 import { useTranscriptFileList, useGetSignedUrl } from "../../../hooks/transcripts/hooks";
 import { StyledSummaryLayout, StyledCard, StyledRealTimeWrapper } from "./styles";
 import { useFetchParticipants } from "../../../hooks/activeDepositionDetails/hooks";
+import { IDeposition } from "../../../models/deposition";
 
 interface IDepositionDetailsSummary {
     setActiveKey: (activeKey: string) => void;
+    deposition: IDeposition;
 }
-
-export default function DepositionDetailsSummary({ setActiveKey }: IDepositionDetailsSummary) {
+export default function DepositionDetailsSummary({ setActiveKey, deposition }: IDepositionDetailsSummary) {
     const inDepoTheme = { ...theme, mode: ThemeMode.inDepo };
     const { dispatch, state } = useContext(GlobalStateContext);
     const [getTranscriptions, loading] = useGetTranscriptions(true);
@@ -230,7 +230,7 @@ export default function DepositionDetailsSummary({ setActiveKey }: IDepositionDe
                                         disableAutoscroll
                                         transcriptions={transcriptions}
                                         visible
-                                        timeZone={TimeZones.EST}
+                                        timeZone={deposition?.timeZone}
                                         playedSeconds={currentTime}
                                         scrollToHighlighted
                                     />

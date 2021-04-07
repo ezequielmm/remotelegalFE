@@ -7,7 +7,7 @@ export const EXPECTED_EDIT_DEPOSITION_BODY = {
     job: "test job 1234",
     startDate: moment(new Date()).add(30, "minutes").utc(),
     status: "Confirmed",
-    timeZone: "EST",
+    timeZone: "ET",
 };
 export const EXPECTED_EDIT_REQUESTER_BODY = {
     requesterNotes: "test123",
@@ -19,5 +19,5 @@ export const EXPECTED_REACTIVATED_TO_PENDING_DEPO_BODY = {
     job: "testJob1234",
     startDate: moment(new Date()).add(30, "minutes").utc(),
     status: "Pending",
-    timeZone: "EST",
+    timeZone: "ET",
 };

@@ -1,6 +1,6 @@
 import React, { SetStateAction, useEffect, useRef, useState } from "react";
 import { Row } from "antd";
-import moment from "moment";
+import moment from "moment-timezone";
 import Space from "../../../components/Space";
 import Title from "../../../components/Typography/Title";
 import { ReactComponent as SuccessIcon } from "../../../assets/icons/Success.svg";
@@ -32,6 +32,7 @@ import CardFetchError from "../../../components/CardFetchError";
 import Spinner from "../../../components/Spinner";
 import EditDepoModal from "./EditDepoModal";
 import EditRequesterNotesModal from "./RequesterModal";
+import { mapTimeZone } from "../../../models/general";
 
 const DepositionDetailsSection = ({
     deposition,
@@ -110,8 +111,8 @@ const DepositionDetailsSection = ({
 
     const getTimeText = () => {
         const startTimeZone = endDate ? "" : timeZone;
-        return `${moment(startDate).format("hh:mm A")} ${startTimeZone} ${
-            endDate ? ` to ${moment(endDate).format("hh:mm A")} ${timeZone}` : ""
+        return `${moment(startDate).tz(mapTimeZone[timeZone])?.format("hh:mm A")} ${startTimeZone} ${
+            endDate ? ` to ${moment(endDate).tz(mapTimeZone[timeZone])?.format("hh:mm A")} ${timeZone}` : ""
         }`;
     };
 

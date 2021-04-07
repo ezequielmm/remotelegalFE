@@ -53,15 +53,23 @@ export interface ITokenSet {
 export type DateLike = Date | string | number;
 
 export enum TimeZones {
-    EST = "EST",
-    CST = "CST",
-    MST = "MST",
-    PST = "PST",
+    AT = "AT",
+    AZ = "AZ",
+    ET = "ET",
+    CT = "CT",
+    MT = "MT",
+    PT = "PT",
+    AKT = "AKT",
+    HST = "HST",
 }
 
 export const mapTimeZone = {
-    [TimeZones.CST]: "America/Chicago",
-    [TimeZones.EST]: "America/New_York",
-    [TimeZones.PST]: "America/Los_Angeles",
-    [TimeZones.MST]: "America/Denver",
+    [TimeZones.AT]: "America/Puerto_Rico",
+    [TimeZones.AZ]: "America/Phoenix",
+    [TimeZones.ET]: "America/New_York",
+    [TimeZones.CT]: "America/Chicago",
+    [TimeZones.MT]: "America/Denver",
+    [TimeZones.PT]: "America/Los_Angeles",
+    [TimeZones.AKT]: "America/Anchorage",
+    [TimeZones.HST]: "Pacific/Honolulu",
 };

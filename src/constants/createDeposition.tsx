@@ -80,7 +80,7 @@ export const DEPOSITION_DEFAULT_VALUE = {
     date: null,
     startTime: "",
     endTime: "",
-    timeZone: "EST",
+    timeZone: "ET",
     isVideoRecordingNeeded: null,
 };
 

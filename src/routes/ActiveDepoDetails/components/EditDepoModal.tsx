@@ -35,7 +35,7 @@ import Confirm from "../../../components/Confirm";
 import isCanceledDateInvalid from "../helpers/isCanceledDateInvalid";
 import DatePicker from "../../../components/DatePicker";
 import TimePicker from "../../../components/TimePicker";
-import { TimeZones } from "../../../models/general";
+import { mapTimeZone, TimeZones } from "../../../models/general";
 import formatToDateOffset from "../../../helpers/formatToDateOffset";
 import { theme } from "../../../constants/styles/theme";
 
@@ -358,10 +358,12 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
                                                 CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_END_TIME_TEST_ID
                                             }
                                             disabled={isStatusCanceled}
-                                            defaultValue={moment(formStatus.startDate)}
+                                            defaultValue={moment(formStatus.startDate).tz(
+                                                mapTimeZone[deposition.timeZone]
+                                            )}
                                             onChange={handleChangeStartTime}
                                             placeholder={CONSTANTS.START_PLACEHOLDER}
-                                            value={moment(formStatus.startDate)}
+                                            value={moment(formStatus.startDate).tz(mapTimeZone[deposition.timeZone])}
                                             invalid={invalidStartTime}
                                             {...CONSTANTS.TIME_PICKER_PROPS}
                                         />
@@ -386,8 +388,16 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
                                     <InputWrapper>
                                         <TimePicker
                                             disabled={isStatusCanceled}
-                                            defaultValue={formStatus.endDate ? moment(formStatus.endDate) : null}
-                                            value={formStatus.endDate ? moment(formStatus.endDate) : null}
+                                            defaultValue={
+                                                formStatus.endDate
+                                                    ? moment(formStatus.endDate).tz(mapTimeZone[deposition.timeZone])
+                                                    : null
+                                            }
+                                            value={
+                                                formStatus.endDate
+                                                    ? moment(formStatus.endDate).tz(mapTimeZone[deposition.timeZone])
+                                                    : null
+                                            }
                                             onChange={handleChangeEndTime}
                                             placeholder={CONSTANTS.END_PLACEHOLDER}
                                             {...CONSTANTS.TIME_PICKER_PROPS}
