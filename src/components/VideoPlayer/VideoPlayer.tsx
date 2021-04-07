@@ -9,6 +9,7 @@ import { ReactComponent as ExpandIcon } from "../../assets/icons/fullscreen-butt
 import { ReactComponent as PauseIcon } from "../../assets/icons/Pause.svg";
 import { ReactComponent as PlayIcon } from "../../assets/icons/Play.svg";
 import { ReactComponent as ContractIcon } from "../../assets/icons/Contract.svg";
+import { ReactComponent as AudioIcon } from "../../assets/icons/audio.svg";
 import Duration from "./Duration";
 import { getREM, hexToRGBA } from "../../constants/styles/utils";
 import { theme } from "../../constants/styles/theme";
@@ -77,11 +78,20 @@ const StyledTimeContainer = styled.div`
     padding-bottom: ${getREM(theme.default.spaces[2])};
 `;
 
+const StyledOnlyAudioPlaceHolder = styled.div`
+    background: ${theme.default.blackColor};
+    padding: ${getREM(theme.default.spaces[4])} 0;
+    color: ${hexToRGBA(theme.default.disabledColor, 0.2)};
+    display: flex;
+    justify-content: center;
+`;
+
 interface IVideoPlayer extends ReactPlayerProps {
     fullScreen?: boolean;
+    isOnlyAudio?: boolean;
 }
 
-const VideoPlayer = ({ fullScreen, fallback, ...rest }: IVideoPlayer) => {
+const VideoPlayer = ({ fullScreen, fallback, isOnlyAudio, ...rest }: IVideoPlayer) => {
     const { dispatch, state } = useContext(GlobalStateContext);
     const { changeTime, currentTime, playing, duration } = state.postDepo;
 
@@ -135,6 +145,11 @@ const VideoPlayer = ({ fullScreen, fallback, ...rest }: IVideoPlayer) => {
 
     return (
         <StyledVideoPlayer ref={styledPlayerRef} data-testid="video_player">
+            {isOnlyAudio && isVideoReady && (
+                <StyledOnlyAudioPlaceHolder data-testid="only_audio_image">
+                    <Icon width="2em" size={getREM(theme.default.spaces[11] * 10)} icon={AudioIcon} />
+                </StyledOnlyAudioPlaceHolder>
+            )}
             <ReactPlayer
                 data-testid="react_player"
                 ref={player}

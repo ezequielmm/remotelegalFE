@@ -13,6 +13,7 @@ import Space from "../../../../components/Space";
 import VideoPlaceholder from "../../../../components/VideoPlaceholder";
 import Icon from "../../../../components/Icon";
 import Spinner from "../../../../components/Spinner";
+import { isAudioFromUrl } from "../../../../helpers/isAudioFromUrl";
 interface IDepositionDetailsVideoSection {
     recordingInfo?: IRecording;
 }
@@ -52,6 +53,7 @@ export default function DepositionDetailsVideoSection({ recordingInfo }: IDeposi
                     fallback={
                         <VideoPlaceholder icon={<Spinner height="100%" />} title={CONSTANTS.VIDEO_PLACEHOLDER_TITLE} />
                     }
+                    isOnlyAudio={isAudioFromUrl(recordingInfo?.publicUrl)}
                 />
             ) : (
                 <VideoPlaceholder
