@@ -124,7 +124,7 @@ export const useExhibitFileInfo = () => {
 export const useExhibitTabs = () => {
     const { state, dispatch } = useContext(GlobalStateContext);
     const { depositionID } = useParams<{ depositionID: string }>();
-    const { currentExhibit, message } = state.room;
+    const { currentExhibit, message, currentExhibitPage } = state.room;
     const [highlightKey, setHighlightKey] = useState<number>(-1);
     const [activeKey, setActiveKey] = useState<string>(CONSTANTS.DEFAULT_ACTIVE_TAB);
     const [fetchExhibitFileInfo] = useExhibitFileInfo();
@@ -136,11 +136,11 @@ export const useExhibitTabs = () => {
     }, [currentExhibit]);
 
     useEffect(() => {
-        if (highlightKey !== -1 && currentExhibit) {
+        if (highlightKey !== -1 && currentExhibit && currentExhibitPage) {
             setActiveKey(CONSTANTS.LIVE_EXHIBIT_TAB);
             dispatch(actions.setActiveTab(CONSTANTS.LIVE_EXHIBIT_TAB));
         }
-    }, [highlightKey, currentExhibit, dispatch]);
+    }, [highlightKey, currentExhibit, currentExhibitPage, dispatch]);
 
     useEffect(() => {
         dispatch(actions.setExhibitTabName(activeKey));
@@ -158,10 +158,10 @@ export const useExhibitTabs = () => {
 };
 
 export const useShareExhibitFile = () => {
-    const { state, deps, dispatch } = useContext(GlobalStateContext);
+    const { state, deps } = useContext(GlobalStateContext);
     const { depositionID } = useParams<{ depositionID: string }>();
     const [fetchExhibitFileInfo] = useExhibitFileInfo();
-    const { dataTrack, message, currentExhibit, exhibitDocument, stampLabel, rawAnnotations } = state.room;
+    const { dataTrack, message, currentExhibit } = state.room;
     const [shareExhibit, shareExhibitPending, sharingExhibitFileError] = useAsyncCallback(
         async (exhibitFile: ExhibitFile, readOnly: boolean = false) => {
             const isShared =
@@ -182,13 +182,23 @@ export const useShareExhibitFile = () => {
     useEffect(() => {
         if (message.module === "shareExhibit" && message.value) {
             fetchExhibitFileInfo(depositionID);
-        }
-        if (message.module === "closeSharedExhibit" && message?.value?.id === currentExhibit?.id) {
-            dispatch(actions.stopShareExhibit());
+            message.module = null;
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [message, depositionID]);
 
+    return {
+        shareExhibit,
+        sharedExhibit: currentExhibit as ExhibitFile,
+        shareExhibitPending,
+        sharingExhibitFileError,
+    };
+};
+
+export const useCloseSharedExhibit = () => {
+    const { state, deps, dispatch } = useContext(GlobalStateContext);
+    const { depositionID } = useParams<{ depositionID: string }>();
+    const { dataTrack, message, currentExhibit, exhibitDocument, stampLabel, rawAnnotations } = state.room;
     const [closeSharedExhibit, pendingCloseSharedExhibit] = useAsyncCallback(
         async (isReadyOnly = false) => {
             if (stampLabel) {
@@ -210,15 +220,17 @@ export const useShareExhibitFile = () => {
         [exhibitDocument, stampLabel, dataTrack, rawAnnotations]
     );
 
+    if (message.module === "closeSharedExhibit" && message?.value?.id === currentExhibit?.id) {
+        dispatch(actions.stopShareExhibit());
+        message.module = null;
+    }
+
     return {
-        shareExhibit,
-        sharedExhibit: currentExhibit as ExhibitFile,
-        shareExhibitPending,
-        sharingExhibitFileError,
         closeSharedExhibit,
         pendingCloseSharedExhibit,
     };
 };
+
 export const useExhibitGetAnnotations = () => {
     const { deps } = useContext(GlobalStateContext);
     const { depositionID } = useParams<{ depositionID: string }>();
@@ -272,5 +284,22 @@ export const useExhibitRealTimeAnnotations = () => {
 
     return {
         realTimeAnnotation,
+    };
+};
+
+export const useBringAllToMe = () => {
+    const { deps } = useContext(GlobalStateContext);
+    const { depositionID } = useParams<{ depositionID: string }>();
+    const [page, setPage] = useState("1");
+
+    const setBringAllToPage = useCallback((p) => setPage(p), []);
+
+    const [bringAllToMe] = useAsyncCallback(async () => {
+        return await deps.apiService.bringAllToMe({ depositionID, page });
+    }, [page]);
+
+    return {
+        setBringAllToPage,
+        bringAllToMe,
     };
 };

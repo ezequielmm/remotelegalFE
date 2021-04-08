@@ -26,6 +26,8 @@ import {
     useExhibitGetAnnotations,
     useExhibitRealTimeAnnotations,
     useExhibitSendAnnotation,
+    useBringAllToMe,
+    useCloseSharedExhibit,
 } from "../../hooks/exhibits/hooks";
 
 jest.mock("../../hooks/exhibits/hooks", () => ({
@@ -38,6 +40,8 @@ jest.mock("../../hooks/exhibits/hooks", () => ({
     useExhibitGetAnnotations: jest.fn(),
     useExhibitRealTimeAnnotations: jest.fn(),
     useExhibitSendAnnotation: jest.fn(),
+    useBringAllToMe: jest.fn(),
+    useCloseSharedExhibit: jest.fn(),
 }));
 
 jest.mock("react-router-dom", () => ({
@@ -99,6 +103,14 @@ beforeEach(() => {
 
     useEnteredExhibit.mockImplementation(() => ({
         handleFetchFiles: jest.fn(),
+    }));
+    useBringAllToMe.mockImplementation(() => ({
+        setBringAllToPage: jest.fn(),
+        bringAllToMe: jest.fn(),
+    }));
+    useCloseSharedExhibit.mockImplementation(() => ({
+        closeSharedExhibit: jest.fn(),
+        pendingCloseSharedExhibit: false,
     }));
 });
 

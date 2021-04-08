@@ -10,6 +10,7 @@ import getMockDeps from "../utils/getMockDeps";
 
 import LiveExhibits from "../../routes/InDepo/Exhibits/LiveExhibits";
 import { currentExhibit } from "../mocks/currentExhibit";
+import { userMock } from "../mocks/user";
 
 jest.mock("react-router-dom", () => ({
     ...jest.requireActual("react-router-dom"), // use actual for all non-hook parts
@@ -348,4 +349,112 @@ test("should display the close shared exhibit document modal with stamped exhibi
     expect(closeSharedStampedPositiveButton).toBeInTheDocument();
     const closeSharedStampedNegativeButton = queryByText(CONSTANTS.MY_EXHIBITS_CLOSE_MODAL_CANCEL_BUTTON_LABEL);
     expect(closeSharedStampedNegativeButton).toBeInTheDocument();
+});
+
+test("should display the bring all to me button when the user is the owner of the exhibit", async () => {
+    customDeps.apiService.getEnteredExhibits = jest.fn().mockResolvedValue([]);
+    customDeps.apiService.closeExhibit = jest.fn().mockResolvedValue(true);
+    customDeps.apiService.getSignedUrl = jest.fn().mockResolvedValue("url");
+    customDeps.apiService.getPrivateSignedUrl = jest.fn().mockResolvedValue("url");
+    const { queryByText, queryByTestId } = renderWithGlobalContext(
+        <ThemeProvider theme={theme}>
+            <LiveExhibits />
+        </ThemeProvider>,
+        customDeps,
+        {
+            ...rootReducer,
+            initialState: {
+                signalR: {
+                    signalR: null,
+                },
+                room: {
+                    ...rootReducer.initialState.room,
+                    isRecording: true,
+                    currentExhibitTabName: "liveExhibits",
+                    currentExhibit: {
+                        ...currentExhibit,
+                        preSignedUrl: "",
+                        close: true,
+                        isPublic: false,
+                        addedBy: {
+                            ...userMock,
+                            id: "1",
+                        },
+                    },
+                    currentUser: { ...userMock, id: "1" },
+                    stampLabel: "Stamp Label",
+                },
+            },
+        }
+    );
+    expect(queryByTestId("bring_all_to_me_button")).toBeInTheDocument();
+});
+
+test("should not display the bring all to me button when the user is the owner of the exhibit", async () => {
+    customDeps.apiService.getEnteredExhibits = jest.fn().mockResolvedValue([]);
+    customDeps.apiService.closeExhibit = jest.fn().mockResolvedValue(true);
+    customDeps.apiService.getSignedUrl = jest.fn().mockResolvedValue("url");
+    customDeps.apiService.getPrivateSignedUrl = jest.fn().mockResolvedValue("url");
+    const { queryByText, queryByTestId } = renderWithGlobalContext(
+        <ThemeProvider theme={theme}>
+            <LiveExhibits />
+        </ThemeProvider>,
+        customDeps,
+        {
+            ...rootReducer,
+            initialState: {
+                signalR: {
+                    signalR: null,
+                },
+                room: {
+                    ...rootReducer.initialState.room,
+                    isRecording: true,
+                    currentExhibitTabName: "liveExhibits",
+                    currentExhibit: {
+                        ...currentExhibit,
+                        preSignedUrl: "",
+                        close: true,
+                        isPublic: false,
+                        addedBy: {
+                            ...userMock,
+                            id: "1",
+                        },
+                    },
+                    currentUser: { ...userMock, id: "2" },
+                    stampLabel: "Stamp Label",
+                },
+            },
+        }
+    );
+    expect(queryByTestId("bring_all_to_me_button")).not.toBeInTheDocument();
+});
+
+test("should not display the bring all to me button when has not any shared exhibit", async () => {
+    customDeps.apiService.getEnteredExhibits = jest.fn().mockResolvedValue([]);
+    customDeps.apiService.closeExhibit = jest.fn().mockResolvedValue(true);
+    customDeps.apiService.getSignedUrl = jest.fn().mockResolvedValue("url");
+    customDeps.apiService.getPrivateSignedUrl = jest.fn().mockResolvedValue("url");
+    const { queryByText, queryByTestId } = renderWithGlobalContext(
+        <ThemeProvider theme={theme}>
+            <LiveExhibits />
+        </ThemeProvider>,
+        customDeps,
+        {
+            ...rootReducer,
+            initialState: {
+                signalR: {
+                    signalR: null,
+                },
+                room: {
+                    ...rootReducer.initialState.room,
+                    isRecording: true,
+                    currentExhibitTabName: "liveExhibits",
+                    currentExhibit: null,
+                    currentUser: { ...userMock, id: "2" },
+                    stampLabel: "Stamp Label",
+                },
+            },
+        }
+    );
+    expect(queryByTestId("bring_all_to_me_button")).not.toBeInTheDocument();
 });

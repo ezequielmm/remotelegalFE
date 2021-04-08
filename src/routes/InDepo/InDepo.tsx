@@ -23,6 +23,7 @@ import useSignalR from "../../hooks/useSignalR";
 import GuestRequests from "./GuestRequests";
 import { Roles } from "../../models/participant";
 import { useUserIsAdmin } from "../../hooks/users/hooks";
+import { NotificationEntityType } from "../../types/Notification";
 
 const InDepo = () => {
     const inDepoTheme = { ...theme, mode: ThemeMode.inDepo };
@@ -40,6 +41,8 @@ const InDepo = () => {
         dataTrack,
         currentExhibit,
         participants,
+        currentExhibitPage,
+        currentUser,
     } = state.room;
     const { depositionID } = useParams<DepositionID>();
     const [realTimeOpen, togglerRealTime] = useState<boolean>(false);
@@ -48,7 +51,7 @@ const InDepo = () => {
     const [videoLayoutSize, setVideoLayoutSize] = useState<number>(0);
     const [atendeesVisibility, setAtendeesVisibility] = useState<boolean>(true);
     const history = useHistory();
-    const { stop, sendMessage, signalR } = useSignalR("/depositionHub");
+    const { stop, sendMessage, signalR, subscribeToGroup, unsubscribeMethodFromGroup } = useSignalR("/depositionHub");
 
     useEffect(
         () => {
@@ -114,18 +117,34 @@ const InDepo = () => {
     }, [message, currentRoom, dispatch, history, depositionID]);
 
     useEffect(() => {
-        if (currentExhibit) {
+        if (currentExhibit || currentExhibitPage) {
             togglerExhibits(true);
         }
-    }, [currentExhibit]);
+    }, [currentExhibit, currentExhibitPage]);
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (participants?.length && currentRoom?.localParticipant) {
             const localParticipantEmail = JSON.parse(currentRoom?.localParticipant?.identity)?.email;
             const isMuted = participants.find((participant) => participant?.email === localParticipantEmail)?.isMuted;
             setInitialAudioEnabled(!isMuted);
         }
     }, [participants, currentRoom]);
+
+    useEffect(() => {
+        const onReceiveAnnotations = (message) => {
+            if (
+                message.entityType !== NotificationEntityType.bringAllTo ||
+                (currentUser?.id && currentUser?.id === message?.content?.userId)
+            )
+                return;
+            dispatch(actions.setCurrentExhibitPage("-1"));
+            dispatch(actions.setCurrentExhibitPage(message?.content?.documentLocation));
+        };
+        subscribeToGroup("ReceiveNotification", onReceiveAnnotations);
+        return () => {
+            unsubscribeMethodFromGroup("ReceiveNotification", onReceiveAnnotations);
+        };
+    }, [subscribeToGroup, unsubscribeMethodFromGroup, currentUser, dispatch]);
 
     if (loading || loadingUserIsAdmin) {
         return <Spinner />;

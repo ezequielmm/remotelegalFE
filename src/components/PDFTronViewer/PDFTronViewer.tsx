@@ -25,6 +25,7 @@ export interface PdfTronViewerProps {
     realTimeAnnotations?: boolean;
     onAnnotationChange?: (data: AnnotationPayload) => void;
     onDocumentReadyToDisplay?: () => void;
+    setPage?: (page: string) => void;
     disableElements?: string[];
     readOnly?: boolean;
 }
@@ -38,11 +39,12 @@ const PDFTronViewer = ({
     realTimeAnnotations,
     onAnnotationChange,
     onDocumentReadyToDisplay,
+    setPage,
     disableElements = [],
     readOnly = false,
 }: PdfTronViewerProps) => {
     const { state, dispatch } = useContext(GlobalStateContext);
-    const { timeZone } = state.room;
+    const { timeZone, currentExhibitPage } = state.room;
     const [openStampModal, setStampModal] = useState(false);
     const viewerRef = useRef(null);
     const [PDFTron, setPDFTron] = useState<WebViewerInstance>(null);
@@ -173,12 +175,22 @@ const PDFTronViewer = ({
         setAnnotationsLoaded(true);
     };
 
+    const onPageNumberUpdated = (page) => {
+        setPage(page.toString());
+    };
+
     useEffect(() => {
         if (documentLoaded && annotationsLoaded && shouldGetAnnotations) {
             getAllLatestAnnotations();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [documentLoaded, annotationsLoaded, shouldGetAnnotations]);
+
+    useEffect(() => {
+        if (documentLoaded && annotationsLoaded && shouldGetAnnotations && currentExhibitPage !== "-1") {
+            PDFTron?.docViewer?.setCurrentPage(currentExhibitPage);
+        }
+    }, [documentLoaded, annotationsLoaded, currentExhibitPage, shouldGetAnnotations, PDFTron]);
 
     useEffect(() => {
         if (documentLoaded && annotationsLoaded) {
@@ -266,6 +278,7 @@ const PDFTronViewer = ({
             PDFTron.annotManager.on("annotationChanged", onAnnotationChangeHandler);
             PDFTron.docViewer.on("documentLoaded", onDocumentLoadedHandler);
             PDFTron.docViewer.on("annotationsLoaded", onAnnotationsLoaded);
+            PDFTron.docViewer.on("pageNumberUpdated", onPageNumberUpdated);
             PDFTron.setToolbarGroup("toolbarGroup-View", true);
             if (filename.toLowerCase().includes(".mp4")) {
                 loadPDFTronVideo(PDFTron, document);

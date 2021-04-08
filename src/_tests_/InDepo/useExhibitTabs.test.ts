@@ -46,6 +46,7 @@ describe("useExhibitTabs", () => {
             room: {
                 ...state.state.room,
                 currentExhibit,
+                currentExhibitPage: "1",
             },
         };
 

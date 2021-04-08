@@ -10,6 +10,7 @@ import { GlobalStateContext } from "../../../state/GlobalState";
 const Exhibits = ({ visible }: ContainerProps) => {
     const { highlightKey, activeKey, setActiveKey } = useExhibitTabs();
     const { dispatch } = useContext(GlobalStateContext);
+
     return (
         <StyledLayoutCotainer visible={visible}>
             <StyledLayoutContent>

@@ -17,29 +17,29 @@ import * as CONSTANTS from "../../../../../constants/exhibits";
 interface Props {
     file: ExhibitFile;
     onClose?: () => void;
+    onBringAllToMe?: () => void;
+    onClosePending?: boolean;
     showBackButton?: boolean;
     showCloseButton?: boolean;
     showShareButton?: boolean;
+    showBringAllToMeButton?: boolean;
     readOnly?: boolean;
 }
 
 export default function ExhibitViewerHeader({
     file,
     onClose,
+    onBringAllToMe,
+    onClosePending = false,
     showBackButton = true,
     showCloseButton = true,
     showShareButton = false,
+    showBringAllToMeButton = false,
     readOnly = false,
 }: Props): ReactElement {
     const [sharingModalOpen, setSharingModalOpen] = useState(false);
     const [closingModalOpen, setClosingModalOpen] = useState(false);
-    const {
-        shareExhibit,
-        shareExhibitPending,
-        sharedExhibit,
-        closeSharedExhibit,
-        pendingCloseSharedExhibit,
-    } = useShareExhibitFile();
+    const { shareExhibit, shareExhibitPending, sharedExhibit } = useShareExhibitFile();
     const { state } = useContext(GlobalStateContext);
     const { isRecording, stampLabel } = state.room;
 
@@ -49,7 +49,7 @@ export default function ExhibitViewerHeader({
     };
 
     const onCloseSharedExhibitHandler = () => {
-        closeSharedExhibit();
+        onClose();
     };
 
     return (
@@ -66,35 +66,52 @@ export default function ExhibitViewerHeader({
                 file={file}
                 isStamped={!!stampLabel}
                 visible={closingModalOpen}
-                loading={pendingCloseSharedExhibit}
+                loading={onClosePending}
                 onKeepSharedExhibit={() => setClosingModalOpen(false)}
                 onCloseSharedExhibit={onCloseSharedExhibitHandler}
             />
-            <Col md={6} xxl={4}>
-                {showBackButton && (
+            {showBackButton && (
+                <Col md={6} xxl={4}>
                     <Text state={ColorStatus.white}>
                         <Icon data-testid="view-document-back-button" icon={backIcon} size={6} onClick={onClose} />
                     </Text>
-                )}
-            </Col>
-            <Col md={12} xxl={16}>
+                </Col>
+            )}
+            <Col md={showBringAllToMeButton ? 14 : showBackButton ? 12 : 24} xxl={16}>
                 <Tooltip title={file?.displayName}>
-                    <Text size="large" state={ColorStatus.white} block align="center">
+                    <Text
+                        size="large"
+                        state={ColorStatus.white}
+                        block
+                        align={showBringAllToMeButton ? undefined : "center"}
+                    >
                         {file?.displayName}
                     </Text>
                 </Tooltip>
             </Col>
-            <Col md={6} xxl={4} style={{ textAlign: "right" }}>
+            {showBringAllToMeButton && (
+                <Col md={5} xxl={4}>
+                    <StyledCloseButton
+                        type="primary"
+                        size="small"
+                        data-testid="bring_all_to_me_button"
+                        onClick={onBringAllToMe}
+                    >
+                        {CONSTANTS.BRING_ALL_TO_ME_BUTTON_LABEL}
+                    </StyledCloseButton>
+                </Col>
+            )}
+            <Col md={showBringAllToMeButton ? 5 : 6} xxl={4} style={{ textAlign: "right" }}>
                 {showCloseButton && (
                     <StyledCloseButton
                         onClick={() => {
                             if (readOnly) {
-                                closeSharedExhibit();
+                                onClose();
                             } else {
                                 setClosingModalOpen(true);
                             }
                         }}
-                        loading={pendingCloseSharedExhibit}
+                        loading={onClosePending}
                         type="primary"
                         size="small"
                         data-testid="close_document_button"

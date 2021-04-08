@@ -487,6 +487,15 @@ export class ApiService {
         });
     };
 
+    bringAllToMe = async ({ depositionID, page }): Promise<boolean> => {
+        return this.request<boolean>({
+            path: `/api/Depositions/${depositionID}/BringAllToMe`,
+            payload: { documentLocation: page },
+            withToken: true,
+            method: HTTP_METHOD.POST,
+        });
+    };
+
     private request = async <T>({
         path,
         payload = {},

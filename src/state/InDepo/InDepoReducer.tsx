@@ -25,6 +25,7 @@ export interface IRoom {
     transcriptions?: (TranscriptionModel.Transcription & TranscriptionModel.TranscriptionPause)[];
     permissions?: string[];
     currentExhibit?: ExhibitFile;
+    currentExhibitPage?: string;
     isCurrentExhibitOwner?: boolean;
     exhibitTab?: EXHIBIT_TAB;
     currentExhibitTabName?: string;
@@ -51,6 +52,7 @@ export const RoomReducerInitialState: IRoom = {
     transcriptions: [],
     permissions: [],
     currentExhibit: null,
+    currentExhibitPage: "1",
     isCurrentExhibitOwner: false,
     exhibitTab: DEFAULT_ACTIVE_TAB,
     currentExhibitTabName: "",
@@ -196,6 +198,11 @@ const RoomReducer: Reducer<IRoom, IAction> = (state: IRoom, action: IAction): IR
             return {
                 ...state,
                 participants: action.payload,
+            };
+        case ACTION_TYPE.IN_DEPO_SET_CURRENT_EXHIBIT_PAGE:
+            return {
+                ...state,
+                currentExhibitPage: action.payload,
             };
 
         default:

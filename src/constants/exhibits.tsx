@@ -95,6 +95,7 @@ export const LIVE_EXHIBITS_SUBTITLE = "Once someone is sharing an exhibit you wi
 export const LIVE_EXHIBITS_SHARE_ERROR_409 = "Can't share document while another document is being shared.";
 
 export const CLOSE_SHARED_EXHIBIT_BUTTON_LABEL = "Close for all";
+export const BRING_ALL_TO_ME_BUTTON_LABEL = "Bring all to me";
 export const SHARE_EXHIBIT_BUTTON_LABEL = "Share with all";
 
 export const EXHIBIT_DELETE_ERROR_MESSAGE = "An unexpected error occurred!";

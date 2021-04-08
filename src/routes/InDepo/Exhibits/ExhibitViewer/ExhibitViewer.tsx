@@ -4,7 +4,7 @@ import Icon from "../../../../components/Icon";
 import PDFTronViewer from "../../../../components/PDFTronViewer";
 import Result from "../../../../components/Result";
 import Spinner from "../../../../components/Spinner";
-import { useSignedUrl } from "../../../../hooks/exhibits/hooks";
+import { useBringAllToMe, useSignedUrl } from "../../../../hooks/exhibits/hooks";
 import { StyledExhibitViewerContainer } from "./styles";
 import ExhibitViewerHeader from "./ExhibitViewerHeader";
 import { ReactComponent as MyExhibitsIcon } from "../../../../assets/icons/EnteredExhibits-empty.svg";
@@ -22,9 +22,12 @@ import { DepositionModel } from "../../../../models";
 interface Props extends PdfTronViewerProps {
     file: ExhibitFile;
     onClose?: () => void;
+    onBringAllToMe?: () => void;
+    onClosePending?: boolean;
     showBackButtonOnHeader?: boolean;
     showCloseButtonOnHeader?: boolean;
     showShareButtonOnHeader?: boolean;
+    showBringAllToMeButton?: boolean;
     shouldGetAnnotations?: boolean;
     realTimeAnnotations?: boolean;
     onAnnotationChange?: (data: AnnotationPayload) => void;
@@ -35,9 +38,12 @@ interface Props extends PdfTronViewerProps {
 export const ExhibitViewer = ({
     file,
     onClose,
+    onBringAllToMe,
+    onClosePending = false,
     showBackButtonOnHeader = true,
     showCloseButtonOnHeader = false,
     showShareButtonOnHeader = false,
+    showBringAllToMeButton = false,
     shouldGetAnnotations = false,
     realTimeAnnotations = false,
     onAnnotationChange,
@@ -47,6 +53,7 @@ export const ExhibitViewer = ({
     const { state } = useContext(GlobalStateContext);
     const { exhibitTab, permissions } = state.room;
     const { error, documentUrl, isPublic } = useSignedUrl(file, readOnly);
+    const { setBringAllToPage, bringAllToMe } = useBringAllToMe();
     const [showSpinner, setShowSpinner] = useState(true);
 
     return (
@@ -55,9 +62,12 @@ export const ExhibitViewer = ({
             <ExhibitViewerHeader
                 file={file}
                 onClose={onClose}
+                onBringAllToMe={bringAllToMe}
+                onClosePending={onClosePending}
                 showBackButton={showBackButtonOnHeader}
                 showCloseButton={showCloseButtonOnHeader}
                 showShareButton={showShareButtonOnHeader}
+                showBringAllToMeButton={showBringAllToMeButton}
                 readOnly={isPublic}
             />
             {documentUrl && (
@@ -74,6 +84,7 @@ export const ExhibitViewer = ({
                     shouldGetAnnotations={shouldGetAnnotations}
                     realTimeAnnotations={realTimeAnnotations}
                     onDocumentReadyToDisplay={() => setShowSpinner(false)}
+                    setPage={setBringAllToPage}
                 />
             )}
             {!!error && (
