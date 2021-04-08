@@ -138,14 +138,11 @@ const StyledTable = styled(Table)<TableProps<DefaultRecordType> & Pick<ITablePro
                     }
                 }
 
-                .ant-table-header {
+                .ant-table-header table{
                     ${
                         scroll
                             ? `
-                            colgroup col:last-child {
-                                width: 24px !important;
-                                min-width: 24px !important;
-                            }
+                            padding-right: 1.5rem;
                             `
                             : ""
                     }
