@@ -189,6 +189,9 @@ const PDFTronViewer = ({
     useEffect(() => {
         if (documentLoaded && annotationsLoaded && shouldGetAnnotations && currentExhibitPage !== "-1") {
             PDFTron?.docViewer?.setCurrentPage(currentExhibitPage);
+            setTimeout(() => {
+                PDFTron?.docViewer?.setCurrentPage(currentExhibitPage);
+            }, 1000);
         }
     }, [documentLoaded, annotationsLoaded, currentExhibitPage, shouldGetAnnotations, PDFTron]);
 
