@@ -27,6 +27,7 @@ export interface IDeposition {
     caseNumber: string;
     creationDate: DateLike;
     startDate: DateLike;
+    actualStartDate?: DateLike;
     endDate: DateLike;
     completeDate: DateLike;
     timeZone: TimeZones;

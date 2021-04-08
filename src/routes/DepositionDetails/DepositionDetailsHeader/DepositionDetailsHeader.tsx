@@ -22,12 +22,15 @@ import { mapTimeZone } from "../../../models/general";
 
 const DepositionDetailsHeader = ({ deposition }: { deposition: DepositionModel.IDeposition }) => {
     const [formattedDates, setFormattedDates] = useState<string[]>([]);
-    const { caseName, caseNumber, witness, completeDate, startDate, status, timeZone, job } = deposition || {};
+    const { caseName, caseNumber, witness, completeDate, startDate, status, timeZone, job, actualStartDate } =
+        deposition || {};
 
     useEffect(() => {
-        if (!startDate || !completeDate) return;
+        const startDateToShow = actualStartDate || startDate;
+        if (!startDateToShow || !completeDate) return;
         const formattedStartDate =
-            startDate && moment(startDate).tz(mapTimeZone[timeZone]).format(CONSTANTS.FORMAT_TIME).split(" ");
+            startDateToShow &&
+            moment(startDateToShow).tz(mapTimeZone[timeZone]).format(CONSTANTS.FORMAT_TIME).split(" ");
         const formattedCompleteDate =
             completeDate && moment(completeDate).tz(mapTimeZone[timeZone]).format(CONSTANTS.FORMAT_TIME);
         setFormattedDates([
@@ -37,7 +40,7 @@ const DepositionDetailsHeader = ({ deposition }: { deposition: DepositionModel.I
             ).toLowerCase(),
             formattedCompleteDate.toLowerCase(),
         ]);
-    }, [startDate, completeDate, timeZone]);
+    }, [startDate, completeDate, timeZone, actualStartDate]);
 
     return (
         <Card bg={theme.colors.neutrals[0]} hasPadding={false} fullWidth>
@@ -105,7 +108,12 @@ const DepositionDetailsHeader = ({ deposition }: { deposition: DepositionModel.I
                                 <Text size="small" uppercase state={ColorStatus.white} lineHeight={1.25}>
                                     {CONSTANTS.DEPOSITION_DETAILS_HEADER_DATE}
                                 </Text>
-                                <Tooltip title={startDate && moment(startDate).format("MMM D, YYYY")}>
+                                <Tooltip
+                                    title={
+                                        (actualStartDate && moment(actualStartDate).format("MMM D, YYYY")) ||
+                                        (startDate && moment(startDate).format("MMM D, YYYY"))
+                                    }
+                                >
                                     <TitleWrapper>
                                         <Title
                                             dataTestId="deposition_details_header_date"
@@ -114,7 +122,8 @@ const DepositionDetailsHeader = ({ deposition }: { deposition: DepositionModel.I
                                             color={ColorStatus.white}
                                             noMargin
                                         >
-                                            {startDate && moment(startDate).format("MMM D, YYYY")}
+                                            {(actualStartDate && moment(actualStartDate).format("MMM D, YYYY")) ||
+                                                (startDate && moment(startDate).format("MMM D, YYYY"))}
                                         </Title>
                                     </TitleWrapper>
                                 </Tooltip>
