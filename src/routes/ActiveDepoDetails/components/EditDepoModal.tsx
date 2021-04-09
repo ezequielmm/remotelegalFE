@@ -144,11 +144,21 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
 
     const handleSubmit = () => {
         const isDepoConfirmedAndNowCanceled = isStatusCanceled && deposition.status === Status.confirmed;
+        const isDepoNowConfirmed = formStatus.status === Status.confirmed;
+        const isDepoPending = deposition.status === Status.pending;
+        const isDepoPendingOrCanceledAndNowConfirmed =
+            (isStatusCanceled && isDepoNowConfirmed) || (isDepoPending && isDepoNowConfirmed);
         const isDepoReverted = deposition.status === Status.canceled && !isStatusCanceled && !invalidFile;
         const isRescheduled =
             deposition.startDate !== formStatus.startDate || deposition.endDate !== formStatus.endDate;
 
         if (isDepoConfirmedAndNowCanceled || isDepoReverted) {
+            return setStatusModal({
+                open: true,
+                modalContent: getModalTextContent(formStatus.status, deposition),
+            });
+        }
+        if (isDepoPendingOrCanceledAndNowConfirmed) {
             return setStatusModal({
                 open: true,
                 modalContent: getModalTextContent(formStatus.status, deposition),

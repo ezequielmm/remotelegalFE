@@ -47,3 +47,20 @@ export const getConfirmTextContent = (status: Status, deposition: DepositionMode
     };
 };
 export default getModalTextContent;
+
+export const getAddParticipantConfirmTextContext = ({ email, name }: { email: string; name: string }) => {
+    if (email && name) {
+        return {
+            title: CONSTANTS.DEPOSITION_DETAILS_ADD_PARTICIPANT_CONFIRM_TITLE,
+            message: `Are you sure you want to add ${name} as participant. The participant will be notified by email about this invitation`,
+            cancelButton: CONSTANTS.DEPOSITION_DETAILS_ADD_PARTICIPANT_CONFIRM_CONFIRM_NO,
+            confirmButton: CONSTANTS.DEPOSITION_DETAILS_ADD_PARTICIPANT_CONFIRM_CONFIRM_YES,
+        };
+    }
+    return {
+        title: CONSTANTS.DEPOSITION_DETAILS_ADD_PARTICIPANT_CONFIRM_TITLE,
+        message: `Are you sure you want to add the participant? The participant will be notified by email about this invitation`,
+        cancelButton: CONSTANTS.DEPOSITION_DETAILS_ADD_PARTICIPANT_CONFIRM_CONFIRM_NO,
+        confirmButton: CONSTANTS.DEPOSITION_DETAILS_ADD_PARTICIPANT_CONFIRM_CONFIRM_YES,
+    };
+};

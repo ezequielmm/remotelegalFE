@@ -143,6 +143,7 @@ const ParticipantListTable = ({
                 handleClose={setOpenParticipantModal}
                 open={openAddParticipantModal}
                 fetchParticipants={handleSortAndReFetchParticipants}
+                depositionStatus={deposition.status}
             />
 
             <Confirm

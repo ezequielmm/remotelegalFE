@@ -15,6 +15,9 @@ import isInvalidEmail from "../../../helpers/isInvalidEmail";
 import { useAddParticipantToExistingDepo } from "../../../hooks/activeDepositionDetails/hooks";
 import Message from "../../../components/Message";
 import filterEmptyPropertiesFromObject from "../../../helpers/filterEmptyPropertiesFromObject";
+import Confirm from "../../../components/Confirm";
+import { getAddParticipantConfirmTextContext } from "../helpers/getModalTextContent";
+import { Status } from "../../../components/StatusPill/StatusPill";
 
 interface IModalProps {
     open: boolean;
@@ -22,6 +25,7 @@ interface IModalProps {
     fetchParticipants: () => void;
     isCourtReporterPresent: boolean;
     depoID: string;
+    depositionStatus?: Status;
 }
 
 const INITIAL_FORM_STATE = {
@@ -31,9 +35,25 @@ const INITIAL_FORM_STATE = {
     phone: { value: "", invalid: false },
 };
 
-const AddParticipantModal = ({ open, handleClose, fetchParticipants, isCourtReporterPresent, depoID }: IModalProps) => {
+const AddParticipantModal = ({
+    open,
+    handleClose,
+    fetchParticipants,
+    isCourtReporterPresent,
+    depoID,
+    depositionStatus,
+}: IModalProps) => {
     const [formStatus, setFormStatus] = useState(INITIAL_FORM_STATE);
     const [addParticipant, loading, error, addedParticipant] = useAddParticipantToExistingDepo();
+    const [openConfirmModal, setConfirmModal] = useState({
+        open: false,
+        modalContent: {
+            title: "",
+            message: "",
+            cancelButton: "",
+            confirmButton: "",
+        },
+    });
 
     useEffect(() => {
         if (addedParticipant) {
@@ -87,7 +107,28 @@ const AddParticipantModal = ({ open, handleClose, fetchParticipants, isCourtRepo
             },
             ""
         );
+        if (email?.value && openConfirmModal.open) {
+            setConfirmModal({ ...openConfirmModal, open: false });
+        }
+
         return addParticipant(depoID, body);
+    };
+
+    const handleConfirmation = () => {
+        const {
+            email: { value: email },
+            name: { value: name },
+        } = formStatus;
+
+        if (depositionStatus === Status.confirmed) {
+            if (email) {
+                return setConfirmModal({
+                    open: true,
+                    modalContent: getAddParticipantConfirmTextContext({ email, name }),
+                });
+            }
+        }
+        return handleSubmit();
     };
 
     const roles = isCourtReporterPresent
@@ -108,6 +149,17 @@ const AddParticipantModal = ({ open, handleClose, fetchParticipants, isCourtRepo
             }}
         >
             <Space direction="vertical" size="large" fullWidth>
+                <Confirm
+                    title={openConfirmModal.modalContent.title}
+                    subTitle={openConfirmModal.modalContent.message}
+                    negativeLabel={openConfirmModal.modalContent.cancelButton}
+                    positiveLabel={openConfirmModal.modalContent.confirmButton}
+                    visible={openConfirmModal.open}
+                    onPositiveClick={() => handleSubmit()}
+                    onNegativeClick={() => setConfirmModal({ ...openConfirmModal, open: false })}
+                >
+                    <span data-testid={CONSTANTS.DEPOSITION_DETAILS_ADD_PARTICIPANT_CONFIRM_MODAL_ID} />
+                </Confirm>
                 <Space.Item fullWidth>
                     <Title
                         level={4}
@@ -242,7 +294,7 @@ const AddParticipantModal = ({ open, handleClose, fetchParticipants, isCourtRepo
                                 <Button
                                     disabled={loading}
                                     loading={loading}
-                                    onClick={handleSubmit}
+                                    onClick={handleConfirmation}
                                     data-testid={
                                         CONSTANTS.DEPOSITION_DETAILS_ADD_PARTICIPANT_MODAL_CONFIRM_BUTTON_TEST_ID
                                     }
