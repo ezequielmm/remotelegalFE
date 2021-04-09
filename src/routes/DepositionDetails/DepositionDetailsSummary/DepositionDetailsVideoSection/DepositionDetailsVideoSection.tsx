@@ -4,6 +4,7 @@ import { ReactComponent as TimeIcon } from "../../../../assets/icons/time.svg";
 import { ReactComponent as RecordOnIcon } from "../../../../assets/in-depo/Record.on.svg";
 import { ReactComponent as RecordOffIcon } from "../../../../assets/in-depo/Record.off.svg";
 import { ReactComponent as VideoAlertIcon } from "../../../../assets/icons/Video-alert.svg";
+import { ReactComponent as AudioAlertIcon } from "../../../../assets/icons/Audio-alert.svg";
 import RecordingInfo from "./RecordingInfo/RecordingInfo";
 import * as CONSTANTS from "../../../../constants/depositionDetails";
 import IRecording, { RecordingStatus } from "../../../../models/recording";
@@ -57,7 +58,7 @@ export default function DepositionDetailsVideoSection({ recordingInfo }: IDeposi
                 />
             ) : (
                 <VideoPlaceholder
-                    icon={<Icon icon={VideoAlertIcon} />}
+                    icon={<Icon icon={isAudioFromUrl(recordingInfo?.outputFormat) ? AudioAlertIcon : VideoAlertIcon} />}
                     title={CONSTANTS.VIDEO_PLACEHOLDER_TITLE}
                     subTitle={CONSTANTS.VIDEO_PLACEHOLDER_SUBTITLE}
                 />

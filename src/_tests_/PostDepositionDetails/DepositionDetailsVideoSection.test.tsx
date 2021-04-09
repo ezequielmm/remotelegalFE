@@ -170,4 +170,36 @@ describe("DepositionDetailsVideoSection", () => {
         );
         expect(queryByTestId("only_audio_image")).toBeInTheDocument();
     });
+
+    it("shows an audio image when has not public url and the output format is mp3", async () => {
+        const recordInfoData = {
+            totalTime: 0,
+            onTheRecordTime: 0,
+            offTheRecordTime: 120,
+            publicUrl: "",
+            outputFormat: "mp3",
+            status: RecordingStatus.Completed,
+        };
+        const { queryByText } = renderWithGlobalContext(
+            <DepositionDetailsVideoSection recordingInfo={recordInfoData} />,
+            customDeps
+        );
+        expect(queryByText("Audio-alert.svg")).toBeInTheDocument();
+    });
+    
+    it("shows an video image when has not public url and the output format is mp4", async () => {
+        const recordInfoData = {
+            totalTime: 0,
+            onTheRecordTime: 0,
+            offTheRecordTime: 120,
+            publicUrl: "",
+            outputFormat: "mp4",
+            status: RecordingStatus.Completed,
+        };
+        const { queryByText } = renderWithGlobalContext(
+            <DepositionDetailsVideoSection recordingInfo={recordInfoData} />,
+            customDeps
+        );
+        expect(queryByText("Video-alert.svg")).toBeInTheDocument();
+    });
 });
