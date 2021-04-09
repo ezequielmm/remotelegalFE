@@ -73,3 +73,11 @@ export const mapTimeZone = {
     [TimeZones.AKT]: "America/Anchorage",
     [TimeZones.HT]: "Pacific/Honolulu",
 };
+
+export interface Message {
+    index: number;
+    author: string;
+    dateCreated: DateLike;
+    body: string;
+    failed?: boolean;
+}

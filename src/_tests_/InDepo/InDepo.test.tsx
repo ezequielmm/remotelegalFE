@@ -19,6 +19,21 @@ import { getUserDepoStatusWithParticipantAdmitted } from "../constants/preJoinDe
 
 jest.mock("@microsoft/signalr");
 
+jest.mock("@twilio/conversations", () => {
+    return jest.fn().mockImplementation(() => ({
+        Client: {
+            create: jest.fn().mockResolvedValue({
+                getConversationByUniqueName: jest.fn().mockResolvedValue({
+                    sendMessage: jest.fn(),
+                }),
+                getMessages: jest.fn().mockResolvedValue({ items: [] }),
+                on: jest.fn(),
+                off: jest.fn(),
+            }),
+        },
+    }));
+});
+
 jest.mock("audio-recorder-polyfill", () => {
     return jest.fn().mockImplementation(() => ({
         start: jest.fn(),

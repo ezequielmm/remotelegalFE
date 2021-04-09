@@ -1,51 +1,57 @@
+import { Badge } from "antd";
 import React, { ReactElement, useState } from "react";
-import { LocalAudioTrack, LocalParticipant, LocalVideoTrack } from "twilio-video";
 import { useHistory } from "react-router";
+import { ThemeProvider } from "styled-components";
+import { LocalAudioTrack, LocalParticipant, LocalVideoTrack } from "twilio-video";
+import { ReactComponent as ArrowIcon } from "../../assets/general/Arrow.svg";
+import { ReactComponent as ChatIcon } from "../../assets/icons/comment_icon.svg";
+import { ReactComponent as BreakroomsIcon } from "../../assets/in-depo/Breakrooms.svg";
+import { ReactComponent as CameraOffIcon } from "../../assets/in-depo/Camera.off.svg";
+import { ReactComponent as CameraOnIcon } from "../../assets/in-depo/Camera.on.svg";
+import { ReactComponent as EndCallIcon } from "../../assets/in-depo/End.call.svg";
+import { ReactComponent as ExhibitsIcon } from "../../assets/in-depo/Exhibits.svg";
+import { ReactComponent as MuteIcon } from "../../assets/in-depo/Mute.svg";
+import { ReactComponent as PauseIcon } from "../../assets/in-depo/Pause.svg";
+import { ReactComponent as RealTimeIcon } from "../../assets/in-depo/Real.time.svg";
+import { ReactComponent as RecordIcon } from "../../assets/in-depo/Record.svg";
+import { ReactComponent as SummaryIcon } from "../../assets/in-depo/Summary.svg";
+import { ReactComponent as SupportIcon } from "../../assets/in-depo/Support.svg";
+import { ReactComponent as UnmuteIcon } from "../../assets/in-depo/Unmute.svg";
+import * as CONSTANTS from "../../constants/inDepo";
+import { theme } from "../../constants/styles/theme";
+import { getREM } from "../../constants/styles/utils";
+import { useAuthentication } from "../../hooks/auth";
+import useChat from "../../hooks/InDepo/useChat";
+import useEndDepo from "../../hooks/InDepo/useEndDepo";
+import useJoinDepositionLink from "../../hooks/InDepo/useJoinDepositionLink";
+import { useSendParticipantStatus } from "../../hooks/InDepo/useParticipantStatus";
 import useParticipantTracks from "../../hooks/InDepo/useParticipantTracks";
 import useRecording from "../../hooks/InDepo/useRecording";
 import useTracksStatus from "../../hooks/InDepo/useTracksStatus";
-import EndDepoModal from "./components/EndDepoModal";
-import CopyLink from "./components/CopyLink";
-import { theme } from "../../constants/styles/theme";
-import { StyledContainer, StyledLogo, StyledComposedIconContainer } from "./styles";
-import Icon from "../Icon";
-import { ReactComponent as MuteIcon } from "../../assets/in-depo/Mute.svg";
-import { ReactComponent as UnmuteIcon } from "../../assets/in-depo/Unmute.svg";
-import { ReactComponent as CameraOnIcon } from "../../assets/in-depo/Camera.on.svg";
-import { ReactComponent as CameraOffIcon } from "../../assets/in-depo/Camera.off.svg";
-import { ReactComponent as RecordIcon } from "../../assets/in-depo/Record.svg";
-import { ReactComponent as PauseIcon } from "../../assets/in-depo/Pause.svg";
-import { ReactComponent as EndCallIcon } from "../../assets/in-depo/End.call.svg";
-import { ReactComponent as ExhibitsIcon } from "../../assets/in-depo/Exhibits.svg";
-import { ReactComponent as RealTimeIcon } from "../../assets/in-depo/Real.time.svg";
-import { ReactComponent as BreakroomsIcon } from "../../assets/in-depo/Breakrooms.svg";
-import { ReactComponent as ArrowIcon } from "../../assets/general/Arrow.svg";
-import { ReactComponent as SummaryIcon } from "../../assets/in-depo/Summary.svg";
-import { ReactComponent as SupportIcon } from "../../assets/in-depo/Support.svg";
-import Control from "../Control/Control";
-import Dropdown from "../Dropdown";
-import Menu from "../Menu";
-import Button from "../Button";
-import Text from "../Typography/Text";
-import Space from "../Space";
-import Divider from "../Divider";
-import Logo from "../Logo";
-import useEndDepo from "../../hooks/InDepo/useEndDepo";
 import useStreamAudio from "../../hooks/useStreamAudio";
 import { BreakroomModel } from "../../models";
+import Chat from "../../routes/InDepo/Chat";
 import ColorStatus from "../../types/ColorStatus";
-import useJoinDepositionLink from "../../hooks/InDepo/useJoinDepositionLink";
-import * as CONSTANTS from "../../constants/inDepo";
 import { ThemeMode } from "../../types/ThemeType";
-import { getREM } from "../../constants/styles/utils";
+import Button from "../Button";
 import Confirm from "../Confirm";
-import { useAuthentication } from "../../hooks/auth";
+import Control from "../Control/Control";
+import Divider from "../Divider";
+import Dropdown from "../Dropdown";
+import Icon from "../Icon";
+import Logo from "../Logo";
+import Menu from "../Menu";
+import Space from "../Space";
+import Text from "../Typography/Text";
+import CopyLink from "./components/CopyLink";
+import EndDepoModal from "./components/EndDepoModal";
 import getLeaveModalTextContent from "./helpers/getLeaveModalTextContent";
-import { useSendParticipantStatus } from "../../hooks/InDepo/useParticipantStatus";
+import { StyledComposedIconContainer, StyledContainer, StyledLogo } from "./styles";
 
 interface IControlsBar {
     breakrooms?: BreakroomModel.Breakroom[];
     disableBreakrooms?: boolean;
+    disableChat?: boolean;
     canRecord: boolean;
     leaveWithoutModal?: boolean;
     canEnd: boolean;
@@ -62,6 +68,7 @@ interface IControlsBar {
 export default function ControlsBar({
     breakrooms,
     disableBreakrooms = false,
+    disableChat = false,
     leaveWithoutModal = false,
     localParticipant,
     exhibitsOpen,
@@ -80,6 +87,8 @@ export default function ControlsBar({
         videoTracks as LocalVideoTrack[]
     );
     const { startPauseRecording, loadingStartPauseRecording } = useRecording(!isRecording);
+    const [chatOpen, togglerChat] = useState(false);
+    const [unreadedChats, setUnreadedChats] = useState(0);
     const [summaryOpen, togglerSummary] = useState(false);
     const [supportOpen, togglerSupport] = useState(false);
     const [breakroomsOpen, togglerBreakrooms] = useState(false);
@@ -96,11 +105,18 @@ export default function ControlsBar({
     const leaveModalTextContent = getLeaveModalTextContent(isRecording, isWitness);
 
     const toggleBreakrooms = () => togglerBreakrooms((prevState) => !prevState);
+    const toggleChat = () => togglerChat((prevState) => !prevState);
     const toggleSummary = () => togglerSummary((prevState) => !prevState);
     const toggleSupport = () => togglerSupport((prevState) => !prevState);
     const toggleExhibits = () => togglerExhibits((prevState) => !prevState);
     const toggleRealTime = () => togglerRealTime((prevState) => !prevState);
     const toggleLeaveModal = () => setOpenLeaveModal((prevState) => !prevState);
+    const { messages, sendMessage, loadClient, loadingClient, errorLoadingClient } = useChat({
+        chatOpen,
+        setUnreadedChats,
+        unreadedChats,
+        disableChat,
+    });
 
     const handleRedirection = () => {
         return isWitness && !isAuthenticated
@@ -312,6 +328,51 @@ export default function ControlsBar({
                     <Space py={3} fullHeight>
                         <Divider type="vertical" fitContent hasMargin={false} />
                     </Space>
+                    {!disableChat && (
+                        <Space align="center">
+                            <ThemeProvider theme={{ ...theme, mode: ThemeMode.default }}>
+                                <Dropdown
+                                    dataTestId={CONSTANTS.CHAT_DROPDOWN_TEST_ID}
+                                    overlay={
+                                        <Chat
+                                            closePopOver={toggleChat}
+                                            open={chatOpen}
+                                            height={getREM(theme.default.spaces[6] * 28)}
+                                            messages={messages}
+                                            sendMessage={sendMessage}
+                                            loadClient={loadClient}
+                                            loadingClient={loadingClient}
+                                            errorLoadingClient={errorLoadingClient}
+                                        />
+                                    }
+                                    placement="topRight"
+                                    onVisibleChange={toggleChat}
+                                    visible={chatOpen}
+                                    trigger={["click"]}
+                                    arrow
+                                    styled
+                                    overlayStyle={{ width: getREM(theme.default.spaces[6] * 23) }}
+                                    theme={summaryTheme}
+                                >
+                                    <Control
+                                        data-testid={CONSTANTS.CHAT_CONTROL_TEST_ID}
+                                        isActive={chatOpen}
+                                        type="simple"
+                                        label={CONSTANTS.CONTROLS_BAR_CHAT_LABEL}
+                                        icon={
+                                            <Badge
+                                                data-testid={CONSTANTS.UNREADED_CHATS_TEST_ID}
+                                                count={unreadedChats}
+                                                size="small"
+                                            >
+                                                <Icon icon={ChatIcon} size="1.625rem" />
+                                            </Badge>
+                                        }
+                                    />
+                                </Dropdown>
+                            </ThemeProvider>
+                        </Space>
+                    )}
                     <Space align="center">
                         <Dropdown
                             dataTestId="summary_button"

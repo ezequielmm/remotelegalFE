@@ -168,6 +168,7 @@ const InDepo = () => {
                         breakrooms={breakrooms}
                         leaveWithoutModal
                         disableBreakrooms
+                        disableChat
                         isRecording={isRecording}
                         canEnd={false}
                         canRecord={false}

@@ -213,6 +213,7 @@ export const useJoinDeposition = () => {
         if (!isMounted.current) {
             return disconnectFromDepo(room, dispatch);
         }
+        dispatch(actions.setToken(token));
         dispatch(actions.joinToRoom(room));
 
         dispatch(actions.setParticipantsData(participants));

@@ -94,6 +94,7 @@ export const StyledRoundedControl = styled(roundButton)`
 
 export const StyledRoundedButton = styled(StyledRoundedControl)`
     height: auto;
+    min-width: ${({ theme }) => getREM(theme.default.spaces[6] * 4.5)};
     padding: ${({ theme }) => `${getREM(theme.default.spaces[3])} ${getREM(theme.default.spaces[6])}`};
     box-shadow: none;
 

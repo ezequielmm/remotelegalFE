@@ -22,11 +22,13 @@ const StyledDivider = styled(AntDivider).withConfig({
         const marginStyles = hasMargin ? `margin: 0 ${getREM(theme.default.spaces[3])};` : "margin: 0;";
 
         const styles = `
-            ${marginStyles}
-            ${fitContent ? fitContentStyles : ""}
-            ${inDepoStyles}
-            top: unset;
-            left: unset;
+            && {
+                ${marginStyles}
+                ${fitContent ? fitContentStyles : ""}
+                ${inDepoStyles}
+                top: unset;
+                left: unset;
+            }
         `;
 
         return styles;

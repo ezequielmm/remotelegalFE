@@ -25,6 +25,22 @@ export const FETCH_ERROR_RESULT_TITLE = "Sorry! We couldn't connect to the depos
 export const FETCH_ERROR_RESULT_BODY = "Something went wrong, please refresh the page to try again.";
 export const FETCH_ERROR_RESULT_BUTTON = "Refresh Page";
 
+export const CURRENT_USER_CHAT_MESSAGE_TIME_TEST_ID = "current_user_chat_message_time";
+export const CHAT_MESSAGE_TIME_TEST_ID = "chat_message_time";
+export const CURRENT_USER_CHAT_MESSAGE_TEST_ID = "current_user_chat_message";
+export const CHAT_MESSAGE_TEST_ID = "chat_message";
+export const COULDNT_SEND_MESSAGE_TEST_ID = "couldnt_send_message";
+export const CHAT_TEST_ID = "chat";
+export const CHAT_DROPDOWN_TEST_ID = "chat_dropdown";
+export const CHAT_CONTROL_TEST_ID = "chat_control";
+export const UNREADED_CHATS_TEST_ID = "unreaded_chats";
+export const CHAT_ERROR_TEST_ID = "chat_error";
+export const CHAT_INPUT_TEST_ID = "chat_input";
+export const CHAT_INPUT_BUTTON_TEST_ID = "chat_input_button";
+export const CHAT_TRY_AGAIN_TEST_ID = "chat_error_screen_button";
+
+export const COULDNT_SEND_MESSAGE = "Couldn't send the message. Please try again.";
+
 export const TRANSCRIPTIONS_PAUSED =
     "Transcription paused - Once the deposition is on the record, transcript will resume.";
 export const getPauseText = (from, to, timeZone) =>
@@ -41,6 +57,7 @@ export const CONTROLS_BAR_EXHIBITS_LABEL = "Exhibits";
 export const CONTROLS_BAR_REAL_TIME_LABEL = "Real Time";
 export const CONTROLS_BAR_BREAKROOMS_LABEL = "Breakrooms";
 export const CONTROLS_BAR_SUMMARY_LABEL = "Summary";
+export const CONTROLS_BAR_CHAT_LABEL = "Chat";
 export const CONTROLS_BAR_SUPPORT_LABEL = "Support";
 export const CONTROLS_BAR_JOIN_BUTTON = "JOIN";
 export const CONTROLS_BAR_LEAVE_DEPOSITION_BUTTON = "Leave";
@@ -53,6 +70,8 @@ export const COPY_LINK_DESCRIPTION = "Invite participants to join the deposition
 export const COPY_LINK_BUTTON = "COPY INVITE LINK";
 export const COPY_LINK_SUCCESS_MSG = "Invite link has been copied to the clipboard";
 export const COPY_LINK_ERROR_MSG = "Error copying the invite to the clipboard";
+
+export const CHAT_TITLE = "Chat";
 
 export const REAL_TIME_PILL = "ROUGH DRAFT: NOT FOR OFFICIAL USE";
 
@@ -74,8 +93,10 @@ export const GUEST_REQUESTS_ALLOW_MODAL_POSITIVE_LABEL = "YES, ADMIT";
 export const GUEST_REQUESTS_NOTIFICATION_TITLE = " wants to join.";
 export const GUEST_REQUESTS_MODAL_NEGATIVE_LABEL = "Cancel";
 
-export const NETWORK_ERROR = "An unexpected error occurred! Please try again";
 export const MOCK_DEPO_USER_STATUS_ERROR = "We couldn´t start the deposition. Please refresh the browser";
+export const NETWORK_ERROR = "An unexpected error occurred!";
+export const TRY_AGAIN = "Please try again";
+export const REFRESH_CHAT = "Refresh Chat";
 export const LEAVE_DEPOSITION_MODAL_NO_WITNESS_TITLE = "Leave deposition before it ends?";
 export const LEAVE_DEPOSITION_MODAL_NO_WITNESS_SUB_TITLE =
     "You will not be able to access the exhibits, transcripts, or video until the deposition ends. You will receive an email notification once the files are available. Do you still want to leave the deposition before it has ended?";
