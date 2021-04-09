@@ -17,7 +17,7 @@ const RequesterSection = ({ invalidRequester }: RequesterSectionProps) => {
     return (
         <Card fullWidth>
             <Space direction="vertical" size="large" fullWidth>
-                <Title level={5} weight="regular" noMargin dataTestId="requester_title">
+                <Title level={5} weight="regular" dataTestId="requester_title">
                     {CONSTANTS.REQUESTER_TITLE}
                 </Title>
                 <Row gutter={theme.default.baseUnit * theme.default.spaces[9]} style={{ width: "100%" }}>
