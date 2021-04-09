@@ -18,6 +18,7 @@ import { theme } from "../../../../constants/styles/theme";
 import { DeleteWitnessButton, WitnessTitleContainer } from "../../styles";
 import { ReactComponent as DeleteIcon } from "../../../../assets/icons/delete.svg";
 import ColorStatus from "../../../../types/ColorStatus";
+import { TimeZones } from "../../../../models/general";
 
 interface WitnessItemProps {
     deposition: Partial<ArrayField<Record<string, any>>>;
@@ -170,7 +171,7 @@ const WitnessItem = ({ deposition, removeWitness, witnessNumber }: WitnessItemPr
                             name={`depositions[${witnessNumber}].timeZone`}
                             label={CONSTANTS.TIME_ZONE_LABEL}
                             placeholder={CONSTANTS.TIME_ZONE_PLACEHOLDER}
-                            items={["ET", "AT", "CT", "MT", "PT", "AKT", "HST", "AZ"]}
+                            items={Object.keys(TimeZones)}
                         />
                     </Col>
                 </Row>

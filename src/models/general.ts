@@ -53,14 +53,14 @@ export interface ITokenSet {
 export type DateLike = Date | string | number;
 
 export enum TimeZones {
-    AT = "AT",
-    AZ = "AZ",
     ET = "ET",
+    AT = "AT",
     CT = "CT",
     MT = "MT",
     PT = "PT",
     AKT = "AKT",
-    HST = "HST",
+    HT = "HT",
+    AZ = "AZ",
 }
 
 export const mapTimeZone = {
@@ -71,5 +71,5 @@ export const mapTimeZone = {
     [TimeZones.MT]: "America/Denver",
     [TimeZones.PT]: "America/Los_Angeles",
     [TimeZones.AKT]: "America/Anchorage",
-    [TimeZones.HST]: "Pacific/Honolulu",
+    [TimeZones.HT]: "Pacific/Honolulu",
 };
