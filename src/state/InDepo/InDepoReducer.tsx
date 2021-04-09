@@ -58,7 +58,7 @@ export const RoomReducerInitialState: IRoom = {
     transcriptions: [],
     permissions: [],
     currentExhibit: null,
-    currentExhibitPage: "1",
+    currentExhibitPage: null,
     isCurrentExhibitOwner: false,
     exhibitTab: "myExhibits",
     currentExhibitTabName: "",

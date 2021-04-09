@@ -136,7 +136,7 @@ export const useExhibitTabs = () => {
     }, [currentExhibit]);
 
     useEffect(() => {
-        if (highlightKey !== -1 && currentExhibit && currentExhibitPage) {
+        if ((highlightKey !== -1 && currentExhibit) || (currentExhibit && currentExhibitPage)) {
             setActiveKey(CONSTANTS.LIVE_EXHIBIT_TAB);
             dispatch(actions.setActiveTab(CONSTANTS.LIVE_EXHIBIT_TAB));
         }
