@@ -37,7 +37,6 @@ export const useAddParticipant = () => {
 
 export const useLogin = (depositionID: string) => {
     const [loginError, setLoginError] = useState("");
-    const [isLogged, setIsLogged] = useState(false);
     const [addParticipant, , addParticipantError, addParticipantInfo] = useAddParticipant();
     const [loading, setLoading] = useState(false);
     const { isAuthenticated } = useAuthentication();
@@ -59,7 +58,7 @@ export const useLogin = (depositionID: string) => {
 
     useEffect(() => {
         if (addParticipantInfo) {
-            setIsLogged(true);
+            history.push(`/deposition/join/${depositionID}`);
         }
     }, [addParticipantInfo, history, depositionID]);
 
@@ -71,10 +70,9 @@ export const useLogin = (depositionID: string) => {
                 await Auth.signIn(emailValue.trim(), passwordValue);
                 localStorage.removeItem(TEMP_TOKEN);
             }
-            if (body) {
-                return addParticipant(depositionID, body);
-            }
-            return setIsLogged(true);
+            return body
+                ? addParticipant(depositionID, body)
+                : history.push(`${CONSTANTS.DEPOSITION_ROUTE}${depositionID}`);
         } catch (e) {
             await Auth.signOut();
             setLoading(false);
@@ -82,5 +80,5 @@ export const useLogin = (depositionID: string) => {
         }
     };
 
-    return { loginUser, loading, loginError, addParticipantError, isLogged };
+    return { loginUser, loading, loginError, addParticipantError };
 };

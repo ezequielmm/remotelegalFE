@@ -32,12 +32,14 @@ export const getUserDepoStatusWithParticipantNotAdmitted = (isUser) => ({
     participant: PARTICIPANT_MOCK,
 });
 
-export const getUserDepoStatusWithParticipantAdmitted = (isUser) => ({
-    isUser,
+export const getUserDepoStatusWithParticipantAdmitted = () => ({
     participant: { ...PARTICIPANT_MOCK, isAdmitted: true },
 });
 
 export const getUserDepoStatusWithoutParticipant = (isUser) => ({
     isUser,
-    participant: null,
+    participant: {
+        ...PARTICIPANT_MOCK,
+        isAdmitted: false,
+    },
 });

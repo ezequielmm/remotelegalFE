@@ -4,6 +4,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import TEMP_TOKEN from "../constants/ApiService";
 import * as ERRORS from "../constants/login";
+import decodeTempToken from "../helpers/decodeTempToken";
 import { GlobalStateContext } from "../state/GlobalState";
 import useAsyncCallback from "./useAsyncCallback";
 
@@ -13,12 +14,14 @@ export const useAuthentication = () => {
     const currentEmail = useRef("");
 
     const [checkAuthentication] = useAsyncCallback(async () => {
+        const decodedToken = decodeTempToken();
         try {
             currentEmail.current = (await Auth.currentSession()).getIdToken().decodePayload().email;
             await Auth.currentAuthenticatedUser();
             await Auth.currentSession();
             return setUserIsAuthenticated(true);
         } catch {
+            currentEmail.current = decodedToken?.email;
             return setUserIsAuthenticated(false);
         }
     }, []);

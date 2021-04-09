@@ -1,22 +1,22 @@
 import { fireEvent, waitForDomChange, waitForElement } from "@testing-library/react";
+import React from "react";
 import userEvent from "@testing-library/user-event";
 import { Amplify, Auth } from "aws-amplify";
-import React from "react";
-import { act } from "react-dom/test-utils";
-import TEMP_TOKEN from "../../constants/ApiService";
 import * as CONSTANTS from "../../constants/preJoinDepo";
 import PreJoinDepo from "../../routes/PreJoinDepo";
-import { AMPLIFY_CONFIG } from "../constants/login";
-import * as TEST_CONSTANTS from "../constants/preJoinDepo";
 import * as AUTH from "../mocks/Auth";
-import getMockDeps from "../utils/getMockDeps";
 import renderWithGlobalContext from "../utils/renderWithGlobalContext";
+import getMockDeps from "../utils/getMockDeps";
+import * as TEST_CONSTANTS from "../constants/preJoinDepo";
+import TEMP_TOKEN from "../../constants/ApiService";
+import { AMPLIFY_CONFIG } from "../constants/login";
 
 Amplify.configure({
     Auth: AMPLIFY_CONFIG,
 });
 
 const deps = getMockDeps();
+
 const mockHistoryPush = jest.fn();
 
 jest.mock("react-router", () => ({
@@ -27,15 +27,6 @@ jest.mock("react-router", () => ({
         push: mockHistoryPush,
     }),
     Redirect: jest.fn(({ to }) => `Redirected to ${to}`),
-}));
-
-let signalREventTriggered;
-
-jest.mock("../../hooks/useSignalR", () => () => ({
-    subscribeToGroup: (text, func) => {
-        signalREventTriggered = func;
-    },
-    signalR: true,
 }));
 
 describe("it tests validations on the initial flow", () => {
@@ -73,9 +64,7 @@ describe("it tests validations on the initial flow", () => {
 describe("It tests the non-registered and non-participant flow", () => {
     beforeEach(() => {
         AUTH.NOT_VALID();
-        deps.apiService.checkUserDepoStatus = jest
-            .fn()
-            .mockResolvedValue(TEST_CONSTANTS.getUserDepoStatusWithoutParticipant(false));
+        deps.apiService.checkUserDepoStatus = jest.fn().mockResolvedValue({ isUser: false, participant: null });
     });
 
     test("should show step 2", async () => {
@@ -183,7 +172,7 @@ describe("It tests the non-registered and non-participant flow", () => {
         expect(getByText(CONSTANTS.WITNESS_ALREADY_PRESENT_ERROR)).toBeInTheDocument();
     });
 
-    test("should display WaitingRoom and set token", async () => {
+    test("should redirect to InDepo page and set token", async () => {
         deps.apiService.registerGuestDepoParticipant = jest.fn().mockResolvedValue({ idToken: TEST_CONSTANTS.TOKEN });
         const { getByTestId, getByText, getAllByText } = renderWithGlobalContext(<PreJoinDepo />, deps);
         await waitForDomChange();
@@ -194,9 +183,8 @@ describe("It tests the non-registered and non-participant flow", () => {
         userEvent.click(getByText(CONSTANTS.ROLE_INPUT));
         const role = await waitForElement(() => getAllByText(TEST_CONSTANTS.ROLE));
         userEvent.click(role[1]);
-        const step2 = await waitForElement(() => getByTestId(CONSTANTS.STEP_2_BUTTON_ID));
-        userEvent.click(step2);
-        expect(step2).toBeDisabled();
+        userEvent.click(getByTestId(CONSTANTS.STEP_2_BUTTON_ID));
+        expect(getByTestId(CONSTANTS.STEP_2_BUTTON_ID)).toBeDisabled();
         expect(getByTestId(CONSTANTS.BACK_BUTTON_ID)).toBeDisabled();
         expect(deps.apiService.registerGuestDepoParticipant).toHaveBeenCalledWith(TEST_CONSTANTS.DEPO_ID, {
             emailAddress: TEST_CONSTANTS.MOCKED_EMAIL,
@@ -204,54 +192,8 @@ describe("It tests the non-registered and non-participant flow", () => {
             participantType: TEST_CONSTANTS.ROLE,
         });
         await waitForDomChange();
-        expect(getByText(CONSTANTS.WAITING_ROOM_SUBTITLE)).toBeInTheDocument();
+        expect(mockHistoryPush).toHaveBeenCalledWith(`${CONSTANTS.DEPOSITION_ROUTE}${TEST_CONSTANTS.DEPO_ID}`);
         expect(localStorage.getItem(TEMP_TOKEN)).toEqual(TEST_CONSTANTS.TOKEN);
-    });
-
-    test("should display WaitingRoom and show deny text when is not admitted", async () => {
-        deps.apiService.registerGuestDepoParticipant = jest.fn().mockResolvedValue({ idToken: TEST_CONSTANTS.TOKEN });
-        const { getByTestId, getByText, getAllByText } = renderWithGlobalContext(<PreJoinDepo />, deps);
-        await waitForDomChange();
-        fireEvent.change(getByTestId(CONSTANTS.EMAIL_INPUT_ID), { target: { value: TEST_CONSTANTS.MOCKED_EMAIL } });
-        userEvent.click(getByTestId(CONSTANTS.STEP_1_BUTTON_ID));
-        await waitForDomChange();
-        fireEvent.change(getByTestId(CONSTANTS.NAME_INPUT_ID), { target: { value: TEST_CONSTANTS.MOCKED_NAME } });
-        userEvent.click(getByText(CONSTANTS.ROLE_INPUT));
-        const role = await waitForElement(() => getAllByText(TEST_CONSTANTS.ROLE));
-        userEvent.click(role[1]);
-        const step2 = await waitForElement(() => getByTestId(CONSTANTS.STEP_2_BUTTON_ID));
-        userEvent.click(step2);
-        await waitForDomChange();
-        act(() => {
-            signalREventTriggered({
-                entityType: "joinResponse",
-                content: { isAdmitted: false },
-            });
-        });
-        const denyText = await waitForElement(() => getByText(CONSTANTS.ACCESS_DENIED_TITLE));
-        expect(denyText).toBeInTheDocument();
-    });
-    test("should display WaitingRoom and redirect to indepo when admitted", async () => {
-        deps.apiService.registerGuestDepoParticipant = jest.fn().mockResolvedValue({ idToken: TEST_CONSTANTS.TOKEN });
-        const { getByTestId, getByText, getAllByText } = renderWithGlobalContext(<PreJoinDepo />, deps);
-        await waitForDomChange();
-        fireEvent.change(getByTestId(CONSTANTS.EMAIL_INPUT_ID), { target: { value: TEST_CONSTANTS.MOCKED_EMAIL } });
-        userEvent.click(getByTestId(CONSTANTS.STEP_1_BUTTON_ID));
-        await waitForDomChange();
-        fireEvent.change(getByTestId(CONSTANTS.NAME_INPUT_ID), { target: { value: TEST_CONSTANTS.MOCKED_NAME } });
-        userEvent.click(getByText(CONSTANTS.ROLE_INPUT));
-        const role = await waitForElement(() => getAllByText(TEST_CONSTANTS.ROLE));
-        userEvent.click(role[1]);
-        const step2 = await waitForElement(() => getByTestId(CONSTANTS.STEP_2_BUTTON_ID));
-        userEvent.click(step2);
-        await waitForDomChange();
-        act(() => {
-            signalREventTriggered({
-                entityType: "joinResponse",
-                content: { isAdmitted: true },
-            });
-        });
-        expect(getByText(`Redirected to ${CONSTANTS.DEPOSITION_ROUTE}${TEST_CONSTANTS.DEPO_ID}`)).toBeInTheDocument();
     });
 });
 
@@ -260,7 +202,7 @@ describe("It tests the non-registered and participant flow", () => {
         AUTH.NOT_VALID();
         deps.apiService.checkUserDepoStatus = jest
             .fn()
-            .mockResolvedValue(TEST_CONSTANTS.getUserDepoStatusWithParticipantNotAdmitted(false));
+            .mockResolvedValue({ isUser: false, participant: TEST_CONSTANTS.PARTICIPANT_MOCK });
     });
 
     test("should preload name, role shouldn´t be editable but name should be editable", async () => {
@@ -274,8 +216,8 @@ describe("It tests the non-registered and participant flow", () => {
         userEvent.click(getByTestId(CONSTANTS.STEP_1_BUTTON_ID));
         await waitForDomChange();
         expect(getByText(TEST_CONSTANTS.MOCKED_EMAIL)).toBeInTheDocument();
-        expect(getByDisplayValue(TEST_CONSTANTS.PARTICIPANT_MOCK_NAME)).toBeInTheDocument();
-        expect(getByText(TEST_CONSTANTS.PARTICIPANT_MOCK_ROLE)).toBeInTheDocument();
+        expect(getByDisplayValue(TEST_CONSTANTS.PARTICIPANT_MOCK.name)).toBeInTheDocument();
+        expect(getByText(TEST_CONSTANTS.PARTICIPANT_MOCK.role)).toBeInTheDocument();
         expect(queryByTestId(CONSTANTS.ENABLED_ROLE_INPUT_ID)).toBeFalsy();
         expect(getByTestId(CONSTANTS.DISABLED_ROLE_INPUT_ID)).toBeInTheDocument();
         expect(getByTestId(CONSTANTS.NAME_INPUT_ID)).not.toBeDisabled();
@@ -304,9 +246,9 @@ describe("It tests the non-registered and participant flow", () => {
         await waitForElement(() => getAllByText(CONSTANTS.NETWORK_ERROR));
     });
 
-    test("should display WaitingRoom and set token", async () => {
+    test("should redirect to InDepo page and set token", async () => {
         deps.apiService.registerGuestDepoParticipant = jest.fn().mockResolvedValue({ idToken: TEST_CONSTANTS.TOKEN });
-        const { getByText, getByTestId } = renderWithGlobalContext(<PreJoinDepo />, deps);
+        const { getByTestId } = renderWithGlobalContext(<PreJoinDepo />, deps);
         await waitForDomChange();
         fireEvent.change(getByTestId(CONSTANTS.EMAIL_INPUT_ID), { target: { value: TEST_CONSTANTS.MOCKED_EMAIL } });
         userEvent.click(getByTestId(CONSTANTS.STEP_1_BUTTON_ID));
@@ -316,47 +258,12 @@ describe("It tests the non-registered and participant flow", () => {
         expect(getByTestId(CONSTANTS.BACK_BUTTON_ID)).toBeDisabled();
         expect(deps.apiService.registerGuestDepoParticipant).toHaveBeenCalledWith(TEST_CONSTANTS.DEPO_ID, {
             emailAddress: TEST_CONSTANTS.MOCKED_EMAIL,
-            name: TEST_CONSTANTS.PARTICIPANT_MOCK_NAME,
-            participantType: TEST_CONSTANTS.PARTICIPANT_MOCK_ROLE,
+            name: TEST_CONSTANTS.PARTICIPANT_MOCK.name,
+            participantType: TEST_CONSTANTS.PARTICIPANT_MOCK.role,
         });
         await waitForDomChange();
-        expect(getByText(CONSTANTS.WAITING_ROOM_SUBTITLE)).toBeInTheDocument();
+        expect(mockHistoryPush).toHaveBeenCalledWith(`${CONSTANTS.DEPOSITION_ROUTE}${TEST_CONSTANTS.DEPO_ID}`);
         expect(localStorage.getItem(TEMP_TOKEN)).toEqual(TEST_CONSTANTS.TOKEN);
-    });
-    test("should display WaitingRoom and show deny text when is not admitted", async () => {
-        deps.apiService.registerGuestDepoParticipant = jest.fn().mockResolvedValue({ idToken: TEST_CONSTANTS.TOKEN });
-        const { getByText, getByTestId } = renderWithGlobalContext(<PreJoinDepo />, deps);
-        await waitForDomChange();
-        fireEvent.change(getByTestId(CONSTANTS.EMAIL_INPUT_ID), { target: { value: TEST_CONSTANTS.MOCKED_EMAIL } });
-        userEvent.click(getByTestId(CONSTANTS.STEP_1_BUTTON_ID));
-        await waitForDomChange();
-        userEvent.click(getByTestId(CONSTANTS.STEP_2_BUTTON_ID));
-        await waitForDomChange();
-        act(() => {
-            signalREventTriggered({
-                entityType: "joinResponse",
-                content: { isAdmitted: false },
-            });
-        });
-        const denyText = await waitForElement(() => getByText(CONSTANTS.ACCESS_DENIED_TITLE));
-        expect(denyText).toBeInTheDocument();
-    });
-    test("should display WaitingRoom and redirect to indepo when admitted", async () => {
-        deps.apiService.registerGuestDepoParticipant = jest.fn().mockResolvedValue({ idToken: TEST_CONSTANTS.TOKEN });
-        const { getByText, getByTestId } = renderWithGlobalContext(<PreJoinDepo />, deps);
-        await waitForDomChange();
-        fireEvent.change(getByTestId(CONSTANTS.EMAIL_INPUT_ID), { target: { value: TEST_CONSTANTS.MOCKED_EMAIL } });
-        userEvent.click(getByTestId(CONSTANTS.STEP_1_BUTTON_ID));
-        await waitForDomChange();
-        userEvent.click(getByTestId(CONSTANTS.STEP_2_BUTTON_ID));
-        await waitForDomChange();
-        act(() => {
-            signalREventTriggered({
-                entityType: "joinResponse",
-                content: { isAdmitted: true },
-            });
-        });
-        expect(getByText(`Redirected to ${CONSTANTS.DEPOSITION_ROUTE}${TEST_CONSTANTS.DEPO_ID}`)).toBeInTheDocument();
     });
 });
 
@@ -364,9 +271,7 @@ describe("It tests the registered and not logged in user and non-participant flo
     beforeEach(() => {
         AUTH.NOT_VALID();
         AUTH.SUCCESSFUL_SIGN_IN();
-        deps.apiService.checkUserDepoStatus = jest
-            .fn()
-            .mockResolvedValue(TEST_CONSTANTS.getUserDepoStatusWithoutParticipant(true));
+        deps.apiService.checkUserDepoStatus = jest.fn().mockResolvedValue({ isUser: true, participant: null });
     });
     test("should show error toast if signIn method fails", async () => {
         AUTH.REJECTED_SIGN_IN();
@@ -461,7 +366,7 @@ describe("It tests the registered and not logged in user and non-participant flo
         userEvent.click(getByTestId(CONSTANTS.BACK_BUTTON_ID));
         expect(getByTestId(CONSTANTS.STEP_1_BUTTON_ID)).toBeInTheDocument();
     });
-    test("should call all services with the proper params and display WaitingRoom", async () => {
+    test("should call all services with the proper params", async () => {
         deps.apiService.addDepoParticipant = jest.fn().mockResolvedValue(true);
         const { getByTestId, getByText, getAllByText } = renderWithGlobalContext(<PreJoinDepo />, deps);
         await waitForDomChange();
@@ -474,15 +379,14 @@ describe("It tests the registered and not logged in user and non-participant flo
         fireEvent.change(getByTestId(CONSTANTS.PASSWORD_INPUT_ID), {
             target: { value: TEST_CONSTANTS.MOCKED_PASSWORD },
         });
-        const step2 = await waitForElement(() => getByTestId(CONSTANTS.STEP_2_BUTTON_ID));
-        userEvent.click(step2);
+        userEvent.click(getByTestId(CONSTANTS.STEP_2_BUTTON_ID));
         await waitForDomChange();
         expect(deps.apiService.addDepoParticipant).toHaveBeenCalledWith(TEST_CONSTANTS.DEPO_ID, {
             emailAddress: TEST_CONSTANTS.MOCKED_EMAIL,
             participantType: TEST_CONSTANTS.ROLE,
         });
         expect(Auth.signIn).toHaveBeenCalledWith(TEST_CONSTANTS.MOCKED_EMAIL, TEST_CONSTANTS.MOCKED_PASSWORD);
-        expect(getByText(CONSTANTS.WAITING_ROOM_SUBTITLE)).toBeInTheDocument();
+        expect(mockHistoryPush).toHaveBeenCalledWith(`${CONSTANTS.DEPOSITION_ROUTE}${TEST_CONSTANTS.DEPO_ID}`);
     });
 
     test("should validate all inputs", async () => {
@@ -499,63 +403,12 @@ describe("It tests the registered and not logged in user and non-participant flo
         expect(getByText(CONSTANTS.INVALID_PASSWORD_MESSAGE)).toBeInTheDocument();
         expect(getByText(CONSTANTS.INVALID_ROLE_MESSAGE)).toBeInTheDocument();
     });
-    test("should display WaitingRoom and show deny text when is not admitted", async () => {
-        deps.apiService.addDepoParticipant = jest.fn().mockResolvedValue(true);
-        const { getByTestId, getByText, getAllByText } = renderWithGlobalContext(<PreJoinDepo />, deps);
-        await waitForDomChange();
-        fireEvent.change(getByTestId(CONSTANTS.EMAIL_INPUT_ID), { target: { value: TEST_CONSTANTS.MOCKED_EMAIL } });
-        userEvent.click(getByTestId(CONSTANTS.STEP_1_BUTTON_ID));
-        await waitForDomChange();
-        userEvent.click(getByText(CONSTANTS.ROLE_INPUT));
-        const role = await waitForElement(() => getAllByText(TEST_CONSTANTS.ROLE));
-        userEvent.click(role[1]);
-        fireEvent.change(getByTestId(CONSTANTS.PASSWORD_INPUT_ID), {
-            target: { value: TEST_CONSTANTS.MOCKED_PASSWORD },
-        });
-        const step2 = await waitForElement(() => getByTestId(CONSTANTS.STEP_2_BUTTON_ID));
-        userEvent.click(step2);
-        await waitForDomChange();
-        act(() => {
-            signalREventTriggered({
-                entityType: "joinResponse",
-                content: { isAdmitted: false },
-            });
-        });
-        const denyText = await waitForElement(() => getByText(CONSTANTS.ACCESS_DENIED_TITLE));
-        expect(denyText).toBeInTheDocument();
-    });
-    test("should display WaitingRoom and redirect to indepo when admitted", async () => {
-        deps.apiService.addDepoParticipant = jest.fn().mockResolvedValue(true);
-        const { getByTestId, getByText, getAllByText } = renderWithGlobalContext(<PreJoinDepo />, deps);
-        await waitForDomChange();
-        fireEvent.change(getByTestId(CONSTANTS.EMAIL_INPUT_ID), { target: { value: TEST_CONSTANTS.MOCKED_EMAIL } });
-        userEvent.click(getByTestId(CONSTANTS.STEP_1_BUTTON_ID));
-        await waitForDomChange();
-        userEvent.click(getByText(CONSTANTS.ROLE_INPUT));
-        const role = await waitForElement(() => getAllByText(TEST_CONSTANTS.ROLE));
-        userEvent.click(role[1]);
-        fireEvent.change(getByTestId(CONSTANTS.PASSWORD_INPUT_ID), {
-            target: { value: TEST_CONSTANTS.MOCKED_PASSWORD },
-        });
-        const step2 = await waitForElement(() => getByTestId(CONSTANTS.STEP_2_BUTTON_ID));
-        userEvent.click(step2);
-        await waitForDomChange();
-        act(() => {
-            signalREventTriggered({
-                entityType: "joinResponse",
-                content: { isAdmitted: true },
-            });
-        });
-        expect(getByText(`Redirected to ${CONSTANTS.DEPOSITION_ROUTE}${TEST_CONSTANTS.DEPO_ID}`)).toBeInTheDocument();
-    });
 });
 
 describe("It tests the registered and logged in user and non-participant flow", () => {
     beforeEach(() => {
         AUTH.VALID();
-        deps.apiService.checkUserDepoStatus = jest
-            .fn()
-            .mockResolvedValue(TEST_CONSTANTS.getUserDepoStatusWithoutParticipant(true));
+        deps.apiService.checkUserDepoStatus = jest.fn().mockResolvedValue({ isUser: true, participant: null });
     });
     test("should show error toast if Add Participant fetch fails", async () => {
         deps.apiService.addDepoParticipant = jest.fn().mockRejectedValue(Error("Error"));
@@ -600,7 +453,7 @@ describe("It tests the registered and logged in user and non-participant flow", 
         expect(getByText(CONSTANTS.INVALID_ROLE_MESSAGE)).toBeInTheDocument();
         await waitForDomChange();
     });
-    test("should call add participant and history with the right parameters and display waiting room", async () => {
+    test("should call add participant and history with the right parameters", async () => {
         deps.apiService.addDepoParticipant = jest.fn().mockResolvedValue(true);
         const { getByText, getAllByText, getByTestId } = renderWithGlobalContext(<PreJoinDepo />, deps);
         await waitForDomChange();
@@ -614,44 +467,7 @@ describe("It tests the registered and logged in user and non-participant flow", 
             emailAddress: TEST_CONSTANTS.LOGGED_USER_EMAIL,
             participantType: TEST_CONSTANTS.ROLE,
         });
-        expect(getByText(CONSTANTS.WAITING_ROOM_SUBTITLE)).toBeInTheDocument();
-    });
-    test("should display WaitingRoom and show deny text when is not admitted", async () => {
-        deps.apiService.addDepoParticipant = jest.fn().mockResolvedValue(true);
-        const { getByText, getAllByText, getByTestId } = renderWithGlobalContext(<PreJoinDepo />, deps);
-        await waitForDomChange();
-        userEvent.click(getByText(CONSTANTS.ROLE_INPUT));
-        const role = await waitForElement(() => getAllByText(TEST_CONSTANTS.ROLE));
-        userEvent.click(role[1]);
-        const step2 = await waitForElement(() => getByTestId(CONSTANTS.STEP_2_BUTTON_ID));
-        userEvent.click(step2);
-        await waitForDomChange();
-        act(() => {
-            signalREventTriggered({
-                entityType: "joinResponse",
-                content: { isAdmitted: false },
-            });
-        });
-        const denyText = await waitForElement(() => getByText(CONSTANTS.ACCESS_DENIED_TITLE));
-        expect(denyText).toBeInTheDocument();
-    });
-    test("should display WaitingRoom and redirect to indepo when admitted", async () => {
-        deps.apiService.addDepoParticipant = jest.fn().mockResolvedValue(true);
-        const { getByText, getAllByText, getByTestId } = renderWithGlobalContext(<PreJoinDepo />, deps);
-        await waitForDomChange();
-        userEvent.click(getByText(CONSTANTS.ROLE_INPUT));
-        const role = await waitForElement(() => getAllByText(TEST_CONSTANTS.ROLE));
-        userEvent.click(role[1]);
-        const step2 = await waitForElement(() => getByTestId(CONSTANTS.STEP_2_BUTTON_ID));
-        userEvent.click(step2);
-        await waitForDomChange();
-        act(() => {
-            signalREventTriggered({
-                entityType: "joinResponse",
-                content: { isAdmitted: true },
-            });
-        });
-        expect(getByText(`Redirected to ${CONSTANTS.DEPOSITION_ROUTE}${TEST_CONSTANTS.DEPO_ID}`)).toBeInTheDocument();
+        expect(mockHistoryPush).toHaveBeenCalledWith(`${CONSTANTS.DEPOSITION_ROUTE}${TEST_CONSTANTS.DEPO_ID}`);
     });
 });
 
@@ -660,7 +476,7 @@ describe("It tests the registered and logged in user and participant flow", () =
         AUTH.VALID();
         deps.apiService.checkUserDepoStatus = jest
             .fn()
-            .mockResolvedValue(TEST_CONSTANTS.getUserDepoStatusWithParticipantAdmitted(true));
+            .mockResolvedValue({ isUser: true, participant: { isAdmitted: true } });
     });
 
     test("should show spinner and show error screen if userStatus fetch fails", async () => {
@@ -689,7 +505,7 @@ describe("It tests the registered and  not logged in user and participant flow",
         AUTH.SUCCESSFUL_SIGN_IN();
         deps.apiService.checkUserDepoStatus = jest
             .fn()
-            .mockResolvedValue(TEST_CONSTANTS.getUserDepoStatusWithParticipantAdmitted(true));
+            .mockResolvedValue({ isUser: true, participant: { isAdmitted: true, role: "Attorney" } });
     });
 
     test("should show user´s email and there should only be a password input", async () => {
@@ -715,9 +531,8 @@ describe("It tests the registered and  not logged in user and participant flow",
         expect(getByText(CONSTANTS.INVALID_PASSWORD_MESSAGE)).toBeInTheDocument();
         await waitForDomChange();
     });
-    test("should call services with the right params and redirect to depo", async () => {
-        Auth.signIn = jest.fn().mockImplementation(() => AUTH.VALID());
-        const { getByTestId, getByText } = renderWithGlobalContext(<PreJoinDepo />, deps);
+    test("should call services with the right params", async () => {
+        const { getByTestId } = renderWithGlobalContext(<PreJoinDepo />, deps);
         await waitForDomChange();
         fireEvent.change(getByTestId(CONSTANTS.EMAIL_INPUT_ID), { target: { value: TEST_CONSTANTS.MOCKED_EMAIL } });
         userEvent.click(getByTestId(CONSTANTS.STEP_1_BUTTON_ID));
@@ -728,7 +543,7 @@ describe("It tests the registered and  not logged in user and participant flow",
         userEvent.click(getByTestId(CONSTANTS.STEP_2_BUTTON_ID));
         await waitForDomChange();
         expect(Auth.signIn).toHaveBeenCalledWith(TEST_CONSTANTS.MOCKED_EMAIL, TEST_CONSTANTS.MOCKED_PASSWORD);
-        expect(getByText(`Redirected to ${CONSTANTS.DEPOSITION_ROUTE}${TEST_CONSTANTS.DEPO_ID}`)).toBeInTheDocument();
+        expect(mockHistoryPush).toHaveBeenCalledWith(`${CONSTANTS.DEPOSITION_ROUTE}${TEST_CONSTANTS.DEPO_ID}`);
     });
     test("should show error toast if login service fails", async () => {
         AUTH.REJECTED_SIGN_IN();
@@ -743,108 +558,5 @@ describe("It tests the registered and  not logged in user and participant flow",
         userEvent.click(getByTestId(CONSTANTS.STEP_2_BUTTON_ID));
         await waitForDomChange();
         await waitForElement(() => getByText(TEST_CONSTANTS.SIGN_IN_ERROR));
-    });
-});
-
-describe("It tests the registered and  not logged in user and participant flow", () => {
-    beforeEach(() => {
-        AUTH.NOT_VALID();
-        AUTH.SUCCESSFUL_SIGN_IN();
-        deps.apiService.checkUserDepoStatus = jest
-            .fn()
-            .mockResolvedValue(TEST_CONSTANTS.getUserDepoStatusWithParticipantNotAdmitted(true));
-    });
-
-    test("should show user´s email and there should only be a password input", async () => {
-        const { getByTestId, queryByTestId, getByText } = renderWithGlobalContext(<PreJoinDepo />, deps);
-        await waitForDomChange();
-        fireEvent.change(getByTestId(CONSTANTS.EMAIL_INPUT_ID), { target: { value: TEST_CONSTANTS.MOCKED_EMAIL } });
-        userEvent.click(getByTestId(CONSTANTS.STEP_1_BUTTON_ID));
-        await waitForDomChange();
-        expect(getByText(TEST_CONSTANTS.MOCKED_EMAIL)).toBeInTheDocument();
-        expect(queryByTestId(CONSTANTS.ENABLED_ROLE_INPUT_ID)).toBeFalsy();
-        expect(getByTestId(CONSTANTS.PASSWORD_INPUT_ID)).toBeInTheDocument();
-        expect(queryByTestId(CONSTANTS.EMAIL_INPUT_ID)).toBeFalsy();
-        expect(queryByTestId(CONSTANTS.NAME_INPUT_ID)).toBeFalsy();
-    });
-
-    test("should validate password input", async () => {
-        const { getByTestId, getByText } = renderWithGlobalContext(<PreJoinDepo />, deps);
-        await waitForDomChange();
-        fireEvent.change(getByTestId(CONSTANTS.EMAIL_INPUT_ID), { target: { value: TEST_CONSTANTS.MOCKED_EMAIL } });
-        userEvent.click(getByTestId(CONSTANTS.STEP_1_BUTTON_ID));
-        await waitForDomChange();
-        userEvent.click(getByTestId(CONSTANTS.STEP_2_BUTTON_ID));
-        expect(getByText(CONSTANTS.INVALID_PASSWORD_MESSAGE)).toBeInTheDocument();
-        await waitForDomChange();
-    });
-    test("should call services with the right params and display waiting room", async () => {
-        const { getByTestId, getByText } = renderWithGlobalContext(<PreJoinDepo />, deps);
-        await waitForDomChange();
-        fireEvent.change(getByTestId(CONSTANTS.EMAIL_INPUT_ID), { target: { value: TEST_CONSTANTS.MOCKED_EMAIL } });
-        userEvent.click(getByTestId(CONSTANTS.STEP_1_BUTTON_ID));
-        await waitForDomChange();
-        fireEvent.change(getByTestId(CONSTANTS.PASSWORD_INPUT_ID), {
-            target: { value: TEST_CONSTANTS.MOCKED_PASSWORD },
-        });
-        userEvent.click(getByTestId(CONSTANTS.STEP_2_BUTTON_ID));
-        await waitForDomChange();
-        expect(Auth.signIn).toHaveBeenCalledWith(TEST_CONSTANTS.MOCKED_EMAIL, TEST_CONSTANTS.MOCKED_PASSWORD);
-        expect(getByText(CONSTANTS.WAITING_ROOM_SUBTITLE)).toBeInTheDocument();
-    });
-    test("should show error toast if login service fails", async () => {
-        AUTH.REJECTED_SIGN_IN();
-        const { getByText, getByTestId } = renderWithGlobalContext(<PreJoinDepo />, deps);
-        await waitForDomChange();
-        fireEvent.change(getByTestId(CONSTANTS.EMAIL_INPUT_ID), { target: { value: TEST_CONSTANTS.MOCKED_EMAIL } });
-        userEvent.click(getByTestId(CONSTANTS.STEP_1_BUTTON_ID));
-        await waitForDomChange();
-        fireEvent.change(getByTestId(CONSTANTS.PASSWORD_INPUT_ID), {
-            target: { value: TEST_CONSTANTS.MOCKED_PASSWORD },
-        });
-        userEvent.click(getByTestId(CONSTANTS.STEP_2_BUTTON_ID));
-        await waitForDomChange();
-        await waitForElement(() => getByText(TEST_CONSTANTS.SIGN_IN_ERROR));
-    });
-    test("should display WaitingRoom and show deny text when is not admitted", async () => {
-        const { getByTestId, getByText } = renderWithGlobalContext(<PreJoinDepo />, deps);
-        await waitForDomChange();
-        fireEvent.change(getByTestId(CONSTANTS.EMAIL_INPUT_ID), { target: { value: TEST_CONSTANTS.MOCKED_EMAIL } });
-        userEvent.click(getByTestId(CONSTANTS.STEP_1_BUTTON_ID));
-        await waitForDomChange();
-        fireEvent.change(getByTestId(CONSTANTS.PASSWORD_INPUT_ID), {
-            target: { value: TEST_CONSTANTS.MOCKED_PASSWORD },
-        });
-        userEvent.click(getByTestId(CONSTANTS.STEP_2_BUTTON_ID));
-        await waitForDomChange();
-
-        act(() => {
-            signalREventTriggered({
-                entityType: "joinResponse",
-                content: { isAdmitted: false },
-            });
-        });
-        const denyText = await waitForElement(() => getByText(CONSTANTS.ACCESS_DENIED_TITLE));
-        expect(denyText).toBeInTheDocument();
-    });
-    test("should display WaitingRoom and redirect to indepo when admitted", async () => {
-        const { getByTestId, getByText } = renderWithGlobalContext(<PreJoinDepo />, deps);
-        await waitForDomChange();
-        fireEvent.change(getByTestId(CONSTANTS.EMAIL_INPUT_ID), { target: { value: TEST_CONSTANTS.MOCKED_EMAIL } });
-        userEvent.click(getByTestId(CONSTANTS.STEP_1_BUTTON_ID));
-        await waitForDomChange();
-        fireEvent.change(getByTestId(CONSTANTS.PASSWORD_INPUT_ID), {
-            target: { value: TEST_CONSTANTS.MOCKED_PASSWORD },
-        });
-        userEvent.click(getByTestId(CONSTANTS.STEP_2_BUTTON_ID));
-        await waitForDomChange();
-
-        act(() => {
-            signalREventTriggered({
-                entityType: "joinResponse",
-                content: { isAdmitted: true },
-            });
-        });
-        expect(getByText(`Redirected to ${CONSTANTS.DEPOSITION_ROUTE}${TEST_CONSTANTS.DEPO_ID}`)).toBeInTheDocument();
     });
 });

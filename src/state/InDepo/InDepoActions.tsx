@@ -8,6 +8,7 @@ import { ExhibitFile } from "../../types/ExhibitFile";
 
 export enum ACTION_TYPE {
     SEND_MESSAGE = "SEND_MESSAGE",
+    SET_DEPO_START_TIME = "SET_DEPO_START_TIME",
     IN_DEPO_JOIN_TO_ROOM = "IN_DEPO_JOIN_TO_ROOM",
     IN_DEPO_JOIN_TO_BREAKROOM = "IN_DEPO_JOIN_TO_BREAKROOM",
     IN_DEPO_DISCONNECT = "IN_DEPO_DISCONNECT",
@@ -34,6 +35,8 @@ export enum ACTION_TYPE {
     SET_IS_RECORDING = "IN_DEPO_SET_IS_RECORDING",
     CHANGE_EXHIBIT_TAB = "CHANGE_EXHIBIT_TAB",
     ADD_DOMINANT_SPEAKER = "ADD_DOMINANT_SPEAKER",
+    SET_USER_STATUS = "SET_USER_STATUS",
+    SET_DEPO_STATUS = "SET_DEPO_STATUS",
 }
 
 const actions = {
@@ -143,6 +146,18 @@ const actions = {
     }),
     setParticipantsData: (payload) => ({
         type: ACTION_TYPE.IN_DEPO_SET_PARTICIPANTS_DATA,
+        payload,
+    }),
+    setDepoStartTime: (payload) => ({
+        type: ACTION_TYPE.SET_DEPO_START_TIME,
+        payload,
+    }),
+    setUserStatus: (payload) => ({
+        type: ACTION_TYPE.SET_USER_STATUS,
+        payload,
+    }),
+    setDepoStatus: (payload) => ({
+        type: ACTION_TYPE.SET_DEPO_STATUS,
         payload,
     }),
     setCurrentExhibitPage: (payload) => ({

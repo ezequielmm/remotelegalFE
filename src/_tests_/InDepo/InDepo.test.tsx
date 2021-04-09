@@ -2,7 +2,7 @@ import { fireEvent, waitForDomChange, waitForElement } from "@testing-library/re
 import { createMemoryHistory } from "history";
 import React from "react";
 import { act } from "react-dom/test-utils";
-import { Route } from "react-router-dom";
+import { Route, Switch } from "react-router-dom";
 import * as MODULE_CONSTANTS from "../../constants/inDepo";
 import InDepo from "../../routes/InDepo";
 import * as TRANSCRIPTIONS_MOCKS from "../mocks/transcription";
@@ -14,6 +14,9 @@ import { rootReducer } from "../../state/GlobalState";
 import dataTrackMock from "../mocks/dataTrack";
 import getParticipant from "../mocks/participant";
 import { currentExhibit } from "../mocks/currentExhibit";
+import * as AUTH from "../mocks/Auth";
+import { getUserDepoStatusWithParticipantAdmitted } from "../constants/preJoinDepo";
+
 jest.mock("@microsoft/signalr");
 
 jest.mock("audio-recorder-polyfill", () => {
@@ -33,7 +36,10 @@ jest.mock("audio-recorder-polyfill", () => {
 const customDeps = getMockDeps();
 const history = createMemoryHistory();
 
-//TODO: Find a better way to mock Twilio (eg, adding it to DI system)
+const PreDepoRoute = () => <div>PRE_DEPO</div>;
+const WaitingRoomRoute = () => <div>WAITING ROOM</div>;
+
+// TODO: Find a better way to mock Twilio (eg, adding it to DI system)
 jest.mock("twilio-video", () => ({
     ...jest.requireActual("twilio-video"),
     LocalDataTrack: function dataTrack() {
@@ -116,12 +122,14 @@ jest.mock("twilio-video", () => ({
             }),
             removeAllListeners: jest.fn(),
         }),
-        on: jest.fn(),
     }),
 }));
 
 beforeEach(() => {
+    AUTH.VALID();
     // Mocking Canvas for PDFTron
+    customDeps.apiService.joinDeposition = jest.fn().mockResolvedValue(TESTS_CONSTANTS.JOIN_DEPOSITION_MOCK);
+    customDeps.apiService.checkUserDepoStatus = jest.fn().mockResolvedValue(getUserDepoStatusWithParticipantAdmitted());
     const createElement = document.createElement.bind(document);
     document.createElement = (tagName) => {
         if (tagName === "canvas") {
@@ -132,6 +140,26 @@ beforeEach(() => {
         }
         return createElement(tagName);
     };
+});
+
+test("spinner is shown on mount", async () => {
+    customDeps.apiService.joinDeposition = jest.fn().mockImplementation(async () => {
+        await wait(500);
+        return TESTS_CONSTANTS.JOIN_DEPOSITION_MOCK;
+    });
+    customDeps.apiService.checkUserDepoStatus = jest.fn().mockImplementation(async () => {
+        await wait(500);
+        return getUserDepoStatusWithParticipantAdmitted();
+    });
+    const { getByTestId } = renderWithGlobalContext(
+        <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,
+        customDeps,
+        undefined,
+        history
+    );
+    history.push(TESTS_CONSTANTS.TEST_ROUTE);
+    await waitForDomChange();
+    expect(getByTestId("spinner")).toBeInTheDocument();
 });
 
 test("Error screen is shown when fetch fails", async () => {
@@ -148,20 +176,6 @@ test("Error screen is shown when fetch fails", async () => {
         getByText(MODULE_CONSTANTS.FETCH_ERROR_RESULT_BUTTON);
         return getByText(MODULE_CONSTANTS.FETCH_ERROR_RESULT_TITLE);
     });
-});
-
-test("Spinner is shown on mount", async () => {
-    customDeps.apiService.joinDeposition = jest.fn().mockRejectedValue({});
-    const { getByTestId } = renderWithGlobalContext(
-        <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,
-        customDeps,
-        undefined,
-        history
-    );
-    const spinner = getByTestId("spinner");
-    history.push(TESTS_CONSTANTS.TEST_ROUTE);
-    expect(spinner).toBeInTheDocument();
-    await waitForDomChange();
 });
 
 test("VideoConference is shown if fetch is successful", async () => {
@@ -292,6 +306,47 @@ test("Record button and end deposition are not shown", async () => {
     await waitForDomChange();
     expect(queryByTestId("end")).toBeFalsy();
     expect(queryByTestId("record")).toBeFalsy();
+});
+
+test("Redirects to PreDepo if shouldSendToPreDepo is true", async () => {
+    customDeps.apiService.joinDeposition = jest
+        .fn()
+        .mockResolvedValue({ ...TESTS_CONSTANTS.JOIN_DEPOSITION_MOCK, shouldSendToPreDepo: true });
+    const { getByText } = renderWithGlobalContext(
+        <Switch>
+            <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />
+            <Route exact path={TESTS_CONSTANTS.PRE_ROUTE} component={PreDepoRoute} />
+        </Switch>,
+        customDeps,
+        undefined,
+        history
+    );
+
+    history.push(TESTS_CONSTANTS.TEST_ROUTE);
+    await waitForDomChange();
+    expect(getByText("PRE_DEPO")).toBeInTheDocument();
+});
+
+test("Redirects to waiting room if shouldSendToPreDepo is false and isAdmitted is true", async () => {
+    customDeps.apiService.joinDeposition = jest
+        .fn()
+        .mockResolvedValue({ ...TESTS_CONSTANTS.JOIN_DEPOSITION_MOCK, shouldSendToPreDepo: false });
+    customDeps.apiService.checkUserDepoStatus = jest
+        .fn()
+        .mockResolvedValue({ participant: { ...getUserDepoStatusWithParticipantAdmitted(), isAdmitted: false } });
+    const { getByText } = renderWithGlobalContext(
+        <Switch>
+            <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />
+            <Route exact path={TESTS_CONSTANTS.WAITING_ROUTE} component={WaitingRoomRoute} />
+        </Switch>,
+        customDeps,
+        undefined,
+        history
+    );
+
+    history.push(TESTS_CONSTANTS.TEST_ROUTE);
+    await waitForDomChange();
+    expect(getByText("WAITING ROOM")).toBeInTheDocument();
 });
 
 describe("InDepo -> RealTime", () => {
@@ -433,7 +488,7 @@ describe("inDepo -> Exhibits view with a shared exhibit", () => {
     it("should the mic status be unmuted by default", async () => {
         customDeps.apiService.getDepositionTranscriptions = jest.fn().mockResolvedValue([]);
         customDeps.apiService.getDepositionEvents = jest.fn().mockResolvedValue([]);
-        const { queryByTestId, queryByText } = renderWithGlobalContext(
+        const { queryByTestId } = renderWithGlobalContext(
             <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,
             customDeps,
             {
@@ -466,7 +521,7 @@ describe("inDepo -> Exhibits view with a shared exhibit", () => {
     it("should the mic status be unmuted if the current participant is unmuted after join to the deposition", async () => {
         customDeps.apiService.getDepositionTranscriptions = jest.fn().mockResolvedValue([]);
         customDeps.apiService.getDepositionEvents = jest.fn().mockResolvedValue([]);
-        const { queryByTestId, queryByText } = renderWithGlobalContext(
+        const { queryByTestId } = renderWithGlobalContext(
             <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,
             customDeps,
             {
@@ -504,7 +559,7 @@ describe("inDepo -> Exhibits view with a shared exhibit", () => {
     it("should the mic status be muted if the current participant is muted after join to the deposition", async () => {
         customDeps.apiService.getDepositionTranscriptions = jest.fn().mockResolvedValue([]);
         customDeps.apiService.getDepositionEvents = jest.fn().mockResolvedValue([]);
-        const { queryByTestId, queryByText } = renderWithGlobalContext(
+        const { queryByTestId } = renderWithGlobalContext(
             <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,
             customDeps,
             {

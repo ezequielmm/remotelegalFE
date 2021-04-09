@@ -45,7 +45,9 @@ import { useSendParticipantStatus } from "../../hooks/InDepo/useParticipantStatu
 
 interface IControlsBar {
     breakrooms?: BreakroomModel.Breakroom[];
+    disableBreakrooms?: boolean;
     canRecord: boolean;
+    leaveWithoutModal?: boolean;
     canEnd: boolean;
     localParticipant: LocalParticipant;
     exhibitsOpen: boolean;
@@ -53,12 +55,14 @@ interface IControlsBar {
     realTimeOpen: boolean;
     isRecording: boolean;
     togglerRealTime: React.Dispatch<React.SetStateAction<boolean>> | ((value: React.SetStateAction<boolean>) => void);
-    handleJoinBreakroom: (roomNumber: string) => void;
+    handleJoinBreakroom?: (roomNumber: string) => void;
     initialAudioEnabled?: boolean;
 }
 
 export default function ControlsBar({
     breakrooms,
+    disableBreakrooms = false,
+    leaveWithoutModal = false,
     localParticipant,
     exhibitsOpen,
     togglerExhibits,
@@ -145,6 +149,7 @@ export default function ControlsBar({
                             {item.name}
                         </Text>
                         <Button
+                            disabled={disableBreakrooms}
                             data-testid="join_breakroom"
                             onClick={() => {
                                 toggleBreakrooms();
@@ -343,8 +348,8 @@ export default function ControlsBar({
                             data-testid={CONSTANTS.CONTROLS_BAR_LEAVE_DEPOSITION_BUTTON_TEST_ID}
                             isActive={openLeaveModal}
                             color="red"
-                            onClick={toggleLeaveModal}
                             type="simple"
+                            onClick={() => (leaveWithoutModal ? handleRedirection() : toggleLeaveModal())}
                             label={CONSTANTS.CONTROLS_BAR_LEAVE_DEPOSITION_BUTTON}
                             icon={
                                 <Space px={4}>

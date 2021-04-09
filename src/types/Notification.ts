@@ -3,12 +3,15 @@ export enum NotificationEntityType {
     participantStatus = "participantStatus",
     annotation = "annotation",
     bringAllTo = "bringAllTo",
+    deposition = "deposition",
+    joinResponse = "joinResponse",
 }
 
 export enum NotificationAction {
     create = "create",
     update = "update",
     delete = "delete",
+    start = "start",
 }
 
 export interface NotificationParticipantStatusContent {

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useParams, Redirect } from "react-router";
+import { useParams, Redirect, useHistory } from "react-router";
 import { useAuthentication } from "../../hooks/auth";
 import backgroundImage from "../../assets/pre-depo/bg.png";
 import { useCheckUserStatus, useRegisterParticipant, useLogin } from "../../hooks/preJoinDepo/hooks";
@@ -13,17 +13,15 @@ import TEMP_TOKEN from "../../constants/ApiService";
 import * as CONSTANTS from "../../constants/preJoinDepo";
 import ErrorScreen from "../../components/ErrorScreen";
 import Alert from "../../components/Alert";
-import WaitingRoom from "./WaitingRoom";
 
 const PreJoinDepo = () => {
     const { depositionID } = useParams<DepositionID>();
-    const { checkAuthentication, isAuthenticated, currentEmail } = useAuthentication();
+    const { isAuthenticated, currentEmail } = useAuthentication();
     const [step, setStep] = useState(1);
-    const [waiting, setWaiting] = useState(false);
     const emailRef = useRef("");
     const passwordRef = useRef("");
     const [checkUserStatus, userStatusLoading, userStatusError, userStatus] = useCheckUserStatus();
-    const { loginUser, loading: loginLoading, loginError, addParticipantError, isLogged } = useLogin(depositionID);
+    const { loginUser, loading: loginLoading, loginError, addParticipantError } = useLogin(depositionID);
     const [witnessAlreadyExistsError, setWitnessAlreadyExistsError] = useState(false);
     const [
         registerParticipant,
@@ -31,7 +29,7 @@ const PreJoinDepo = () => {
         registerParticipantError,
         registeredUser,
     ] = useRegisterParticipant();
-    const tempToken = localStorage.getItem(TEMP_TOKEN);
+    const history = useHistory();
 
     useEffect(() => {
         const handleAuthenticatedUser = () => {
@@ -69,31 +67,17 @@ const PreJoinDepo = () => {
         }
     }, [userStatus]);
 
-    const showWaitingRoom = async () => {
-        await checkUserStatus(depositionID, emailRef.current);
-        setWaiting(true);
-    };
-
     useEffect(() => {
         if (registeredUser) {
             const { idToken } = registeredUser;
             localStorage.setItem(TEMP_TOKEN, idToken);
-            showWaitingRoom();
+            history.push(`/deposition/join/${depositionID}`);
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [registeredUser]);
-
-    useEffect(() => {
-        if (isLogged) {
-            showWaitingRoom();
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isLogged]);
+    }, [registeredUser, history, depositionID]);
 
     const verifyUserStatus = async (email: string) => {
         const normalizedEmail = email.trim();
         emailRef.current = normalizedEmail;
-        if (tempToken) localStorage.removeItem(TEMP_TOKEN);
         await checkUserStatus(depositionID, normalizedEmail);
     };
 
@@ -112,18 +96,15 @@ const PreJoinDepo = () => {
             participantType: role,
         };
         passwordRef.current = password;
-        return (!userStatus.participant?.isAdmitted
+        return !userStatus.participant?.isAdmitted
             ? loginUser(emailRef.current, passwordRef.current, body)
-            : loginUser(emailRef.current, passwordRef.current)
-        ).then(() => {
-            checkAuthentication();
-        });
+            : loginUser(emailRef.current, passwordRef.current);
     };
 
     if (isAuthenticated === null || (isAuthenticated && userStatusLoading)) {
         return <Spinner />;
     }
-    if (userStatus?.participant?.isAdmitted && ((isAuthenticated && userStatus.isUser) || tempToken)) {
+    if (userStatus?.participant?.isAdmitted && isAuthenticated) {
         return <Redirect to={`${CONSTANTS.DEPOSITION_ROUTE}${depositionID}`} />;
     }
     if (isAuthenticated && userStatusError) {
@@ -155,63 +136,59 @@ const PreJoinDepo = () => {
                 backgroundPosition: "center bottom",
             }}
         >
-            {waiting ? (
-                <WaitingRoom userStatus={userStatus} />
-            ) : (
-                <Wizard
-                    step={isAuthenticated ? null : step} // It´s only one step when the user is authenticated, no need for the text
-                    totalSteps={isAuthenticated ? null : 2}
-                    title={CONSTANTS.WIZARD_TITLE}
-                    text={CONSTANTS.WIZARD_TEXT}
-                    alertComponent={
-                        witnessAlreadyExistsError && (
-                            <Alert
-                                closable
-                                afterClose={() => setWitnessAlreadyExistsError(false)}
-                                type="warning"
-                                message={CONSTANTS.WITNESS_ALREADY_PRESENT_ERROR}
-                                data-testid="witness_already_present_alert"
-                            />
-                        )
-                    }
-                >
-                    {step === 1 && isAuthenticated === false && (
-                        <EmailForm
-                            onSubmit={verifyUserStatus}
-                            loading={userStatusLoading}
-                            defaultEmailValue={emailRef.current}
+            <Wizard
+                step={isAuthenticated ? null : step} // It´s only one step when the user is authenticated, no need for the text
+                totalSteps={isAuthenticated ? null : 2}
+                title={CONSTANTS.WIZARD_TITLE}
+                text={CONSTANTS.WIZARD_TEXT}
+                alertComponent={
+                    witnessAlreadyExistsError && (
+                        <Alert
+                            closable
+                            afterClose={() => setWitnessAlreadyExistsError(false)}
+                            type="warning"
+                            message={CONSTANTS.WITNESS_ALREADY_PRESENT_ERROR}
+                            data-testid="witness_already_present_alert"
                         />
-                    )}
-                    {step === 2 && userStatus?.isUser ? (
+                    )
+                }
+            >
+                {step === 1 && isAuthenticated === false && (
+                    <EmailForm
+                        onSubmit={verifyUserStatus}
+                        loading={userStatusLoading}
+                        defaultEmailValue={emailRef.current}
+                    />
+                )}
+                {step === 2 && userStatus?.isUser ? (
+                    <ParticipantInfoForm
+                        hideBackButton={isAuthenticated}
+                        email={emailRef.current}
+                        roleInput
+                        passwordInput={!isAuthenticated}
+                        joinDeposition={joinDepositionAsRegisteredUser}
+                        loading={loginLoading}
+                        returnFunc={resetStep}
+                        defaultRole={userStatus?.participant?.role}
+                        defaultName={userStatus?.participant?.name}
+                        disableRoleSelect={userStatus?.participant?.role}
+                    />
+                ) : (
+                    step === 2 && (
                         <ParticipantInfoForm
-                            hideBackButton={isAuthenticated}
                             email={emailRef.current}
+                            nameInput
                             roleInput
-                            passwordInput={!isAuthenticated}
-                            joinDeposition={joinDepositionAsRegisteredUser}
-                            loading={loginLoading}
-                            returnFunc={resetStep}
+                            joinDeposition={joinDepositionAsGuest}
                             defaultRole={userStatus?.participant?.role}
+                            loading={registerParticipantLoading}
                             defaultName={userStatus?.participant?.name}
-                            disableRoleSelect={userStatus?.participant}
+                            disableRoleSelect={userStatus?.participant?.role}
+                            returnFunc={resetStep}
                         />
-                    ) : (
-                        step === 2 && (
-                            <ParticipantInfoForm
-                                email={emailRef.current}
-                                nameInput
-                                roleInput
-                                joinDeposition={joinDepositionAsGuest}
-                                defaultRole={userStatus?.participant?.role}
-                                loading={registerParticipantLoading}
-                                defaultName={userStatus?.participant?.name}
-                                disableRoleSelect={userStatus?.participant}
-                                returnFunc={resetStep}
-                            />
-                        )
-                    )}
-                </Wizard>
-            )}
+                    )
+                )}
+            </Wizard>
         </div>
     );
 };

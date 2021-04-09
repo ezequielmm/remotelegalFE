@@ -15,7 +15,7 @@ import { getBreakrooms } from "../mocks/breakroom";
 import { getTranscriptFileList } from "../mocks/transcriptsFileList";
 import { MOCKED_EMAIL } from "../constants/changePassword";
 import fileUrlList from "../mocks/fileUrlList";
-import { getUserDepoStatusWithoutParticipant } from "../constants/preJoinDepo";
+import { getUserDepoStatusWithParticipantAdmitted } from "../constants/preJoinDepo";
 
 export default (): Deps => ({
     apiService: {
@@ -28,7 +28,7 @@ export default (): Deps => ({
         getDepositionTranscriptions: jest.fn().mockResolvedValue([getTranscription()]),
         getDepositionTranscriptionsWithOffsets: jest.fn().mockResolvedValue(getTranscriptionsWithOffset()),
         getDepositionEvents: jest.fn().mockResolvedValue(getEvents()),
-        checkUserDepoStatus: jest.fn().mockResolvedValue(getUserDepoStatusWithoutParticipant(false)),
+        checkUserDepoStatus: jest.fn().mockResolvedValue(getUserDepoStatusWithParticipantAdmitted()),
         waitingRoomParticipants: jest.fn().mockResolvedValue(getWaitingRoomParticipants()),
         getDepositionPermissions: jest.fn().mockResolvedValue({ permissions: PERMISSIONS_MOCK }),
         fetchCases: jest.fn().mockResolvedValue(getCaseAsc()),

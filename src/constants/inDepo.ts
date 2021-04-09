@@ -75,6 +75,7 @@ export const GUEST_REQUESTS_NOTIFICATION_TITLE = " wants to join.";
 export const GUEST_REQUESTS_MODAL_NEGATIVE_LABEL = "Cancel";
 
 export const NETWORK_ERROR = "An unexpected error occurred! Please try again";
+export const MOCK_DEPO_USER_STATUS_ERROR = "We couldn´t start the deposition. Please refresh the browser";
 export const LEAVE_DEPOSITION_MODAL_NO_WITNESS_TITLE = "Leave deposition before it ends?";
 export const LEAVE_DEPOSITION_MODAL_NO_WITNESS_SUB_TITLE =
     "You will not be able to access the exhibits, transcripts, or video until the deposition ends. You will receive an email notification once the files are available. Do you still want to leave the deposition before it has ended?";
@@ -86,3 +87,5 @@ export const LEAVE_DEPOSITION_MODAL_WITNESS_ON_THE_RECORD_SUB_TITLE =
 export const LEAVE_DEPOSITION_MODAL_POSITIVE_BUTTON_LABEL = "Yes, leave";
 export const LEAVE_DEPOSITION_MODAL_WITNESS_ON_THE_RECORD_POSITIVE_BUTTON_LABEL = "Ok";
 export const LEAVE_DEPOSITION_MODAL_NEGATIVE_BUTTON_LABEL = "No, stay";
+export const PRE_DEPOSITION_START_TIME_DESCRIPTION =
+    "The deposition will start when the Court Reporter joins the room.";

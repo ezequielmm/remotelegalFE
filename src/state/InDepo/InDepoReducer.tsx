@@ -6,12 +6,15 @@ import { BreakroomModel, TranscriptionModel } from "../../models";
 import { IAction, DataTrackMessage } from "../types";
 import { ACTION_TYPE } from "./InDepoActions";
 import { ExhibitFile } from "../../types/ExhibitFile";
-import { DEFAULT_ACTIVE_TAB, EXHIBIT_TAB } from "../../constants/exhibits";
+import { EXHIBIT_TAB } from "../../constants/exhibits";
 import { addTranscriptionMessages, setTranscriptionMessages } from "../../helpers/formatTranscriptionsMessages";
-import { IUser } from "../../models/user";
+import { IUser, UserInfo } from "../../models/user";
 
 export interface IRoom {
     info?: object;
+    shouldSendToPreDepo?: boolean;
+    userStatus?: UserInfo;
+    startTime?: string;
     currentRoom?: Room;
     currentBreakroom?: Room;
     error?: string;
@@ -27,7 +30,7 @@ export interface IRoom {
     currentExhibit?: ExhibitFile;
     currentExhibitPage?: string;
     isCurrentExhibitOwner?: boolean;
-    exhibitTab?: EXHIBIT_TAB;
+    exhibitTab?: string | EXHIBIT_TAB;
     currentExhibitTabName?: string;
     rawAnnotations?: string;
     lastAnnotationId?: string;
@@ -40,6 +43,9 @@ export interface IRoom {
 
 export const RoomReducerInitialState: IRoom = {
     info: null,
+    startTime: "",
+    shouldSendToPreDepo: null,
+    userStatus: null,
     currentRoom: null,
     dominantSpeaker: null,
     currentBreakroom: null,
@@ -54,7 +60,7 @@ export const RoomReducerInitialState: IRoom = {
     currentExhibit: null,
     currentExhibitPage: "1",
     isCurrentExhibitOwner: false,
-    exhibitTab: DEFAULT_ACTIVE_TAB,
+    exhibitTab: "myExhibits",
     currentExhibitTabName: "",
     lastAnnotationId: "",
     currentUser: null,
@@ -198,6 +204,21 @@ const RoomReducer: Reducer<IRoom, IAction> = (state: IRoom, action: IAction): IR
             return {
                 ...state,
                 participants: action.payload,
+            };
+        case ACTION_TYPE.SET_DEPO_START_TIME:
+            return {
+                ...state,
+                startTime: action.payload,
+            };
+        case ACTION_TYPE.SET_USER_STATUS:
+            return {
+                ...state,
+                userStatus: action.payload,
+            };
+        case ACTION_TYPE.SET_DEPO_STATUS:
+            return {
+                ...state,
+                shouldSendToPreDepo: action.payload,
             };
         case ACTION_TYPE.IN_DEPO_SET_CURRENT_EXHIBIT_PAGE:
             return {

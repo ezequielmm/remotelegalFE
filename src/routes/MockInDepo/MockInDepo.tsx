@@ -2,66 +2,72 @@ import React, { useState, useEffect, useContext, useRef } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 import { Participant } from "twilio-video";
-import Exhibits from "./Exhibits";
-import RealTime from "./RealTime";
-import VideoConference from "./VideoConference";
+import Spinner from "../../components/Spinner";
+import Exhibits from "../InDepo/Exhibits";
+import RealTime from "../InDepo/RealTime";
+import VideoConference from "../InDepo/VideoConference";
 import ControlsBar from "../../components/ControlsBar";
-import { StyledInDepoContainer, StyledInDepoLayout, StyledRoomFooter } from "./styles";
-import { useJoinDeposition } from "../../hooks/InDepo/depositionLifeTimeHooks";
+import { StyledInDepoContainer, StyledInDepoLayout, StyledRoomFooter } from "../InDepo/styles";
+import { useJoinDepositionForMockRoom } from "../../hooks/InDepo/depositionLifeTimeHooks";
 import { GlobalStateContext } from "../../state/GlobalState";
 import disconnectFromDepo from "../../helpers/disconnectFromDepo";
 import ErrorScreen from "../../components/ErrorScreen";
 import * as CONSTANTS from "../../constants/inDepo";
 import { theme } from "../../constants/styles/theme";
-import RecordPill from "../../components/RecordPill";
 import { DepositionID } from "../../state/types";
 import actions from "../../state/InDepo/InDepoActions";
 import { ThemeMode } from "../../types/ThemeType";
-import { EventModel } from "../../models";
 import useSignalR from "../../hooks/useSignalR";
-import GuestRequests from "./GuestRequests";
-import { Roles } from "../../models/participant";
+import { useCheckUserStatus } from "../../hooks/preJoinDepo/hooks";
 import { useAuthentication } from "../../hooks/auth";
-import { useUserIsAdmin } from "../../hooks/users/hooks";
-import Spinner from "../../components/Spinner";
-import LoadingScreen from "./LoadingScreen";
-import { NotificationEntityType } from "../../types/Notification";
+import Message from "../../components/Message";
+import StartMessage from "../../components/StartMessage";
+import { ReactComponent as CalendarIcon } from "../../assets/icons/calendar.svg";
+import getDepositionTime from "./helpers/getDepositionTime";
+import { NotificationAction, NotificationEntityType } from "../../types/Notification";
 
 const InDepo = () => {
     const isMounted = useRef(true);
     const inDepoTheme = { ...theme, mode: ThemeMode.inDepo };
     const { state, dispatch } = useContext(GlobalStateContext);
-    const [joinDeposition, loading, error] = useJoinDeposition();
-    const {
-        breakrooms,
-        isRecording,
-        message,
-        currentRoom,
-        permissions,
-        transcriptions,
-        timeZone,
-        dataTrack,
-        currentExhibit,
-        participants,
-        userStatus,
-        shouldSendToPreDepo,
-        currentExhibitPage,
-        currentUser,
-    } = state.room;
+    const [joinDeposition, loading, error] = useJoinDepositionForMockRoom();
+    const { isRecording, currentRoom, transcriptions, timeZone, participants, startTime, breakrooms } = state.room;
     const { depositionID } = useParams<DepositionID>();
     const [realTimeOpen, togglerRealTime] = useState<boolean>(false);
     const [exhibitsOpen, togglerExhibits] = useState<boolean>(false);
     const [initialAudioEnabled, setInitialAudioEnabled] = useState<boolean>(true);
     const [videoLayoutSize, setVideoLayoutSize] = useState<number>(0);
     const [atendeesVisibility, setAtendeesVisibility] = useState<boolean>(true);
+    const { stop, subscribeToGroup, signalR } = useSignalR("/depositionHub");
     const history = useHistory();
-    const { isAuthenticated } = useAuthentication();
-    const [checkIfUserIsAdmin, userIsAdminLoading, errorUserIsAdmin, userIsAdmin] = useUserIsAdmin();
-    const { stop, sendMessage, signalR, subscribeToGroup, unsubscribeMethodFromGroup } = useSignalR("/depositionHub");
+    const { currentEmail, isAuthenticated } = useAuthentication();
+    const [checkUserStatus, , userStatusError, userStatus] = useCheckUserStatus();
+
+    useEffect(() => {
+        if (signalR) {
+            subscribeToGroup("ReceiveNotification", (message) => {
+                if (
+                    message.entityType === NotificationEntityType.deposition &&
+                    message.action === NotificationAction.start
+                ) {
+                    checkUserStatus(depositionID, currentEmail.current);
+                }
+            });
+        }
+    }, [signalR, subscribeToGroup, checkUserStatus, depositionID, currentEmail]);
+
+    useEffect(() => {
+        if (userStatus) {
+            history.push(
+                userStatus.participant.isAdmitted
+                    ? `/deposition/join/${depositionID}`
+                    : `/deposition/pre/${depositionID}/waiting`
+            );
+        }
+    }, [userStatus, history, depositionID]);
 
     useEffect(
         () => {
-            checkIfUserIsAdmin();
             return () => {
                 isMounted.current = false;
                 if (stop) stop();
@@ -72,10 +78,14 @@ const InDepo = () => {
     );
 
     useEffect(() => {
-        if (signalR && depositionID) {
-            sendMessage("SubscribeToDeposition", { depositionId: depositionID });
+        if (userStatusError) {
+            Message({
+                content: CONSTANTS.MOCK_DEPO_USER_STATUS_ERROR,
+                type: "error",
+                duration: 6,
+            });
         }
-    }, [signalR, depositionID, sendMessage]);
+    }, [userStatusError]);
 
     useEffect(() => {
         const setDominantSpeaker = (participant: Participant | null) =>
@@ -99,10 +109,10 @@ const InDepo = () => {
     }, [currentRoom, dispatch, depositionID]);
 
     useEffect(() => {
-        if (depositionID && isAuthenticated !== null && userIsAdmin !== undefined) {
+        if (depositionID) {
             joinDeposition(depositionID);
         }
-    }, [depositionID, joinDeposition, isAuthenticated, userIsAdmin]);
+    }, [depositionID, joinDeposition]);
 
     useEffect(() => {
         setAtendeesVisibility((prev) => !prev);
@@ -110,57 +120,23 @@ const InDepo = () => {
         setTimeout(() => isMounted.current && setAtendeesVisibility((prev) => !prev), 300);
     }, [realTimeOpen, exhibitsOpen]);
 
-    useEffect(() => {
-        if (message.module === "endDepo") {
-            disconnectFromDepo(currentRoom, dispatch, history, null, depositionID);
-        }
-        if (message.module === "recordDepo") {
-            dispatch(actions.setIsRecording(message.value.eventType === EventModel.EventType.onTheRecord));
-            dispatch(actions.addTranscription(message.value));
-        }
-        if (message.module === "addTranscription") {
-            dispatch(actions.addTranscription(message.value));
-        }
-    }, [message, currentRoom, dispatch, history, depositionID]);
-
-    useEffect(() => {
-        if (currentExhibit || currentExhibitPage) {
-            togglerExhibits(true);
-        }
-    }, [currentExhibit, currentExhibitPage]);
-
-    useEffect(() => {
-        if (participants?.length && currentRoom?.localParticipant) {
+    React.useEffect(() => {
+        if (participants.length && currentRoom?.localParticipant) {
             const localParticipantEmail = JSON.parse(currentRoom?.localParticipant?.identity)?.email;
             const isMuted = participants.find((participant) => participant?.email === localParticipantEmail)?.isMuted;
             setInitialAudioEnabled(!isMuted);
         }
     }, [participants, currentRoom]);
 
-    useEffect(() => {
-        const onReceiveAnnotations = (message) => {
-            if (
-                message.entityType !== NotificationEntityType.bringAllTo ||
-                (currentUser?.id && currentUser?.id === message?.content?.userId)
-            )
-                return;
-            dispatch(actions.setCurrentExhibitPage("-1"));
-            dispatch(actions.setCurrentExhibitPage(message?.content?.documentLocation));
-        };
-        subscribeToGroup("ReceiveNotification", onReceiveAnnotations);
-        return () => {
-            unsubscribeMethodFromGroup("ReceiveNotification", onReceiveAnnotations);
-        };
-    }, [subscribeToGroup, unsubscribeMethodFromGroup, currentUser, dispatch]);
+    if (isAuthenticated === null) {
+        return null;
+    }
 
-    if (userIsAdminLoading || (loading && userStatus === null && shouldSendToPreDepo === null)) {
+    if (loading) {
         return <Spinner />;
     }
-    if (userStatus?.participant?.isAdmitted && loading && shouldSendToPreDepo === false) {
-        return <LoadingScreen />;
-    }
 
-    if (error || errorUserIsAdmin) {
+    if (error) {
         return (
             <ErrorScreen
                 texts={{
@@ -168,25 +144,15 @@ const InDepo = () => {
                     subtitle: CONSTANTS.FETCH_ERROR_RESULT_BODY,
                     button: CONSTANTS.FETCH_ERROR_RESULT_BUTTON,
                 }}
-                onClick={() => {
-                    if (errorUserIsAdmin) {
-                        return checkIfUserIsAdmin();
-                    }
-                    return joinDeposition(depositionID);
-                }}
+                onClick={() => joinDeposition(depositionID)}
             />
         );
     }
 
-    return currentRoom && dataTrack ? (
+    return currentRoom ? (
         <ThemeProvider theme={inDepoTheme}>
             <StyledInDepoContainer data-testid="videoconference">
-                {(userIsAdmin ||
-                    JSON.parse(currentRoom?.localParticipant?.identity || "{}").role === Roles.courtReporter) && (
-                    <GuestRequests depositionID={depositionID} />
-                )}
                 <StyledInDepoLayout>
-                    <RecordPill on={isRecording} />
                     <Exhibits visible={exhibitsOpen} />
                     <RealTime visible={realTimeOpen} timeZone={timeZone} transcriptions={transcriptions} />
                     <VideoConference
@@ -195,18 +161,16 @@ const InDepo = () => {
                         attendees={currentRoom.participants}
                         layoutSize={videoLayoutSize}
                         atendeesVisibility={atendeesVisibility}
-                        enableMuteUnmute
                     />
                 </StyledInDepoLayout>
                 <StyledRoomFooter>
                     <ControlsBar
                         breakrooms={breakrooms}
-                        handleJoinBreakroom={(breakroomId) => {
-                            history.push(`/deposition/join/${depositionID}/breakroom/${breakroomId}`);
-                        }}
+                        leaveWithoutModal
+                        disableBreakrooms
                         isRecording={isRecording}
-                        canEnd={permissions.includes("EndDeposition")}
-                        canRecord={permissions.includes("Recording")}
+                        canEnd={false}
+                        canRecord={false}
                         realTimeOpen={realTimeOpen}
                         togglerRealTime={togglerRealTime}
                         exhibitsOpen={exhibitsOpen}
@@ -215,6 +179,11 @@ const InDepo = () => {
                         initialAudioEnabled={initialAudioEnabled}
                     />
                 </StyledRoomFooter>
+                <StartMessage
+                    icon={CalendarIcon}
+                    title={getDepositionTime(startTime)}
+                    description={CONSTANTS.PRE_DEPOSITION_START_TIME_DESCRIPTION}
+                />
             </StyledInDepoContainer>
         </ThemeProvider>
     ) : null;

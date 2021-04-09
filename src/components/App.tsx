@@ -8,6 +8,7 @@ import { Route, Router, Switch } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 import GlobalStyle from "./GlobalStyle";
 import { theme } from "../constants/styles/theme";
+import MockInDepo from "../routes/MockInDepo";
 import Dashboard from "../routes/dashboard/dashboard";
 import Login from "../routes/Login";
 import SignUp from "../routes/SignUp";
@@ -26,6 +27,7 @@ import DepositionDetails from "../routes/DepositionDetails";
 import ActiveDepositionDetails from "../routes/ActiveDepoDetails";
 import ResetPassword from "../routes/ResetPassword";
 import ChangePassword from "../routes/ChangePassword";
+import WaitingRoom from "../routes/WaitingRoom";
 
 function App() {
     const tagManagerId = {
@@ -85,6 +87,8 @@ function App() {
                         />
                         <Route exact path="/deposition/end" component={EndDepoScreen} />
                         <Route exact path="/deposition/join/:depositionID" component={InDepo} />
+                        <Route exact path="/deposition/pre/:depositionID" component={MockInDepo} />
+                        <Route exact path="/deposition/pre/:depositionID/waiting" component={WaitingRoom} />
                     </Authenticator>
                 </Switch>
             </Router>

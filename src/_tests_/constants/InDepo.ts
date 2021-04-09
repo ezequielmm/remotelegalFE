@@ -5,10 +5,18 @@ export const END_DEPO_DATATRACK_MESSAGE = JSON.stringify({ module: "endDepo", va
 export const JOIN_DEPOSITION_MOCK = {
     token: "1234",
     witnessEmail: "test@test.com",
+    startDate: "2021-09-28T06:00:00-03:00",
     timeZone,
     isOnTheRecord: false,
     participants: [],
 };
+export const IDENTITY_MOCK = jest.fn().mockImplementation(() =>
+    JSON.stringify({
+        name: "test1234",
+        role: "Witness",
+        email: "test@test.com",
+    })
+);
 export const JOIN_BREAKROOM_MOCK = "1234";
 export const JOIN_DEPOSITION_MOCK_EMPTY_DEPOSITION = {
     ...JOIN_DEPOSITION_MOCK,
@@ -16,6 +24,8 @@ export const JOIN_DEPOSITION_MOCK_EMPTY_DEPOSITION = {
 };
 export const WAITING_FOR_WITNESS = "waiting for witness";
 export const ROUTE = "/deposition/join/:depositionID";
+export const PRE_ROUTE = "/deposition/pre/:depositionID";
+export const WAITING_ROUTE = "/deposition/pre/:depositionID/waiting";
 export const BREAKROOM_ROUTE = "/deposition/join/:depositionID/breakroom/:breakroomID";
 export const TEST_ROUTE = "/deposition/join/test1234";
 export const TEST_BREAKROOM_ROUTE = "/deposition/join/test1234/breakroom/:breakroomID";
