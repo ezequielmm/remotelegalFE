@@ -42,7 +42,6 @@ export default function ProgressBar({ statusText = "", percent, errors = [], onC
                     status={errors.length ? "exception" : "active"}
                     strokeColor={errors.length ? theme.default.errorColor : theme.default.successColor}
                     showInfo={false}
-                    trailColor={theme.default.secondary}
                 />
                 {errors.length > 0 && (
                     <Button type="link" onClick={onClose}>

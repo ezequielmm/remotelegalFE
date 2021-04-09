@@ -8,6 +8,10 @@ export const StyledProgressBar = styled(Progress)`
     .ant-progress-status-active .ant-progress-bg {
         background-color: ${({ theme }) => theme.default.successColor};
     }
+    .ant-progress-inner {
+        background-color: ${({ theme }) =>
+            theme.mode === "default" ? theme.colors.disabled[5] : theme.default.secondary};
+    }
 `;
 
 export const StyledProgressBarContainer = styled.div`
