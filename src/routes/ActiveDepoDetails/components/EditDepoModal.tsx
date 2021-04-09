@@ -150,7 +150,9 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
             (isStatusCanceled && isDepoNowConfirmed) || (isDepoPending && isDepoNowConfirmed);
         const isDepoReverted = deposition.status === Status.canceled && !isStatusCanceled && !invalidFile;
         const isRescheduled =
-            deposition.startDate !== formStatus.startDate || deposition.endDate !== formStatus.endDate;
+            deposition.startDate !== formStatus.startDate ||
+            deposition.endDate !== formStatus.endDate ||
+            deposition.timeZone !== formStatus.timeZone;
 
         if (isDepoConfirmedAndNowCanceled || isDepoReverted) {
             return setStatusModal({
