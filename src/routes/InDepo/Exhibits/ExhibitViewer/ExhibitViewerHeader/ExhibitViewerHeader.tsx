@@ -1,5 +1,5 @@
 import React, { ReactElement, useContext, useState } from "react";
-import { Col, Tooltip } from "antd";
+import { Tooltip } from "antd";
 import { StyledExhibitViewerHeader } from "../styles";
 import Text from "../../../../../components/Typography/Text";
 import Button from "../../../../../components/Button";
@@ -13,6 +13,7 @@ import { GlobalStateContext } from "../../../../../state/GlobalState";
 import { StyledCloseButton } from "./styles";
 import ExhibitClosingModal from "../ExhibitClosingModal";
 import * as CONSTANTS from "../../../../../constants/exhibits";
+import Space from "../../../../../components/Space";
 
 interface Props {
     file: ExhibitFile;
@@ -70,68 +71,63 @@ export default function ExhibitViewerHeader({
                 onKeepSharedExhibit={() => setClosingModalOpen(false)}
                 onCloseSharedExhibit={onCloseSharedExhibitHandler}
             />
-            {showBackButton && (
-                <Col md={6} xxl={4}>
-                    <Text state={ColorStatus.white}>
-                        <Icon data-testid="view-document-back-button" icon={backIcon} size={6} onClick={onClose} />
-                    </Text>
-                </Col>
-            )}
-            <Col md={showBringAllToMeButton ? 14 : showBackButton ? 12 : 24} xxl={16}>
-                <Tooltip title={file?.displayName}>
-                    <Text
-                        size="large"
-                        state={ColorStatus.white}
-                        block
-                        align={showBringAllToMeButton ? undefined : "center"}
-                    >
-                        {file?.displayName}
-                    </Text>
-                </Tooltip>
-            </Col>
-            {showBringAllToMeButton && (
-                <Col md={5} xxl={4}>
-                    <StyledCloseButton
-                        type="primary"
-                        size="small"
-                        data-testid="bring_all_to_me_button"
-                        onClick={onBringAllToMe}
-                    >
-                        {CONSTANTS.BRING_ALL_TO_ME_BUTTON_LABEL}
-                    </StyledCloseButton>
-                </Col>
-            )}
-            <Col md={showBringAllToMeButton ? 5 : 6} xxl={4} style={{ textAlign: "right" }}>
-                {showCloseButton && (
-                    <StyledCloseButton
-                        onClick={() => {
-                            if (readOnly) {
-                                onClose();
-                            } else {
-                                setClosingModalOpen(true);
-                            }
-                        }}
-                        loading={onClosePending}
-                        type="primary"
-                        size="small"
-                        data-testid="close_document_button"
-                    >
-                        {CONSTANTS.CLOSE_SHARED_EXHIBIT_BUTTON_LABEL}
-                    </StyledCloseButton>
+            <Space justify={showBackButton ? "flex-start" : "space-between"} fullWidth>
+                {showBackButton && (
+                    <Space.Item>
+                        <Text state={ColorStatus.white}>
+                            <Icon data-testid="view-document-back-button" icon={backIcon} size={6} onClick={onClose} />
+                        </Text>
+                    </Space.Item>
                 )}
-                {showShareButton && (
-                    <Button
-                        onClick={() => setSharingModalOpen(!sharingModalOpen)}
-                        disabled={!isRecording}
-                        type="primary"
-                        size="small"
-                        loading={shareExhibitPending}
-                        data-testid="view_document_share_button"
-                    >
-                        {CONSTANTS.SHARE_EXHIBIT_BUTTON_LABEL}
-                    </Button>
-                )}
-            </Col>
+                <Space.Item flex="1">
+                    <Tooltip title={file?.displayName}>
+                        <Text
+                            size="large"
+                            state={ColorStatus.white}
+                            block
+                            align={showBringAllToMeButton ? undefined : "center"}
+                        >
+                            {file?.displayName}
+                        </Text>
+                    </Tooltip>
+                </Space.Item>
+                <Space>
+                    {showBringAllToMeButton && (
+                        <Button type="ghost" size="small" data-testid="bring_all_to_me_button" onClick={onBringAllToMe}>
+                            {CONSTANTS.BRING_ALL_TO_ME_BUTTON_LABEL}
+                        </Button>
+                    )}
+                    {showCloseButton && (
+                        <StyledCloseButton
+                            onClick={() => {
+                                if (readOnly) {
+                                    onClose();
+                                } else {
+                                    setClosingModalOpen(true);
+                                }
+                            }}
+                            loading={onClosePending}
+                            type="primary"
+                            size="small"
+                            data-testid="close_document_button"
+                        >
+                            {CONSTANTS.CLOSE_SHARED_EXHIBIT_BUTTON_LABEL}
+                        </StyledCloseButton>
+                    )}
+                    {showShareButton && (
+                        <Button
+                            onClick={() => setSharingModalOpen(!sharingModalOpen)}
+                            disabled={!isRecording}
+                            type="primary"
+                            size="small"
+                            loading={shareExhibitPending}
+                            data-testid="view_document_share_button"
+                        >
+                            {CONSTANTS.SHARE_EXHIBIT_BUTTON_LABEL}
+                        </Button>
+                    )}
+                </Space>
+            </Space>
         </StyledExhibitViewerHeader>
     );
 }
