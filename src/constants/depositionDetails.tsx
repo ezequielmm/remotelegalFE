@@ -23,6 +23,7 @@ export const DETAILS_TRANSCRIPT_TITLE = "Transcript";
 export const DETAILS_TRANSCRIPT_BUTTON_NOTIFY = "Notify parties";
 export const DETAILS_TRANSCRIPT_BUTTON_DOWNLOAD = "Download";
 export const DETAILS_TRANSCRIPT_BUTTON_TEST_ID = "deposition_details_download_button";
+export const DETAILS_TRANSCRIPT_NOTIFY_BUTTON_TEST_ID = "deposition_details_notify_button";
 export const DETAILS_TRANSCRIPT_BUTTON_UPLOAD = "Upload transcript";
 
 export const DEFAULT_ACTIVE_TAB = "summary";
@@ -142,3 +143,5 @@ export const DEPOSITION_DETAILS_DELETE_MODAL_YES = "YES, DELETE FILE";
 
 export const DEPOSITION_DETAILS_SUMMARY_DOWNLOAD_TITLE = "RECORDING";
 export const DEPOSITION_DETAILS_SUMMARY_DOWNLOAD_ROUGH_DRAFT_TITLE = "ROUGH DRAFT TRANSCRIPT";
+
+export const DEPOSITION_DETAILS_EMAIL_SENT_MESSAGE = "An email has been sent to all invited parties";

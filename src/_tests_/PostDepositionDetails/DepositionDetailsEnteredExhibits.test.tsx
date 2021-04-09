@@ -4,7 +4,6 @@ import DepositionDetailsEnteredExhibits from "../../routes/DepositionDetails/Dep
 import getMockDeps from "../utils/getMockDeps";
 import renderWithGlobalContext from "../utils/renderWithGlobalContext";
 import * as CONSTANTS from "../../constants/depositionDetails";
-import fileUrlList from "../mocks/fileUrlList";
 import downloadFile from "../../helpers/downloadFile";
 import { wait } from "../../helpers/wait";
 import enteredExhibitsMock from "../mocks/EnteredExhibits";

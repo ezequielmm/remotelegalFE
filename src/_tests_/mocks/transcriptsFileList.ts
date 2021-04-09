@@ -1,5 +1,3 @@
-export const getNoTranscriptFileList = () => [];
-
 export const getTranscriptFileList = () => {
     return [
         {

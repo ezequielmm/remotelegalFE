@@ -48,5 +48,6 @@ export default (): Deps => ({
         getEnteredExhibits: jest.fn().mockResolvedValue([]),
         fetchTranscriptsFiles: jest.fn().mockResolvedValue(getTranscriptFileList()),
         getDocumentsUrlList: jest.fn().mockResolvedValue(fileUrlList),
+        notifyParties: jest.fn().mockResolvedValue({ notified: true }),
     } as any,
 });

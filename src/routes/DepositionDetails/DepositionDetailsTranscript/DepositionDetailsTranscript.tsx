@@ -6,6 +6,7 @@ import {
     useUploadFile,
     useRemoveTranscript,
     useGetDocumentsUrlList,
+    useNotifyParties,
 } from "../../../hooks/transcripts/hooks";
 import { useUserIsAdmin } from "../../../hooks/users/hooks";
 import Table from "../../../components/Table";
@@ -35,6 +36,7 @@ const DepositionDetailsTranscripts = () => {
     const { depositionID } = useParams<{ depositionID: string }>();
     const { upload } = useUploadFile(depositionID);
     const { handleFetchFiles, transcriptFileList, loading } = useTranscriptFileList(depositionID);
+    const [notifyParties, notifyPartiesLoading, notifyPartiesError, notified] = useNotifyParties();
     const [checkIfUserIsAdmin, loadingUserIsAdmin, errorUserIsAdmin, userIsAdmin] = useUserIsAdmin();
     const [selectedRows, setSelectedRows] = useState([]);
     const rowSelection = {
@@ -108,6 +110,30 @@ const DepositionDetailsTranscripts = () => {
         handleFetchFiles();
     };
 
+    useEffect(() => {
+        if (notifyPartiesError) {
+            Message({
+                content: CONSTANTS.NETWORK_ERROR,
+                type: "error",
+                duration: 3,
+            });
+        }
+    }, [notifyPartiesError]);
+
+    useEffect(() => {
+        if (notified) {
+            Message({
+                content: CONSTANTS.DEPOSITION_DETAILS_EMAIL_SENT_MESSAGE,
+                type: "success",
+                duration: 3,
+            });
+        }
+    }, [notified]);
+
+    const handleNotifyParties = () => {
+        notifyParties(depositionID);
+    };
+
     const columns = [
         ...CONSTANTS.DEPOSITION_DETAILS_TRANSCRIPTS_COLUMNS,
         {
@@ -154,14 +180,19 @@ const DepositionDetailsTranscripts = () => {
                         {CONSTANTS.DETAILS_TRANSCRIPT_TITLE}
                     </Title>
                     <Space>
-                        {!loadingUserIsAdmin &&
-                            !errorUserIsAdmin &&
-                            userIsAdmin &&
-                            false /* TODO: Remove this when this feature is enabled */ && (
-                                <Button type="text" disabled icon={<Icon icon={MessageIcon} size={9} />} size="middle">
-                                    {CONSTANTS.DETAILS_TRANSCRIPT_BUTTON_NOTIFY}
-                                </Button>
-                            )}
+                        {!loadingUserIsAdmin && !errorUserIsAdmin && userIsAdmin && (
+                            <Button
+                                data-testid={CONSTANTS.DETAILS_TRANSCRIPT_NOTIFY_BUTTON_TEST_ID}
+                                type="text"
+                                disabled={transcriptFileList?.length < 2}
+                                icon={<Icon icon={MessageIcon} size={9} />}
+                                size="middle"
+                                onClick={handleNotifyParties}
+                                loading={notifyPartiesLoading}
+                            >
+                                {CONSTANTS.DETAILS_TRANSCRIPT_BUTTON_NOTIFY}
+                            </Button>
+                        )}
 
                         <Button
                             type="primary"

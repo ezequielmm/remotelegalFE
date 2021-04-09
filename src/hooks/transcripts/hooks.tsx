@@ -133,3 +133,11 @@ export const useRemoveTranscript = () => {
         return response;
     }, []);
 };
+
+export const useNotifyParties = () => {
+    const { deps } = useContext(GlobalStateContext);
+    return useAsyncCallback<any, any>(async (depoID) => {
+        const response = await deps.apiService.notifyParties(depoID);
+        return response;
+    }, []);
+};

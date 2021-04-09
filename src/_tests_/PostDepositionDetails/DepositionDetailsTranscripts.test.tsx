@@ -89,4 +89,32 @@ describe("Deposition Details Transcripts", () => {
         );
         expect(getByText(CONSTANTS.NETWORK_ERROR)).toBeInTheDocument();
     });
+    it("hide Notify Parties button if user is not admin", async () => {
+        customDeps.apiService.currentUser = jest.fn().mockResolvedValue(SIGN_UP_CONSTANTS.getUserNotAdmin());
+        const { queryByText } = renderWithGlobalContext(<DepositionDetailsTranscript />, customDeps);
+        await waitForDomChange();
+        expect(queryByText(CONSTANTS.DETAILS_TRANSCRIPT_NOTIFY_BUTTON_TEST_ID)).toBeFalsy();
+    });
+    it("show Notify Parties button if user is admin", async () => {
+        customDeps.apiService.currentUser = jest.fn().mockResolvedValue(SIGN_UP_CONSTANTS.getUser1());
+        const { queryByTestId } = renderWithGlobalContext(<DepositionDetailsTranscript />, customDeps);
+        await waitForDomChange();
+        expect(queryByTestId(CONSTANTS.DETAILS_TRANSCRIPT_NOTIFY_BUTTON_TEST_ID)).toBeTruthy();
+    });
+    it("The notify parties button shouldn't be disabled when only one record is in the list", async () => {
+        const { queryByTestId } = renderWithGlobalContext(<DepositionDetailsTranscript />, customDeps);
+        await waitForDomChange();
+        const notifyButton = queryByTestId(CONSTANTS.DETAILS_TRANSCRIPT_NOTIFY_BUTTON_TEST_ID);
+        expect(notifyButton).not.toBeDisabled();
+    });
+    it("calls download file with the proper params when clicking download", async () => {
+        const { getByTestId } = renderWithGlobalContext(<DepositionDetailsTranscript />, customDeps);
+        await waitForDomChange();
+        const notifyButton = getByTestId(CONSTANTS.DETAILS_TRANSCRIPT_NOTIFY_BUTTON_TEST_ID);
+        fireEvent.click(notifyButton);
+        await wait(200);
+        expect(customDeps.apiService.notifyParties).toHaveBeenCalledWith(
+            TEST_CONSTANTS.DEPOSITION_DETAILS_TRANSCRIPT_DOWNLOAD_RESPONSE_BODY.depositionID
+        );
+    });
 });

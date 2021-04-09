@@ -496,6 +496,14 @@ export class ApiService {
         });
     };
 
+    notifyParties = async (depositionID: string) => {
+        return this.request({
+            path: `/api/depositions/${depositionID}/notifyParties`,
+            withToken: true,
+            method: HTTP_METHOD.POST,
+        });
+    };
+
     private request = async <T>({
         path,
         payload = {},
