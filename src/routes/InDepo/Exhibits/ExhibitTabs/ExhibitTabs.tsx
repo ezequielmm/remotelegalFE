@@ -6,6 +6,7 @@ import Text from "../../../../components/Typography/Text";
 import ColorStatus from "../../../../types/ColorStatus";
 import { ExhibitTabContainer, ExhibitTabContainerText, ExhibitTabsContainer, Stick } from "./styles";
 import { EXHIBIT_TAB } from "../../../../constants/exhibits";
+import { Tooltip } from "antd";
 
 export interface ExhibitTabData {
     tabId: string;
@@ -72,9 +73,11 @@ export default function ExhibitTabs({
                                     {` ${title}`}
                                 </Text>
                             </Space>
-                            <Text state={subtitleState} size="small">
-                                {subTitle}
-                            </Text>
+                            <Tooltip title={subTitle} placement="bottom">
+                                <Text state={subtitleState} size="small">
+                                    {subTitle}
+                                </Text>
+                            </Tooltip>
                         </ExhibitTabContainerText>
                     </ExhibitTabContainer>
                 );

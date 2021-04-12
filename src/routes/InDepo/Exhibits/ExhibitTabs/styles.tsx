@@ -35,8 +35,10 @@ export const ExhibitTabContainer = styled(ExhibitTabContainerWithProps).attrs((p
     active: props.active ? "true" : undefined,
     highlight: props.highlight ? "true" : undefined,
 }))`
+    position: relative;
     display: flex;
     flex: 1 0 0;
+    overflow: hidden;
     cursor: pointer;
     border-radius: ${({ theme }) => getPX(theme.default.borderRadiusBase, theme.default.baseUnit)};
     ${({ active, highlight, theme }) => {
@@ -54,15 +56,16 @@ export const ExhibitTabContainer = styled(ExhibitTabContainerWithProps).attrs((p
 export const ExhibitTabContainerText = styled.div`
     display: flex;
     flex-direction: column;
+    overflow: hidden;
     padding: ${({ theme }) => `${getREM(theme.default.spaces[5])} ${getREM(theme.default.spaces[9])}`};
 `;
 
 export const Stick = styled.div`
-    margin-top: auto;
-    margin-bottom: auto;
-    margin-left: -1px;
-    height: ${({ theme }) => getREM(theme.default.spaces[9])};
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
     width: 1px;
+    height: ${({ theme }) => getREM(theme.default.spaces[9])};
     background: ${({ theme }) => theme.colors.disabled[7]};
 `;
 
