@@ -110,6 +110,8 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
             if (invalidFile) {
                 setInvalidFile(false);
             }
+            setInvalidStartTime(false);
+            setInvalidEndTime(false);
             setFormStatus(INITIAL_STATE);
         }, 200);
     };
