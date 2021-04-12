@@ -95,7 +95,7 @@ export default function OtherParticipantsSection(): ReactElement {
                         locale={{
                             emptyText: <OtherParticipantsEmptySection />,
                         }}
-                        rowKey="email"
+                        rowKey="id"
                         dataSource={fields}
                         pagination={false}
                     >
