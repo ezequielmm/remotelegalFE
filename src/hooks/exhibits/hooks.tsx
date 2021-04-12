@@ -1,16 +1,16 @@
 import { useCallback, useContext, useEffect, useState, Key, useMemo } from "react";
 import { TablePaginationConfig } from "antd/lib/table";
 import { useParams } from "react-router";
+import { SortOrder } from "antd/lib/table/interface";
 import uploadFile from "../../services/UploadService";
 import { GlobalStateContext } from "../../state/GlobalState";
 import { ExhibitFile } from "../../types/ExhibitFile";
 import useAsyncCallback from "../useAsyncCallback";
 import * as CONSTANTS from "../../constants/exhibits";
 import actions from "../../state/InDepo/InDepoActions";
-import { CoreControls } from "@pdftron/webviewer";
-import { SortOrder } from "antd/lib/table/interface";
 import useSignalR from "../useSignalR";
 import { NotificationEntityType } from "../../types/Notification";
+
 interface HandleFetchFilesSorterType {
     field?: Key | Key[];
     order?: SortOrder;
@@ -199,26 +199,17 @@ export const useCloseSharedExhibit = () => {
     const { state, deps, dispatch } = useContext(GlobalStateContext);
     const { depositionID } = useParams<{ depositionID: string }>();
     const { dataTrack, message, currentExhibit, exhibitDocument, stampLabel, rawAnnotations } = state.room;
-    const [closeSharedExhibit, pendingCloseSharedExhibit] = useAsyncCallback(
-        async (isReadyOnly = false) => {
-            if (stampLabel) {
-                const exhibitDocumentData = await (exhibitDocument as CoreControls.Document)?.getFileData({
-                    xfdfString: rawAnnotations,
-                    flatten: true,
-                });
-                const arrData = new Uint8Array(exhibitDocumentData);
-                const blob = new Blob([arrData]);
-                await deps.apiService.closeStampedExhibit({ depositionID, stampLabel, blob });
-            } else {
-                await deps.apiService.closeExhibit({ depositionID });
-            }
-            dispatch(actions.stopShareExhibit());
-            if (currentExhibit && dataTrack) {
-                dataTrack.send(JSON.stringify({ module: "closeSharedExhibit", value: currentExhibit }));
-            }
-        },
-        [exhibitDocument, stampLabel, dataTrack, rawAnnotations]
-    );
+    const [closeSharedExhibit, pendingCloseSharedExhibit] = useAsyncCallback(async () => {
+        if (stampLabel) {
+            await deps.apiService.closeStampedExhibit({ depositionID, stampLabel });
+        } else {
+            await deps.apiService.closeExhibit({ depositionID });
+        }
+        dispatch(actions.stopShareExhibit());
+        if (currentExhibit && dataTrack) {
+            dataTrack.send(JSON.stringify({ module: "closeSharedExhibit", value: currentExhibit }));
+        }
+    }, [exhibitDocument, stampLabel, dataTrack, rawAnnotations]);
 
     if (message.module === "closeSharedExhibit" && message?.value?.id === currentExhibit?.id) {
         dispatch(actions.stopShareExhibit());
