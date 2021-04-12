@@ -9,6 +9,7 @@ const AntTabPane = AntTabs.TabPane;
 const StyledTabPane = styled(AntTabPane)<TabPaneProps>``;
 
 const StyledTabs = styled(AntTabs)<TabsProps>`
+    overflow: visible;
     .ant-tabs-nav {
         &:before {
             border-bottom: 1px solid ${theme.colors.neutrals[3]};
