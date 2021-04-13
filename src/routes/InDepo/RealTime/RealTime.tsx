@@ -54,7 +54,7 @@ const RealTime = ({
                         <div>
                             {!disableAutoscroll && <RoughDraftPill>ROUGH DRAFT: NOT FOR OFFICIAL USE</RoughDraftPill>}
                             <Space direction="vertical" size="middle">
-                                {transcriptions.map(
+                                {transcriptions?.map(
                                     (transcription, i) =>
                                         (transcription.from || transcription.text) &&
                                         (transcription.from ? (
