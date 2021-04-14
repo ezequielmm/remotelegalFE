@@ -15,6 +15,7 @@ export const getDepositions = () =>
             creationDate: "2020-12-01T16:16:08-03:00",
             completeDate: "2020-12-01T17:16:08-03:00",
             startDate: "2021-03-24T20:32:37.757Z",
+            actualStartDate: "2021-03-24T20:32:37.757Z",
             endDate: "2021-03-24T20:32:37.757Z",
             timeZone: "ET",
             caseName: "case name",

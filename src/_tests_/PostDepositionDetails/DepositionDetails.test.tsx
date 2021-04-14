@@ -9,7 +9,7 @@ import * as CONSTANTS from "../../constants/depositionDetails";
 import { wait } from "../../helpers/wait";
 import DepositionDetails from "../../routes/DepositionDetails";
 import * as TESTS_CONSTANTS from "../constants/depositionDetails";
-import { DEPOSITION_ID, getDepositions } from "../constants/depositions";
+import { DEPOSITION_ID, getDepositions, getDepositionWithOverrideValues } from "../constants/depositions";
 import getMockDeps from "../utils/getMockDeps";
 import DEPO_PARTICIPANT_MOCK from "../mocks/depoParticipant";
 import renderWithGlobalContext from "../utils/renderWithGlobalContext";
@@ -68,6 +68,29 @@ describe("DepositionDetails", () => {
             )
         ).toBeInTheDocument();
         expect(getByText(deposition.job)).toBeInTheDocument();
+    });
+    test("Load Header with deposition details with actual start date", async () => {
+        customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
+            return getDepositions()[0];
+        });
+        const { getByText } = renderWithGlobalContext(
+            <Route exact path={TESTS_CONSTANTS.ROUTE} component={DepositionDetails} />,
+            customDeps,
+            undefined,
+            history
+        );
+        history.push(TESTS_CONSTANTS.TEST_ROUTE);
+        await waitForDomChange();
+        const deposition = getDepositions()[0];
+
+        const actualStartDate = moment(deposition.actualStartDate)
+            .tz(mapTimeZone[deposition.timeZone])
+            .format(FORMAT_TIME)
+            .split(" ");
+        const completeDate = moment(deposition.completeDate).tz(mapTimeZone[deposition.timeZone]).format(FORMAT_TIME);
+        expect(
+            getByText(`${actualStartDate[0]} to ${completeDate.toLowerCase()} ${deposition.timeZone}`)
+        ).toBeInTheDocument();
     });
 
     test("Error screen is shown when fetch fails", async () => {
