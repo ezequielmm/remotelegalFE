@@ -108,7 +108,7 @@ const WaitingRoom = () => {
                         </Space>
                         <Space align="center" direction="vertical" fullWidth mt={10}>
                             <Text size="large" dataTestId="waiting_room_title">
-                                {userStatus?.participant?.name ? `${userStatus?.participant?.name},` : ""}
+                                {`${userStatus?.participant?.name},` || `${userStatus?.participant?.user?.name},` || ""}
                             </Text>
                             <Title
                                 dataTestId={CONSTANTS.WAITING_ROOM_SUBTITLE}
