@@ -1,6 +1,7 @@
 import React from "react";
 import DepositionDetailsSection from "../routes/ActiveDepoDetails/components/ActiveDepoDetailsSection";
 import ParticipantListTable from "../routes/ActiveDepoDetails/components/ParticipantListTable";
+import normalizedRoles from "./roles";
 
 export enum DEPOSITION_DETAILS_TABS {
     "Additional Information",
@@ -49,6 +50,7 @@ export const DEPOSITION_DETAILS_INVITED_PARTIES_COLUMNS = [
         ellipsis: true,
         sorter: true,
         width: "20%",
+        render: (record) => normalizedRoles[record] || record,
     },
     {
         title: "NAME",

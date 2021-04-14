@@ -13,6 +13,7 @@ import { ReactComponent as MuteIcon } from "../../../assets/in-depo/Participant.
 
 import Icon from "../../../components/Icon";
 import Space from "../../../components/Space";
+import normalizedRoles from "../../../constants/roles";
 
 const Participant = ({
     timeZone,
@@ -44,11 +45,6 @@ const Participant = ({
         setParticipantBorder();
         return () => participant && setHasBorder(false);
     }, [dominantSpeaker, participant]);
-
-    const normalizedRoles = {
-        CourtReporter: "Court Reporter",
-        TechExpert: "Tech Expert",
-    };
 
     return (
         <StyledParticipantMask highlight={hasBorder}>

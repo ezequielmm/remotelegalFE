@@ -13,6 +13,7 @@ import TEMP_TOKEN from "../../constants/ApiService";
 import * as CONSTANTS from "../../constants/preJoinDepo";
 import ErrorScreen from "../../components/ErrorScreen";
 import Alert from "../../components/Alert";
+import normalizedRoles from "../../constants/roles";
 
 const PreJoinDepo = () => {
     const { depositionID } = useParams<DepositionID>();
@@ -180,7 +181,9 @@ const PreJoinDepo = () => {
                             nameInput
                             roleInput
                             joinDeposition={joinDepositionAsGuest}
-                            defaultRole={userStatus?.participant?.role}
+                            defaultRole={
+                                normalizedRoles[userStatus?.participant?.role] || userStatus?.participant?.role
+                            }
                             loading={registerParticipantLoading}
                             defaultName={userStatus?.participant?.name}
                             disableRoleSelect={userStatus?.participant?.role}
