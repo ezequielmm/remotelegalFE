@@ -40,11 +40,13 @@ export interface IRoom {
     dominantSpeaker?: Participant | null;
     participants?: [];
     token: string;
+    mockDepoRoom?: Room;
 }
 
 export const RoomReducerInitialState: IRoom = {
     info: null,
     startTime: "",
+    mockDepoRoom: null,
     shouldSendToPreDepo: null,
     userStatus: null,
     currentRoom: null,
@@ -231,6 +233,11 @@ const RoomReducer: Reducer<IRoom, IAction> = (state: IRoom, action: IAction): IR
             return {
                 ...state,
                 currentExhibitPage: action.payload,
+            };
+        case ACTION_TYPE.MOCK_DEPO_SET_ROOM:
+            return {
+                ...state,
+                mockDepoRoom: action.payload,
             };
 
         default:

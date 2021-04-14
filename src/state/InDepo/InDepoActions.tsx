@@ -31,6 +31,7 @@ export enum ACTION_TYPE {
     ADD_WITNESS = "IN_DEPO_ADD_WITNESS",
     SET_TIMEZONE = "IN_DEPO_SET_TIMEZONE",
     IN_DEPO_SET_PERMISSIONS = "IN_DEPO_SET_PERMISSIONS",
+    MOCK_DEPO_SET_ROOM = "MOCK_DEPO_SET_ROOM",
     SET_TRANSCRIPTIONS = "IN_DEPO_SET_TRANSCRIPTIONS",
     SET_BREAKROOMS = "IN_DEPO_SET_BREAKROOMS",
     SET_IS_RECORDING = "IN_DEPO_SET_IS_RECORDING",
@@ -167,6 +168,10 @@ const actions = {
     }),
     setToken: (payload) => ({
         type: ACTION_TYPE.IN_DEPO_SET_TOKEN,
+        payload,
+    }),
+    setMockRoom: (payload) => ({
+        type: ACTION_TYPE.MOCK_DEPO_SET_ROOM,
         payload,
     }),
 };

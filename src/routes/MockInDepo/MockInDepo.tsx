@@ -31,20 +31,21 @@ const InDepo = () => {
     const inDepoTheme = { ...theme, mode: ThemeMode.inDepo };
     const { state, dispatch } = useContext(GlobalStateContext);
     const [joinDeposition, loading, error] = useJoinDepositionForMockRoom();
-    const { isRecording, currentRoom, transcriptions, timeZone, participants, startTime, breakrooms } = state.room;
+    const { isRecording, mockDepoRoom, transcriptions, timeZone, participants, startTime, breakrooms } = state.room;
     const { depositionID } = useParams<DepositionID>();
     const [realTimeOpen, togglerRealTime] = useState<boolean>(false);
     const [exhibitsOpen, togglerExhibits] = useState<boolean>(false);
     const [initialAudioEnabled, setInitialAudioEnabled] = useState<boolean>(true);
     const [videoLayoutSize, setVideoLayoutSize] = useState<number>(0);
     const [atendeesVisibility, setAtendeesVisibility] = useState<boolean>(true);
-    const { stop, subscribeToGroup, signalR } = useSignalR("/depositionHub");
+    const { stop, subscribeToGroup, signalR, sendMessage } = useSignalR("/depositionHub");
     const history = useHistory();
     const { currentEmail, isAuthenticated } = useAuthentication();
     const [checkUserStatus, , userStatusError, userStatus] = useCheckUserStatus();
 
     useEffect(() => {
-        if (signalR) {
+        if (signalR && depositionID) {
+            sendMessage("SubscribeToDeposition", { depositionId: depositionID });
             subscribeToGroup("ReceiveNotification", (message) => {
                 if (
                     message.entityType === NotificationEntityType.deposition &&
@@ -54,7 +55,7 @@ const InDepo = () => {
                 }
             });
         }
-    }, [signalR, subscribeToGroup, checkUserStatus, depositionID, currentEmail]);
+    }, [signalR, subscribeToGroup, checkUserStatus, depositionID, currentEmail, sendMessage]);
 
     useEffect(() => {
         if (userStatus) {
@@ -91,22 +92,22 @@ const InDepo = () => {
         const setDominantSpeaker = (participant: Participant | null) =>
             dispatch(actions.setAddDominantSpeaker(participant));
 
-        if (currentRoom) {
-            currentRoom.on("dominantSpeakerChanged", setDominantSpeaker);
+        if (mockDepoRoom) {
+            mockDepoRoom.on("dominantSpeakerChanged", setDominantSpeaker);
         }
         const cleanUpFunction = () => {
-            disconnectFromDepo(currentRoom, dispatch, null, null, depositionID);
+            disconnectFromDepo(mockDepoRoom, dispatch, null, null, depositionID);
         };
         window.addEventListener("beforeunload", cleanUpFunction);
 
         return () => {
-            if (currentRoom) {
-                currentRoom.off("dominantSpeakerChange", setDominantSpeaker);
+            if (mockDepoRoom) {
+                mockDepoRoom.off("dominantSpeakerChange", setDominantSpeaker);
             }
-            disconnectFromDepo(currentRoom, dispatch, null, null, depositionID);
+            disconnectFromDepo(mockDepoRoom, dispatch, null, null, depositionID);
             window.removeEventListener("beforeunload", cleanUpFunction);
         };
-    }, [currentRoom, dispatch, depositionID]);
+    }, [mockDepoRoom, dispatch, depositionID]);
 
     useEffect(() => {
         if (depositionID) {
@@ -121,12 +122,12 @@ const InDepo = () => {
     }, [realTimeOpen, exhibitsOpen]);
 
     React.useEffect(() => {
-        if (participants.length && currentRoom?.localParticipant) {
-            const localParticipantEmail = JSON.parse(currentRoom?.localParticipant?.identity)?.email;
+        if (participants.length && mockDepoRoom?.localParticipant) {
+            const localParticipantEmail = JSON.parse(mockDepoRoom?.localParticipant?.identity)?.email;
             const isMuted = participants.find((participant) => participant?.email === localParticipantEmail)?.isMuted;
             setInitialAudioEnabled(!isMuted);
         }
-    }, [participants, currentRoom]);
+    }, [participants, mockDepoRoom]);
 
     if (isAuthenticated === null) {
         return null;
@@ -149,16 +150,16 @@ const InDepo = () => {
         );
     }
 
-    return currentRoom ? (
+    return mockDepoRoom ? (
         <ThemeProvider theme={inDepoTheme}>
             <StyledInDepoContainer data-testid="videoconference">
                 <StyledInDepoLayout>
                     <Exhibits visible={exhibitsOpen} />
                     <RealTime visible={realTimeOpen} timeZone={timeZone} transcriptions={transcriptions} />
                     <VideoConference
-                        localParticipant={currentRoom.localParticipant}
+                        localParticipant={mockDepoRoom.localParticipant}
                         timeZone={timeZone}
-                        attendees={currentRoom.participants}
+                        attendees={mockDepoRoom.participants}
                         layoutSize={videoLayoutSize}
                         atendeesVisibility={atendeesVisibility}
                     />
@@ -176,7 +177,7 @@ const InDepo = () => {
                         togglerRealTime={togglerRealTime}
                         exhibitsOpen={exhibitsOpen}
                         togglerExhibits={togglerExhibits}
-                        localParticipant={currentRoom.localParticipant}
+                        localParticipant={mockDepoRoom.localParticipant}
                         initialAudioEnabled={initialAudioEnabled}
                     />
                 </StyledRoomFooter>

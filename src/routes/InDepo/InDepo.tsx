@@ -72,7 +72,7 @@ const InDepo = () => {
     );
 
     useEffect(() => {
-        if (signalR && depositionID) {
+        if (signalR?.connectionState === "Connected" && depositionID) {
             sendMessage("SubscribeToDeposition", { depositionId: depositionID });
         }
     }, [signalR, depositionID, sendMessage]);

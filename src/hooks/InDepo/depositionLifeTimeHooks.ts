@@ -130,7 +130,7 @@ export const useJoinDepositionForMockRoom = () => {
         }
         dispatch(actions.setBreakrooms(breakrooms || []));
         dispatch(actions.setDepoStartTime(startDate));
-        dispatch(actions.joinToRoom(room));
+        dispatch(actions.setMockRoom(room));
         dispatch(actions.setParticipantsData(participants));
         dispatch(actions.addDataTrack(dataTrack));
         return configParticipantListeners(

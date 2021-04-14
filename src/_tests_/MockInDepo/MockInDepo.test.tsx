@@ -16,7 +16,10 @@ jest.mock("../../hooks/useSignalR", () => () => ({
     subscribeToGroup: (_, func) => {
         signalREventTriggered = func;
     },
-    signalR: true,
+    signalR: {
+        connectionState: "Connected",
+    },
+    sendMessage: jest.fn(),
 }));
 const customDeps = getMockDeps();
 const history = createMemoryHistory();

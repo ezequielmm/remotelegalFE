@@ -9,12 +9,12 @@ const disconnectFromDepo = async (
     depositionID?: string
 ) => {
     const initialState = {
+        mockDepoRoom: null,
         info: null,
         dominantSpeaker: null,
         currentRoom: null,
         currentBreakroom: null,
         error: "",
-        shouldSendToPreDepo: null,
         transcriptions: null,
         dataTrack: null,
         breakroomDataTrack: null,
@@ -23,7 +23,6 @@ const disconnectFromDepo = async (
         currentExhibit: null,
         exhibitDocument: null,
         stampLabel: "",
-        userStatus: null,
         annotations: [],
         lastAnnotationId: "",
         startTime: "",
