@@ -44,7 +44,7 @@ const InDepo = () => {
     const [checkUserStatus, , userStatusError, userStatus] = useCheckUserStatus();
 
     useEffect(() => {
-        if (signalR && depositionID) {
+        if (signalR?.connectionState === "Connected" && depositionID) {
             sendMessage("SubscribeToDeposition", { depositionId: depositionID });
             subscribeToGroup("ReceiveNotification", (message) => {
                 if (
