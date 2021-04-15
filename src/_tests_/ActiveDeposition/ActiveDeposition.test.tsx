@@ -609,172 +609,6 @@ describe("Tests Edit Deposition Modal", () => {
             fullDeposition.details
         );
     });
-    test("Shows toast when submitting", async () => {
-        const { startDate } = TEST_CONSTANTS.EXPECTED_EDIT_DEPOSITION_BODY;
-        const fullDeposition = getDepositionWithOverrideValues({ startDate });
-        customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
-            return fullDeposition;
-        });
-        customDeps.apiService.editDeposition = jest.fn().mockImplementation(async () => {
-            return {};
-        });
-        const { getAllByTestId, getAllByText, getByTestId } = renderWithGlobalContext(
-            <ActiveDepositionDetails />,
-            customDeps
-        );
-        await waitForDomChange();
-        const editButton = getAllByTestId(CONSTANTS.DEPOSITION_CARD_DETAILS_EDIT_BUTTON_DATA_TEST_ID);
-        fireEvent.click(editButton[0]);
-        const options = getAllByText("pending");
-        userEvent.click(options[2]);
-        const confirmed = await waitForElement(() => getAllByText("Confirmed"));
-        userEvent.click(confirmed[1]);
-        fireEvent.click(getByTestId("false NO"));
-        fireEvent.click(
-            getByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_CAPTION_BUTTON_REMOVE_FILE_TEST_ID)
-        );
-        expect(getByTestId("caption_input")).toBeInTheDocument();
-        const file = new File(["file"], "file.pdf", { type: "application/pdf" });
-        await act(async () => {
-            await fireEvent.change(
-                getByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_UPLOAD_COMPONENT_DATA_TEST_ID),
-                {
-                    target: { files: [file] },
-                }
-            );
-        });
-        fireEvent.change(getByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_DATA_TEST_ID_JOB), {
-            target: { value: TEST_CONSTANTS.EXPECTED_EDIT_DEPOSITION_BODY.job },
-        });
-
-        fireEvent.change(getByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_DATA_TEST_ID_DETAILS), {
-            target: { value: TEST_CONSTANTS.EXPECTED_EDIT_DEPOSITION_BODY.details },
-        });
-        userEvent.click(getByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_CONFIRM_BUTTON_TEST_ID));
-        await waitForDomChange();
-        await waitForElement(() => getAllByText(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_SUCCESS_TOAST));
-        expect(customDeps.apiService.editDeposition).toHaveBeenCalledWith(
-            fullDeposition.id,
-            TEST_CONSTANTS.EXPECTED_EDIT_DEPOSITION_BODY,
-            file,
-            true
-        );
-    });
-    test("validates that file is a not a PDF file", async () => {
-        const fullDeposition = getDepositionWithOverrideValues();
-        customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
-            return fullDeposition;
-        });
-        customDeps.apiService.editDeposition = jest.fn().mockImplementation(async () => {
-            return {};
-        });
-        const { getAllByTestId, getByTestId, getByText } = renderWithGlobalContext(
-            <ActiveDepositionDetails />,
-            customDeps
-        );
-        await waitForDomChange();
-        const editButton = getAllByTestId(CONSTANTS.DEPOSITION_CARD_DETAILS_EDIT_BUTTON_DATA_TEST_ID);
-        fireEvent.click(editButton[0]);
-        fireEvent.click(
-            getByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_CAPTION_BUTTON_REMOVE_FILE_TEST_ID)
-        );
-        expect(getByTestId("caption_input")).toBeInTheDocument();
-        const file = new File(["file"], "file.png", { type: "application/image" });
-        await act(async () => {
-            await fireEvent.change(
-                getByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_UPLOAD_COMPONENT_DATA_TEST_ID),
-                {
-                    target: { files: [file] },
-                }
-            );
-        });
-
-        expect(getByText(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_FILE_ERROR_MESSAGE)).toBeInTheDocument();
-    });
-    test("Shows error toast if fetch fails", async () => {
-        const fullDeposition = getDepositionWithOverrideValues();
-        customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
-            return fullDeposition;
-        });
-        customDeps.apiService.editDeposition = jest.fn().mockRejectedValue(async () => {
-            throw Error("Something wrong");
-        });
-        const { getAllByTestId, getAllByText, getByTestId } = renderWithGlobalContext(
-            <ActiveDepositionDetails />,
-            customDeps
-        );
-        await waitForDomChange();
-        const editButton = getAllByTestId(CONSTANTS.DEPOSITION_CARD_DETAILS_EDIT_BUTTON_DATA_TEST_ID);
-        fireEvent.click(editButton[0]);
-        userEvent.click(getByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_CONFIRM_BUTTON_TEST_ID));
-        await waitForDomChange();
-        await waitForElement(() => getAllByText(CONSTANTS.NETWORK_ERROR));
-    });
-    test("Show an invalid time label when the date is before startDate", async () => {
-        const startDate = moment().add(1, "d").format(CONSTANTS.FORMAT_DATE);
-        const newDate = moment().format(CONSTANTS.FORMAT_DATE);
-        const fullDeposition = getDepositionWithOverrideValues({ startDate });
-        customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
-            return fullDeposition;
-        });
-        const { getAllByTestId, queryByTestId } = renderWithGlobalContext(<ActiveDepositionDetails />, customDeps);
-        await waitForDomChange();
-        const editButton = getAllByTestId(CONSTANTS.DEPOSITION_CARD_DETAILS_EDIT_BUTTON_DATA_TEST_ID);
-        fireEvent.click(editButton[0]);
-        const startDateInput = queryByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_DATA_TEST_ID_DATE);
-        await act(async () => {
-            userEvent.click(startDateInput);
-            await fireEvent.change(startDateInput, {
-                target: { value: newDate },
-            });
-            await fireEvent.keyDown(startDateInput, { key: "enter", keyCode: 13 });
-        });
-        expect(queryByTestId(CONSTANTS.DEPOSITIONS_DETAILS_EDIT_MODAL_INVALID_START_TIME_TEST_ID)).toBeInTheDocument();
-    });
-    test("Show an invalid end time label when the end time is befor start time", async () => {
-        const startDate = moment().add(30, "m").format(CONSTANTS.FORMAT_DATE);
-        const endDate = moment().format(CONSTANTS.TIME_FORMAT);
-        const fullDeposition = getDepositionWithOverrideValues({ startDate });
-        customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
-            return fullDeposition;
-        });
-        const { getAllByTestId, queryByTestId } = renderWithGlobalContext(<ActiveDepositionDetails />, customDeps);
-        await waitForDomChange();
-        const editButton = getAllByTestId(CONSTANTS.DEPOSITION_CARD_DETAILS_EDIT_BUTTON_DATA_TEST_ID);
-        fireEvent.click(editButton[0]);
-        const endTimeInput = queryByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_END_TIME_TEST_ID);
-        expect(endTimeInput).toBeInTheDocument();
-        await act(async () => {
-            userEvent.click(endTimeInput);
-            await fireEvent.change(endTimeInput, {
-                target: { value: endDate },
-            });
-            await fireEvent.keyDown(endTimeInput, { key: "enter", keyCode: 13 });
-        });
-        expect(queryByTestId(CONSTANTS.DEPOSITIONS_DETAILS_EDIT_MODAL_INVALID_END_TIME_TEST_ID)).toBeInTheDocument();
-    });
-    test("Submit button should be disabled with invalid date is entered ", async () => {
-        const startDate = moment().add(1, "d").format(CONSTANTS.FORMAT_DATE);
-        const newDate = moment().format(CONSTANTS.FORMAT_DATE);
-        const fullDeposition = getDepositionWithOverrideValues({ startDate });
-        customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
-            return fullDeposition;
-        });
-        const { getAllByTestId, queryByTestId } = renderWithGlobalContext(<ActiveDepositionDetails />, customDeps);
-        await waitForDomChange();
-        const editButton = getAllByTestId(CONSTANTS.DEPOSITION_CARD_DETAILS_EDIT_BUTTON_DATA_TEST_ID);
-        fireEvent.click(editButton[0]);
-        const startDateInput = queryByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_DATA_TEST_ID_DATE);
-        await act(async () => {
-            userEvent.click(startDateInput);
-            await fireEvent.change(startDateInput, {
-                target: { value: newDate },
-            });
-            await fireEvent.keyDown(startDateInput, { key: "enter", keyCode: 13 });
-        });
-        const submitButton = queryByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_CONFIRM_BUTTON_TEST_ID);
-        expect(submitButton).toBeDisabled();
-    });
     describe("Tests Edit Requester Modal", () => {
         test("Shows correct info when modal pops up after clicking the edit icon on the requester info", async () => {
             const fullDeposition = getDepositionWithOverrideValues();
@@ -988,7 +822,7 @@ describe("tests the cancel depo flows", () => {
     });
     test("Shows modal when reverting a canceled depo and a toast if the revert fails", async () => {
         const { startDate } = TEST_CONSTANTS.EXPECTED_REACTIVATED_TO_PENDING_DEPO_BODY;
-        const fullDeposition = getDepositionWithOverrideValues({ startDate, status: "Canceled" });
+        const fullDeposition = getDepositionWithOverrideValues({ startDate, status: "Canceled", endDate: null });
         const modalText = getModalTextContent(Status.pending, fullDeposition);
         customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
             return fullDeposition;
@@ -1019,14 +853,14 @@ describe("tests the cancel depo flows", () => {
         await waitForElement(() => getByText(CONSTANTS.NETWORK_ERROR));
         expect(customDeps.apiService.revertCancelDeposition).toHaveBeenCalledWith(
             fullDeposition.id,
-            TEST_CONSTANTS.EXPECTED_REACTIVATED_TO_PENDING_DEPO_BODY,
+            { ...TEST_CONSTANTS.EXPECTED_REACTIVATED_TO_PENDING_DEPO_BODY, endDate: null },
             null,
             false
         );
     });
     test("Shows modal when reverting a canceled depo and a toast if the revert succeeds", async () => {
         const { startDate } = TEST_CONSTANTS.EXPECTED_REACTIVATED_TO_PENDING_DEPO_BODY;
-        const fullDeposition = getDepositionWithOverrideValues({ startDate, status: "Canceled" });
+        const fullDeposition = getDepositionWithOverrideValues({ startDate, status: "Canceled", endDate: null });
         const modalText = getModalTextContent(Status.pending, fullDeposition);
         customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
             return fullDeposition;
@@ -1057,14 +891,14 @@ describe("tests the cancel depo flows", () => {
         await waitForElement(() => getByText(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_SUCCESS_TOAST));
         expect(customDeps.apiService.revertCancelDeposition).toHaveBeenCalledWith(
             fullDeposition.id,
-            TEST_CONSTANTS.EXPECTED_REACTIVATED_TO_PENDING_DEPO_BODY,
+            { ...TEST_CONSTANTS.EXPECTED_REACTIVATED_TO_PENDING_DEPO_BODY, endDate: null },
             null,
             false
         );
     });
     test("Shows modal when reverting a canceled depo to confirmed and a toast if the revert succeeds", async () => {
         const { startDate } = TEST_CONSTANTS.EXPECTED_REACTIVATED_TO_PENDING_DEPO_BODY;
-        const fullDeposition = getDepositionWithOverrideValues({ startDate, status: "Canceled" });
+        const fullDeposition = getDepositionWithOverrideValues({ startDate, status: "Canceled", endDate: null });
         const modalText = getModalTextContent(Status.confirmed, fullDeposition);
         customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
             return fullDeposition;
@@ -1095,14 +929,18 @@ describe("tests the cancel depo flows", () => {
         await waitForElement(() => getByText(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_SUCCESS_TOAST));
         expect(customDeps.apiService.revertCancelDeposition).toHaveBeenCalledWith(
             fullDeposition.id,
-            { ...TEST_CONSTANTS.EXPECTED_REACTIVATED_TO_PENDING_DEPO_BODY, status: "Confirmed" },
+            { ...TEST_CONSTANTS.EXPECTED_REACTIVATED_TO_PENDING_DEPO_BODY, status: "Confirmed", endDate: null },
             null,
             false
         );
     });
     test("Shows modal when reverting a canceled depo to confirmed and a toast if the revert fails", async () => {
         const { startDate } = TEST_CONSTANTS.EXPECTED_REACTIVATED_TO_PENDING_DEPO_BODY;
-        const fullDeposition = getDepositionWithOverrideValues({ startDate, status: "Canceled" });
+        const fullDeposition = getDepositionWithOverrideValues({
+            startDate,
+            endDate: null,
+            status: "Canceled",
+        });
         const modalText = getModalTextContent(Status.confirmed, fullDeposition);
         customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
             return fullDeposition;
@@ -1133,7 +971,11 @@ describe("tests the cancel depo flows", () => {
         await waitForElement(() => getByText(CONSTANTS.NETWORK_ERROR));
         expect(customDeps.apiService.revertCancelDeposition).toHaveBeenCalledWith(
             fullDeposition.id,
-            { ...TEST_CONSTANTS.EXPECTED_REACTIVATED_TO_PENDING_DEPO_BODY, status: "Confirmed" },
+            {
+                ...TEST_CONSTANTS.EXPECTED_REACTIVATED_TO_PENDING_DEPO_BODY,
+                endDate: null,
+                status: "Confirmed",
+            },
             null,
             false
         );

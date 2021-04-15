@@ -213,6 +213,8 @@ export const DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_INVALID_CANCEL_DATE_MESSAG
 export const DATE_FORMAT = "MM/DD/YYYY";
 export const TIME_FORMAT = "hh:mm A";
 export const DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_DATA_TEST_ID_DATE = "deposition_details_edit_deposition_date_id";
+export const DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_START_TIME_TEST_ID =
+    "deposition_details_edit_deposition_modal_start_time_test_id";
 export const DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_END_TIME_TEST_ID =
     "deposition_details_edit_deposition_modal_end_time_test_id";
 export const DATE_LABEL = "Date";
