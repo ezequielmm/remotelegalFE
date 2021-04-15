@@ -41,5 +41,5 @@ export const ACCESS_DENIED_DETAILS_NUMBER = "(646) 461-3400";
 export const ACCESS_DENIED_BUTTON_TEXT = "Ok";
 export const ACCESS_DENIED_BUTTON_TEST_ID = "access_denied_button";
 export const WAITING_ROOM_SUBTITLE = "The Court Reporter will let you enter soon.";
-export const LOADING_DEPOSITION_TITLE = "The deposition is starting.";
+export const LOADING_DEPOSITION_TITLE = "Loading deposition.";
 export const LOADING_DEPOSITION_SUBTITLE = "Please wait.";

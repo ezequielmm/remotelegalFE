@@ -5,7 +5,7 @@ import renderWithGlobalContext from "../utils/renderWithGlobalContext";
 
 test("Should display proper text", async () => {
     const { getByText } = renderWithGlobalContext(<LoadingScreen />);
-    expect(getByText(/The deposition is starting. Please wait./)).toBeInTheDocument();
+    expect(getByText(/Loading deposition. Please wait./)).toBeInTheDocument();
 });
 
 test("Should display user name", async () => {
