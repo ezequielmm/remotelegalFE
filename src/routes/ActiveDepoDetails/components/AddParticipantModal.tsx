@@ -287,7 +287,10 @@ const AddParticipantModal = ({
                                     data-testid={
                                         CONSTANTS.DEPOSITION_DETAILS_ADD_PARTICIPANT_MODAL_CANCEL_BUTTON_TEST_ID
                                     }
-                                    onClick={() => handleClose(false)}
+                                    onClick={() => {
+                                        handleClose(false);
+                                        return setFormStatus(INITIAL_FORM_STATE);
+                                    }}
                                 >
                                     {CONSTANTS.DEPOSITION_DETAILS_ADD_PARTICIPANT_MODAL_CANCEL_BUTTON_TEXT}
                                 </Button>
