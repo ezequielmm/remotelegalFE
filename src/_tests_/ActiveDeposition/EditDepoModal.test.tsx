@@ -135,9 +135,9 @@ describe("Tests Edit Deposition Modal", () => {
         expect(queryByTestId(CONSTANTS.DEPOSITIONS_DETAILS_EDIT_MODAL_INVALID_START_TIME_TEST_ID)).toBeInTheDocument();
     });
     test("Show an invalid end time label when the end time is before start time", async () => {
-        const startDate = moment().add(3, "h").format(CONSTANTS.FORMAT_DATE);
-        const startTime = moment().add(10, "h").format(CONSTANTS.TIME_FORMAT);
-        const endTime = moment().format(CONSTANTS.TIME_FORMAT);
+        const { startDate } = getDepositionWithOverrideValues();
+        const startTime = moment(startDate).add(10, "h").format(CONSTANTS.TIME_FORMAT);
+        const endTime = moment(startDate).format(CONSTANTS.TIME_FORMAT);
         const fullDeposition = getDepositionWithOverrideValues({ startDate });
         customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
             return fullDeposition;
