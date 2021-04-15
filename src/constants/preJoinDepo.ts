@@ -24,6 +24,7 @@ export const ENABLED_ROLE_INPUT_ID = "role_select";
 export const DISABLED_ROLE_INPUT_ID = "role_select_disabled";
 export const BACK_BUTTON_ID = "back_button";
 export const DEPOSITION_ROUTE = "/deposition/join/";
+export const DEPOSITION_PRE_JOIN_ROUTE = "/deposition/pre-join/";
 export const DEPOSITION_PRE_ROUTE = "/deposition/pre/";
 export const FETCH_ERROR_RESULT_TITLE = "Sorry! We couldn't connect to the Join Deposition page.";
 export const FETCH_ERROR_WAITING_ROOM_TITLE = "Sorry! We couldn't get the Deposition info.";

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Redirect, useParams } from "react-router";
+import { Redirect, useHistory, useParams } from "react-router";
 import { DepositionID } from "../../state/types";
 import backgroundImage from "../../assets/pre-depo/bg.png";
 import Space from "../../components/Space";
@@ -20,6 +20,7 @@ import { NotificationEntityType } from "../../types/Notification";
 
 const WaitingRoom = () => {
     const [isAdmitted, setIsAdmitted] = useState<boolean>(undefined);
+    const history = useHistory();
     const { depositionID } = useParams<DepositionID>();
     const { subscribeToGroup, signalR } = useSignalR("/depositionHub");
     const { currentEmail, isAuthenticated } = useAuthentication();
@@ -95,7 +96,7 @@ const WaitingRoom = () => {
                                 data-testid={CONSTANTS.ACCESS_DENIED_BUTTON_TEST_ID}
                                 htmlType="submit"
                                 type="primary"
-                                onClick={() => window.location.reload()}
+                                onClick={() => history.push(`${CONSTANTS.DEPOSITION_PRE_JOIN_ROUTE}${depositionID}`)}
                             >
                                 {CONSTANTS.ACCESS_DENIED_BUTTON_TEXT}
                             </Button>
