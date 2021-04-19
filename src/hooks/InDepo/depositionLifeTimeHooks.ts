@@ -17,6 +17,9 @@ import { useCheckUserStatus } from "../preJoinDepo/hooks";
 import { Roles } from "../../models/participant";
 import { useAuthentication } from "../auth";
 
+// TODO: Find the way to use import instead of using require
+const beep = require("../../assets/sounds/Select.mp3");
+
 export const useKillDepo = () => {
     const { deps } = useContext(GlobalStateContext);
     const { depositionID } = useParams<DepositionID>();
@@ -47,6 +50,7 @@ export const useJoinBreakroom = () => {
     const [generateBreakroomToken, , errorGeneratingToken] = useGenerateBreakroomToken();
     const [getBreakrooms] = useGetBreakrooms();
     const isMounted = useRef(true);
+    const participantConnectedSound = new Audio(beep);
 
     useEffect(() => {
         return () => {
@@ -87,7 +91,10 @@ export const useJoinBreakroom = () => {
         dispatch(actions.addBreakroomDataTrack(dataTrack));
         return configParticipantListeners(
             room,
-            (callbackRoom) => dispatch(actions.addRemoteParticipantBreakroom(callbackRoom)),
+            (callbackRoom) => {
+                participantConnectedSound?.play();
+                dispatch(actions.addRemoteParticipantBreakroom(callbackRoom));
+            },
             (callbackRoom) => dispatch(actions.removeRemoteParticipantBreakroom(callbackRoom))
         );
     }, []);
@@ -100,6 +107,8 @@ export const useJoinDepositionForMockRoom = () => {
     const [generateToken] = useGenerateDepositionToken();
     const [getBreakrooms] = useGetBreakrooms();
     const isMounted = useRef(true);
+    const participantConnectedSound = new Audio(beep);
+
     const history = useHistory();
     useEffect(() => {
         return () => {
@@ -135,7 +144,10 @@ export const useJoinDepositionForMockRoom = () => {
         dispatch(actions.addDataTrack(dataTrack));
         return configParticipantListeners(
             room,
-            (callbackRoom) => dispatch(actions.addRemoteParticipant(callbackRoom)),
+            (callbackRoom) => {
+                participantConnectedSound?.play();
+                dispatch(actions.addRemoteParticipant(callbackRoom));
+            },
             (callbackRoom) => dispatch(actions.removeRemoteParticipant(callbackRoom))
         );
     }, []);
@@ -147,6 +159,7 @@ export const useJoinDeposition = () => {
     const [generateToken] = useGenerateDepositionToken();
     const [fetchExhibitFileInfo] = useExhibitFileInfo();
     const isMounted = useRef(true);
+    const participantConnectedSound = new Audio(beep);
 
     useEffect(() => {
         return () => {
@@ -226,7 +239,10 @@ export const useJoinDeposition = () => {
 
         return configParticipantListeners(
             room,
-            (callbackRoom) => dispatch(actions.addRemoteParticipant(callbackRoom)),
+            (callbackRoom) => {
+                participantConnectedSound?.play();
+                dispatch(actions.addRemoteParticipant(callbackRoom));
+            },
             (callbackRoom) => dispatch(actions.removeRemoteParticipant(callbackRoom))
         );
     }, []);
