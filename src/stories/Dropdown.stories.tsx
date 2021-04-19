@@ -65,30 +65,22 @@ export default {
 
 const Template: Story = (args: IDropdownProps) => {
     return (
-        <Dropdown
-            overlay={
-                <Space p={6}>
-                    <span>Overlay</span>
-                </Space>
-            }
-            {...args}
-        >
+        <Dropdown {...args}>
             <Button type="link">Hover me</Button>
         </Dropdown>
     );
 };
-
 export const PRDropdown = Template.bind({});
-
-export const PRDropdownMenu = (args: IDropdownProps) => {
-    return (
-        <Dropdown overlay={menu} {...args}>
-            <Button type="link">Hover me</Button>
-        </Dropdown>
-    );
+PRDropdown.args = {
+    overlay: (
+        <Space p={6}>
+            <span>Overlay</span>
+        </Space>
+    ),
 };
-
+export const PRDropdownMenu = Template.bind({});
 PRDropdownMenu.args = {
+    overlay: menu,
     styled: true,
     arrow: true,
 };

@@ -78,14 +78,12 @@ const StyledDropdownOverlay = styledComponent.div`
                       )} 0 ${hexToRGBA(neutrals[2], 0.08)}`
             };
             .ant-menu-item {
-                padding: ${getREM(theme.default.spaces[2])} ${getREM(theme.default.spaces[6])};
+                padding: ${getREM(theme.default.spaces[4])} ${getREM(theme.default.spaces[6])};
                 line-height: ${getREM(theme.default.spaces[9])};
-                &:first-child {
-                    padding-top: ${getREM(theme.default.spaces[6])};
-                }
-                &:last-child {
-                    padding-bottom: ${getREM(theme.default.spaces[6])};
-                }
+                height: ${getREM(theme.default.spaces[12] + theme.default.spaces[9])};
+            }
+            .ant-menu .ant-menu-item-divider{
+                margin: 0;
             }
         `;
     }}
@@ -97,13 +95,7 @@ const Dropdown = ({ children, overlay, styled, theme, dataTestId, ...props }: ID
             <StyledPopupContainer $styled={styled} theme={theme}>
                 <ANTDropdown
                     overlay={() => (
-                        <>
-                            {styled ? (
-                                <StyledDropdownOverlay theme={theme}>{overlay}</StyledDropdownOverlay>
-                            ) : (
-                                { overlay }
-                            )}
-                        </>
+                        <>{styled ? <StyledDropdownOverlay theme={theme}>{overlay}</StyledDropdownOverlay> : overlay}</>
                     )}
                     getPopupContainer={(trigger) => trigger.parentElement}
                     {...props}

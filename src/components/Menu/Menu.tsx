@@ -1,6 +1,7 @@
 import React from "react";
 import { Menu as ANTMenu } from "antd";
 import { MenuProps } from "antd/lib/menu";
+import { MenuItemProps } from "antd/lib/menu/MenuItem";
 import { MenuTheme } from "antd/lib/menu/MenuContext";
 import styled, { useTheme } from "styled-components";
 import { getREM } from "../../constants/styles/utils";
@@ -11,6 +12,10 @@ export interface IDefaultMenuProps extends Omit<MenuProps, "theme"> {
 }
 
 export interface IMenuProps extends MenuProps {}
+
+export interface IMenuItemProps extends MenuItemProps {
+    $unsetDisabledCursor?: boolean;
+}
 
 const DefaultMenu = ({ menuTheme, ...rest }: IDefaultMenuProps) => <ANTMenu theme={menuTheme} {...rest} />;
 
@@ -40,7 +45,7 @@ const Menu = (props: IMenuProps) => {
     );
 };
 
-const MenuItem = styled(ANTMenu.Item)<{ $unsetDisabledCursor?: boolean }>`
+const MenuItem = styled(ANTMenu.Item)<IMenuItemProps>`
     &.ant-menu-item-disabled {
         cursor: ${({ $unsetDisabledCursor }) => $unsetDisabledCursor && "unset !important"};
     }

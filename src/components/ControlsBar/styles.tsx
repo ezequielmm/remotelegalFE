@@ -1,6 +1,8 @@
 import styled from "styled-components";
 import { getREM } from "../../constants/styles/utils";
 import Space from "../Space";
+import Menu from "../Menu";
+import { ThemeMode } from "../../types/ThemeType";
 
 const flexAlignCenter = `
     display: flex;
@@ -35,4 +37,15 @@ export const StyledComposedIconContainer = styled.div`
             margin-right: 0;
         }
     }
+`;
+
+export const LockedMenuItem = styled(Menu.Item)`
+    ${({ theme }) => `
+        background-color: ${theme.mode === ThemeMode.default ? theme.colors.neutrals[5] : theme.colors.secondary[6]};
+        &:hover{
+            background-color: ${
+                theme.mode === ThemeMode.default ? theme.colors.neutrals[5] : theme.colors.secondary[6]
+            } !important;
+        }
+    `}
 `;
