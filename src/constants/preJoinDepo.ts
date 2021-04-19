@@ -44,3 +44,4 @@ export const ACCESS_DENIED_BUTTON_TEST_ID = "access_denied_button";
 export const WAITING_ROOM_SUBTITLE = "The Court Reporter will let you enter soon.";
 export const LOADING_DEPOSITION_TITLE = "Loading deposition.";
 export const LOADING_DEPOSITION_SUBTITLE = "Please wait.";
+export const FORGOT_PASSWORD_LINK_TEXT = "Forgot password?";

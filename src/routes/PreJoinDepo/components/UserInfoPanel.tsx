@@ -1,5 +1,6 @@
 import React, { Dispatch, SetStateAction } from "react";
 import { Form } from "antd";
+import { Link } from "react-router-dom";
 import { InputWrapper } from "../../../components/Input/styles";
 import Text from "../../../components/Typography/Text";
 import Select from "../../../components/Select";
@@ -7,6 +8,7 @@ import Input from "../../../components/Input";
 import * as CONSTANTS from "../../../constants/preJoinDepo";
 import ColorStatus from "../../../types/ColorStatus";
 import { InputState } from "../../../types/PreJoinDepo";
+import Button from "../../../components/Button";
 
 interface IUserInfoPanelProps {
     nameInput: boolean;
@@ -35,7 +37,21 @@ const UserInfoPanel = ({
 }: IUserInfoPanelProps) => (
     <>
         {passwordInput && (
-            <Form.Item label="Password" htmlFor="password">
+            <Form.Item
+                htmlFor="password"
+                label={
+                    <>
+                        <Text size="small" uppercase>
+                            Password
+                        </Text>
+                        <Link tabIndex={-1} to="/password-recovery" style={{ textTransform: "initial" }}>
+                            <Button tabIndex={1} type="link">
+                                {CONSTANTS.FORGOT_PASSWORD_LINK_TEXT}
+                            </Button>
+                        </Link>
+                    </>
+                }
+            >
                 <InputWrapper>
                     <Input
                         onChange={(e) => {
