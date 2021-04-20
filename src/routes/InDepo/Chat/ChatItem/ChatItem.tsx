@@ -37,7 +37,7 @@ const ChatItem = ({
                             {isCurrentUser ? "You" : JSON.parse(message.author).name}
                         </StyledText>
                         <StyledText size="small" color={ColorStatus.disabled} weight="light">
-                            {moment(message.dateCreated).tz(mapTimeZone[timeZone]).format("HH:mm A")}
+                            {moment(message.dateCreated).tz(mapTimeZone[timeZone]).format("hh:mm A")}
                         </StyledText>
                     </Space>
                 )}
