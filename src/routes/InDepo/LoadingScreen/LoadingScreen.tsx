@@ -11,6 +11,17 @@ import { GlobalStateContext } from "../../../state/GlobalState";
 const LoadingScreen = () => {
     const { state } = useContext(GlobalStateContext);
     const { userStatus } = state.room;
+    const getUserName = () => {
+        if (userStatus?.participant?.name) {
+            return `${userStatus?.participant?.name},`;
+        }
+        if (userStatus?.participant?.user?.firstName) {
+            return `${userStatus?.participant?.firstName} ${
+                (userStatus?.participant?.lastName && userStatus?.participant?.lastName) || ""
+            },`;
+        }
+        return "";
+    };
     return (
         <div
             data-testid="deposition_loading_screen"
@@ -28,9 +39,7 @@ const LoadingScreen = () => {
                     </Space>
                     <Space align="center" direction="vertical" fullWidth>
                         <Text dataTestId="deposition_loading_screen_user_name" size="large">
-                            <strong>
-                                {`${userStatus?.participant?.name},` || `${userStatus?.participant?.user?.name},` || ""}
-                            </strong>
+                            <strong>{getUserName()}</strong>
                         </Text>
                         <Title
                             textAlign="center"

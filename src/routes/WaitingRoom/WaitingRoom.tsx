@@ -27,6 +27,18 @@ const WaitingRoom = () => {
     const [generateToken, generateTokenLoading, generateTokenError, generatedToken] = useGenerateDepositionToken();
     const [checkUserStatus, userStatusLoading, userStatusError, userStatus] = useCheckUserStatus();
 
+    const getUserName = () => {
+        if (userStatus?.participant?.name) {
+            return `${userStatus?.participant?.name},`;
+        }
+        if (userStatus?.participant?.user?.firstName) {
+            return `${userStatus?.participant?.firstName} ${
+                (userStatus?.participant?.lastName && userStatus?.participant?.lastName) || ""
+            },`;
+        }
+        return "";
+    };
+
     useEffect(() => {
         if (isAuthenticated !== null) {
             checkUserStatus(depositionID, currentEmail.current);
@@ -109,7 +121,7 @@ const WaitingRoom = () => {
                         </Space>
                         <Space align="center" direction="vertical" fullWidth mt={10}>
                             <Text size="large" dataTestId="waiting_room_title">
-                                {`${userStatus?.participant?.name},` || `${userStatus?.participant?.user?.name},` || ""}
+                                {getUserName()}
                             </Text>
                             <Title
                                 dataTestId={CONSTANTS.WAITING_ROOM_SUBTITLE}
