@@ -302,7 +302,16 @@ const StyledTable = styled(Table)<TableProps<DefaultRecordType> & Pick<ITablePro
                         }
                     }
                 }
-
+                .ant-pagination {
+                    .ant-pagination-item, .ant-pagination-item-link {
+                        border-radius: ${getPX(spaces[3])};
+                    }
+                    .ant-pagination-item-link {
+                        .anticon {
+                            vertical-align: text-top;
+                        }
+                    }
+                }
             }
         `;
         return styles;
