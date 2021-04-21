@@ -14,6 +14,7 @@ import * as CONSTANTS from "../../constants/preJoinDepo";
 import ErrorScreen from "../../components/ErrorScreen";
 import Alert from "../../components/Alert";
 import normalizedRoles from "../../constants/roles";
+import removeWhiteSpace from "../../helpers/removeWhitespace";
 
 const PreJoinDepo = () => {
     const { depositionID } = useParams<DepositionID>();
@@ -85,7 +86,7 @@ const PreJoinDepo = () => {
     const joinDepositionAsGuest = async (role: string, name: string) => {
         const body = {
             name,
-            participantType: role,
+            participantType: removeWhiteSpace(role),
             emailAddress: emailRef.current,
         };
         await registerParticipant(depositionID, body);
@@ -94,7 +95,7 @@ const PreJoinDepo = () => {
     const joinDepositionAsRegisteredUser = async (role: string, password: string) => {
         const body = {
             emailAddress: emailRef.current,
-            participantType: role,
+            participantType: removeWhiteSpace(role),
         };
         passwordRef.current = password;
         return !userStatus.participant?.isAdmitted
