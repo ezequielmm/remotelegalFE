@@ -18,7 +18,7 @@ import { Roles } from "../../models/participant";
 import getModalTextContent from "../../routes/ActiveDepoDetails/helpers/getModalTextContent";
 import { Status } from "../../components/StatusPill/StatusPill";
 import { PARTICIPANT_MOCK, PARTICIPANT_MOCK_NAME } from "../constants/preJoinDepo";
-import { mapTimeZone } from "../../models/general";
+import { mapTimeZone, TimeZones } from "../../models/general";
 
 const customDeps = getMockDeps();
 jest.mock("../../helpers/downloadFile");
@@ -821,7 +821,7 @@ describe("tests the cancel depo flows", () => {
         expect(customDeps.apiService.cancelDeposition).toHaveBeenCalledWith(fullDeposition.id);
     });
     test("Shows modal when reverting a canceled depo and a toast if the revert fails", async () => {
-        const { startDate } = TEST_CONSTANTS.EXPECTED_REACTIVATED_TO_PENDING_DEPO_BODY;
+        const { startDate } = TEST_CONSTANTS.EXPECTED_DEPOSITION_BODY;
         const fullDeposition = getDepositionWithOverrideValues({ startDate, status: "Canceled", endDate: null });
         const modalText = getModalTextContent(Status.pending, fullDeposition);
         customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
@@ -853,7 +853,11 @@ describe("tests the cancel depo flows", () => {
         await waitForElement(() => getByText(CONSTANTS.NETWORK_ERROR));
         expect(customDeps.apiService.revertCancelDeposition).toHaveBeenCalledWith(
             fullDeposition.id,
-            { ...TEST_CONSTANTS.EXPECTED_REACTIVATED_TO_PENDING_DEPO_BODY, endDate: null },
+            {
+                ...TEST_CONSTANTS.EXPECTED_REACTIVATED_TO_PENDING_DEPO_BODY,
+                endDate: null,
+                startDate: moment(startDate).tz(mapTimeZone[TimeZones.ET]),
+            },
             null,
             false
         );
@@ -891,7 +895,11 @@ describe("tests the cancel depo flows", () => {
         await waitForElement(() => getByText(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_SUCCESS_TOAST));
         expect(customDeps.apiService.revertCancelDeposition).toHaveBeenCalledWith(
             fullDeposition.id,
-            { ...TEST_CONSTANTS.EXPECTED_REACTIVATED_TO_PENDING_DEPO_BODY, endDate: null },
+            {
+                ...TEST_CONSTANTS.EXPECTED_REACTIVATED_TO_PENDING_DEPO_BODY,
+                endDate: null,
+                startDate: moment(startDate).tz(mapTimeZone[TimeZones.ET]),
+            },
             null,
             false
         );
@@ -929,13 +937,18 @@ describe("tests the cancel depo flows", () => {
         await waitForElement(() => getByText(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_SUCCESS_TOAST));
         expect(customDeps.apiService.revertCancelDeposition).toHaveBeenCalledWith(
             fullDeposition.id,
-            { ...TEST_CONSTANTS.EXPECTED_REACTIVATED_TO_PENDING_DEPO_BODY, status: "Confirmed", endDate: null },
+            {
+                ...TEST_CONSTANTS.EXPECTED_REACTIVATED_TO_PENDING_DEPO_BODY,
+                status: "Confirmed",
+                endDate: null,
+                startDate: moment(startDate).tz(mapTimeZone[TimeZones.ET]),
+            },
             null,
             false
         );
     });
     test("Shows modal when reverting a canceled depo to confirmed and a toast if the revert fails", async () => {
-        const { startDate } = TEST_CONSTANTS.EXPECTED_REACTIVATED_TO_PENDING_DEPO_BODY;
+        const { startDate } = TEST_CONSTANTS.EXPECTED_DEPOSITION_BODY;
         const fullDeposition = getDepositionWithOverrideValues({
             startDate,
             endDate: null,
@@ -975,6 +988,7 @@ describe("tests the cancel depo flows", () => {
                 ...TEST_CONSTANTS.EXPECTED_REACTIVATED_TO_PENDING_DEPO_BODY,
                 endDate: null,
                 status: "Confirmed",
+                startDate: moment(startDate).tz(mapTimeZone[TimeZones.ET]),
             },
             null,
             false

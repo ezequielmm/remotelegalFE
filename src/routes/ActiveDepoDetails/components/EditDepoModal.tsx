@@ -37,7 +37,7 @@ import DatePicker from "../../../components/DatePicker";
 import TimePicker from "../../../components/TimePicker";
 import { mapTimeZone, TimeZones } from "../../../models/general";
 import { theme } from "../../../constants/styles/theme";
-import formatToDateOffset from "../../../helpers/formatToDateOffset";
+import changeTimeZone, { changeDate } from "../helpers/changeTimeZone";
 
 interface IModalProps {
     open: boolean;
@@ -53,7 +53,7 @@ const StyledCloseIcon = styled(CloseIcon)`
 
 const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModalProps) => {
     const INITIAL_STATE = {
-        startDate: deposition.startDate,
+        startDate: moment(deposition.startDate).tz(mapTimeZone[deposition.timeZone]),
         endDate: (deposition.endDate && moment(deposition.endDate).tz(mapTimeZone[deposition.timeZone])) || null,
         timeZone: deposition.timeZone,
         status: deposition.status,
@@ -148,7 +148,7 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
         const isDepoConfirmedAndNowCanceled = isStatusCanceled && deposition.status === Status.confirmed;
         const isDepoReverted = deposition.status === Status.canceled && !isStatusCanceled && !invalidFile;
         const isRescheduled =
-            deposition.startDate !== formStatus.startDate ||
+            !formStatus.startDate.isSame(deposition.startDate) ||
             (formStatus.endDate !== null && !formStatus.endDate.isSame(deposition.endDate)) ||
             (formStatus.endDate === null && deposition.endDate !== null) ||
             deposition.timeZone !== formStatus.timeZone;
@@ -192,30 +192,25 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
     };
 
     const handleChangeStartTime = (current: any) => {
-        const stringStartDate = String(moment(formStatus.startDate).format("YYYY-MM-DD"));
-        const stringEndTime = String(moment(formStatus.endDate).format("HH:mm:ss.SSSZ"));
-        const endDate = moment(`${stringStartDate}T${stringEndTime}`);
-
-        setFormStatus({ ...formStatus, startDate: current?.toString() });
-        if (current && formStatus.endDate && current.isAfter(endDate)) {
-            setInvalidEndTime(true);
-        } else {
-            setInvalidEndTime(false);
-        }
-        if (current && current.isBefore(moment(new Date()).subtract(5, "m"))) {
+        setFormStatus({ ...formStatus, startDate: current });
+        if (current.isBefore(moment(new Date()).subtract(5, "m"))) {
             return setInvalidStartTime(true);
         }
+        if (current && formStatus.endDate && current.isAfter(formStatus.endDate)) {
+            return setInvalidEndTime(true);
+        }
+        setInvalidEndTime(false);
         return setInvalidStartTime(false);
     };
 
     const handleChangeEndTime = (current: any) => {
-        if (!current) return setFormStatus({ ...formStatus, endDate: null });
+        if (!current) {
+            setInvalidEndTime(false);
+            return setFormStatus({ ...formStatus, endDate: null });
+        }
+        const newEndDate = changeDate(formStatus.startDate, formStatus.timeZone, current);
         setFormStatus({ ...formStatus, endDate: current });
-        const startDate = moment(formStatus.startDate);
-        const formattedEndTime = current.format("HH:mm:ss");
-        const end = moment(formatToDateOffset(String(startDate), formattedEndTime, formStatus.timeZone));
-
-        if (current && end.isBefore(startDate)) {
+        if (current && newEndDate.isSameOrBefore(formStatus.startDate)) {
             return setInvalidEndTime(true);
         }
         return setInvalidEndTime(false);
@@ -225,7 +220,7 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
         setTimeout(() => {
             setRescheduleModal({ ...openRescheduleModal, open: false });
             setFormStatus({
-                startDate: deposition.startDate,
+                startDate: moment(deposition.startDate).tz(mapTimeZone[deposition.timeZone]),
                 endDate:
                     (deposition.endDate && moment(deposition.endDate).tz(mapTimeZone[deposition.timeZone])) || null,
                 timeZone: deposition.timeZone,
@@ -247,13 +242,24 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
         if (invalidFile) {
             return;
         }
-        bodyWithoutFile.startDate = String(
-            moment(formStatus.startDate).tz(mapTimeZone[formStatus.timeZone]).format("YYYY-MM-DD[T]HH:mm:ss.SSSZ")
-        );
-        const start = moment(formStatus.startDate);
-        const formattedEndTime = formStatus.endDate.format("HH:mm:ss");
-        const end = moment(formatToDateOffset(String(start), formattedEndTime, formStatus.timeZone));
-        bodyWithoutFile.endDate = formStatus.endDate ? end : null;
+
+        if (formStatus.endDate) {
+            if (deposition.timeZone !== formStatus.timeZone) {
+                bodyWithoutFile.endDate = moment(
+                    changeTimeZone(formStatus.endDate, deposition.timeZone, formStatus.timeZone)
+                ).tz(mapTimeZone[formStatus.timeZone]);
+            }
+
+            if (formStatus.startDate.isBefore(formStatus.endDate)) {
+                bodyWithoutFile.endDate = changeDate(
+                    formStatus.startDate,
+                    formStatus.timeZone,
+                    bodyWithoutFile.endDate
+                );
+            }
+        }
+
+        bodyWithoutFile.startDate = changeTimeZone(formStatus.startDate, deposition.timeZone, formStatus.timeZone);
 
         rescheduleDeposition(deposition.id, bodyWithoutFile, file, deleteCaption);
     };
@@ -344,7 +350,7 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
                                                 CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_DATA_TEST_ID_DATE
                                             }
                                             ariel-label="start date"
-                                            value={moment(new Date(formStatus.startDate))}
+                                            value={formStatus.startDate}
                                             format={CONSTANTS.FORMAT_DATE}
                                             name="date"
                                             onChange={handleChangeDate}
@@ -364,12 +370,10 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
                                                 CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_START_TIME_TEST_ID
                                             }
                                             disabled={isStatusCanceled}
-                                            defaultValue={moment(formStatus.startDate).tz(
-                                                mapTimeZone[deposition.timeZone]
-                                            )}
+                                            defaultValue={formStatus.startDate}
                                             onChange={handleChangeStartTime}
                                             placeholder={CONSTANTS.START_PLACEHOLDER}
-                                            value={moment(formStatus.startDate).tz(mapTimeZone[deposition.timeZone])}
+                                            value={formStatus.startDate}
                                             invalid={invalidStartTime}
                                             {...CONSTANTS.TIME_PICKER_PROPS}
                                         />

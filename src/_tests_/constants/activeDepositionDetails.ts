@@ -21,3 +21,13 @@ export const EXPECTED_REACTIVATED_TO_PENDING_DEPO_BODY = {
     status: "Pending",
     timeZone: "ET",
 };
+
+export const EXPECTED_DEPOSITION_BODY = {
+    details: "test notes",
+    endDate: "2021-03-24T20:32:37.757Z",
+    isVideoRecordingNeeded: false,
+    job: "test job 1234",
+    startDate: "2021-04-21T10:00:00+00:00",
+    status: "Confirmed",
+    timeZone: "ET",
+};
