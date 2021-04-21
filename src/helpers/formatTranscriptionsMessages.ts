@@ -43,6 +43,9 @@ export const setTranscriptionMessages = (
 };
 
 export const addTranscriptionMessages = (newTranscription, transcriptions = []) => {
+    if (!transcriptions) {
+        return [];
+    }
     const transcriptionsCopy = [...transcriptions];
 
     if (newTranscription.eventType === EventModel.EventType.offTheRecord) {
