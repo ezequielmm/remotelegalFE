@@ -118,9 +118,6 @@ const InDepo = () => {
             dispatch(actions.setIsRecording(message.value.eventType === EventModel.EventType.onTheRecord));
             dispatch(actions.addTranscription(message.value));
         }
-        if (message.module === "addTranscription") {
-            dispatch(actions.addTranscription(message.value));
-        }
     }, [message, currentRoom, dispatch, history, depositionID]);
 
     useEffect(() => {

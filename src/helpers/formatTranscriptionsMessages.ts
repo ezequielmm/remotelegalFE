@@ -8,6 +8,7 @@ export const setTranscriptionMessages = (
     removeCurrentPause?: boolean
 ): (TranscriptionModel.Transcription & TranscriptionModel.TranscriptionPause)[] => {
     if (!transcriptions) return null;
+
     let pauses = events.reduce((acc, event: EventModel.IEvent) => {
         const isOnTheRecordObject = event.eventType === EventModel.EventType.onTheRecord ? "to" : "from";
         if (acc.length === 0 || isOnTheRecordObject === "from") {
@@ -42,36 +43,29 @@ export const setTranscriptionMessages = (
 };
 
 export const addTranscriptionMessages = (newTranscription, transcriptions = []) => {
+    const transcriptionsCopy = [...transcriptions];
+
     if (newTranscription.eventType === EventModel.EventType.offTheRecord) {
-        return [...transcriptions, { from: newTranscription.creationDate, id: newTranscription.id }];
+        return [...transcriptionsCopy, { from: newTranscription.creationDate, id: newTranscription.id }];
     }
+
     if (newTranscription.eventType === EventModel.EventType.onTheRecord) {
-        return transcriptions.length > 0
+        return transcriptionsCopy.length > 0
             ? [
-                  ...transcriptions.slice(0, transcriptions.length - 1),
-                  { ...transcriptions[transcriptions.length - 1], to: newTranscription.creationDate },
+                  ...transcriptionsCopy.slice(0, transcriptionsCopy.length - 1),
+                  { ...transcriptionsCopy[transcriptionsCopy.length - 1], to: newTranscription.creationDate },
               ]
             : [];
     }
-    if (newTranscription.text === "") return transcriptions;
-    const laterTranscriptionIndex = transcriptions?.findIndex((transcription) => {
-        return (
-            (transcription.from && !transcription.to) ||
-            (!transcription.from &&
-                moment(newTranscription.transcriptDateTime).isBefore(
-                    moment(transcription.transcriptDateTime),
-                    "second"
-                ))
-        );
-    });
-    const newTranscriptions =
-        laterTranscriptionIndex === -1
-            ? [...transcriptions, newTranscription]
-            : [
-                  ...transcriptions?.slice(0, laterTranscriptionIndex),
-                  newTranscription,
-                  ...transcriptions?.slice(laterTranscriptionIndex),
-              ];
+    if (newTranscription.text === "") return transcriptionsCopy;
 
-    return newTranscriptions || [];
+    const isTranscriptionInArray = transcriptionsCopy.findIndex((item) => item.id === newTranscription.id);
+
+    if (isTranscriptionInArray !== -1) {
+        transcriptionsCopy[isTranscriptionInArray] = newTranscription;
+    } else {
+        transcriptionsCopy.push(newTranscription);
+    }
+
+    return transcriptionsCopy;
 };

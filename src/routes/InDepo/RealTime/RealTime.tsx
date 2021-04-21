@@ -54,73 +54,80 @@ const RealTime = ({
                         <div>
                             {!disableAutoscroll && <RoughDraftPill>ROUGH DRAFT: NOT FOR OFFICIAL USE</RoughDraftPill>}
                             <Space direction="vertical" size="middle">
-                                {transcriptions?.map(
-                                    (transcription, i) =>
-                                        (transcription.from || transcription.text) &&
-                                        (transcription.from ? (
-                                            <Alert
-                                                data-testid={
-                                                    transcription.to
-                                                        ? "transcription_paused"
-                                                        : "transcription_currently_paused"
-                                                }
-                                                key={transcription.id}
-                                                message={
-                                                    transcription.to
-                                                        ? CONSTANTS.getPauseText(
-                                                              transcription.from,
-                                                              transcription.to,
-                                                              timeZone
-                                                          )
-                                                        : CONSTANTS.TRANSCRIPTIONS_PAUSED
-                                                }
-                                                type={transcription.to ? "info" : "warning"}
-                                                icon={<Icon icon={transcription.to ? TimeIcon : InfoIcon} />}
-                                            />
-                                        ) : (
-                                            <Space direction="vertical" key={transcription.id}>
-                                                {playedSeconds !== undefined &&
-                                                    (i === 0 || playedSeconds - transcription.prevEndTime >= 0) &&
-                                                    playedSeconds - transcription.transcriptionVideoTime < 0 && (
-                                                        <HiddenRef />
-                                                    )}
-                                                <Text
-                                                    state={ColorStatus.disabled}
-                                                    font="code"
-                                                    size="small"
-                                                    weight="bold"
-                                                    block
-                                                    dataTestId="transcription_title"
-                                                >
-                                                    <>
-                                                        {`${transcription.userName || "Guest"} `}
-                                                        {moment(transcription.transcriptDateTime)
-                                                            .tz(mapTimeZone[timeZone])
-                                                            ?.format("hh:mm:ss A")}
-                                                    </>
-                                                </Text>
-                                                <TranscriptionText
-                                                    font="code"
-                                                    size="small"
-                                                    block
-                                                    ellipsis={false}
-                                                    dataTestId="transcription_text"
-                                                    highlighted={
-                                                        playedSeconds !== undefined &&
-                                                        (i === 0 || playedSeconds - transcription.prevEndTime >= 0) &&
-                                                        playedSeconds - transcription.transcriptionVideoTime < 0
+                                {transcriptions
+                                    ?.sort(
+                                        (a, b) =>
+                                            new Date(a.transcriptDateTime).getTime() -
+                                            new Date(b.transcriptDateTime).getTime()
+                                    )
+                                    .map(
+                                        (transcription, i) =>
+                                            (transcription.from || transcription.text) &&
+                                            (transcription.from ? (
+                                                <Alert
+                                                    data-testid={
+                                                        transcription.to
+                                                            ? "transcription_paused"
+                                                            : "transcription_currently_paused"
                                                     }
-                                                    pointer={!!manageTranscriptionClicked}
-                                                    onClick={() => {
-                                                        if (manageTranscriptionClicked)
-                                                            manageTranscriptionClicked(transcription);
-                                                    }}
-                                                >
-                                                    {transcription.text}
-                                                </TranscriptionText>
-                                            </Space>
-                                        ))
-                                )}
+                                                    key={transcription.id}
+                                                    message={
+                                                        transcription.to
+                                                            ? CONSTANTS.getPauseText(
+                                                                  transcription.from,
+                                                                  transcription.to,
+                                                                  timeZone
+                                                              )
+                                                            : CONSTANTS.TRANSCRIPTIONS_PAUSED
+                                                    }
+                                                    type={transcription.to ? "info" : "warning"}
+                                                    icon={<Icon icon={transcription.to ? TimeIcon : InfoIcon} />}
+                                                />
+                                            ) : (
+                                                <Space direction="vertical" key={transcription.id}>
+                                                    {playedSeconds !== undefined &&
+                                                        (i === 0 || playedSeconds - transcription.prevEndTime >= 0) &&
+                                                        playedSeconds - transcription.transcriptionVideoTime < 0 && (
+                                                            <HiddenRef />
+                                                        )}
+                                                    <Text
+                                                        state={ColorStatus.disabled}
+                                                        font="code"
+                                                        size="small"
+                                                        weight="bold"
+                                                        block
+                                                        dataTestId="transcription_title"
+                                                    >
+                                                        <>
+                                                            {`${transcription.userName || "Guest"} `}
+                                                            {moment(transcription.transcriptDateTime)
+                                                                .tz(mapTimeZone[timeZone])
+                                                                ?.format("hh:mm:ss A")}
+                                                        </>
+                                                    </Text>
+                                                    <TranscriptionText
+                                                        font="code"
+                                                        size="small"
+                                                        block
+                                                        ellipsis={false}
+                                                        dataTestId="transcription_text"
+                                                        highlighted={
+                                                            playedSeconds !== undefined &&
+                                                            (i === 0 ||
+                                                                playedSeconds - transcription.prevEndTime >= 0) &&
+                                                            playedSeconds - transcription.transcriptionVideoTime < 0
+                                                        }
+                                                        pointer={!!manageTranscriptionClicked}
+                                                        onClick={() => {
+                                                            if (manageTranscriptionClicked)
+                                                                manageTranscriptionClicked(transcription);
+                                                        }}
+                                                    >
+                                                        {transcription.text}
+                                                    </TranscriptionText>
+                                                </Space>
+                                            ))
+                                    )}
                             </Space>
                         </div>
                     </div>
