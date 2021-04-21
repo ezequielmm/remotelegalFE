@@ -17,6 +17,7 @@ import { useCheckUserStatus } from "../../hooks/preJoinDepo/hooks";
 import Spinner from "../../components/Spinner";
 import ErrorScreen from "../../components/ErrorScreen";
 import { NotificationEntityType } from "../../types/Notification";
+import getUserNameString from "../../helpers/getUserNameString";
 
 const WaitingRoom = () => {
     const [isAdmitted, setIsAdmitted] = useState<boolean>(undefined);
@@ -26,18 +27,6 @@ const WaitingRoom = () => {
     const { currentEmail, isAuthenticated } = useAuthentication();
     const [generateToken, generateTokenLoading, generateTokenError, generatedToken] = useGenerateDepositionToken();
     const [checkUserStatus, userStatusLoading, userStatusError, userStatus] = useCheckUserStatus();
-
-    const getUserName = () => {
-        if (userStatus?.participant?.name) {
-            return `${userStatus?.participant?.name},`;
-        }
-        if (userStatus?.participant?.user?.firstName) {
-            return `${userStatus?.participant?.firstName} ${
-                (userStatus?.participant?.lastName && userStatus?.participant?.lastName) || ""
-            },`;
-        }
-        return "";
-    };
 
     useEffect(() => {
         if (isAuthenticated !== null) {
@@ -121,7 +110,7 @@ const WaitingRoom = () => {
                         </Space>
                         <Space align="center" direction="vertical" fullWidth mt={10}>
                             <Text size="large" dataTestId="waiting_room_title">
-                                {getUserName()}
+                                {getUserNameString(userStatus)}
                             </Text>
                             <Title
                                 dataTestId={CONSTANTS.WAITING_ROOM_SUBTITLE}

@@ -7,21 +7,12 @@ import Text from "../../../components/Typography/Text";
 import Logo from "../../../components/Logo";
 import { LOADING_DEPOSITION_TITLE, LOADING_DEPOSITION_SUBTITLE } from "../../../constants/preJoinDepo";
 import { GlobalStateContext } from "../../../state/GlobalState";
+import getUserNameString from "../../../helpers/getUserNameString";
 
 const LoadingScreen = () => {
     const { state } = useContext(GlobalStateContext);
     const { userStatus } = state.room;
-    const getUserName = () => {
-        if (userStatus?.participant?.name) {
-            return `${userStatus?.participant?.name},`;
-        }
-        if (userStatus?.participant?.user?.firstName) {
-            return `${userStatus?.participant?.firstName} ${
-                (userStatus?.participant?.lastName && userStatus?.participant?.lastName) || ""
-            },`;
-        }
-        return "";
-    };
+
     return (
         <div
             data-testid="deposition_loading_screen"
@@ -39,7 +30,7 @@ const LoadingScreen = () => {
                     </Space>
                     <Space align="center" direction="vertical" fullWidth>
                         <Text dataTestId="deposition_loading_screen_user_name" size="large">
-                            <strong>{getUserName()}</strong>
+                            <strong>{getUserNameString(userStatus)}</strong>
                         </Text>
                         <Title
                             textAlign="center"
