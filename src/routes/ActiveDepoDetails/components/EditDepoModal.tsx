@@ -183,12 +183,12 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
     };
 
     const handleChangeDate = (current: any) => {
-        setFormStatus({ ...formStatus, startDate: current?.toString() });
+        const newEndTime = changeDate(current, formStatus.timeZone, formStatus.endDate);
+        setFormStatus({ ...formStatus, startDate: current, endDate: newEndTime });
         if (current && current.isBefore(moment(new Date()).subtract(5, "m"))) {
-            setInvalidStartTime(true);
-        } else {
-            setInvalidStartTime(false);
+            return setInvalidStartTime(true);
         }
+        return setInvalidStartTime(false);
     };
 
     const handleChangeStartTime = (current: any) => {
@@ -209,7 +209,7 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
             return setFormStatus({ ...formStatus, endDate: null });
         }
         const newEndDate = changeDate(formStatus.startDate, formStatus.timeZone, current);
-        setFormStatus({ ...formStatus, endDate: current });
+        setFormStatus({ ...formStatus, endDate: newEndDate });
         if (current && newEndDate.isSameOrBefore(formStatus.startDate)) {
             return setInvalidEndTime(true);
         }
@@ -242,21 +242,18 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
         if (invalidFile) {
             return;
         }
-
-        if (formStatus.endDate) {
-            if (deposition.timeZone !== formStatus.timeZone) {
-                bodyWithoutFile.endDate = moment(
-                    changeTimeZone(formStatus.endDate, deposition.timeZone, formStatus.timeZone)
-                ).tz(mapTimeZone[formStatus.timeZone]);
-            }
-
-            if (formStatus.startDate.isBefore(formStatus.endDate)) {
-                bodyWithoutFile.endDate = changeDate(
-                    formStatus.startDate,
-                    formStatus.timeZone,
-                    bodyWithoutFile.endDate
-                );
-            }
+        if (formStatus.endDate && !deposition.endDate) {
+            bodyWithoutFile.endDate = changeDate(formStatus.startDate, formStatus.timeZone, formStatus.endDate).format(
+                "YYYY-MM-DDTHH:mm:ss.SSSZ"
+            );
+        }
+        if (formStatus.endDate && deposition.endDate) {
+            bodyWithoutFile.endDate =
+                formStatus.timeZone !== deposition.timeZone
+                    ? moment(changeTimeZone(formStatus.endDate, deposition.timeZone, formStatus.timeZone))
+                          .tz(mapTimeZone[formStatus.timeZone])
+                          .format("YYYY-MM-DDTHH:mm:ss.SSSZ")
+                    : formStatus.endDate.tz(mapTimeZone[formStatus.timeZone]).format("YYYY-MM-DDTHH:mm:ss.SSSZ");
         }
 
         bodyWithoutFile.startDate = changeTimeZone(formStatus.startDate, deposition.timeZone, formStatus.timeZone);
