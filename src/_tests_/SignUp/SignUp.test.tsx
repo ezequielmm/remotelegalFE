@@ -192,7 +192,7 @@ describe("SignUp", () => {
     it("should display an error when fetch fails", async () => {
         customDeps.apiService.signUp = jest.fn().mockRejectedValue(400);
 
-        const { getByPlaceholderText, getByText } = renderWithGlobalContext(<SignUp />, customDeps);
+        const { getByPlaceholderText, getByText } = renderWithGlobalContext(<SignUp location={null} />, customDeps);
         const button = getByText("Create account");
         const emailInput = getByPlaceholderText(CONSTANTS.EMAIL_PLACEHOLDER);
         const passwordInput = getByPlaceholderText(CONSTANTS.PASSWORD_PLACEHOLDER);

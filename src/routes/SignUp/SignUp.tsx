@@ -17,6 +17,7 @@ import Title from "../../components/Typography/Title";
 import Text from "../../components/Typography/Text";
 import { InputWrapper } from "../../components/Input/styles";
 import ColorStatus from "../../types/ColorStatus";
+import ENV from "../../constants/env";
 
 const SignUp = ({ location }) => {
     const { isAuthenticated } = useAuthentication();
@@ -299,7 +300,10 @@ const SignUp = ({ location }) => {
                                             checked={checked}
                                             onChange={() => setChecked(!checked)}
                                         >
-                                            I agree to Remote Legal Terms of Use
+                                            I agree to Remote Legal{" "}
+                                            <Button href={`${ENV.API.URL}/terms.html`} type="link">
+                                                Terms of Use and Privacy Policy
+                                            </Button>
                                         </Checkbox>
                                     </Space.Item>
                                     <Button

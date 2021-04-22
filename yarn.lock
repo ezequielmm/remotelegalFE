@@ -5064,6 +5064,11 @@
   resolved "https://registry.yarnpkg.com/@types/twilio-video/-/twilio-video-2.7.3.tgz#24a7a8caa97bc536f40d1d02105b84a7fff17fde"
   integrity sha512-IDqG3hB1GSbtAoMqIV/sOT02hstBhGUrejpNd+1PbKm3tyhO62T2wwd4rFC2A+nKXTY3aC+2FoQwvR68d5j08g==
 
+"@types/ua-parser-js@^0.7.35":
+  version "0.7.35"
+  resolved "https://registry.yarnpkg.com/@types/ua-parser-js/-/ua-parser-js-0.7.35.tgz#cca67a95deb9165e4b1f449471801e6489d3fe93"
+  integrity sha512-PsPx0RLbo2Un8+ff2buzYJnZjzwhD3jQHPOG2PtVIeOhkRDddMcKU8vJtHpzzfLB95dkUi0qAkfLg2l2Fd0yrQ==
+
 "@types/uglify-js@*":
   version "3.11.0"
   resolved "https://registry.yarnpkg.com/@types/uglify-js/-/uglify-js-3.11.0.tgz#2868d405cc45cd9dc3069179052103032c33afbc"
@@ -17701,6 +17706,11 @@ typescript@~3.7.5:
   version "3.7.5"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.7.5.tgz#0692e21f65fd4108b9330238aac11dd2e177a1ae"
   integrity sha512-/P5lkRXkWHNAbcJIiHPfRoKqyd7bsyCma1hZNUGfn20qm64T6ZBlrzprymeu918H+mB/0rIg2gGK/BXkhhYgBw==
+
+ua-parser-js@^0.7.28:
+  version "0.7.28"
+  resolved "https://registry.yarnpkg.com/ua-parser-js/-/ua-parser-js-0.7.28.tgz#8ba04e653f35ce210239c64661685bf9121dec31"
+  integrity sha512-6Gurc1n//gjp9eQNXjD9O3M/sMwVtN5S8Lv9bvOYBfKfDNiIIhqiyi01vMBO45u4zkDE420w/e0se7Vs+sIg+g==
 
 ulid@2.3.0:
   version "2.3.0"

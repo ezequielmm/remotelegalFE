@@ -88,6 +88,8 @@ describe("It tests the non-registered and non-participant flow", () => {
         fireEvent.change(getByTestId(CONSTANTS.EMAIL_INPUT_ID), { target: { value: TEST_CONSTANTS.MOCKED_EMAIL } });
         userEvent.click(getByTestId(CONSTANTS.STEP_1_BUTTON_ID));
         await waitForDomChange();
+        userEvent.click(getByTestId(CONSTANTS.PREJOIN_CERTIFY_INFORMATION_TEXT_TEST_ID));
+        userEvent.click(getByTestId(CONSTANTS.PREJOIN_AGREE_TERMS_AND_CONDITION_TEXT_TEST_ID));
         userEvent.click(getByTestId(CONSTANTS.STEP_2_BUTTON_ID));
         await waitForDomChange();
         expect(getByText(CONSTANTS.INVALID_NAME_MESSAGE)).toBeInTheDocument();
@@ -99,6 +101,8 @@ describe("It tests the non-registered and non-participant flow", () => {
         fireEvent.change(getByTestId(CONSTANTS.EMAIL_INPUT_ID), { target: { value: TEST_CONSTANTS.MOCKED_EMAIL } });
         userEvent.click(getByTestId(CONSTANTS.STEP_1_BUTTON_ID));
         await waitForDomChange();
+        userEvent.click(getByTestId(CONSTANTS.PREJOIN_CERTIFY_INFORMATION_TEXT_TEST_ID));
+        userEvent.click(getByTestId(CONSTANTS.PREJOIN_AGREE_TERMS_AND_CONDITION_TEXT_TEST_ID));
         userEvent.click(getByTestId(CONSTANTS.STEP_2_BUTTON_ID));
         await waitForDomChange();
         expect(getByText(CONSTANTS.INVALID_ROLE_MESSAGE)).toBeInTheDocument();
@@ -113,6 +117,8 @@ describe("It tests the non-registered and non-participant flow", () => {
         userEvent.click(getByText(CONSTANTS.ROLE_INPUT));
         const role = await waitForElement(() => getAllByText(TEST_CONSTANTS.ROLE));
         userEvent.click(role[1]);
+        userEvent.click(getByTestId(CONSTANTS.PREJOIN_CERTIFY_INFORMATION_TEXT_TEST_ID));
+        userEvent.click(getByTestId(CONSTANTS.PREJOIN_AGREE_TERMS_AND_CONDITION_TEXT_TEST_ID));
         userEvent.click(getByTestId(CONSTANTS.STEP_2_BUTTON_ID));
         expect(queryByText(CONSTANTS.INVALID_ROLE_MESSAGE)).toBeFalsy();
         await waitForDomChange();
@@ -125,6 +131,8 @@ describe("It tests the non-registered and non-participant flow", () => {
         userEvent.click(getByTestId(CONSTANTS.STEP_1_BUTTON_ID));
         await waitForDomChange();
         fireEvent.change(getByTestId(CONSTANTS.NAME_INPUT_ID), { target: { value: TEST_CONSTANTS.MOCKED_NAME } });
+        userEvent.click(getByTestId(CONSTANTS.PREJOIN_CERTIFY_INFORMATION_TEXT_TEST_ID));
+        userEvent.click(getByTestId(CONSTANTS.PREJOIN_AGREE_TERMS_AND_CONDITION_TEXT_TEST_ID));
         userEvent.click(getByTestId(CONSTANTS.STEP_2_BUTTON_ID));
         expect(queryByText(CONSTANTS.INVALID_NAME_MESSAGE)).toBeFalsy();
         await waitForDomChange();
@@ -151,6 +159,8 @@ describe("It tests the non-registered and non-participant flow", () => {
         userEvent.click(getByText(CONSTANTS.ROLE_INPUT));
         const role = await waitForElement(() => getAllByText(TEST_CONSTANTS.ROLE));
         userEvent.click(role[1]);
+        userEvent.click(getByTestId(CONSTANTS.PREJOIN_CERTIFY_INFORMATION_TEXT_TEST_ID));
+        userEvent.click(getByTestId(CONSTANTS.PREJOIN_AGREE_TERMS_AND_CONDITION_TEXT_TEST_ID));
         userEvent.click(getByTestId(CONSTANTS.STEP_2_BUTTON_ID));
         await waitForDomChange();
         await waitForElement(() => getAllByText(CONSTANTS.NETWORK_ERROR));
@@ -167,6 +177,8 @@ describe("It tests the non-registered and non-participant flow", () => {
         userEvent.click(getByText(CONSTANTS.ROLE_INPUT));
         const role = await waitForElement(() => getAllByText(TEST_CONSTANTS.ROLE));
         userEvent.click(role[1]);
+        userEvent.click(getByTestId(CONSTANTS.PREJOIN_CERTIFY_INFORMATION_TEXT_TEST_ID));
+        userEvent.click(getByTestId(CONSTANTS.PREJOIN_AGREE_TERMS_AND_CONDITION_TEXT_TEST_ID));
         userEvent.click(getByTestId(CONSTANTS.STEP_2_BUTTON_ID));
         await waitForDomChange();
         expect(getByText(CONSTANTS.WITNESS_ALREADY_PRESENT_ERROR)).toBeInTheDocument();
@@ -183,6 +195,8 @@ describe("It tests the non-registered and non-participant flow", () => {
         userEvent.click(getByText(CONSTANTS.ROLE_INPUT));
         const role = await waitForElement(() => getAllByText(TEST_CONSTANTS.ROLE));
         userEvent.click(role[1]);
+        userEvent.click(getByTestId(CONSTANTS.PREJOIN_CERTIFY_INFORMATION_TEXT_TEST_ID));
+        userEvent.click(getByTestId(CONSTANTS.PREJOIN_AGREE_TERMS_AND_CONDITION_TEXT_TEST_ID));
         userEvent.click(getByTestId(CONSTANTS.STEP_2_BUTTON_ID));
         expect(getByTestId(CONSTANTS.STEP_2_BUTTON_ID)).toBeDisabled();
         expect(getByTestId(CONSTANTS.BACK_BUTTON_ID)).toBeDisabled();
@@ -241,6 +255,8 @@ describe("It tests the non-registered and participant flow", () => {
         fireEvent.change(getByTestId(CONSTANTS.EMAIL_INPUT_ID), { target: { value: TEST_CONSTANTS.MOCKED_EMAIL } });
         userEvent.click(getByTestId(CONSTANTS.STEP_1_BUTTON_ID));
         await waitForDomChange();
+        userEvent.click(getByTestId(CONSTANTS.PREJOIN_CERTIFY_INFORMATION_TEXT_TEST_ID));
+        userEvent.click(getByTestId(CONSTANTS.PREJOIN_AGREE_TERMS_AND_CONDITION_TEXT_TEST_ID));
         userEvent.click(getByTestId(CONSTANTS.STEP_2_BUTTON_ID));
         await waitForDomChange();
         await waitForElement(() => getAllByText(CONSTANTS.NETWORK_ERROR));
@@ -253,6 +269,8 @@ describe("It tests the non-registered and participant flow", () => {
         fireEvent.change(getByTestId(CONSTANTS.EMAIL_INPUT_ID), { target: { value: TEST_CONSTANTS.MOCKED_EMAIL } });
         userEvent.click(getByTestId(CONSTANTS.STEP_1_BUTTON_ID));
         await waitForDomChange();
+        userEvent.click(getByTestId(CONSTANTS.PREJOIN_CERTIFY_INFORMATION_TEXT_TEST_ID));
+        userEvent.click(getByTestId(CONSTANTS.PREJOIN_AGREE_TERMS_AND_CONDITION_TEXT_TEST_ID));
         userEvent.click(getByTestId(CONSTANTS.STEP_2_BUTTON_ID));
         expect(getByTestId(CONSTANTS.STEP_2_BUTTON_ID)).toBeDisabled();
         expect(getByTestId(CONSTANTS.BACK_BUTTON_ID)).toBeDisabled();
@@ -286,6 +304,8 @@ describe("It tests the registered and not logged in user and non-participant flo
         fireEvent.change(getByTestId(CONSTANTS.PASSWORD_INPUT_ID), {
             target: { value: TEST_CONSTANTS.MOCKED_PASSWORD },
         });
+        userEvent.click(getByTestId(CONSTANTS.PREJOIN_CERTIFY_INFORMATION_TEXT_TEST_ID));
+        userEvent.click(getByTestId(CONSTANTS.PREJOIN_AGREE_TERMS_AND_CONDITION_TEXT_TEST_ID));
         userEvent.click(getByTestId(CONSTANTS.STEP_2_BUTTON_ID));
         await waitForDomChange();
         await waitForElement(() => getByText(TEST_CONSTANTS.SIGN_IN_ERROR));
@@ -313,6 +333,8 @@ describe("It tests the registered and not logged in user and non-participant flo
         fireEvent.change(getByTestId(CONSTANTS.PASSWORD_INPUT_ID), {
             target: { value: TEST_CONSTANTS.MOCKED_PASSWORD },
         });
+        userEvent.click(getByTestId(CONSTANTS.PREJOIN_CERTIFY_INFORMATION_TEXT_TEST_ID));
+        userEvent.click(getByTestId(CONSTANTS.PREJOIN_AGREE_TERMS_AND_CONDITION_TEXT_TEST_ID));
         userEvent.click(getByTestId(CONSTANTS.STEP_2_BUTTON_ID));
         await waitForDomChange();
         await waitForElement(() => getByText(CONSTANTS.NETWORK_ERROR));
@@ -331,6 +353,8 @@ describe("It tests the registered and not logged in user and non-participant flo
         fireEvent.change(getByTestId(CONSTANTS.PASSWORD_INPUT_ID), {
             target: { value: TEST_CONSTANTS.MOCKED_PASSWORD },
         });
+        userEvent.click(getByTestId(CONSTANTS.PREJOIN_CERTIFY_INFORMATION_TEXT_TEST_ID));
+        userEvent.click(getByTestId(CONSTANTS.PREJOIN_AGREE_TERMS_AND_CONDITION_TEXT_TEST_ID));
         userEvent.click(getByTestId(CONSTANTS.STEP_2_BUTTON_ID));
         await waitForDomChange();
         await waitForElement(() => getByText(CONSTANTS.WITNESS_ALREADY_PRESENT_ERROR));
@@ -354,6 +378,8 @@ describe("It tests the registered and not logged in user and non-participant flo
         expect(getByTestId(CONSTANTS.BACK_BUTTON_ID)).toBeInTheDocument();
         expect(getByTestId(CONSTANTS.PASSWORD_INPUT_ID)).toBeInTheDocument();
         expect(getByTestId(CONSTANTS.ENABLED_ROLE_INPUT_ID)).toBeInTheDocument();
+        expect(getByTestId(CONSTANTS.PREJOIN_CERTIFY_INFORMATION_TEXT_TEST_ID)).toBeInTheDocument();
+        expect(getByTestId(CONSTANTS.PREJOIN_AGREE_TERMS_AND_CONDITION_TEXT_TEST_ID)).toBeInTheDocument();
         expect(deps.apiService.checkUserDepoStatus).toHaveBeenCalled();
     });
 
@@ -379,6 +405,8 @@ describe("It tests the registered and not logged in user and non-participant flo
         fireEvent.change(getByTestId(CONSTANTS.PASSWORD_INPUT_ID), {
             target: { value: TEST_CONSTANTS.MOCKED_PASSWORD },
         });
+        userEvent.click(getByTestId(CONSTANTS.PREJOIN_CERTIFY_INFORMATION_TEXT_TEST_ID));
+        userEvent.click(getByTestId(CONSTANTS.PREJOIN_AGREE_TERMS_AND_CONDITION_TEXT_TEST_ID));
         userEvent.click(getByTestId(CONSTANTS.STEP_2_BUTTON_ID));
         await waitForDomChange();
         expect(deps.apiService.addDepoParticipant).toHaveBeenCalledWith(TEST_CONSTANTS.DEPO_ID, {
@@ -398,10 +426,22 @@ describe("It tests the registered and not logged in user and non-participant flo
         fireEvent.change(getByTestId(CONSTANTS.EMAIL_INPUT_ID), { target: { value: TEST_CONSTANTS.MOCKED_EMAIL } });
         userEvent.click(getByTestId(CONSTANTS.STEP_1_BUTTON_ID));
         await waitForDomChange();
+        userEvent.click(getByTestId(CONSTANTS.PREJOIN_CERTIFY_INFORMATION_TEXT_TEST_ID));
+        userEvent.click(getByTestId(CONSTANTS.PREJOIN_AGREE_TERMS_AND_CONDITION_TEXT_TEST_ID));
         userEvent.click(getByTestId(CONSTANTS.STEP_2_BUTTON_ID));
         await waitForDomChange();
         expect(getByText(CONSTANTS.INVALID_PASSWORD_MESSAGE)).toBeInTheDocument();
         expect(getByText(CONSTANTS.INVALID_ROLE_MESSAGE)).toBeInTheDocument();
+    });
+    test("should disabled buttons when checkboxs are unchecked", async () => {
+        const { getByTestId } = renderWithGlobalContext(<PreJoinDepo />, deps);
+        await waitForDomChange();
+        fireEvent.change(getByTestId(CONSTANTS.EMAIL_INPUT_ID), { target: { value: TEST_CONSTANTS.MOCKED_EMAIL } });
+        userEvent.click(getByTestId(CONSTANTS.STEP_1_BUTTON_ID));
+        await waitForDomChange();
+        expect(getByTestId(CONSTANTS.PREJOIN_CERTIFY_INFORMATION_TEXT_TEST_ID)).toBeInTheDocument();
+        expect(getByTestId(CONSTANTS.PREJOIN_AGREE_TERMS_AND_CONDITION_TEXT_TEST_ID)).toBeInTheDocument();
+        expect(getByTestId(CONSTANTS.STEP_2_BUTTON_ID)).toBeDisabled();
     });
 });
 
@@ -417,6 +457,8 @@ describe("It tests the registered and logged in user and non-participant flow", 
         userEvent.click(getByText(CONSTANTS.ROLE_INPUT));
         const role = await waitForElement(() => getAllByText(TEST_CONSTANTS.ROLE));
         userEvent.click(role[1]);
+        userEvent.click(getByTestId(CONSTANTS.PREJOIN_CERTIFY_INFORMATION_TEXT_TEST_ID));
+        userEvent.click(getByTestId(CONSTANTS.PREJOIN_AGREE_TERMS_AND_CONDITION_TEXT_TEST_ID));
         userEvent.click(getByTestId(CONSTANTS.STEP_2_BUTTON_ID));
         await waitForElement(() => getByText(CONSTANTS.NETWORK_ERROR));
     });
@@ -449,6 +491,8 @@ describe("It tests the registered and logged in user and non-participant flow", 
     test("should validate role input", async () => {
         const { getByTestId, getByText } = renderWithGlobalContext(<PreJoinDepo />, deps);
         await waitForDomChange();
+        userEvent.click(getByTestId(CONSTANTS.PREJOIN_CERTIFY_INFORMATION_TEXT_TEST_ID));
+        userEvent.click(getByTestId(CONSTANTS.PREJOIN_AGREE_TERMS_AND_CONDITION_TEXT_TEST_ID));
         userEvent.click(getByTestId(CONSTANTS.STEP_2_BUTTON_ID));
         expect(getByText(CONSTANTS.INVALID_ROLE_MESSAGE)).toBeInTheDocument();
         await waitForDomChange();
@@ -461,6 +505,8 @@ describe("It tests the registered and logged in user and non-participant flow", 
         const role = await waitForElement(() => getAllByText(TEST_CONSTANTS.ROLE));
         userEvent.click(role[1]);
         await waitForDomChange();
+        userEvent.click(getByTestId(CONSTANTS.PREJOIN_CERTIFY_INFORMATION_TEXT_TEST_ID));
+        userEvent.click(getByTestId(CONSTANTS.PREJOIN_AGREE_TERMS_AND_CONDITION_TEXT_TEST_ID));
         userEvent.click(getByTestId(CONSTANTS.STEP_2_BUTTON_ID));
         await waitForDomChange();
         expect(deps.apiService.addDepoParticipant).toHaveBeenCalledWith(TEST_CONSTANTS.DEPO_ID, {
@@ -527,6 +573,8 @@ describe("It tests the registered and  not logged in user and participant flow",
         fireEvent.change(getByTestId(CONSTANTS.EMAIL_INPUT_ID), { target: { value: TEST_CONSTANTS.MOCKED_EMAIL } });
         userEvent.click(getByTestId(CONSTANTS.STEP_1_BUTTON_ID));
         await waitForDomChange();
+        userEvent.click(getByTestId(CONSTANTS.PREJOIN_CERTIFY_INFORMATION_TEXT_TEST_ID));
+        userEvent.click(getByTestId(CONSTANTS.PREJOIN_AGREE_TERMS_AND_CONDITION_TEXT_TEST_ID));
         userEvent.click(getByTestId(CONSTANTS.STEP_2_BUTTON_ID));
         expect(getByText(CONSTANTS.INVALID_PASSWORD_MESSAGE)).toBeInTheDocument();
         await waitForDomChange();
@@ -540,6 +588,8 @@ describe("It tests the registered and  not logged in user and participant flow",
         fireEvent.change(getByTestId(CONSTANTS.PASSWORD_INPUT_ID), {
             target: { value: TEST_CONSTANTS.MOCKED_PASSWORD },
         });
+        userEvent.click(getByTestId(CONSTANTS.PREJOIN_CERTIFY_INFORMATION_TEXT_TEST_ID));
+        userEvent.click(getByTestId(CONSTANTS.PREJOIN_AGREE_TERMS_AND_CONDITION_TEXT_TEST_ID));
         userEvent.click(getByTestId(CONSTANTS.STEP_2_BUTTON_ID));
         await waitForDomChange();
         expect(Auth.signIn).toHaveBeenCalledWith(TEST_CONSTANTS.MOCKED_EMAIL, TEST_CONSTANTS.MOCKED_PASSWORD);
@@ -555,6 +605,8 @@ describe("It tests the registered and  not logged in user and participant flow",
         fireEvent.change(getByTestId(CONSTANTS.PASSWORD_INPUT_ID), {
             target: { value: TEST_CONSTANTS.MOCKED_PASSWORD },
         });
+        userEvent.click(getByTestId(CONSTANTS.PREJOIN_CERTIFY_INFORMATION_TEXT_TEST_ID));
+        userEvent.click(getByTestId(CONSTANTS.PREJOIN_AGREE_TERMS_AND_CONDITION_TEXT_TEST_ID));
         userEvent.click(getByTestId(CONSTANTS.STEP_2_BUTTON_ID));
         await waitForDomChange();
         await waitForElement(() => getByText(TEST_CONSTANTS.SIGN_IN_ERROR));

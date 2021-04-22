@@ -13,6 +13,7 @@ import { wait } from "../helpers/wait";
 import { EventModel, CaseModel, DepositionModel, UserModel, ParticipantModel } from "../models";
 import { HTTP_METHOD, ITokenSet } from "../models/general";
 import TEMP_TOKEN from "../constants/ApiService";
+import { getBrowserInfo } from "../helpers/browserInfo";
 
 interface RequestParams {
     path: string;
@@ -118,8 +119,13 @@ export class ApiService {
     };
 
     joinDeposition = async (depositionID: string): Promise<DepositionModel.DepositionPermissions> => {
+        const formData = new FormData();
+        const { browser, device } = getBrowserInfo();
+        formData.set("json", JSON.stringify({ browser, device }));
         return this.request({
             path: `/api/depositions/${depositionID}/join`,
+            formData,
+            withContentType: false,
             method: HTTP_METHOD.POST,
         });
     };
@@ -501,6 +507,14 @@ export class ApiService {
             path: `/api/depositions/${depositionID}/notifyParties`,
             withToken: true,
             method: HTTP_METHOD.POST,
+        });
+    };
+
+    frontEndContent = async () => {
+        return this.request({
+            path: `/api/Documents/FrontendContent`,
+            withToken: false,
+            method: HTTP_METHOD.GET,
         });
     };
 

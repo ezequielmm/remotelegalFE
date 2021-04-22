@@ -4,7 +4,7 @@ export const PHONE_PLACEHOLDER = "Enter your company phone number";
 export const NAME_PLACEHOLDER = "Enter your name";
 export const LAST_NAME_PLACEHOLDER = "Enter last name";
 export const CONFIRM_PASSWORD_PLACEHOLDER = "Confirm your password";
-export const CHECKBOX_INPUT = "I agree to Remote Legal Terms of Use";
+export const CHECKBOX_INPUT = "I agree to Remote Legal";
 export const COMPANY_NAME_PLACEHOLDER = "Enter your company name";
 export const COMPANY_ADDRESS_PLACEHOLDER = "Enter your company address";
 

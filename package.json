@@ -23,6 +23,7 @@
         "@types/react-test-renderer": "^16.9.3",
         "@types/styled-components": "^5.1.4",
         "@types/twilio-video": "^2.7.3",
+        "@types/ua-parser-js": "^0.7.35",
         "antd": "^4.8.2",
         "audio-recorder-polyfill": "^0.4.1",
         "aws-amplify": "^3.3.12",

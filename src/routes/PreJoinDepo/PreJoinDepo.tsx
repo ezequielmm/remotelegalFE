@@ -3,6 +3,7 @@ import { useParams, Redirect, useHistory } from "react-router";
 import { useAuthentication } from "../../hooks/auth";
 import backgroundImage from "../../assets/pre-depo/bg.png";
 import { useCheckUserStatus, useRegisterParticipant, useLogin } from "../../hooks/preJoinDepo/hooks";
+import { useFrontEndContent } from "../../hooks/frontEndContent/useFrontEndContent";
 import { DepositionID } from "../../state/types";
 import EmailForm from "./components/EmailForm";
 import Spinner from "../../components/Spinner";
@@ -25,6 +26,7 @@ const PreJoinDepo = () => {
     const [checkUserStatus, userStatusLoading, userStatusError, userStatus] = useCheckUserStatus();
     const { loginUser, loading: loginLoading, loginError, addParticipantError } = useLogin(depositionID);
     const [witnessAlreadyExistsError, setWitnessAlreadyExistsError] = useState(false);
+    const [linkToTermsAndConditions, setLinkToTermsAndConditions] = useState("");
     const [
         registerParticipant,
         registerParticipantLoading,
@@ -32,6 +34,19 @@ const PreJoinDepo = () => {
         registeredUser,
     ] = useRegisterParticipant();
     const history = useHistory();
+    const { getFrontEndContent, frontEndContent } = useFrontEndContent();
+
+    useEffect(() => {
+        getFrontEndContent();
+    }, [getFrontEndContent]);
+
+    useEffect(() => {
+        if (frontEndContent) {
+            const termsOfUseURL = frontEndContent.filter(({ name }) => name === CONSTANTS.PREJOIN_TERMS_OF_USE_KEY)[0]
+                .url;
+            setLinkToTermsAndConditions(termsOfUseURL);
+        }
+    }, [frontEndContent]);
 
     useEffect(() => {
         const handleAuthenticatedUser = () => {
@@ -174,6 +189,7 @@ const PreJoinDepo = () => {
                         defaultRole={normalizedRoles[userStatus?.participant?.role] || userStatus?.participant?.role}
                         defaultName={userStatus?.participant?.name}
                         disableRoleSelect={userStatus?.participant?.role}
+                        termsOfUseURL={linkToTermsAndConditions}
                     />
                 ) : (
                     step === 2 && (
@@ -189,6 +205,7 @@ const PreJoinDepo = () => {
                             defaultName={userStatus?.participant?.name}
                             disableRoleSelect={userStatus?.participant?.role}
                             returnFunc={resetStep}
+                            termsOfUseURL={linkToTermsAndConditions}
                         />
                     )
                 )}
