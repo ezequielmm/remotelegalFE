@@ -83,8 +83,15 @@ const CreateDeposition = () => {
             goToDepositions={() => {
                 history.push("/depositions");
             }}
-            refreshCasesList={refreshList}
-            type={fetchingCasesError ? "error" : "success"}
+            type={fetchingCasesError || errorUserIsAdmin ? "error" : "success"}
+            refreshCasesList={() => {
+                if (errorUserIsAdmin) {
+                    checkIfUserIsAdmin();
+                }
+                if (fetchingCasesError) {
+                    refreshList();
+                }
+            }}
         />
     ) : (
         <FormProvider {...methods}>
