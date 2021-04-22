@@ -171,7 +171,7 @@ const PreJoinDepo = () => {
                         joinDeposition={joinDepositionAsRegisteredUser}
                         loading={loginLoading}
                         returnFunc={resetStep}
-                        defaultRole={userStatus?.participant?.role}
+                        defaultRole={normalizedRoles[userStatus?.participant?.role] || userStatus?.participant?.role}
                         defaultName={userStatus?.participant?.name}
                         disableRoleSelect={userStatus?.participant?.role}
                     />
