@@ -44,7 +44,7 @@ const PDFTronViewer = ({
     readOnly = false,
 }: PdfTronViewerProps) => {
     const { state, dispatch } = useContext(GlobalStateContext);
-    const { timeZone, currentExhibitPage } = state.room;
+    const { timeZone, currentExhibitPage, isRecording } = state.room;
     const [openStampModal, setStampModal] = useState(false);
     const viewerRef = useRef(null);
     const [PDFTron, setPDFTron] = useState<WebViewerInstance>(null);
@@ -81,10 +81,10 @@ const PDFTronViewer = ({
     };
 
     useEffect(() => {
-        if (!showStamp && PDFTron) {
+        if (!isRecording && PDFTron) {
             PDFTron.setHeaderItems((header) => header.delete("rubberStampToolGroupButton"));
         }
-        if (showStamp && canStamp && PDFTron) {
+        if (showStamp && canStamp && PDFTron && isRecording) {
             PDFTron.setHeaderItems((header) => {
                 header.get("customFullScreenButton").insertAfter({
                     ...CONSTANTS.OPEN_STAMP_MODAL_BUTTON,
@@ -105,7 +105,7 @@ const PDFTronViewer = ({
                 });
             });
         }
-    }, [PDFTron, showStamp, canStamp]);
+    }, [PDFTron, showStamp, canStamp, isRecording]);
 
     const sendAnnotationChange = useCallback(
         (annotation, action: AnnotationActionType) => {
