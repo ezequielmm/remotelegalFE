@@ -152,7 +152,7 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
 
     const handleSubmit = () => {
         const isDepoConfirmedAndNowCanceled = isStatusCanceled && deposition.status === Status.confirmed;
-        const isDepoNowConfirmed = formStatus.status === Status.confirmed;
+        const isDepoNowConfirmed = deposition.status !== Status.confirmed && formStatus.status === Status.confirmed;
         const isDepoReverted = deposition.status === Status.canceled && !isStatusCanceled && !invalidFile;
         const isRescheduled =
             !formStatus.startDate.isSame(deposition.startDate) ||
@@ -196,7 +196,7 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
     };
 
     const handleChangeDate = (current: any) => {
-        const newEndTime = changeDate(current, formStatus.timeZone, formStatus.endDate);
+        const newEndTime = formStatus.endDate ? changeDate(current, formStatus.timeZone, formStatus.endDate) : null;
         setFormStatus({ ...formStatus, startDate: current, endDate: newEndTime });
         if (current && current.isBefore(moment(new Date()).subtract(5, "m"))) {
             return setInvalidStartTime(true);
