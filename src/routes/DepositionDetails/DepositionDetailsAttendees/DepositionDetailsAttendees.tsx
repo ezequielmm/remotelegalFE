@@ -9,9 +9,10 @@ import {
     DEPOSITION_DETAILS_TABS,
     DEPOSITION_DETAILS_ATTENDEES_TEST_ID,
 } from "../../../constants/depositionDetails";
+import normalizedRoles from "../../../constants/roles";
 import { useFetchParticipants } from "../../../hooks/activeDepositionDetails/hooks";
 import { useUserIsAdmin } from "../../../hooks/users/hooks";
-import { IParticipant, Roles } from "../../../models/participant";
+import { IParticipant } from "../../../models/participant";
 
 export default function DepositionDetailsAttendees({
     depositionID,
@@ -37,15 +38,13 @@ export default function DepositionDetailsAttendees({
         if (attendees && userIsAdmin !== undefined) {
             const attendeesArray = attendees.map((participant: IParticipant) => {
                 const { email, id, name, phone, role, user } = participant;
-                const isCourtReporter = role === Roles.courtReporter;
-
                 return {
                     id,
                     name: user ? `${user.firstName} ${user.lastName}` : name,
                     user,
                     email: !userIsAdmin && role === "Witness" ? "" : email,
                     phone: !userIsAdmin && role === "Witness" ? "" : phone || user?.phoneNumber,
-                    role: isCourtReporter ? "Court Reporter" : role,
+                    role: normalizedRoles[role] || role,
                 };
             });
             setMappedAttendees(attendeesArray);
