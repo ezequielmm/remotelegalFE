@@ -151,6 +151,8 @@ const modifiedVariables = {
     "@tabs-highlight-color": theme.default.textColor,
     "@tabs-horizontal-padding": `0 ${getREM(theme.default.spaces[7])} ${getREM(theme.default.spaces[6])} `,
     "@tabs-bar-margin": `0 0 ${getREM(theme.default.spaces[4])} 0`,
+    "@zindex-modal": "2000",
+    "@zindex-modal-mask": "2000",
 };
 
 module.exports = { theme, modifiedVariables };

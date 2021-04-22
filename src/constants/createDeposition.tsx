@@ -103,3 +103,4 @@ export const TIME_PICKER_PROPS = {
 };
 
 export const WITNESSES_LIMIT = 10;
+export const INVALID_CASE_MESSAGE = "Please select a Case";

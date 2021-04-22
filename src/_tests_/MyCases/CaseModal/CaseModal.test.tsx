@@ -1,5 +1,6 @@
 import React from "react";
 import { waitForElement, fireEvent, waitForDomChange } from "@testing-library/react";
+import "mutationobserver-shim";
 import Modal from "../../../routes/MyCases/CaseModal";
 import * as CONSTANTS from "../../constants/cases";
 import * as AUTH from "../../mocks/Auth";

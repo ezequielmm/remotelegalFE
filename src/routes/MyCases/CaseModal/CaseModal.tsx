@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useRef } from "react";
 import { Row, Form } from "antd";
 import useInput from "../../../hooks/useInput";
 import isInputEmpty from "../../../helpers/isInputEmpty";
@@ -14,17 +14,19 @@ import Button from "../../../components/Button";
 import Result from "../../../components/Result";
 import { CustomStatus } from "../../../components/Result/Result";
 import ColorStatus from "../../../types/ColorStatus";
+import Message from "../../../components/Message";
 
 interface IModalProps {
     open: boolean;
     handleClose: () => void;
     fetchCases: () => void;
+    noStep2?: boolean;
+    setCase?: Dispatch<SetStateAction<string>>;
 }
 
-const CaseModal = ({ open, handleClose, fetchCases }: IModalProps) => {
+const CaseModal = ({ open, handleClose, fetchCases, noStep2, setCase }: IModalProps) => {
     const [caseNumber, setCaseNumber] = React.useState("");
     const [displaySuccess, setDisplaySuccess] = React.useState(false);
-
     const elementRef = useRef(null);
     const { inputValue: caseNameValue, input: caseNameInput, invalid: caseNameInvalid, setValue } = useInput(
         isInputEmpty,
@@ -39,11 +41,23 @@ const CaseModal = ({ open, handleClose, fetchCases }: IModalProps) => {
     const [createCase, loading, error, data] = useCreateCase();
 
     useEffect(() => {
-        if (data) {
+        if (data && !noStep2) {
             setDisplaySuccess(true);
             if (elementRef.current) elementRef.current.focus();
         }
-    }, [data]);
+        if (data && noStep2) {
+            fetchCases();
+            setCaseNumber("");
+            setValue("");
+            Message({
+                content: "The case was successfully created!",
+                type: "success",
+                duration: 3,
+            });
+            setCase(data.id);
+            handleClose();
+        }
+    }, [data, noStep2, handleClose, setCase, setValue, fetchCases]);
 
     const handleCloseAndRedirect = () => {
         if (loading) {
@@ -61,15 +75,11 @@ const CaseModal = ({ open, handleClose, fetchCases }: IModalProps) => {
         }
         handleClose();
     };
-    const handleKeyDownEvent = (e) => {
-        if (e.key === "Escape") {
-            handleCloseAndRedirect();
-        }
-    };
+
     return (
         <Modal destroyOnClose visible={open} centered onlyBody onCancel={handleCloseAndRedirect}>
-            <div ref={elementRef} tabIndex={-1} onKeyDown={handleKeyDownEvent}>
-                {displaySuccess ? (
+            <div>
+                {displaySuccess && !noStep2 ? (
                     <Result
                         title="Your case has been added successfully!"
                         subTitle="You can now start adding files, collaborators and depositions to this case"
@@ -88,7 +98,7 @@ const CaseModal = ({ open, handleClose, fetchCases }: IModalProps) => {
                 ) : (
                     <Space direction="vertical" size="large" fullWidth>
                         <Space.Item fullWidth>
-                            <Title level={4} weight="light" noMargin>
+                            <Title dataTestId="add_new_case_modal" level={4} weight="light" noMargin>
                                 Add case
                             </Title>
                             <Text state={ColorStatus.disabled} ellipsis={false}>

@@ -11,7 +11,7 @@ export interface ISelectProps extends SelectProps<any> {
     invalid?: boolean;
 }
 
-const dropdownHeight = theme.default.baseUnit * 17.5;
+const dropdownHeight = theme.default.baseUnit * 17.25;
 
 export const StyledSelect = styled(ANTSelect).attrs((props: ISelectProps) => ({
     invalid: props.invalid ? "true" : undefined,

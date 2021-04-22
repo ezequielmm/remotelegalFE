@@ -4,7 +4,6 @@ import * as CONSTANTS from "../constants/createDeposition";
 
 const getDepositionSchema = (isAdmin) =>
     yup.object().shape({
-        caseId: yup.string().nullable().required(CONSTANTS.CASE_ERROR).label("Case"),
         depositions: yup.array().of(
             yup.object().shape({
                 date: yup.string().nullable().required(CONSTANTS.DATE_ERROR).label("Date"),

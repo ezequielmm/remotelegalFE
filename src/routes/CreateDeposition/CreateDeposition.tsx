@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Form } from "antd";
 import { useHistory } from "react-router";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -22,10 +22,10 @@ import { useUserIsAdmin } from "../../hooks/users/hooks";
 const CreateDeposition = () => {
     const [createdDepositions, setCreatedDepositions] = React.useState(0);
     const [checkIfUserIsAdmin, loadingUserIsAdmin, errorUserIsAdmin, userIsAdmin] = useUserIsAdmin();
-
     const { error: fetchingCasesError, data, loading: loadingCases, refreshList } = useFetchCases();
     const [scheduleDepositions, loading, error, response] = useScheduleDepositions();
-
+    const [selectedCaseId, setSelectedCaseId] = useState("");
+    const [invalidCase, setInvalidCase] = useState(false);
     const cases = React.useMemo(() => (Array.isArray(data) ? data : []), [data]);
     const history = useHistory();
 
@@ -50,15 +50,10 @@ const CreateDeposition = () => {
     };
 
     const submitDepositions = (values) => {
-        const {
-            depositions,
-            requesterPhone,
-            requesterName,
-            requesterEmail,
-            caseId,
-            details,
-            otherParticipants,
-        } = values;
+        if (!selectedCaseId) {
+            return;
+        }
+        const { depositions, requesterPhone, requesterName, requesterEmail, details, otherParticipants } = values;
         const normalizedParticipants = otherParticipants?.map((participant) => ({
             ...participant,
             email: participant.email === "" ? null : participant.email,
@@ -74,7 +69,11 @@ const CreateDeposition = () => {
             normalizedParticipants,
         });
 
-        scheduleDepositions({ depositionList: mappedDepositions, files, caseId });
+        scheduleDepositions({
+            depositionList: mappedDepositions,
+            files,
+            caseId: selectedCaseId,
+        });
     };
 
     return createdDepositions || fetchingCasesError || errorUserIsAdmin ? (
@@ -96,7 +95,16 @@ const CreateDeposition = () => {
                             Schedule Deposition
                         </Title>
                     </Space.Item>
-                    <CaseSection cases={cases} loadingCases={loadingCases} fetchingError={fetchingCasesError} />
+                    <CaseSection
+                        invalidCase={invalidCase}
+                        setInvalidCase={setInvalidCase}
+                        selectedCaseId={selectedCaseId}
+                        setSelectedCaseId={setSelectedCaseId}
+                        fetchCases={refreshList}
+                        cases={cases}
+                        loadingCases={loadingCases}
+                        fetchingError={fetchingCasesError}
+                    />
                     <WitnessesSection />
                     <OtherParticipantsSection />
                     <DetailsSection />
@@ -117,7 +125,11 @@ const CreateDeposition = () => {
                             data-testid="create_deposition_button"
                             loading={loading || loadingUserIsAdmin}
                             htmlType="submit"
-                            onClick={methods.handleSubmit(submitDepositions)}
+                            onClick={() => {
+                                if (!selectedCaseId) {
+                                    setInvalidCase(true);
+                                }
+                            }}
                             type="primary"
                         >
                             {CONSTANTS.SCHEDULE_DEPOSITION}

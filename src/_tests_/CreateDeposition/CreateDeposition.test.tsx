@@ -20,6 +20,51 @@ const customDeps = getMockDeps();
 
 beforeEach(() => jest.resetModules());
 
+it("Should show case selection validation if no case is selected", async () => {
+    const { getByText, getByTestId } = renderWithGlobalContext(<CreateDeposition />);
+    await waitForDomChange();
+    fireEvent.click(getByTestId("create_deposition_button"));
+    await waitForDomChange();
+    expect(getByText(CONSTANTS.INVALID_CASE_MESSAGE)).toBeInTheDocument();
+});
+it("Should show case selection validation on blur", async () => {
+    const { getByText, container } = renderWithGlobalContext(<CreateDeposition />);
+    const caseSelect = await waitForElement(() => getByText(CONSTANTS.CASE_SELECT_PLACEHOLDER));
+    act(() => {
+        fireEvent.blur(caseSelect);
+    });
+    userEvent.click(container);
+    await waitForDomChange();
+    expect(getByText(CONSTANTS.INVALID_CASE_MESSAGE)).toBeInTheDocument();
+});
+it("Should show case modal", async () => {
+    const { getByText, getByTestId } = renderWithGlobalContext(<CreateDeposition />);
+    const caseSelect = await waitForElement(() => getByText(CONSTANTS.CASE_SELECT_PLACEHOLDER));
+    act(() => {
+        userEvent.click(caseSelect);
+    });
+    userEvent.click(getByTestId("new_case_button"));
+    await waitForDomChange();
+    expect(getByTestId("add_new_case_modal")).toBeInTheDocument();
+});
+
+it("Should show a toast when adding a new case", async () => {
+    const { getByText, getByTestId, getByPlaceholderText } = renderWithGlobalContext(<CreateDeposition />);
+    const caseSelect = await waitForElement(() => getByText(CONSTANTS.CASE_SELECT_PLACEHOLDER));
+    act(() => {
+        userEvent.click(caseSelect);
+    });
+    userEvent.click(getByTestId("new_case_button"));
+    await waitForDomChange();
+
+    fireEvent.change(getByPlaceholderText("Type case name"), {
+        target: { value: CASE_TEST_CONSTANTS.getOneCase()[0].name },
+    });
+    fireEvent.click(getByTestId("Add case"));
+    await waitForDomChange();
+    expect(getByText("The case was successfully created!")).toBeInTheDocument();
+});
+
 it("Court Reporter shouldn´t appear again in the options once selected", async () => {
     const { getByTestId, getByText, getAllByText } = renderWithGlobalContext(<CreateDeposition />);
     const addParticipantButton = getByTestId("show_modal_add_participants_button");

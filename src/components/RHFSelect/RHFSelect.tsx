@@ -1,11 +1,13 @@
 import { SelectProps } from "antd/lib/select";
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import RHFWrapper from "../RHFWrapper";
 import { RHFWrapperProps } from "../RHFWrapper/RHFWrapper";
 import Select from "../Select";
 
 interface RHFSelectProps extends RHFWrapperProps {
     disabled?: boolean;
+    customInvalid?: boolean;
+    controlledValue?: string;
     filterChange?: (value: string) => void;
     loading?: boolean;
     placeholder?: string;
@@ -14,11 +16,17 @@ interface RHFSelectProps extends RHFWrapperProps {
     filter?: SelectProps<any>["filterOption"];
     dataTestId?: string;
     items: Record<string, any>;
+    controlledOnChange?: Dispatch<SetStateAction<string>>;
+    controlledOnBlur?: () => void;
+    afteScrollRender?: React.ReactNode;
 }
 
 export default function RHFSelect({
     disabled,
     loading,
+    customInvalid,
+    controlledOnChange,
+    controlledValue,
     items,
     filter,
     filterChange,
@@ -26,6 +34,8 @@ export default function RHFSelect({
     renderUnselectableOption,
     renderItem,
     dataTestId,
+    controlledOnBlur,
+    afteScrollRender,
     ...wrapperProps
 }: RHFSelectProps) {
     if (items.length && typeof items[0] === "object" && !renderItem) {
@@ -37,19 +47,34 @@ export default function RHFSelect({
         <RHFWrapper
             component={({ onChange, onBlur, value }) => (
                 <Select
+                    defaultValue={wrapperProps.defaultValue}
                     onSearch={filterChange}
                     data-testid={dataTestId}
-                    defaultValue={wrapperProps.defaultValue}
                     disabled={disabled}
                     loading={loading}
                     placeholder={placeholder}
-                    onBlur={onBlur}
-                    onChange={onChange}
-                    value={value}
-                    invalid={!!wrapperProps.errorMessage}
+                    onBlur={() => {
+                        if (controlledOnBlur) {
+                            return controlledOnBlur();
+                        }
+                        return onBlur();
+                    }}
+                    onChange={(val: string) => {
+                        if (controlledOnChange) {
+                            return controlledOnChange(val);
+                        }
+                        return onChange(val);
+                    }}
+                    value={controlledValue || value}
+                    invalid={customInvalid || !!wrapperProps.errorMessage}
                     showSearch={!!filter}
                     optionFilterProp="children"
                     filterOption={filter}
+                    dropdownRender={(menu) => (
+                        <div>
+                            {menu} {afteScrollRender}
+                        </div>
+                    )}
                 >
                     {items.map((item) =>
                         typeof item === "string" ? (

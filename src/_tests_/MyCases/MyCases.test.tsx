@@ -1,5 +1,6 @@
 import { fireEvent, waitForDomChange, waitForElement } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import "mutationobserver-shim";
 import React from "react";
 import MyCases from "../../routes/MyCases";
 import * as CONSTANTS from "../constants/cases";
