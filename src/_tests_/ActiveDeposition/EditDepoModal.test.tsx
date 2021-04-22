@@ -10,27 +10,30 @@ import renderWithGlobalContext from "../utils/renderWithGlobalContext";
 import ActiveDepositionDetails from "../../routes/ActiveDepoDetails";
 import changeTimeZone, { changeDate } from "../../routes/ActiveDepoDetails/helpers/changeTimeZone";
 import { TimeZones, mapTimeZone } from "../../models/general";
+import getModalTextContent from "../../routes/ActiveDepoDetails/helpers/getModalTextContent";
+import { Status } from "../../components/StatusPill/StatusPill";
 
 const customDeps = getMockDeps();
 
 describe("Tests Edit Deposition Modal", () => {
     test("Shows toast when submitting", async () => {
         const { startDate } = TEST_CONSTANTS.EXPECTED_DEPOSITION_BODY;
-        const fullDeposition = getDepositionWithOverrideValues({ startDate, endDate: null });
+        const fullDeposition = getDepositionWithOverrideValues({ startDate, endDate: null, status: "Pending" });
         customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
             return fullDeposition;
         });
         customDeps.apiService.editDeposition = jest.fn().mockImplementation(async () => {
             return {};
         });
-        const { getAllByTestId, getAllByText, getByTestId } = renderWithGlobalContext(
+        const modalText = getModalTextContent(Status.confirmed, fullDeposition);
+        const { getAllByTestId, getAllByText, getByTestId, getByText } = renderWithGlobalContext(
             <ActiveDepositionDetails />,
             customDeps
         );
         await waitForDomChange();
         const editButton = getAllByTestId(CONSTANTS.DEPOSITION_CARD_DETAILS_EDIT_BUTTON_DATA_TEST_ID);
         fireEvent.click(editButton[0]);
-        const options = getAllByText("pending");
+        const options = getAllByText("Pending");
         userEvent.click(options[2]);
         const confirmed = await waitForElement(() => getAllByText("Confirmed"));
         userEvent.click(confirmed[1]);
@@ -57,7 +60,13 @@ describe("Tests Edit Deposition Modal", () => {
         });
         userEvent.click(getByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_CONFIRM_BUTTON_TEST_ID));
         await waitForDomChange();
-        await waitForElement(() => getAllByText(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_SUCCESS_TOAST));
+        expect(getByText(modalText.cancelButton)).toBeInTheDocument();
+        expect(getByText(modalText.confirmButton)).toBeInTheDocument();
+        expect(getByText(modalText.message)).toBeInTheDocument();
+        expect(getByText(modalText.title)).toBeInTheDocument();
+        fireEvent.click(getByText(modalText.confirmButton));
+        await waitForDomChange();
+        await waitForElement(() => getAllByText(CONSTANTS.DEPOSITION_DETAILS_CHANGE_TO_CONFIRM_EMAIL_SENT_TO_ALL));
         expect(customDeps.apiService.editDeposition).toHaveBeenCalledWith(
             fullDeposition.id,
             {

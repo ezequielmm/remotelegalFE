@@ -262,5 +262,6 @@ export const DEPOSITION_DETAILS_ADD_PARTICIPANT_CONFIRM_MODAL_ID = "add_particip
 export const DEPOSITION_DETAILS_ADD_PARTICIPANT_CONFIRM_TITLE = "Add Participant";
 export const DEPOSITION_DETAILS_ADD_PARTICIPANT_CONFIRM_CONFIRM_NO = "NO, CANCEL";
 export const DEPOSITION_DETAILS_ADD_PARTICIPANT_CONFIRM_CONFIRM_YES = "YES, ADD";
-export const DEPOSITION_DETAILS_CHANGE_TO_CONFIRM_EMAIL_SENT_TO_ALL = "An email has been sent to all invited parties";
+export const DEPOSITION_DETAILS_CHANGE_TO_CONFIRM_EMAIL_SENT_TO_ALL =
+    "Deposition has been updated successfully and invitation email has been sent to the parties";
 export const DEPOSITION_DETAILS_CHANGE_TO_CONFIRM_EMAIL_SENT = "An email has been sent to participant";

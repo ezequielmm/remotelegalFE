@@ -92,6 +92,7 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
     });
     const { file, caption, deleteCaption, ...bodyWithoutFile } = formStatus;
     const isStatusCanceled = formStatus.status === Status.canceled;
+    const isStatusConfirmed = deposition.status === Status.pending && formStatus.status === Status.confirmed;
     const [invalidStartTime, setInvalidStartTime] = useState(false);
     const [invalidEndTime, setInvalidEndTime] = useState(false);
     const [openRescheduleModal, setRescheduleModal] = useState({
@@ -116,15 +117,20 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
         }, 200);
     };
     useEffect(() => {
+        const content = isStatusConfirmed
+            ? CONSTANTS.DEPOSITION_DETAILS_CHANGE_TO_CONFIRM_EMAIL_SENT_TO_ALL
+            : CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_SUCCESS_TOAST;
+
         if (editedDeposition || canceledDeposition || revertedCanceledDeposition || rescheduledDeposition) {
             Message({
-                content: CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_SUCCESS_TOAST,
+                content,
                 type: "success",
                 duration: 3,
             });
             handleClose(false);
             setTimeout(() => fetchDeposition(), 200);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [
         editedDeposition,
         fetchDeposition,
@@ -146,6 +152,7 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
 
     const handleSubmit = () => {
         const isDepoConfirmedAndNowCanceled = isStatusCanceled && deposition.status === Status.confirmed;
+        const isDepoNowConfirmed = formStatus.status === Status.confirmed;
         const isDepoReverted = deposition.status === Status.canceled && !isStatusCanceled && !invalidFile;
         const isRescheduled =
             !formStatus.startDate.isSame(deposition.startDate) ||
@@ -154,6 +161,12 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
             deposition.timeZone !== formStatus.timeZone;
 
         if (isDepoConfirmedAndNowCanceled || isDepoReverted) {
+            return setStatusModal({
+                open: true,
+                modalContent: getModalTextContent(formStatus.status, deposition),
+            });
+        }
+        if (isDepoNowConfirmed) {
             return setStatusModal({
                 open: true,
                 modalContent: getModalTextContent(formStatus.status, deposition),
@@ -277,7 +290,9 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
             <Confirm
                 onNegativeClick={() => setStatusModal({ ...openStatusModal, open: false })}
                 onPositiveClick={() => {
-                    setStatusModal({ ...openStatusModal, open: false });
+                    if (isStatusConfirmed) {
+                        return editDeposition(deposition.id, bodyWithoutFile, file, deleteCaption);
+                    }
                     return isStatusCanceled
                         ? cancelDeposition(deposition.id)
                         : revertCancelDeposition(deposition.id, bodyWithoutFile, file, deleteCaption);
