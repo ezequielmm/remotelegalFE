@@ -18,5 +18,6 @@ export const PRStartMessage = Template.bind({});
 PRStartMessage.args = {
     icon: CalendarIcon,
     title: "The Deposition is scheduled for Thu, April 1, 2021, 10:00 AM",
-    description: "The deposition will start when the Court Reporter joins the room.",
+    description:
+        "Welcome to the Pre-Deposition Lobby. You can upload Exhibits in preparation for the Deposition here. Invited participants will be automatically redirected to the Deposition once the Court Reporter joins. Guests who joined from a shared link will first need to be reviewed by the Court Reporter before entering the Deposition. ",
 };
