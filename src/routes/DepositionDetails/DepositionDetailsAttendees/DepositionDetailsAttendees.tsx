@@ -38,12 +38,13 @@ export default function DepositionDetailsAttendees({
             const attendeesArray = attendees.map((participant: IParticipant) => {
                 const { email, id, name, phone, role, user } = participant;
                 const isCourtReporter = role === Roles.courtReporter;
+
                 return {
                     id,
                     name: user ? `${user.firstName} ${user.lastName}` : name,
                     user,
                     email: !userIsAdmin && role === "Witness" ? "" : email,
-                    phone: !userIsAdmin && role === "Witness" ? "" : phone,
+                    phone: !userIsAdmin && role === "Witness" ? "" : phone || user?.phoneNumber,
                     role: isCourtReporter ? "Court Reporter" : role,
                 };
             });
