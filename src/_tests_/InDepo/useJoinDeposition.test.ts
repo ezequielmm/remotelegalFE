@@ -24,6 +24,11 @@ jest.mock("react-router", () => ({
     useParams: () => ({ depositionID: "test1234" }),
 }));
 
+jest.mock("use-sound", () => {
+    return jest.fn().mockImplementation(() => [jest.fn()]);
+});
+import useSound from "use-sound";
+
 jest.mock("../../helpers/configParticipantListeners", () => ({
     __esModule: true,
     default: jest.fn(),
@@ -49,7 +54,8 @@ test("It calls dispatch with proper actions", async () => {
 
 test("It does not call audio play function if no participant were added", async () => {
     configParticipantListeners.mockImplementation((room, callback) => {});
-    const playStub = jest.spyOn(window.HTMLMediaElement.prototype, "play").mockResolvedValue(null);
+    const playMock = jest.fn();
+    useSound.mockImplementation((sound) => [playMock]);
     AUTH.VALID();
     const { result } = renderHook(() => useJoinDeposition(), { wrapper });
     const [joinToRoom] = result.current;
@@ -57,14 +63,15 @@ test("It does not call audio play function if no participant were added", async 
     await act(async () => {
         await wait(200);
         await joinToRoom();
-        expect(playStub).not.toHaveBeenCalled();
-        playStub.mockRestore();
+        expect(playMock).not.toHaveBeenCalled();
     });
 });
 
 test("It calls audio play function when a participant is added", async () => {
     configParticipantListeners.mockImplementation((room, callback) => callback());
-    const playStub = jest.spyOn(window.HTMLMediaElement.prototype, "play").mockResolvedValue(null);
+    const playMock = jest.fn();
+    useSound.mockImplementation((sound) => [playMock]);
+    const [play] = useSound("sound");
     AUTH.VALID();
     const { result } = renderHook(() => useJoinDeposition(), { wrapper });
     const [joinToRoom] = result.current;
@@ -72,7 +79,6 @@ test("It calls audio play function when a participant is added", async () => {
     await act(async () => {
         await wait(200);
         await joinToRoom();
-        expect(playStub).toHaveBeenCalled();
-        playStub.mockRestore();
+        expect(play).toHaveBeenCalled();
     });
 });
