@@ -328,14 +328,22 @@ const table = forwardRef(({ scroll, ...props }: ITableProps) => {
             (tableRef.current?.getElementsByClassName("ant-table-wrapper")[0] as HTMLElement) || null;
         const tableHeader: HTMLElement =
             (tableRef.current?.getElementsByClassName("ant-table-thead")[0] as HTMLElement) || null;
+        const tablePagination: HTMLElement =
+            (tableRef.current?.getElementsByClassName("ant-table-pagination")[0] as HTMLElement) || null;
+        const tablePaginationMargin: number = tablePagination
+            ? parseInt(window.getComputedStyle(tablePagination as Element)?.marginTop, 10) +
+              parseInt(window.getComputedStyle(tablePagination as Element)?.marginBottom, 10)
+            : 0;
         const wrapperHeight: number = tableWrapper?.offsetHeight || 0;
         const headerHeight: number = tableHeader?.offsetHeight || 0;
-        const tableContentHeight: number = wrapperHeight && headerHeight ? wrapperHeight - headerHeight : 0;
+        const paginationHeight: number = tablePagination?.offsetHeight + tablePaginationMargin || 0;
+        const tableContentHeight: number =
+            wrapperHeight && headerHeight ? wrapperHeight - headerHeight - paginationHeight : 0;
         setTableScrollHeight(tableContentHeight);
     }, [props.dataSource, windowHeight]);
 
     return (
-        <div ref={tableRef} style={{ height: "100%", width: "100%" }}>
+        <div ref={tableRef} style={{ flex: 1, overflow: "hidden", width: "100%" }}>
             <StyledTable {...props} scroll={scroll && props.dataSource ? { y: tableScrollHeight } : null} />
         </div>
     );

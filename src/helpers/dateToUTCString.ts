@@ -1,1 +1,1 @@
-export const dateToUTCString = () => new Date().toUTCString();
+export const dateToUTCString = (date) => new Date(date).toUTCString();

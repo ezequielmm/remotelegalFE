@@ -1,5 +1,6 @@
 import React from "react";
 import { useParams } from "react-router";
+import { DEPOSITIONS_COUNT_PER_PAGE } from "../../constants/depositions";
 import { DepositionModel } from "../../models";
 import { IDeposition } from "../../models/deposition";
 import { GlobalStateContext } from "../../state/GlobalState";
@@ -33,27 +34,50 @@ export const useFetchDeposition = () => {
 export const useFetchDepositions = () => {
     const [sortedField, setSortedField] = React.useState();
     const [sortDirection, setSortDirection] = React.useState();
+    const [pageNumber, setPageNumber] = React.useState(1);
+    const [currentFilter, setCurrentFilter] = React.useState({});
 
     const { deps } = React.useContext(GlobalStateContext);
     const [fetchDepositions, loading, error, data] = useAsyncCallback<
         any,
-        { depositions: IDeposition[]; totalPast: number; totalUpcoming: number }
+        { depositions: IDeposition[]; totalPast: number; totalUpcoming: number; page: number; numberOfPages: number }
     >(async (payload) => {
-        const response: IDeposition[] = await deps.apiService.fetchDepositions(payload);
+        const response: IDeposition[] = await deps.apiService.fetchDepositions({
+            pageSize: DEPOSITIONS_COUNT_PER_PAGE,
+            page: pageNumber,
+            ...payload,
+        });
         return response;
     }, []);
 
     const handleListChange = React.useCallback(
-        (pag, filter = undefined, sorter = undefined) => {
-            const newSortedField = sorter?.field;
-            const newSortDirection = sorter?.order;
-            setSortedField(newSortedField);
-            setSortDirection(newSortDirection);
-            const sortParams =
-                newSortDirection === undefined ? {} : { sortedField: newSortedField, sortDirection: newSortDirection };
-            fetchDepositions({ ...sortParams, ...filter });
+        (pagination, filter = undefined, sorter = undefined) => {
+            const page = pagination?.current;
+            const newFilter = { ...currentFilter, ...filter };
+            if (filter) {
+                setCurrentFilter(newFilter);
+            }
+            if (sorter?.order) {
+                setSortedField(sorter?.field);
+                setSortDirection(sorter?.order);
+            }
+            if (page) {
+                setPageNumber(page);
+            }
+            const sortParams = !sorter?.order
+                ? {}
+                : {
+                      sortedField: sorter?.field ?? undefined,
+                      sortDirection: sorter.order ? sorter.order : undefined,
+                  };
+            const pageParams = { page: page ?? pageNumber };
+            fetchDepositions({
+                ...sortParams,
+                ...newFilter,
+                ...pageParams,
+            });
         },
-        [fetchDepositions]
+        [fetchDepositions, setPageNumber, pageNumber, currentFilter]
     );
 
     const refreshList = React.useCallback(() => {
@@ -73,6 +97,8 @@ export const useFetchDepositions = () => {
             depositions: data?.depositions,
             totalPast: data?.totalPast,
             totalUpcoming: data?.totalUpcoming,
+            page: data?.page || 1,
+            numberOfPages: data?.numberOfPages,
             loading,
             refreshList,
         }),

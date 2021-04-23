@@ -163,3 +163,5 @@ export const EMPTY_UPCOMING_DEPOSITIONS_TITLE = "No upcoming depositions to show
 export const EMPTY_PAST_DEPOSITIONS_TITLE = "No past depositions to show.";
 export const UPCOMING_DEPOSITION_TAB_TITLE = "UPCOMING DEPOSITIONS";
 export const PAST_DEPOSITION_TAB_TITLE = "PAST DEPOSITIONS";
+
+export const DEPOSITIONS_COUNT_PER_PAGE = 20;

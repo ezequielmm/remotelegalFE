@@ -1,4 +1,4 @@
-import { Row } from "antd";
+import { Row, Col } from "antd";
 import moment from "moment-timezone";
 import React, { useState } from "react";
 import styled from "styled-components";
@@ -9,6 +9,7 @@ import { Status } from "../../components/StatusPill/StatusPill";
 import Table from "../../components/Table";
 import Space from "../../components/Space";
 import Tabs from "../../components/Tabs";
+import DatePicker from "../../components/DatePicker";
 import Title from "../../components/Typography/Title";
 import * as CONSTANTS from "../../constants/depositions";
 import { dateToUTCString } from "../../helpers/dateToUTCString";
@@ -17,6 +18,9 @@ import { useUserIsAdmin } from "../../hooks/users/hooks";
 import { Roles } from "../../models/participant";
 import { FilterCriteria } from "../../types/DepositionFilterCriteriaType";
 import MyDepositionsEmptyTable from "./MyDepositionsEmptyTable";
+import { DEPOSITIONS_COUNT_PER_PAGE } from "../../constants/depositions";
+
+const { RangePicker } = DatePicker;
 
 const StyledSpaceItem = styled(Space.Item)`
     overflow: hidden;
@@ -56,6 +60,7 @@ const MyDepositions = () => {
         totalUpcoming,
         loading,
         refreshList,
+        page,
     } = useFetchDepositions();
     const [checkIfUserIsAdmin, loadingUserIsAdmin, errorUserIsAdmin, userIsAdmin] = useUserIsAdmin();
     const [sorting, setSorting] = useState(null);
@@ -106,15 +111,21 @@ const MyDepositions = () => {
     );
 
     const getFilterParam = (key: FilterCriteria) => {
-        if (key === FilterCriteria.UPCOMING) {
-            return null;
-        }
-        return { MaxDate: dateToUTCString() };
+        return { PastDepositions: key === FilterCriteria.PAST };
     };
 
     const onDepositionTabChange = (key: FilterCriteria) => {
         setFilterCriteria(key);
-        handleListChange(1, getFilterParam(key), sorting);
+        handleListChange({ current: 1 }, getFilterParam(key), sorting);
+    };
+
+    const onFilterByDateChange = (dateRange) => {
+        const [minDate = null, maxDate = null] = dateRange || [];
+        const dateRangeFilter = {
+            MinDate: minDate ? dateToUTCString(minDate?.startOf("day")) : undefined,
+            MaxDate: maxDate ? dateToUTCString(maxDate?.endOf("day")) : undefined,
+        };
+        handleListChange({ current: 1 }, dateRangeFilter, sorting);
     };
 
     return (
@@ -142,6 +153,22 @@ const MyDepositions = () => {
                                     key={FilterCriteria.PAST}
                                 />
                             </Tabs>
+                            <Row justify="space-between" style={{ width: "100%" }}>
+                                <Col lg={5}>
+                                    <RangePicker
+                                        data-testid="depositions_date_range"
+                                        disabled={loading}
+                                        disabledDate={(date) => date.isAfter(moment().add(364, "day"))}
+                                        ranges={{
+                                            Today: [moment(), moment()],
+                                            "This Week": [moment().startOf("week"), moment().endOf("week")],
+                                            "This Month": [moment().startOf("month"), moment().endOf("month")],
+                                        }}
+                                        onChange={(dateRange) => onFilterByDateChange(dateRange)}
+                                    />
+                                </Col>
+                            </Row>
+
                             <Table
                                 data-testid="my_depositions_table"
                                 cursorPointer={userIsAdmin}
@@ -166,7 +193,13 @@ const MyDepositions = () => {
                                     handleListChange(page, getFilterParam(filterCriteria), sorter);
                                 }}
                                 sortDirections={["descend", "ascend"]}
-                                pagination={false}
+                                pagination={{
+                                    current: page,
+                                    position: ["bottomRight"],
+                                    pageSize: DEPOSITIONS_COUNT_PER_PAGE,
+                                    total: filterCriteria === FilterCriteria.UPCOMING ? totalUpcoming : totalPast,
+                                    showSizeChanger: false,
+                                }}
                                 scroll
                                 style={{ height: "100%" }}
                                 locale={{
