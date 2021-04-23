@@ -90,6 +90,7 @@ jobs:
               run: |
                   echo "DISTRIBUTION=$DIST" >> $GITHUB_ENV
                   echo "BUCKET=prp-fe-uat" >> $GITHUB_ENV
+                  echo "us-east-1" >> $REGION
             - name: Extract Bucket & CloudFront Distribution Id for PROD
               if: ${{ steps.extract-branch.outputs.branch == 'prod' }}
               shell: bash
@@ -97,8 +98,9 @@ jobs:
                   DIST: ${{ secrets.DISTRIBUTION_PROD }}
               run: |
                   echo "DISTRIBUTION=$DIST" >> $GITHUB_ENV
-                  echo "BUCKET=prp-fe-uat" >> $GITHUB_ENV                  
+                  echo "BUCKET=prp-fe-prod" >> $GITHUB_ENV     
+                  echo "us-east-2" >> $REGION             
             - name: Upload publish to S3
               run: |
-                  aws s3 sync ./build s3://$BUCKET --metadata-directive REPLACE --cache-control 'max-age=86400,must-revalidate,public' --delete
-                  aws cloudfront create-invalidation --distribution-id $DISTRIBUTION --paths "/*"
+                  aws s3 sync ./build s3://$BUCKET --metadata-directive REPLACE --cache-control 'max-age=86400,must-revalidate,public' --delete --region $REGION
+                  aws cloudfront create-invalidation --distribution-id $DISTRIBUTION --paths "/*" --region $REGION
