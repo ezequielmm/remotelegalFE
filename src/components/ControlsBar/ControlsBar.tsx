@@ -17,6 +17,7 @@ import { ReactComponent as RecordIcon } from "../../assets/in-depo/Record.svg";
 import { ReactComponent as SummaryIcon } from "../../assets/in-depo/Summary.svg";
 import { ReactComponent as SupportIcon } from "../../assets/in-depo/Support.svg";
 import { ReactComponent as UnmuteIcon } from "../../assets/in-depo/Unmute.svg";
+import { ReactComponent as KebebHorizontalIcon } from "../../assets/icons/kebeb.horizontal.svg";
 import * as CONSTANTS from "../../constants/inDepo";
 import { theme } from "../../constants/styles/theme";
 import { getREM } from "../../constants/styles/utils";
@@ -36,7 +37,6 @@ import { ThemeMode } from "../../types/ThemeType";
 import Button from "../Button";
 import Confirm from "../Confirm";
 import Control from "../Control/Control";
-import Divider from "../Divider";
 import Dropdown from "../Dropdown";
 import Icon from "../Icon";
 import Logo from "../Logo";
@@ -90,7 +90,7 @@ export default function ControlsBar({
     const [chatOpen, togglerChat] = useState(false);
     const [unreadedChats, setUnreadedChats] = useState(0);
     const [summaryOpen, togglerSummary] = useState(false);
-    const [supportOpen, togglerSupport] = useState(false);
+    const [moreOpen, togglerMore] = useState(false);
     const [breakroomsOpen, togglerBreakrooms] = useState(false);
     const [modal, setModal] = useState(false);
     const [breakroomModal, setBreakroomModal] = useState(false);
@@ -107,7 +107,7 @@ export default function ControlsBar({
     const toggleBreakrooms = () => togglerBreakrooms((prevState) => !prevState);
     const toggleChat = () => togglerChat((prevState) => !prevState);
     const toggleSummary = () => togglerSummary((prevState) => !prevState);
-    const toggleSupport = () => togglerSupport((prevState) => !prevState);
+    const toggleMore = () => togglerMore((prevState) => !prevState);
     const toggleExhibits = () => togglerExhibits((prevState) => !prevState);
     const toggleRealTime = () => togglerRealTime((prevState) => !prevState);
     const toggleLeaveModal = () => setOpenLeaveModal((prevState) => !prevState);
@@ -312,7 +312,7 @@ export default function ControlsBar({
                                 overlay={<Menu>{renderBreakrooms()}</Menu>}
                                 arrow
                                 styled
-                                placement="topCenter"
+                                placement="topRight"
                                 trigger={["click"]}
                             >
                                 <Control
@@ -324,12 +324,7 @@ export default function ControlsBar({
                                 />
                             </Dropdown>
                         )}
-                    </Space>
-                    <Space py={3} fullHeight>
-                        <Divider type="vertical" fitContent hasMargin={false} />
-                    </Space>
-                    {!disableChat && (
-                        <Space align="center">
+                        {!disableChat && (
                             <ThemeProvider theme={{ ...theme, mode: ThemeMode.default }}>
                                 <Dropdown
                                     dataTestId={CONSTANTS.CHAT_DROPDOWN_TEST_ID}
@@ -345,7 +340,7 @@ export default function ControlsBar({
                                             errorLoadingClient={errorLoadingClient}
                                         />
                                     }
-                                    placement="topRight"
+                                    placement="topCenter"
                                     onVisibleChange={toggleChat}
                                     visible={chatOpen}
                                     trigger={["click"]}
@@ -371,16 +366,12 @@ export default function ControlsBar({
                                     />
                                 </Dropdown>
                             </ThemeProvider>
-                        </Space>
-                    )}
-                    <Space align="center">
+                        )}
                         <Dropdown
                             dataTestId="summary_button"
-                            overlay={summaryOpen && <CopyLink closePopOver={toggleSummary} link={joinDepositionLink} />}
+                            overlay={<CopyLink closePopOver={toggleSummary} link={joinDepositionLink} />}
                             placement="topRight"
-                            onVisibleChange={(visible) => {
-                                if (!visible) toggleSummary();
-                            }}
+                            onVisibleChange={toggleSummary}
                             visible={summaryOpen}
                             trigger={["click"]}
                             arrow
@@ -390,19 +381,43 @@ export default function ControlsBar({
                         >
                             <Control
                                 isActive={summaryOpen}
-                                onClick={toggleSummary}
                                 type="simple"
                                 label={CONSTANTS.CONTROLS_BAR_SUMMARY_LABEL}
                                 icon={<Icon icon={SummaryIcon} size="1.625rem" />}
                             />
                         </Dropdown>
-                        <Control
-                            isActive={supportOpen}
-                            onClick={toggleSupport}
-                            type="simple"
-                            label={CONSTANTS.CONTROLS_BAR_SUPPORT_LABEL}
-                            icon={<Icon icon={SupportIcon} size="1.625rem" />}
-                        />
+                        <Dropdown
+                            dataTestId="more_dropdown"
+                            onVisibleChange={toggleMore}
+                            visible={moreOpen}
+                            overlay={
+                                <Menu>
+                                    <Menu.Item key="0">
+                                        <Button data-testid="support_button" type="link">
+                                            <Space size="small" align="center">
+                                                <Icon icon={SupportIcon} size={8} color={ColorStatus.white} />
+                                                <Text state={ColorStatus.white} size="small">
+                                                    {CONSTANTS.CONTROLS_BAR_SUPPORT_LABEL}
+                                                </Text>
+                                            </Space>
+                                        </Button>
+                                    </Menu.Item>
+                                </Menu>
+                            }
+                            arrow
+                            styled
+                            overlayStyle={{ width: getREM(theme.default.spaces[6] * 10) }}
+                            placement="topRight"
+                            trigger={["click"]}
+                        >
+                            <Control
+                                data-testid="more_control"
+                                isActive={moreOpen}
+                                type="simple"
+                                label={CONSTANTS.CONTROLS_BAR_MORE_LABEL}
+                                icon={<Icon icon={KebebHorizontalIcon} size="1.625rem" />}
+                            />
+                        </Dropdown>
                     </Space>
                     {!canEnd && !canRecord && (
                         <Control
