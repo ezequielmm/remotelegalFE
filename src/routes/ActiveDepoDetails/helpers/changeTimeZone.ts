@@ -11,7 +11,7 @@ export const changeDate = (newDate: Moment, timeZone: string, oldDate: Moment): 
     const m = moment().tz(mapTimeZone[timeZone]);
     m.set("year", newDate.get("year"));
     m.set("month", newDate.get("month"));
-    m.set("day", newDate.get("day"));
+    m.set("date", newDate.get("date"));
     m.set("hour", oldDate.get("hour"));
     m.set("minute", oldDate.get("minute"));
     m.set("seconds", oldDate.get("seconds"));
