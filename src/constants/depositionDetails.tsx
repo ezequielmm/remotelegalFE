@@ -132,6 +132,7 @@ export const DEPOSITION_DETAILS_TRANSCRIPTS_COLUMNS = [
 ];
 
 export const DEPOSITION_DETAILS_TRANSCRIPT_ROUGH_TYPE = "DraftTranscription";
+export const DEPOSITION_DETAILS_DELETABLE_TRANSCRIPT_TYPE = "Transcription";
 export const DEPOSITION_DETAILS_SUMMARY_DOWNLOAD_RECORDING_TITLE = "RECORDING";
 export const NETWORK_ERROR = "An unexpected error occurred! Please try again";
 export const DEPOSITION_DETAILS_REMOVE_TRANSCRIPT_TOAST = "The transcript was successfully removed";

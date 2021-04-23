@@ -4,6 +4,7 @@ export const getTranscriptFileList = () => {
             name: "e12506dc-d47d-43b4-9649-2fc106277179.pdf",
             displayName: "Document_1.pdf",
             size: 123007,
+            documentType: "Transcription",
             id: "ea70e1e0-47ed-4f37-0c67-08d8da9670ee",
             creationDate: "2021-03-01T18:44:44+00:00",
             addedBy: {
@@ -127,6 +128,7 @@ export const getTranscriptFileListOnlyOne = [
     {
         name: "e12506dc-d47d-43b4-9649-2fc106277179.pdf",
         displayName: "Document_1.pdf",
+        documentType: "Transcription",
         size: 123007,
         id: "ea70e1e0-47ed-4f37-0c67-08d8da9670ee",
         creationDate: "2021-03-01T18:44:44+00:00",

@@ -138,7 +138,7 @@ const DepositionDetailsTranscripts = () => {
         ...CONSTANTS.DEPOSITION_DETAILS_TRANSCRIPTS_COLUMNS,
         {
             render: (record: TranscriptFile) => {
-                return record?.documentType !== CONSTANTS.DEPOSITION_DETAILS_TRANSCRIPT_ROUGH_TYPE
+                return record?.documentType === CONSTANTS.DEPOSITION_DETAILS_DELETABLE_TRANSCRIPT_TYPE
                     ? !loadingUserIsAdmin && !errorUserIsAdmin && userIsAdmin && (
                           <Space fullWidth>
                               <Icon

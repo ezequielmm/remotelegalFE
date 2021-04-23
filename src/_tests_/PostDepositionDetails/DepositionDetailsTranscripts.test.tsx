@@ -6,7 +6,7 @@ import * as TEST_CONSTANTS from "../constants/depositionDetails";
 import DepositionDetailsTranscript from "../../routes/DepositionDetails/DepositionDetailsTranscript/DepositionDetailsTranscript";
 import * as CONSTANTS from "../../constants/depositionDetails";
 import getMockDeps from "../utils/getMockDeps";
-import { getTranscriptFileListOnlyOne } from "../mocks/transcriptsFileList";
+import { getTranscriptFileList, getTranscriptFileListOnlyOne } from "../mocks/transcriptsFileList";
 import downloadFile from "../../helpers/downloadFile";
 import { wait } from "../../helpers/wait";
 
@@ -39,7 +39,7 @@ describe("Deposition Details Transcripts", () => {
         await waitForDomChange();
         expect(queryByText(CONSTANTS.DETAILS_TRANSCRIPT_BUTTON_UPLOAD)).toBeFalsy();
     });
-    it("show DELETE button only if user is admin", async () => {
+    it("show DELETE button only if user is admin and file is a transcription", async () => {
         customDeps.apiService.currentUser = jest.fn().mockResolvedValue(SIGN_UP_CONSTANTS.getUser1());
         const mockDataTestId = `${getTranscriptFileListOnlyOne[0].id}_delete_icon`;
         const { getByTestId } = renderWithGlobalContext(<DepositionDetailsTranscript />, customDeps);
@@ -116,5 +116,15 @@ describe("Deposition Details Transcripts", () => {
         expect(customDeps.apiService.notifyParties).toHaveBeenCalledWith(
             TEST_CONSTANTS.DEPOSITION_DETAILS_TRANSCRIPT_DOWNLOAD_RESPONSE_BODY.depositionID
         );
+    });
+    it("doesn´t show delete button if user is admin and file is not a transcription", async () => {
+        const transcriptionWordFile = getTranscriptFileList()[0];
+        transcriptionWordFile.documentType = "WordTranscript";
+        customDeps.apiService.fetchTranscriptsFiles = jest.fn().mockResolvedValue([transcriptionWordFile]);
+        customDeps.apiService.currentUser = jest.fn().mockResolvedValue(SIGN_UP_CONSTANTS.getUser1());
+        const mockDataTestId = `${getTranscriptFileListOnlyOne[0].id}_delete_icon`;
+        const { queryByTestId } = renderWithGlobalContext(<DepositionDetailsTranscript />, customDeps);
+        await waitForDomChange();
+        expect(queryByTestId(mockDataTestId)).toBeFalsy();
     });
 });
