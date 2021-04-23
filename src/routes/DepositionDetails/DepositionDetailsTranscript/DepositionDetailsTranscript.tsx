@@ -197,7 +197,7 @@ const DepositionDetailsTranscripts = () => {
                         <Button
                             type="primary"
                             data-testid={CONSTANTS.DETAILS_TRANSCRIPT_BUTTON_TEST_ID}
-                            icon={<Icon icon={DownloadIcon} size={8} />}
+                            icon={<Icon icon={DownloadIcon} size={9} />}
                             size="middle"
                             disabled={isDownloadDisabled}
                             onClick={handleDownload}
