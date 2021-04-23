@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Checkbox, Col, Form, Row } from "antd";
 import { Redirect, Link } from "react-router-dom";
 import useInput from "../../hooks/useInput";
+import { useFrontEndContent } from "../../hooks/frontEndContent/useFrontEndContent";
 import Space from "../../components/Space";
 import Container from "../../components/Container";
 import Alert from "../../components/Alert";
@@ -17,10 +18,11 @@ import Title from "../../components/Typography/Title";
 import Text from "../../components/Typography/Text";
 import { InputWrapper } from "../../components/Input/styles";
 import ColorStatus from "../../types/ColorStatus";
-import ENV from "../../constants/env";
+import * as CONSTANTS from "../../constants/preJoinDepo";
 
 const SignUp = ({ location }) => {
     const { isAuthenticated } = useAuthentication();
+    const { getFrontEndContent, frontEndContent } = useFrontEndContent();
     const [checked, setChecked] = useState(false);
     const { inputValue: nameValue, input: nameInput, invalid: nameInvalid } = useInput(isInputEmpty, {
         name: "firstname",
@@ -79,6 +81,19 @@ const SignUp = ({ location }) => {
         placeholder: "Confirm your password",
         type: "password",
     });
+    const [linkToTermsAndConditions, setLinkToTermsAndConditions] = useState("");
+
+    useEffect(() => {
+        getFrontEndContent();
+    }, [getFrontEndContent]);
+
+    useEffect(() => {
+        if (frontEndContent) {
+            const termsOfUseURL = frontEndContent.filter(({ name }) => name === CONSTANTS.PREJOIN_TERMS_OF_USE_KEY)[0]
+                .url;
+            setLinkToTermsAndConditions(termsOfUseURL);
+        }
+    }, [frontEndContent]);
 
     React.useEffect(() => {
         const passwordsMatch = passwordValue === confirmPasswordValue;
@@ -301,7 +316,7 @@ const SignUp = ({ location }) => {
                                             onChange={() => setChecked(!checked)}
                                         >
                                             I agree to Remote Legal{" "}
-                                            <Button href={`${ENV.API.URL}/terms.html`} type="link">
+                                            <Button href={linkToTermsAndConditions} type="link" target="_blank">
                                                 Terms of Use and Privacy Policy
                                             </Button>
                                         </Checkbox>
