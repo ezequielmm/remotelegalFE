@@ -190,6 +190,7 @@ const PreJoinDepo = () => {
                         defaultName={userStatus?.participant?.name}
                         disableRoleSelect={userStatus?.participant?.role}
                         termsOfUseURL={linkToTermsAndConditions}
+                        isUser={userStatus?.isUser}
                     />
                 ) : (
                     step === 2 && (
@@ -206,6 +207,7 @@ const PreJoinDepo = () => {
                             disableRoleSelect={userStatus?.participant?.role}
                             returnFunc={resetStep}
                             termsOfUseURL={linkToTermsAndConditions}
+                            isUser={false}
                         />
                     )
                 )}

@@ -23,6 +23,7 @@ interface IParticipantForm {
     hideBackButton?: boolean;
     joinDeposition: (role: string, userData: string) => void;
     termsOfUseURL: string;
+    isUser: boolean;
 }
 const StyledEmailContainer = styled.div`
     margin-bottom: 24px;
@@ -49,6 +50,7 @@ const ParticipantInfoForm = ({
     passwordInput,
     hideBackButton,
     termsOfUseURL,
+    isUser,
 }: IParticipantForm) => {
     const [name, setName] = useState<InputState>({
         value: "",
@@ -116,29 +118,31 @@ const ParticipantInfoForm = ({
                 name={name}
                 setRole={setRole}
             />
-            <StyledCheckBoxsContainer>
-                <StyledCheckBoxWrapper>
-                    <Checkbox
-                        data-testid={CONSTANTS.PREJOIN_CERTIFY_INFORMATION_TEXT_TEST_ID}
-                        checked={certifyInformation}
-                        onChange={() => setCertifyInformation(!certifyInformation)}
-                    >
-                        {CONSTANTS.PREJOIN_CERTIFY_INFORMATION_TEXT}
-                    </Checkbox>
-                </StyledCheckBoxWrapper>
-                <StyledCheckBoxWrapper>
-                    <Checkbox
-                        data-testid={CONSTANTS.PREJOIN_AGREE_TERMS_AND_CONDITION_TEXT_TEST_ID}
-                        checked={agreeTerms}
-                        onChange={() => setAgreeTerms(!agreeTerms)}
-                    >
-                        {CONSTANTS.PREJOIN_AGREE_TERMS_AND_CONDITION_TEXT}
-                        <Button type="link" href={termsOfUseURL} target="_blank">
-                            {CONSTANTS.PREJOIN_TERMS_AND_CONDITION_LINK_TEXT}
-                        </Button>
-                    </Checkbox>
-                </StyledCheckBoxWrapper>
-            </StyledCheckBoxsContainer>
+            {!isUser && (
+                <StyledCheckBoxsContainer>
+                    <StyledCheckBoxWrapper>
+                        <Checkbox
+                            data-testid={CONSTANTS.PREJOIN_CERTIFY_INFORMATION_TEXT_TEST_ID}
+                            checked={certifyInformation}
+                            onChange={() => setCertifyInformation(!certifyInformation)}
+                        >
+                            {CONSTANTS.PREJOIN_CERTIFY_INFORMATION_TEXT}
+                        </Checkbox>
+                    </StyledCheckBoxWrapper>
+                    <StyledCheckBoxWrapper>
+                        <Checkbox
+                            data-testid={CONSTANTS.PREJOIN_AGREE_TERMS_AND_CONDITION_TEXT_TEST_ID}
+                            checked={agreeTerms}
+                            onChange={() => setAgreeTerms(!agreeTerms)}
+                        >
+                            {CONSTANTS.PREJOIN_AGREE_TERMS_AND_CONDITION_TEXT}
+                            <Button type="link" href={termsOfUseURL} target="_blank">
+                                {CONSTANTS.PREJOIN_TERMS_AND_CONDITION_LINK_TEXT}
+                            </Button>
+                        </Checkbox>
+                    </StyledCheckBoxWrapper>
+                </StyledCheckBoxsContainer>
+            )}
 
             <Wizard.Actions>
                 {!hideBackButton && (
@@ -157,7 +161,7 @@ const ParticipantInfoForm = ({
                     loading={loading}
                     onClick={handleSubmit}
                     data-testid={CONSTANTS.STEP_2_BUTTON_ID}
-                    disabled={loading || !certifyInformation || !agreeTerms}
+                    disabled={loading || (!isUser && (!certifyInformation || !agreeTerms))}
                     type="primary"
                     htmlType="submit"
                 >
