@@ -24,7 +24,9 @@ const DepositionDetailsHeader = ({ deposition }: { deposition: DepositionModel.I
     const [formattedDates, setFormattedDates] = useState<string[]>([]);
     const { caseName, caseNumber, witness, completeDate, startDate, status, timeZone, job, actualStartDate } =
         deposition || {};
-
+    const witnessName = witness?.user?.firstName
+        ? `${witness?.user?.firstName} ${witness?.user?.lastName}`
+        : witness?.name;
     useEffect(() => {
         const startDateToShow = actualStartDate || startDate;
         if (!startDateToShow || !completeDate) return;
@@ -85,7 +87,7 @@ const DepositionDetailsHeader = ({ deposition }: { deposition: DepositionModel.I
                                 <Text size="small" uppercase state={ColorStatus.white} lineHeight={1.25}>
                                     {CONSTANTS.DEPOSITION_DETAILS_HEADER_WITNESS}
                                 </Text>
-                                <Tooltip title={witness?.name}>
+                                <Tooltip title={witnessName}>
                                     <TitleWrapper>
                                         <Title
                                             dataTestId="deposition_details_header_witness_name"
@@ -94,7 +96,7 @@ const DepositionDetailsHeader = ({ deposition }: { deposition: DepositionModel.I
                                             color={ColorStatus.white}
                                             noMargin
                                         >
-                                            {witness?.name}
+                                            {witnessName}
                                         </Title>
                                     </TitleWrapper>
                                 </Tooltip>

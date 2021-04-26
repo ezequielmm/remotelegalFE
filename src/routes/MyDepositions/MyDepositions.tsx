@@ -81,7 +81,9 @@ const MyDepositions = () => {
                     requester: `${requester.firstName} ${requester.lastName}`,
                     caseName: `${depositionsData.caseName} ${depositionsData.caseNumber}`,
                     startDate: parseDate(depositionsData),
-                    witness: witness?.name,
+                    witness: witness?.user?.firstName
+                        ? `${witness?.user?.firstName} ${witness?.user?.lastName}`
+                        : witness?.name,
                     courtReporter: courtReporter?.name,
                     job,
                     details: "-",

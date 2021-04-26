@@ -23,7 +23,9 @@ import { mapTimeZone } from "../../../models/general";
 const ActiveDepositionDetailsHeader = ({ deposition }: { deposition: DepositionModel.IDeposition }) => {
     const [formattedDates, setFormattedDates] = useState<string[]>([]);
     const { caseName, caseNumber, witness, endDate, startDate, status, timeZone, job } = deposition || {};
-
+    const witnessName = witness?.user?.firstName
+        ? `${witness?.user?.firstName} ${witness?.user?.lastName}`
+        : witness?.name;
     useEffect(() => {
         if (!startDate) return;
         const formattedStartDate =
@@ -83,7 +85,7 @@ const ActiveDepositionDetailsHeader = ({ deposition }: { deposition: DepositionM
                                 <Text size="small" uppercase state={ColorStatus.white} lineHeight={1.25}>
                                     {CONSTANTS.DEPOSITION_DETAILS_HEADER_WITNESS}
                                 </Text>
-                                <Tooltip title={witness?.name || CONSTANTS.DEPOSITION_NO_PARTICIPANT_TEXT}>
+                                <Tooltip title={witnessName || CONSTANTS.DEPOSITION_NO_PARTICIPANT_TEXT}>
                                     <TitleWrapper>
                                         <Title
                                             dataTestId="deposition_details_header_witness_name"
@@ -92,7 +94,7 @@ const ActiveDepositionDetailsHeader = ({ deposition }: { deposition: DepositionM
                                             color={ColorStatus.white}
                                             noMargin
                                         >
-                                            {witness?.name || CONSTANTS.DEPOSITION_NO_PARTICIPANT_TEXT}
+                                            {witnessName || CONSTANTS.DEPOSITION_NO_PARTICIPANT_TEXT}
                                         </Title>
                                     </TitleWrapper>
                                 </Tooltip>
