@@ -1,4 +1,4 @@
-import React, { ReactElement, useState } from "react";
+import React, { ReactElement, useEffect, useState } from "react";
 import { LocalAudioTrack, LocalParticipant, LocalVideoTrack } from "twilio-video";
 import useParticipantTracks from "../../hooks/InDepo/useParticipantTracks";
 import useTracksStatus from "../../hooks/InDepo/useTracksStatus";
@@ -8,6 +8,8 @@ import { ReactComponent as UnmuteIcon } from "../../assets/in-depo/Unmute.svg";
 import { ReactComponent as CameraOnIcon } from "../../assets/in-depo/Camera.on.svg";
 import { ReactComponent as CameraOffIcon } from "../../assets/in-depo/Camera.off.svg";
 import { ReactComponent as BreakroomsIcon } from "../../assets/in-depo/Breakrooms.svg";
+import { ReactComponent as LockBreakroomIcon } from "../../assets/icons/Lock.svg";
+import { ReactComponent as UnLockBreakroomIcon } from "../../assets/icons/Unlock.svg";
 import { ReactComponent as ExhibitsIcon } from "../../assets/in-depo/Exhibits.svg";
 import Control from "../Control/Control";
 import Tag from "../Tag";
@@ -32,6 +34,8 @@ interface IBreakroomControlsBar {
     exhibitsOpen: boolean;
     togglerExhibits: React.Dispatch<React.SetStateAction<boolean>> | ((value: React.SetStateAction<boolean>) => void);
     rejoinDepo: () => void;
+    lockRoom: (isLock: boolean) => void;
+    isLocked: boolean;
 }
 
 export default function BreakroomControlsBar({
@@ -40,6 +44,8 @@ export default function BreakroomControlsBar({
     exhibitsOpen,
     togglerExhibits,
     rejoinDepo,
+    lockRoom,
+    isLocked,
 }: IBreakroomControlsBar): ReactElement {
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const { videoTracks, audioTracks } = useParticipantTracks(localParticipant);
@@ -53,6 +59,17 @@ export default function BreakroomControlsBar({
         if (isLeaving) {
             rejoinDepo();
         }
+    };
+
+    const [toggledLockRoom, setToggledLockRoom] = useState<boolean>(false);
+
+    useEffect(() => {
+        setToggledLockRoom(isLocked);
+    }, [isLocked]);
+
+    const handleLockRoom = () => {
+        setToggledLockRoom(!toggledLockRoom);
+        lockRoom(!toggledLockRoom);
     };
 
     return (
@@ -128,6 +145,14 @@ export default function BreakroomControlsBar({
                                 icon={<Icon icon={ExhibitsIcon} size="1.625rem" />}
                             />
                         )}
+                        <Control
+                            data-testid="lock_breakroom"
+                            type="simple"
+                            isActive={isLocked}
+                            label="Lock Breakroom"
+                            onClick={() => handleLockRoom()}
+                            icon={<Icon icon={isLocked ? LockBreakroomIcon : UnLockBreakroomIcon} size="1.625rem" />}
+                        />
                         <Control
                             data-testid="end"
                             onClick={() => setIsModalOpen(!isModalOpen)}

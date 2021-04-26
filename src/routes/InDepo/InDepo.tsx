@@ -138,18 +138,30 @@ const InDepo = () => {
     useEffect(() => {
         const onReceiveAnnotations = (message) => {
             if (
-                message.entityType !== NotificationEntityType.bringAllTo ||
-                (currentUser?.id && currentUser?.id === message?.content?.userId)
-            )
-                return;
-            dispatch(actions.setCurrentExhibitPage("-1"));
-            dispatch(actions.setCurrentExhibitPage(message?.content?.documentLocation));
+                message.entityType === NotificationEntityType.bringAllTo &&
+                currentUser?.id &&
+                currentUser?.id === message?.content?.userId
+            ) {
+                dispatch(actions.setCurrentExhibitPage("-1"));
+                dispatch(actions.setCurrentExhibitPage(message?.content?.documentLocation));
+            }
+            if (message.entityType === NotificationEntityType.lockBreakRoom) {
+                dispatch(
+                    actions.setBreakrooms(
+                        breakrooms.map((breakroom) => ({
+                            ...breakroom,
+                            isLocked:
+                                breakroom.id === message?.content?.id ? message?.content?.isLocked : breakroom.isLocked,
+                        }))
+                    )
+                );
+            }
         };
         subscribeToGroup("ReceiveNotification", onReceiveAnnotations);
         return () => {
             unsubscribeMethodFromGroup("ReceiveNotification", onReceiveAnnotations);
         };
-    }, [subscribeToGroup, unsubscribeMethodFromGroup, currentUser, dispatch]);
+    }, [subscribeToGroup, unsubscribeMethodFromGroup, currentUser, dispatch, breakrooms]);
 
     if (userIsAdminLoading || (loading && userStatus === null && shouldSendToPreDepo === null)) {
         return <Spinner />;
@@ -199,6 +211,10 @@ const InDepo = () => {
                 <StyledRoomFooter>
                     <ControlsBar
                         breakrooms={breakrooms}
+                        canJoinToLockedBreakroom={
+                            userIsAdmin ||
+                            JSON.parse(currentRoom?.localParticipant?.identity || "{}").role === Roles.courtReporter
+                        }
                         handleJoinBreakroom={(breakroomId) => {
                             history.push(`/deposition/join/${depositionID}/breakroom/${breakroomId}`);
                         }}

@@ -252,3 +252,64 @@ test("Shows correct modal text if participant is a witness and the depo is recor
     await wait(500);
     expect(mockHistoryPush).not.toHaveBeenCalled();
 });
+
+test("Shows a locked breakroom item when a breakroom is locked", async () => {
+    AUTH.VALID();
+    const breakroomsWithOneLocked = getBreakrooms(true);
+    const { queryByTestId } = renderWithGlobalContext(
+        <ControlsBar
+            {...props}
+            localParticipant={getParticipant("test", "Witness")}
+            isRecording
+            breakrooms={breakroomsWithOneLocked}
+        />
+    );
+    fireEvent.click(queryByTestId("breakrooms"));
+    expect(queryByTestId("breakroom_locked")).toBeInTheDocument();
+});
+
+test("Shows a locked breakroom item when a breakroom is locked", async () => {
+    AUTH.VALID();
+    const breakroomsWithOneLocked = getBreakrooms(true);
+    const { queryByTestId } = renderWithGlobalContext(
+        <ControlsBar
+            {...props}
+            localParticipant={getParticipant("test", "Witness")}
+            isRecording
+            breakrooms={breakroomsWithOneLocked}
+        />
+    );
+    fireEvent.click(queryByTestId("breakrooms"));
+    expect(queryByTestId("breakroom_locked")).toBeInTheDocument();
+});
+
+test("Shows a locked breakroom item when a breakroom is locked and show disabled if canJoinToLockedBreakroom is false", async () => {
+    AUTH.VALID();
+    const breakroomsWithOneLocked = getBreakrooms(true);
+    const { queryByTestId } = renderWithGlobalContext(
+        <ControlsBar
+            {...props}
+            localParticipant={getParticipant("test", "Witness")}
+            isRecording
+            breakrooms={breakroomsWithOneLocked}
+        />
+    );
+    fireEvent.click(queryByTestId("breakrooms"));
+    expect(queryByTestId("breakroom_locked")).toBeDisabled();
+});
+
+test("Shows a locked breakroom item when a breakroom is locked and show disabled if canJoinToLockedBreakroom is true", async () => {
+    AUTH.VALID();
+    const breakroomsWithOneLocked = getBreakrooms(true);
+    const { queryByTestId } = renderWithGlobalContext(
+        <ControlsBar
+            {...props}
+            localParticipant={getParticipant("test", "Witness")}
+            isRecording
+            breakrooms={breakroomsWithOneLocked}
+            canJoinToLockedBreakroom
+        />
+    );
+    fireEvent.click(queryByTestId("breakrooms"));
+    expect(queryByTestId("breakroom_locked")).not.toBeDisabled();
+});

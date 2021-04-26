@@ -97,3 +97,15 @@ test("Confirm modal exists when end button is clicked", async () => {
     fireEvent.click(await findByTestId("end"));
     expect(queryByTestId("modalconfirm")).toBeInTheDocument();
 });
+
+test("unlock icon should be exists when is not locked", async () => {
+    const { queryByTestId, queryByText } = renderWithGlobalContext(<BreakroomControlsBar {...props} />);
+    expect(queryByTestId("lock_breakroom")).toBeInTheDocument();
+    expect(queryByText("Unlock.svg")).toBeInTheDocument();
+});
+
+test("lock icon should be exists when is locked", async () => {
+    const { queryByTestId, queryByText } = renderWithGlobalContext(<BreakroomControlsBar {...props} isLocked />);
+    expect(queryByTestId("lock_breakroom")).toBeInTheDocument();
+    expect(queryByText("Lock.svg")).toBeInTheDocument();
+});

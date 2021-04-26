@@ -491,6 +491,15 @@ export class ApiService {
         });
     };
 
+    lockRoom = async ({ depositionID, breakroomID, isLock }): Promise<boolean> => {
+        return this.request<boolean>({
+            path: `/api/Depositions/${depositionID}/breakrooms/${breakroomID}/lock?lockRoom=${isLock}`,
+            payload: {},
+            withToken: true,
+            method: HTTP_METHOD.POST,
+        });
+    };
+
     bringAllToMe = async ({ depositionID, page }): Promise<boolean> => {
         return this.request<boolean>({
             path: `/api/Depositions/${depositionID}/BringAllToMe`,

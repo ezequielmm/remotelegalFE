@@ -111,3 +111,6 @@ export const LEAVE_DEPOSITION_MODAL_WITNESS_ON_THE_RECORD_POSITIVE_BUTTON_LABEL 
 export const LEAVE_DEPOSITION_MODAL_NEGATIVE_BUTTON_LABEL = "No, stay";
 export const PRE_DEPOSITION_START_TIME_DESCRIPTION =
     "Welcome to the Pre-Deposition Lobby. You can upload Exhibits in preparation for the Deposition here. Invited participants will be automatically redirected to the Deposition once the Court Reporter joins. Guests who joined from a shared link will first need to be reviewed by the Court Reporter before entering the Deposition. ";
+
+export const BREAKROOM_IS_LOCKED = "Breakroom locked - Other participants won't be able to enter the room";
+export const BREAKROOM_IS_UNLOCKED = "Breakroom unlocked - Other participants will be able to enter the room";

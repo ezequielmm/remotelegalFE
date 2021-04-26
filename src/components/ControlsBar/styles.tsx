@@ -47,5 +47,8 @@ export const LockedMenuItem = styled(Menu.Item)`
                 theme.mode === ThemeMode.default ? theme.colors.neutrals[5] : theme.colors.secondary[6]
             } !important;
         }
+        .ant-btn-link .anticon{
+            margin-right: 0;
+        }
     `}
 `;

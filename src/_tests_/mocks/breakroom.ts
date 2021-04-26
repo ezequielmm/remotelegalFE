@@ -1,11 +1,11 @@
 import { BreakroomModel } from "../../models";
 
 /* eslint-disable import/prefer-default-export */
-export const getBreakrooms = (): BreakroomModel.Breakroom[] => [
+export const getBreakrooms = (isLocked = false): BreakroomModel.Breakroom[] => [
     {
         id: "d4403be9-1066-4aed-b1fe-08d8d8ef50e8",
         name: "Breakroom 1",
-        isLocked: false,
+        isLocked,
         currentAttendees: [
             {
                 id: "2318a78f-ae33-4f80-bdd7-8d5d189472ff",

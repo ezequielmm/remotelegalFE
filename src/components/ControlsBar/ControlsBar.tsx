@@ -18,6 +18,7 @@ import { ReactComponent as SummaryIcon } from "../../assets/in-depo/Summary.svg"
 import { ReactComponent as SupportIcon } from "../../assets/in-depo/Support.svg";
 import { ReactComponent as UnmuteIcon } from "../../assets/in-depo/Unmute.svg";
 import { ReactComponent as KebebHorizontalIcon } from "../../assets/icons/kebeb.horizontal.svg";
+import { ReactComponent as LockIcon } from "../../assets/icons/Lock.svg";
 import * as CONSTANTS from "../../constants/inDepo";
 import { theme } from "../../constants/styles/theme";
 import { getREM } from "../../constants/styles/utils";
@@ -46,10 +47,11 @@ import Text from "../Typography/Text";
 import CopyLink from "./components/CopyLink";
 import EndDepoModal from "./components/EndDepoModal";
 import getLeaveModalTextContent from "./helpers/getLeaveModalTextContent";
-import { StyledComposedIconContainer, StyledContainer, StyledLogo } from "./styles";
+import { LockedMenuItem, StyledComposedIconContainer, StyledContainer, StyledLogo } from "./styles";
 
 interface IControlsBar {
     breakrooms?: BreakroomModel.Breakroom[];
+    canJoinToLockedBreakroom?: boolean;
     disableBreakrooms?: boolean;
     disableChat?: boolean;
     canRecord: boolean;
@@ -67,6 +69,7 @@ interface IControlsBar {
 
 export default function ControlsBar({
     breakrooms,
+    canJoinToLockedBreakroom = false,
     disableBreakrooms = false,
     disableChat = false,
     leaveWithoutModal = false,
@@ -159,25 +162,48 @@ export default function ControlsBar({
 
         breakrooms.forEach((item, i) => {
             menuItems.push(
-                <Menu.Item disabled $unsetDisabledCursor key={item.id}>
-                    <Space align="center" justify="space-between" size="large" fullWidth>
-                        <Text block state={ColorStatus.white}>
-                            {item.name}
-                        </Text>
-                        <Button
-                            disabled={disableBreakrooms}
-                            data-testid="join_breakroom"
-                            onClick={() => {
-                                toggleBreakrooms();
-                                if (isRecording) return setBreakroomModal(true);
-                                handleJoinBreakroom(item.id);
-                            }}
-                            type="link"
-                        >
-                            {CONSTANTS.CONTROLS_BAR_JOIN_BUTTON}
-                        </Button>
-                    </Space>
-                </Menu.Item>
+                item.isLocked ? (
+                    <LockedMenuItem disabled $unsetDisabledCursor key="key-0">
+                        <Space align="center" justify="space-between" size="large" fullWidth>
+                            <Text block state={ColorStatus.disabled}>
+                                {item.name}
+                            </Text>
+                            <Button
+                                icon={<Icon icon={LockIcon} />}
+                                disabled={!canJoinToLockedBreakroom}
+                                data-testid="breakroom_locked"
+                                type="link"
+                                onClick={() => {
+                                    toggleBreakrooms();
+                                    if (isRecording) return setBreakroomModal(true);
+                                    handleJoinBreakroom(item.id);
+                                }}
+                            >
+                                LOCKED
+                            </Button>
+                        </Space>
+                    </LockedMenuItem>
+                ) : (
+                    <Menu.Item disabled $unsetDisabledCursor key={item.id}>
+                        <Space align="center" justify="space-between" size="large" fullWidth>
+                            <Text block state={ColorStatus.white}>
+                                {item.name}
+                            </Text>
+                            <Button
+                                disabled={disableBreakrooms}
+                                data-testid="join_breakroom"
+                                onClick={() => {
+                                    toggleBreakrooms();
+                                    if (isRecording) return setBreakroomModal(true);
+                                    handleJoinBreakroom(item.id);
+                                }}
+                                type="link"
+                            >
+                                {CONSTANTS.CONTROLS_BAR_JOIN_BUTTON}
+                            </Button>
+                        </Space>
+                    </Menu.Item>
+                )
             );
             if (breakrooms.length > i + 1) menuItems.push(<Menu.Divider key={`${item.id}divider`} />);
         });
