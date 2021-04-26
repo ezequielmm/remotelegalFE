@@ -28,10 +28,6 @@ const disconnectFromDepo = async (
         startTime: "",
     };
     const doesRoomExistAndIsParticipantConnected = room?.localParticipant?.state === "connected";
-    if (killDepo && typeof killDepo === "function") {
-        // TODO: Handle errors when closing the room
-        await killDepo();
-    }
     if (doesRoomExistAndIsParticipantConnected) {
         room.localParticipant.tracks.forEach((trackPublication: any) => {
             return trackPublication.track.kind === "audio" || trackPublication.kind === "video"
@@ -41,6 +37,10 @@ const disconnectFromDepo = async (
         room.disconnect();
         dispatch(actions.disconnect(initialState));
     }
-    return history?.push("/deposition/end", { depositionID, isWitness: false });
+    history?.push("/deposition/end", { depositionID, isWitness: false });
+    if (killDepo && typeof killDepo === "function") {
+        // TODO: Handle errors when closing the room
+        await killDepo();
+    }
 };
 export default disconnectFromDepo;
