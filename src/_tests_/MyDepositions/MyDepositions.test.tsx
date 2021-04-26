@@ -436,34 +436,6 @@ describe("MyDepositions", () => {
         });
     });
 
-    it("Should no able to select a date before than min date ", async () => {
-        const deposition = CONSTANTS.getDepositionWithOverrideValues({ status: "Completed" });
-        const depositions = [deposition];
-        const totalUpcoming = 0;
-        const totalPast = 1;
-        customDeps.apiService.fetchDepositions = jest.fn().mockResolvedValue({ depositions, totalUpcoming, totalPast });
-        customDeps.apiService.currentUser = jest.fn().mockResolvedValue(SIGN_UP_CONSTANTS.getUser1());
-        const { getByPlaceholderText, queryAllByText, queryByTitle } = renderWithGlobalContext(
-            <MyDepositions />,
-            customDeps
-        );
-        await waitForDomChange();
-        const startDateRangeInput = getByPlaceholderText("Start date");
-        await act(async () => {
-            await userEvent.click(startDateRangeInput);
-        });
-
-        const minMaxDate = moment();
-
-        await act(async () => {
-            await fireEvent.click(queryAllByText(minMaxDate.format("D"))[0]);
-        });
-
-        expect(queryByTitle(minMaxDate.subtract(1, "day").format("YYYY-MM-DD"))).toHaveClass(
-            "ant-picker-cell-disabled"
-        );
-    });
-
     it("Should not able select the date after today + 365 days", async () => {
         const deposition = CONSTANTS.getDepositionWithOverrideValues({ status: "Completed" });
         const depositions = [deposition];
