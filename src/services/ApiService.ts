@@ -119,13 +119,9 @@ export class ApiService {
     };
 
     joinDeposition = async (depositionID: string): Promise<DepositionModel.DepositionPermissions> => {
-        const formData = new FormData();
-        const { browser, device } = getBrowserInfo();
-        formData.set("json", JSON.stringify({ browser, device }));
         return this.request({
             path: `/api/depositions/${depositionID}/join`,
-            formData,
-            withContentType: false,
+            withContentType: true,
             method: HTTP_METHOD.POST,
         });
     };
@@ -243,9 +239,11 @@ export class ApiService {
         });
     };
 
-    registerGuestDepoParticipant = async (depositionID: string, payload) => {
+    registerGuestDepoParticipant = async (depositionId: string, rest) => {
+        const { browser, device } = getBrowserInfo();
+        const payload = { browser, device, ...rest };
         return this.request({
-            path: `/api/Depositions/${depositionID}/addGuestParticipant`,
+            path: `/api/Depositions/${depositionId}/addGuestParticipant`,
             payload,
             withToken: false,
             method: HTTP_METHOD.POST,
