@@ -102,7 +102,8 @@ const InDepo = () => {
         if (depositionID && isAuthenticated !== null && userIsAdmin !== undefined) {
             joinDeposition(depositionID);
         }
-    }, [depositionID, joinDeposition, isAuthenticated, userIsAdmin]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [depositionID, isAuthenticated, userIsAdmin]);
 
     useEffect(() => {
         setAtendeesVisibility((prev) => !prev);

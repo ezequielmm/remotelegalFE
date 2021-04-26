@@ -236,7 +236,6 @@ export const useJoinDeposition = () => {
             }
             dispatch(actions.setToken(token));
             dispatch(actions.joinToRoom(room));
-
             dispatch(actions.setParticipantsData(participants));
             dispatch(actions.setIsRecording(isOnTheRecord));
             dispatch(actions.setPermissions(permissions));

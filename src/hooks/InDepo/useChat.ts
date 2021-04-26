@@ -1,5 +1,5 @@
 import { Client } from "@twilio/conversations";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router";
 import { GlobalStateContext } from "../../state/GlobalState";
 import { DepositionID } from "../../state/types";
@@ -13,15 +13,23 @@ const useChat = ({ chatOpen, disableChat, setUnreadedChats, unreadedChats }): an
     const { depositionID } = useParams<DepositionID>();
 
     const { currentRoom, token } = state.room;
+    const isMounted = useRef(true);
+
+    useEffect(() => {
+        return () => {
+            isMounted.current = false;
+        };
+    }, []);
 
     const [loadClient, loadingClient, errorLoadingClient] = useAsyncCallback(async () => {
         const newConversationsClient = await Client.create(token);
-
         const newConversation = await newConversationsClient.getConversationByUniqueName(depositionID);
-        setConversation(newConversation);
-        setConversationsClient(newConversationsClient);
         const newMessages = (await newConversation.getMessages()).items;
-        setMessages(newMessages);
+        if (isMounted.current) {
+            setConversation(newConversation);
+            setConversationsClient(newConversationsClient);
+            setMessages(newMessages);
+        }
     }, []);
 
     useEffect(() => {
@@ -45,7 +53,7 @@ const useChat = ({ chatOpen, disableChat, setUnreadedChats, unreadedChats }): an
     }, [messages, conversationsClient, setUnreadedChats, unreadedChats, chatOpen]);
 
     useEffect(() => {
-        if (!token || disableChat) return;
+        if (!token || disableChat || !isMounted.current) return;
         loadClient();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [token]);

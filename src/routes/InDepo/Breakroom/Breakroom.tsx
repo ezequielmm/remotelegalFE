@@ -69,7 +69,8 @@ const Breakroom = () => {
         if (breakroomID) {
             joinBreakroom(breakroomID);
         }
-    }, [breakroomID, joinBreakroom]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [breakroomID]);
 
     const handleRejoinDepo = useCallback(() => {
         if (depositionID) {

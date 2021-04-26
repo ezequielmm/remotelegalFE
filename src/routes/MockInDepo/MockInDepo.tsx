@@ -113,7 +113,8 @@ const InDepo = () => {
         if (depositionID) {
             joinDeposition(depositionID);
         }
-    }, [depositionID, joinDeposition]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [depositionID]);
 
     useEffect(() => {
         setAtendeesVisibility((prev) => !prev);
