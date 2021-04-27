@@ -31,3 +31,5 @@ export const EXPECTED_DEPOSITION_BODY = {
     status: "Confirmed",
     timeZone: "ET",
 };
+export const ACTIVE_DEPO_DETAILS_ROUTE = "/deposition/details/";
+export const ACTIVE_POST_DEPO_DETAILS_ROUTE = "/deposition/post-depo-details/:depositionID";

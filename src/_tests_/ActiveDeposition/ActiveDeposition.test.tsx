@@ -1,7 +1,9 @@
 import { waitForDomChange, fireEvent, waitForElement, act } from "@testing-library/react";
+import { createMemoryHistory } from "history";
 import userEvent from "@testing-library/user-event";
 import React from "react";
 import moment from "moment-timezone";
+import { Route, Switch } from "react-router";
 import { wait } from "../../helpers/wait";
 import ActiveDepositionDetails from "../../routes/ActiveDepoDetails";
 import getMockDeps from "../utils/getMockDeps";
@@ -20,8 +22,12 @@ import { Status } from "../../components/StatusPill/StatusPill";
 import { PARTICIPANT_MOCK, PARTICIPANT_MOCK_NAME } from "../constants/preJoinDepo";
 import { mapTimeZone, TimeZones } from "../../models/general";
 
+const history = createMemoryHistory();
+
 const customDeps = getMockDeps();
 jest.mock("../../helpers/downloadFile");
+
+const POST_DEPO_DETAILS = () => <div>POST-DEPO</div>;
 
 describe("Tests the Additional Information tab", () => {
     test("Shows spinner on mount", async () => {
@@ -1051,4 +1057,26 @@ describe("tests the cancel depo flows", () => {
         userEvent.click(getByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_CONFIRM_BUTTON_TEST_ID));
         expect(customDeps.apiService.revertCancelDeposition).not.toHaveBeenCalled();
     });
+});
+
+test("Redirects to post-depo is deposition status is completed", async () => {
+    const fullDeposition = getDepositionWithOverrideValues({
+        status: "Completed",
+    });
+
+    customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
+        return fullDeposition;
+    });
+    const { getByText } = renderWithGlobalContext(
+        <Switch>
+            <Route exact path={TEST_CONSTANTS.ACTIVE_DEPO_DETAILS_ROUTE} component={ActiveDepositionDetails} />
+            <Route exact path={TEST_CONSTANTS.ACTIVE_POST_DEPO_DETAILS_ROUTE} component={POST_DEPO_DETAILS} />
+        </Switch>,
+        customDeps,
+        undefined,
+        history
+    );
+    history.push(TEST_CONSTANTS.ACTIVE_DEPO_DETAILS_ROUTE);
+    await waitForDomChange();
+    expect(getByText("POST-DEPO")).toBeInTheDocument();
 });
