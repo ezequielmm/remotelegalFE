@@ -150,7 +150,7 @@ const Breakroom = () => {
                         closable
                         type={isLocked ? "error" : "success"}
                         float
-                        duration={300}
+                        duration={CONSTANTS.BREAKROOM_LOCK_ALERT_DURATION}
                         data-testid="breakroom-lock-unlock-alert"
                         icon={<Icon icon={isLocked ? LockBreakroomIcon : UnLockBreakroomIcon} />}
                     />
