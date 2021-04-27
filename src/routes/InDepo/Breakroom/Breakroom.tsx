@@ -39,7 +39,14 @@ const Breakroom = () => {
     const { signalR, sendMessage, subscribeToGroup, unsubscribeMethodFromGroup } = useSignalR("/depositionHub");
     const [shouldShowAlert, setShouldShowAlert] = useState(false);
 
-    const [lockRoom, , , lockedRoom] = useToggleLockRoom();
+    const [lockRoom, , lockRoomError, lockedRoom] = useToggleLockRoom();
+
+    const getAlertMessage = () =>
+        lockRoomError !== undefined
+            ? CONSTANTS.BREAKROOM_LOCK_ERROR
+            : isLocked
+            ? CONSTANTS.BREAKROOM_IS_LOCKED
+            : CONSTANTS.BREAKROOM_IS_UNLOCKED;
 
     useEffect(() => {
         const subscribeToLockRoomGroup = (message) => {
@@ -142,17 +149,21 @@ const Breakroom = () => {
     return currentBreakroom && breakroomDataTrack ? (
         <ThemeProvider theme={inDepoTheme}>
             <StyledInDepoContainer data-testid="videoconference_breakroom">
-                {shouldShowAlert && (
+                {(shouldShowAlert || lockRoomError !== undefined) && (
                     <Alert
                         onClose={() => setShouldShowAlert(false)}
                         fullWidth={false}
-                        message={isLocked ? CONSTANTS.BREAKROOM_IS_LOCKED : CONSTANTS.BREAKROOM_IS_UNLOCKED}
+                        message={getAlertMessage()}
                         closable
-                        type={isLocked ? "error" : "success"}
+                        type={isLocked || lockRoomError !== undefined ? "error" : "success"}
                         float
                         duration={CONSTANTS.BREAKROOM_LOCK_ALERT_DURATION}
                         data-testid="breakroom-lock-unlock-alert"
-                        icon={<Icon icon={isLocked ? LockBreakroomIcon : UnLockBreakroomIcon} />}
+                        icon={
+                            <Icon
+                                icon={isLocked || lockRoomError !== undefined ? LockBreakroomIcon : UnLockBreakroomIcon}
+                            />
+                        }
                     />
                 )}
                 <StyledInDepoLayout>

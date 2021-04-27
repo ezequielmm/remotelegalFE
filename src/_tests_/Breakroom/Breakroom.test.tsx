@@ -9,6 +9,7 @@ import * as TESTS_CONSTANTS from "../constants/InDepo";
 import { getBreakrooms } from "../mocks/breakroom";
 import getMockDeps from "../utils/getMockDeps";
 import renderWithGlobalContext from "../utils/renderWithGlobalContext";
+import * as CONSTANTS from "../../constants/inDepo";
 
 jest.mock("audio-recorder-polyfill", () => {
     return jest.fn().mockImplementation(() => ({
@@ -254,4 +255,56 @@ test("Should call to lock the break room, with isLock = false when the breakrom 
         breakroomID: ":breakroomID",
         isLock: false,
     });
+});
+
+test("Should display an error message when can't lock a room", async () => {
+    customDeps.apiService.lockRoom = jest.fn().mockRejectedValue({});
+    const { queryByTestId, queryByText } = renderWithGlobalContext(
+        <Route exact path={TESTS_CONSTANTS.BREAKROOM_ROUTE} component={Breakroom} />,
+        customDeps,
+        {
+            ...rootReducer,
+            initialState: {
+                room: {
+                    ...rootReducer.initialState.room,
+                    isRecording: true,
+                    currentExhibitTabName: "enteredExhibits",
+                    breakrooms: getBreakrooms(),
+                },
+            },
+        },
+        history
+    );
+
+    history.push(TESTS_CONSTANTS.TEST_BREAKROOM_ROUTE);
+    await waitForDomChange();
+    fireEvent.click(queryByTestId("lock_breakroom"));
+    await waitForDomChange();
+    expect(queryByText(CONSTANTS.BREAKROOM_LOCK_ERROR)).toBeInTheDocument();
+});
+
+test("Should display an error message when can't unlock a room", async () => {
+    customDeps.apiService.lockRoom = jest.fn().mockRejectedValueOnce({});
+    const { queryByTestId, queryByText } = renderWithGlobalContext(
+        <Route exact path={TESTS_CONSTANTS.BREAKROOM_ROUTE} component={Breakroom} />,
+        customDeps,
+        {
+            ...rootReducer,
+            initialState: {
+                room: {
+                    ...rootReducer.initialState.room,
+                    isRecording: true,
+                    currentExhibitTabName: "enteredExhibits",
+                    breakrooms: getBreakrooms(true),
+                },
+            },
+        },
+        history
+    );
+
+    history.push(TESTS_CONSTANTS.TEST_BREAKROOM_ROUTE);
+    await waitForDomChange();
+    fireEvent.click(queryByTestId("lock_breakroom"));
+    await waitForDomChange();
+    expect(queryByText(CONSTANTS.BREAKROOM_LOCK_ERROR)).toBeInTheDocument();
 });
