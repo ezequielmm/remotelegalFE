@@ -43,3 +43,25 @@ export const getUserDepoStatusWithoutParticipant = (isUser) => ({
         isAdmitted: false,
     },
 });
+
+export const getFrontEndContent = () => [
+    {
+        url: "https://prp-frontend-content-dev.s3.amazonaws.com/certify.html",
+        isPublic: false,
+        name: "certify",
+    },
+    {
+        url: "https://prp-frontend-content-dev.s3.amazonaws.com/terms-of-use.html",
+        isPublic: false,
+        name: "terms-of-use",
+    },
+];
+
+export const getMappedFrontEndContent = () => {
+    const links = getFrontEndContent();
+    return links.reduce((a, c) => {
+        const nx = {};
+        nx[c.name] = c;
+        return { ...a, ...nx };
+    }, {});
+};

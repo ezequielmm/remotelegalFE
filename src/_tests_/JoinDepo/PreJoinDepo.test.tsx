@@ -66,7 +66,20 @@ describe("It tests the non-registered and non-participant flow", () => {
         AUTH.NOT_VALID();
         deps.apiService.checkUserDepoStatus = jest.fn().mockResolvedValue({ isUser: false, participant: null });
     });
+    test("step 2 links redirect somewhere", async () => {
+        const mappedLinks = TEST_CONSTANTS.getMappedFrontEndContent();
+        const { getByTestId, getByText } = renderWithGlobalContext(<PreJoinDepo />, deps);
+        await waitForDomChange();
+        fireEvent.change(getByTestId(CONSTANTS.EMAIL_INPUT_ID), { target: { value: TEST_CONSTANTS.MOCKED_EMAIL } });
+        userEvent.click(getByTestId(CONSTANTS.STEP_1_BUTTON_ID));
+        await waitForDomChange();
+        await waitForElement(() => getByText(TEST_CONSTANTS.STEP_2_TEXT));
+        const TermsOfUseLink = getByTestId(CONSTANTS.PREJOIN_AGREE_LINK_BUTTON_ID);
+        expect(TermsOfUseLink.href).toBe(mappedLinks[CONSTANTS.PREJOIN_TERMS_OF_USE_KEY].url);
 
+        const CertifyLinkButton = getByTestId(CONSTANTS.PREJOIN_CERTIFY_INFORMATION_LINK_BUTTON_ID);
+        expect(CertifyLinkButton.href).toBe(mappedLinks[CONSTANTS.PREJOIN_CERTIFICATION_KEY].url);
+    });
     test("should show step 2", async () => {
         const { getByTestId, getByText } = renderWithGlobalContext(<PreJoinDepo />, deps);
         await waitForDomChange();
