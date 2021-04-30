@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import moment from "moment-timezone";
 import Space from "../../../components/Space";
 import Text from "../../../components/Typography/Text";
@@ -7,7 +7,8 @@ import Icon from "../../../components/Icon";
 import { ReactComponent as TimeIcon } from "../../../assets/icons/time.svg";
 import { ReactComponent as InfoIcon } from "../../../assets/icons/information.svg";
 import { ContainerProps, StyledLayoutContent, StyledLayoutCotainer } from "../styles";
-import { HiddenRef, RoughDraftPill, StyledRealTimeContainer, TranscriptionText } from "./styles";
+import { HiddenRef, RoughDraftPill, StyledRealTimeContainer } from "./styles";
+import TranscriptionText from "./TranscriptText";
 import * as CONSTANTS from "../../../constants/inDepo";
 import ColorStatus from "../../../types/ColorStatus";
 import { mapTimeZone, TimeZones } from "../../../models/general";
@@ -21,29 +22,51 @@ const RealTime = ({
     transcriptions,
     playedSeconds,
     scrollToHighlighted,
+    transcriptionsWithoutEvents,
 }: ContainerProps & {
     disableAutoscroll?: boolean;
     manageTranscriptionClicked?: (transcription: TranscriptionModel.Transcription) => void;
     timeZone: TimeZones;
     transcriptions?: (TranscriptionModel.Transcription & TranscriptionModel.TranscriptionPause)[];
+    transcriptionsWithoutEvents?: TranscriptionModel.Transcription[];
     playedSeconds?: number;
     scrollToHighlighted?: boolean;
 }) => {
     const scrollableRef = useRef(null);
+    const [clicked, setClicked] = useState(null);
 
     useEffect(() => {
-        if (scrollableRef && scrollableRef.current) {
-            scrollableRef.current.addEventListener("DOMNodeInserted", (event) => {
-                const { relatedNode, currentTarget: target } = event;
-                if (
-                    scrollToHighlighted &&
-                    2 * relatedNode.offsetHeight + relatedNode.offsetTop - target.offsetTop >=
-                        target.scrollTop + target.offsetHeight
-                )
-                    return event.relatedNode.scrollIntoView({ behavior: "smooth" });
-                if (!scrollToHighlighted) target.scroll({ top: target.scrollHeight, behavior: "smooth" });
-            });
+        const highlightTranscript = () => {
+            const lastTranscription = transcriptionsWithoutEvents[transcriptionsWithoutEvents.length - 1];
+            if (playedSeconds >= lastTranscription.transcriptionVideoTime) {
+                return setClicked(lastTranscription.id);
+            }
+            const clickedTranscription = transcriptionsWithoutEvents.find(
+                (transcription, index) =>
+                    playedSeconds <=
+                    transcription.transcriptionVideoTime +
+                        transcriptionsWithoutEvents[index + 1].transcriptionVideoTime -
+                        transcription.transcriptionVideoTime
+            );
+
+            return setClicked(clickedTranscription?.id);
+        };
+
+        if (transcriptionsWithoutEvents && playedSeconds) {
+            highlightTranscript();
         }
+    }, [playedSeconds, transcriptionsWithoutEvents]);
+
+    useEffect(() => {
+        const innerRef = scrollableRef;
+        const scrollToBottom = (event) => {
+            const { currentTarget: target } = event;
+            if (!scrollToHighlighted) target.scroll({ top: target.scrollHeight, behavior: "smooth" });
+        };
+        if (scrollableRef?.current && !scrollToHighlighted) {
+            innerRef.current.addEventListener("DOMNodeInserted", scrollToBottom);
+        }
+        return () => innerRef?.current?.removeEventListener("DOMNodeInserted", scrollToBottom);
     }, [scrollToHighlighted]);
 
     return (
@@ -111,12 +134,7 @@ const RealTime = ({
                                                         block
                                                         ellipsis={false}
                                                         dataTestId="transcription_text"
-                                                        highlighted={
-                                                            playedSeconds !== undefined &&
-                                                            (i === 0 ||
-                                                                playedSeconds - transcription.prevEndTime >= 0) &&
-                                                            playedSeconds - transcription.transcriptionVideoTime < 0
-                                                        }
+                                                        highlighted={clicked === transcription.id}
                                                         pointer={!!manageTranscriptionClicked}
                                                         onClick={() => {
                                                             if (manageTranscriptionClicked)

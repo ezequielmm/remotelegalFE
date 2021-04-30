@@ -1,10 +1,11 @@
-import React from "react";
+import React, { MutableRefObject } from "react";
 import styled from "styled-components";
 import { getREM, getWeightNumber } from "../../../constants/styles/utils";
 import ColorStatus from "../../../types/ColorStatus";
 
 export interface ITextProps extends React.HTMLAttributes<HTMLSpanElement> {
     height?: number;
+    ref?: MutableRefObject<HTMLElement>;
     size?: "small" | "default" | "large" | "extralarge";
     weight?: "light" | "regular" | "bold";
     uppercase?: boolean;
@@ -84,37 +85,43 @@ const StyledText = styled.span<ITextProps>`
     }}
 `;
 
-const text = ({
-    height,
-    size,
-    weight,
-    state,
-    uppercase = false,
-    ellipsis = true,
-    block = false,
-    font = "default",
-    align,
-    children,
-    dataTestId,
-    ...props
-}: ITextProps) => {
-    return (
-        <StyledText
-            data-testid={dataTestId}
-            height={height}
-            size={size}
-            weight={weight}
-            state={state}
-            uppercase={uppercase}
-            ellipsis={ellipsis}
-            block={!!align || block}
-            align={align}
-            font={font}
-            {...props}
-        >
-            {children}
-        </StyledText>
-    );
-};
+const text = React.forwardRef(
+    (
+        {
+            height,
+            size,
+            weight,
+            state,
+            uppercase = false,
+            ellipsis = true,
+            block = false,
+            font = "default",
+            align,
+            children,
+            dataTestId,
+            ...props
+        }: ITextProps,
+        ref: MutableRefObject<HTMLSpanElement>
+    ) => {
+        return (
+            <StyledText
+                ref={ref}
+                data-testid={dataTestId}
+                height={height}
+                size={size}
+                weight={weight}
+                state={state}
+                uppercase={uppercase}
+                ellipsis={ellipsis}
+                block={!!align || block}
+                align={align}
+                font={font}
+                {...props}
+            >
+                {children}
+            </StyledText>
+        );
+    }
+);
 
 export default text;

@@ -10,6 +10,8 @@ import {
 } from "../mocks/transcription";
 import renderWithGlobalContext from "../utils/renderWithGlobalContext";
 
+window.HTMLElement.prototype.scrollIntoView = jest.fn();
+
 jest.mock("audio-recorder-polyfill", () => {
     return jest.fn().mockImplementation(() => ({
         start: jest.fn(),

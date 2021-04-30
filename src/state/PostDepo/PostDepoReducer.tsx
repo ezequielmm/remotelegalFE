@@ -9,6 +9,7 @@ export interface IPostDepo {
     currentTime: number;
     changeTime: { time: number };
     transcriptions?: (TranscriptionModel.Transcription & TranscriptionModel.TranscriptionPause)[];
+    transcriptionsWithoutEvents?: TranscriptionModel.Transcription[];
     currentDeposition?: IDeposition;
     playing: boolean;
     duration: number;
@@ -18,6 +19,7 @@ export const PostDepoReducerInitialState: IPostDepo = {
     currentTime: undefined,
     changeTime: { time: undefined },
     transcriptions: [],
+    transcriptionsWithoutEvents: [],
     currentDeposition: null,
     playing: false,
     duration: 0,
@@ -29,6 +31,7 @@ const PostDepoReducer: Reducer<IPostDepo, IAction> = (state: IPostDepo, action: 
             return {
                 ...state,
                 transcriptions: setTranscriptionMessages(action.payload.transcriptions, action.payload.events, true),
+                transcriptionsWithoutEvents: action.payload.transcriptions,
             };
         case ACTION_TYPE.SET_DEPOSITION:
             return {
