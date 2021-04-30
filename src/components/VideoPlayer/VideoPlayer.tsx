@@ -10,6 +10,8 @@ import { ReactComponent as PauseIcon } from "../../assets/icons/Pause.svg";
 import { ReactComponent as PlayIcon } from "../../assets/icons/Play.svg";
 import { ReactComponent as ContractIcon } from "../../assets/icons/Contract.svg";
 import { ReactComponent as AudioIcon } from "../../assets/icons/audio.svg";
+import { ReactComponent as VolumeOnIcon } from "../../assets/icons/volume-on.svg";
+import { ReactComponent as VolumeOffIcon } from "../../assets/icons/volume-off.svg";
 import Duration from "./Duration";
 import { getREM, hexToRGBA } from "../../constants/styles/utils";
 import { theme } from "../../constants/styles/theme";
@@ -86,6 +88,10 @@ const StyledOnlyAudioPlaceHolder = styled.div`
     justify-content: center;
 `;
 
+const StyledVolumeContainer = styled(Space)`
+    width: ${getREM(5)};
+`;
+
 interface IVideoPlayer extends ReactPlayerProps {
     fullScreen?: boolean;
     isOnlyAudio?: boolean;
@@ -97,6 +103,8 @@ const VideoPlayer = ({ fullScreen, fallback, isOnlyAudio, ...rest }: IVideoPlaye
 
     const [fullscreen, setFullscreen] = useState<boolean>(false);
     const [isVideoReady, setIsVideoReady] = useState(false);
+    const [volume, setVolume] = useState(1);
+    const [muted, setMuted] = useState(false);
 
     const player = useRef(null);
     const styledPlayerRef = useRef(null);
@@ -132,6 +140,16 @@ const VideoPlayer = ({ fullScreen, fallback, isOnlyAudio, ...rest }: IVideoPlaye
         setFullscreen(!fullscreen);
     };
 
+    const handleVolumeChange = (value) => {
+        setVolume(parseFloat(value));
+        setMuted(value === 0 ?? false);
+    };
+
+    const muteVideo = () => {
+        setMuted(!muted);
+        setVolume(muted && volume === 0 ? 1 : volume);
+    };
+
     useEffect(() => {
         return () => dispatch(actions.resetVideoData());
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -164,6 +182,8 @@ const VideoPlayer = ({ fullScreen, fallback, isOnlyAudio, ...rest }: IVideoPlaye
                 height={isVideoReady ? "100%" : "0"}
                 progressInterval={250}
                 onReady={() => setIsVideoReady(true)}
+                volume={volume}
+                muted={muted}
                 {...rest}
             />
             {!isVideoReady && fallback}
@@ -190,6 +210,19 @@ const VideoPlayer = ({ fullScreen, fallback, isOnlyAudio, ...rest }: IVideoPlaye
                                 <Duration seconds={duration} />
                             </StyledTimeContainer>
                         </Space.Item>
+                        <StyledVolumeContainer align="center" size={1}>
+                            <Icon size={7} onClick={muteVideo} icon={muted ? VolumeOffIcon : VolumeOnIcon} />
+                            <Space.Item flex="1 1">
+                                <Slider
+                                    value={muted ? 0 : volume}
+                                    onChange={handleVolumeChange}
+                                    step={0.1}
+                                    max={1}
+                                    tooltipVisible={false}
+                                    trackStyle={{ backgroundColor: theme.default.whiteColor }}
+                                />
+                            </Space.Item>
+                        </StyledVolumeContainer>
                         {fullScreen && (
                             <Space.Item>
                                 <Icon
