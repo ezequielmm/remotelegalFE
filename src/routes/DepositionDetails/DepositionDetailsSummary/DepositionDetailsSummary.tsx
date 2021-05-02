@@ -51,7 +51,7 @@ export default function DepositionDetailsSummary({ setActiveKey, deposition }: I
     const { handleFetchFiles: handleFetchTranscriptFileList, transcriptFileList } = useTranscriptFileList(depositionID);
     const { getSignedUrl, documentData: transcriptFileData } = useGetSignedUrl();
     const [fetchParticipants, , , participants] = useFetchParticipants();
-    const { duration, currentTime, transcriptions, currentDeposition } = state.postDepo;
+    const { duration, currentTime, transcriptions, currentDeposition, transcriptionsWithoutEvents } = state.postDepo;
 
     const [setTranscriptions] = useAsyncCallback(async () => {
         const newTranscriptions = await getTranscriptions();
@@ -220,10 +220,16 @@ export default function DepositionDetailsSummary({ setActiveKey, deposition }: I
                             transcriptions && (
                                 <ThemeProvider theme={inDepoTheme}>
                                     <RealTime
+                                        transcriptionsWithoutEvents={transcriptionsWithoutEvents}
                                         manageTranscriptionClicked={
                                             duration > 0 &&
                                             ((transcription) => {
-                                                dispatch(actions.setChangeTime(transcription.prevEndTime + 0.0001));
+                                                dispatch(
+                                                    actions.setChangeTime(
+                                                        // This to ensure the playtime is just a tiny bit after so that the highlight works
+                                                        transcription.transcriptionVideoTime + 0.02
+                                                    )
+                                                );
                                                 dispatch(actions.setPlaying(true));
                                             })
                                         }

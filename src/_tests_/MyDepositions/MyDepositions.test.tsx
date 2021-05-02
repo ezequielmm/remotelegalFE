@@ -446,14 +446,16 @@ describe("MyDepositions", () => {
         const { getByPlaceholderText, queryByTitle } = renderWithGlobalContext(<MyDepositions />, customDeps);
         await waitForDomChange();
         const startDateRangeInput = getByPlaceholderText("End date");
+        const disabledNextYearAndMonthDate = moment().add(365, "day");
         await act(async () => {
             await userEvent.click(startDateRangeInput);
             await userEvent.click(document.querySelector(".ant-picker-header-super-next-btn"));
+            await fireEvent.change(startDateRangeInput, {
+                target: { value: disabledNextYearAndMonthDate.format("YYYY-MM-DD") },
+            });
         });
 
-        const nextYearAndMonthDate = moment().add(1, "year").add(1, "month");
-
-        expect(queryByTitle(nextYearAndMonthDate.format("YYYY-MM-DD"))).toHaveClass("ant-picker-cell-disabled");
+        expect(queryByTitle(disabledNextYearAndMonthDate.format("YYYY-MM-DD"))).toHaveClass("ant-picker-cell-disabled");
     });
 
     it("Should able select the date between today + 364 days", async () => {
@@ -466,13 +468,17 @@ describe("MyDepositions", () => {
         const { getByPlaceholderText, queryByTitle } = renderWithGlobalContext(<MyDepositions />, customDeps);
         await waitForDomChange();
         const startDateRangeInput = getByPlaceholderText("End date");
+        const nextYearAndMonthDate = moment().add(364, "day");
+        const disabledNextYearAndMonthDate = moment().add(365, "day");
         await act(async () => {
             await userEvent.click(startDateRangeInput);
             await userEvent.click(document.querySelector(".ant-picker-header-next-btn"));
+            await fireEvent.change(startDateRangeInput, {
+                target: { value: nextYearAndMonthDate.format("YYYY-MM-DD") },
+            });
         });
 
-        const nextYearAndMonthDate = moment().add(1, "month");
-
         expect(queryByTitle(nextYearAndMonthDate.format("YYYY-MM-DD"))).not.toHaveClass("ant-picker-cell-disabled");
+        expect(queryByTitle(disabledNextYearAndMonthDate.format("YYYY-MM-DD"))).toHaveClass("ant-picker-cell-disabled");
     });
 });

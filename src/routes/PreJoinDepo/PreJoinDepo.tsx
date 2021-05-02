@@ -26,7 +26,8 @@ const PreJoinDepo = () => {
     const [checkUserStatus, userStatusLoading, userStatusError, userStatus] = useCheckUserStatus();
     const { loginUser, loading: loginLoading, loginError, addParticipantError } = useLogin(depositionID);
     const [witnessAlreadyExistsError, setWitnessAlreadyExistsError] = useState(false);
-    const [linkToTermsAndConditions, setLinkToTermsAndConditions] = useState("");
+    // eslint-disable-next-line no-unused-vars
+    const [links, setLinks] = useState({});
     const [
         registerParticipant,
         registerParticipantLoading,
@@ -42,9 +43,9 @@ const PreJoinDepo = () => {
 
     useEffect(() => {
         if (frontEndContent) {
-            const termsOfUseURL = frontEndContent.filter(({ name }) => name === CONSTANTS.PREJOIN_TERMS_OF_USE_KEY)[0]
-                .url;
-            setLinkToTermsAndConditions(termsOfUseURL);
+            frontEndContent.forEach(({ name, url }) =>
+                setLinks((prevState) => ({ ...prevState, [name]: { name, url } }))
+            );
         }
     }, [frontEndContent]);
 
@@ -189,7 +190,8 @@ const PreJoinDepo = () => {
                         defaultRole={normalizedRoles[userStatus?.participant?.role] || userStatus?.participant?.role}
                         defaultName={userStatus?.participant?.name}
                         disableRoleSelect={userStatus?.participant?.role}
-                        termsOfUseURL={linkToTermsAndConditions}
+                        termsOfUseURL={links[CONSTANTS.PREJOIN_TERMS_OF_USE_KEY]?.url}
+                        linkToCerfiticacion={links[CONSTANTS.PREJOIN_CERTIFICATION_KEY]?.url}
                         isUser={userStatus?.isUser}
                     />
                 ) : (
@@ -206,7 +208,8 @@ const PreJoinDepo = () => {
                             defaultName={userStatus?.participant?.name}
                             disableRoleSelect={userStatus?.participant?.role}
                             returnFunc={resetStep}
-                            termsOfUseURL={linkToTermsAndConditions}
+                            termsOfUseURL={links[CONSTANTS.PREJOIN_TERMS_OF_USE_KEY]?.url}
+                            linkToCerfiticacion={links[CONSTANTS.PREJOIN_CERTIFICATION_KEY]?.url}
                             isUser={false}
                         />
                     )

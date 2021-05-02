@@ -88,22 +88,22 @@ export const useSignedUrl = (file: ExhibitFile, isPublic?: boolean) => {
     const { deps } = useContext(GlobalStateContext);
     const { depositionID } = useParams<{ depositionID: string }>();
     const [documentUrl, setDocumentUrl] = useState(null);
-    const [documentIsPublic, setDocumentIsPublic] = useState(null);
+    const [documentIsPublic, setDocumentIsPublic] = useState(isPublic);
     const getURLSigned = isPublic ? deps.apiService.getSignedUrl : deps.apiService.getPrivateSignedUrl;
     const [getURL, , error] = useAsyncCallback(async (payload) => {
         const result = await getURLSigned({ depositionID, documentId: file?.id, ...payload });
         setDocumentUrl(result?.url);
-        setDocumentIsPublic(result.isPublic);
+        setDocumentIsPublic(result?.isPublic);
         return result;
     }, []);
     useEffect(() => {
         if (file?.preSignedUrl) {
             setDocumentUrl(file?.preSignedUrl);
-            setDocumentIsPublic(file.isPublic);
+            setDocumentIsPublic(file?.isPublic ?? isPublic);
         } else {
             getURL();
         }
-    }, [getURL, file]);
+    }, [getURL, file, isPublic]);
 
     return { error, documentUrl: documentUrl, isPublic: documentIsPublic };
 };

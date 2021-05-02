@@ -140,7 +140,7 @@ const InDepo = () => {
             if (
                 message.entityType === NotificationEntityType.bringAllTo &&
                 currentUser?.id &&
-                currentUser?.id === message?.content?.userId
+                currentUser?.id !== message?.content?.userId
             ) {
                 dispatch(actions.setCurrentExhibitPage("-1"));
                 dispatch(actions.setCurrentExhibitPage(message?.content?.documentLocation));

@@ -1,17 +1,18 @@
-name: Manual Deployment
+name: Manual Deployment to DEV
 
-on: [workflow_dispatch]
+on:
+    workflow_dispatch:
 
 jobs:
     build-test:
         runs-on: ubuntu-latest
-        if: contains('
-            refs/heads/uat
-            refs/heads/prod
-            ', github.ref)
+        env:
+          CLEAN_NODE_MODULES: ${{ secrets.CLEAN_NODE_MODULES }}
+          ENABLE_CACHE: secrets.ENABLE_CACHE
         steps:
             - uses: actions/checkout@v2
             - name: Cache node modules
+              if: ${{ env.ENABLE_CACHE == 'true' }}
               id: yarn-cache
               uses: actions/cache@v2
               env:
@@ -23,20 +24,19 @@ jobs:
                       ${{ runner.os }}-build-${{ env.cache-name }}-
                       ${{ runner.os }}-build-
                       ${{ runner.os }}-
+
+            - name: Remove node_modules
+              if: ${{ env.CLEAN_NODE_MODULES == 'true' }}
+              run: rm -rf node_modules
+
             - name: Install Dependencies
-              if: steps.yarn-cache.outputs.cache-hit != 'true'
+              if: ${{ env.ENABLE_CACHE != 'true' && steps.yarn-cache.outputs.cache-hit != 'true' }}
               run: yarn install
 
-            - name: Extract Branch Name for ENV file replacement
-              id: extract-branch-for-replacement
-              shell: bash
-              run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"              
-
             - name: Getting appropriate ENV file
-              if: endsWith(github.ref, 'uat') || endsWith(github.ref, 'prod')
               uses: canastro/copy-file-action@master
               with:
-                  source: ./env/.env.${{ steps.extract-branch-for-replacement.outputs.branch }}
+                  source: ./env/.env.develop
                   target: .env
 
             - name: Build
@@ -52,22 +52,14 @@ jobs:
 
     pack-deploy:
         runs-on: ubuntu-latest
-        if: contains('
-            refs/heads/uat
-            refs/heads/prod
-            ', github.ref)        
         needs: [build-test]
         steps:
             - uses: actions/checkout@v2
-            - name: Extract Branch Name
-              id: extract-branch
-              shell: bash
-              run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
-            
+
             - name: Getting appropriate ENV file
               uses: canastro/copy-file-action@master
               with:
-                  source: ./env/.env.${{ steps.extract-branch.outputs.branch }}
+                  source: ./env/.env.develop
                   target: .env
 
             - name: Configure AWS Credentials
@@ -82,25 +74,15 @@ jobs:
                   name: publish-build
                   path: ./build
 
-            - name: Extract Bucket & CloudFront Distribution Id for UAT
-              if: ${{ steps.extract-branch.outputs.branch == 'uat' }}
+            - name: Extract Bucket & CloudFront Distribution Id for Develop
               shell: bash
               env:
-                  DIST: ${{ secrets.DISTRIBUTION_UAT }}
+                  DIST: ${{ secrets.DISTRIBUTION_DEV }}
               run: |
                   echo "DISTRIBUTION=$DIST" >> $GITHUB_ENV
-                  echo "BUCKET=prp-fe-uat" >> $GITHUB_ENV
-                  echo "REGION=us-east-1" >> $GITHUB_ENV
-            - name: Extract Bucket & CloudFront Distribution Id for PROD
-              if: ${{ steps.extract-branch.outputs.branch == 'prod' }}
-              shell: bash
-              env:
-                  DIST: ${{ secrets.DISTRIBUTION_PROD }}
-              run: |
-                  echo "DISTRIBUTION=$DIST" >> $GITHUB_ENV
-                  echo "BUCKET=prp-fe-prod" >> $GITHUB_ENV
-                  echo "REGION=us-east-2" >> $GITHUB_ENV
+                  echo "BUCKET=prp-fe-develop" >> $GITHUB_ENV
+
             - name: Upload publish to S3
               run: |
-                  aws s3 sync ./build s3://$BUCKET --metadata-directive REPLACE --cache-control 'max-age=86400,must-revalidate,public' --delete --region $REGION
-                  aws cloudfront create-invalidation --distribution-id $DISTRIBUTION --paths "/*" --region $REGION
+                  aws s3 sync ./build s3://$BUCKET --metadata-directive REPLACE --cache-control 'max-age=86400,must-revalidate,public' --delete
+                  aws cloudfront create-invalidation --distribution-id $DISTRIBUTION --paths "/*"

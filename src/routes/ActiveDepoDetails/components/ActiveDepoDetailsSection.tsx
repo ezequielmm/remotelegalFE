@@ -162,7 +162,9 @@ const DepositionDetailsSection = ({
                             colProps={{ xl: 9 }}
                             icon={CalendarIcon}
                             title={CONSTANTS.DEPOSITION_DETAILS_SUMMARY_SECTION_DATE_TITLE}
-                            text={moment(startDate).format(CONSTANTS.DEPOSITION_DETAILS_SUMMARY_SECTION_DATE_FORMAT)}
+                            text={moment(startDate)
+                                .tz(mapTimeZone[timeZone])
+                                ?.format(CONSTANTS.DEPOSITION_DETAILS_SUMMARY_SECTION_DATE_FORMAT)}
                         />
                         <SectionCardCol
                             colProps={{ xl: 9 }}

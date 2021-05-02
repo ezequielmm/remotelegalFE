@@ -108,7 +108,11 @@ const ActiveDepositionDetailsHeader = ({ deposition }: { deposition: DepositionM
                                 <Text size="small" uppercase state={ColorStatus.white} lineHeight={1.25}>
                                     {CONSTANTS.DEPOSITION_DETAILS_HEADER_DATE}
                                 </Text>
-                                <Tooltip title={startDate && moment(startDate).format("MMM D, YYYY")}>
+                                <Tooltip
+                                    title={
+                                        startDate && moment(startDate).tz(mapTimeZone[timeZone]).format("MMM D, YYYY")
+                                    }
+                                >
                                     <TitleWrapper>
                                         <Title
                                             dataTestId="deposition_details_header_date"
@@ -117,7 +121,8 @@ const ActiveDepositionDetailsHeader = ({ deposition }: { deposition: DepositionM
                                             color={ColorStatus.white}
                                             noMargin
                                         >
-                                            {startDate && moment(startDate).format("MMM D, YYYY")}
+                                            {startDate &&
+                                                moment(startDate).tz(mapTimeZone[timeZone]).format("MMM D, YYYY")}
                                         </Title>
                                     </TitleWrapper>
                                 </Tooltip>

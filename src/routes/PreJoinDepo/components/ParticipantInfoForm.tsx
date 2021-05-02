@@ -23,6 +23,7 @@ interface IParticipantForm {
     hideBackButton?: boolean;
     joinDeposition: (role: string, userData: string) => void;
     termsOfUseURL: string;
+    linkToCerfiticacion: string;
     isUser: boolean;
 }
 const StyledEmailContainer = styled.div`
@@ -50,6 +51,7 @@ const ParticipantInfoForm = ({
     passwordInput,
     hideBackButton,
     termsOfUseURL,
+    linkToCerfiticacion,
     isUser,
 }: IParticipantForm) => {
     const [name, setName] = useState<InputState>({
@@ -126,7 +128,17 @@ const ParticipantInfoForm = ({
                             checked={certifyInformation}
                             onChange={() => setCertifyInformation(!certifyInformation)}
                         >
-                            {CONSTANTS.PREJOIN_CERTIFY_INFORMATION_TEXT}
+                            {CONSTANTS.PREJOIN_CERTIFY_INFORMATION_TEXT[0]}
+
+                            <Button
+                                type="link"
+                                href={linkToCerfiticacion}
+                                target="_blank"
+                                data-testid={CONSTANTS.PREJOIN_CERTIFY_INFORMATION_LINK_BUTTON_ID}
+                            >
+                                {CONSTANTS.PREJOIN_CERTIFY_INFORMATION_TEXT[1]}
+                            </Button>
+                            {CONSTANTS.PREJOIN_CERTIFY_INFORMATION_TEXT[2]}
                         </Checkbox>
                     </StyledCheckBoxWrapper>
                     <StyledCheckBoxWrapper>
@@ -136,7 +148,12 @@ const ParticipantInfoForm = ({
                             onChange={() => setAgreeTerms(!agreeTerms)}
                         >
                             {CONSTANTS.PREJOIN_AGREE_TERMS_AND_CONDITION_TEXT}
-                            <Button type="link" href={termsOfUseURL} target="_blank">
+                            <Button
+                                type="link"
+                                href={termsOfUseURL}
+                                target="_blank"
+                                data-testid={CONSTANTS.PREJOIN_AGREE_LINK_BUTTON_ID}
+                            >
                                 {CONSTANTS.PREJOIN_TERMS_AND_CONDITION_LINK_TEXT}
                             </Button>
                         </Checkbox>

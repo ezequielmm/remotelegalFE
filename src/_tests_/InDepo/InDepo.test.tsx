@@ -53,6 +53,7 @@ const history = createMemoryHistory();
 
 const PreDepoRoute = () => <div>PRE_DEPO</div>;
 const WaitingRoomRoute = () => <div>WAITING ROOM</div>;
+window.HTMLElement.prototype.scrollIntoView = jest.fn();
 
 // TODO: Find a better way to mock Twilio (eg, adding it to DI system)
 jest.mock("twilio-video", () => ({
