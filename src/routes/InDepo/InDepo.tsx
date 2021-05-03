@@ -131,9 +131,10 @@ const InDepo = () => {
         if (participants?.length && currentRoom?.localParticipant) {
             const localParticipantEmail = JSON.parse(currentRoom?.localParticipant?.identity)?.email;
             const isMuted = participants.find((participant) => participant?.email === localParticipantEmail)?.isMuted;
+            dispatch(actions.setIsMuted(isMuted));
             setInitialAudioEnabled(!isMuted);
         }
-    }, [participants, currentRoom]);
+    }, [participants, currentRoom, dispatch]);
 
     useEffect(() => {
         const onReceiveAnnotations = (message) => {

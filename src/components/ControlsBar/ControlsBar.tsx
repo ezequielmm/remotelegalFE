@@ -99,7 +99,6 @@ export default function ControlsBar({
     const [breakroomModal, setBreakroomModal] = useState(false);
     const [openLeaveModal, setOpenLeaveModal] = useState(false);
     const { setEndDepo } = useEndDepo();
-    const toggleMicrophone = useStreamAudio();
     const joinDepositionLink = useJoinDepositionLink();
     const [sendToggledMuted] = useSendParticipantStatus();
     const isWitness = localParticipant && JSON.parse(localParticipant.identity)?.role === "Witness";
@@ -121,6 +120,8 @@ export default function ControlsBar({
         disableChat,
     });
 
+    useStreamAudio(isAudioEnabled);
+
     const handleRedirection = () => {
         return isWitness && !isAuthenticated
             ? history.push({
@@ -136,11 +137,6 @@ export default function ControlsBar({
                         }
               );
     };
-
-    React.useEffect(() => {
-        toggleMicrophone(isRecording && isAudioEnabled);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isRecording, isAudioEnabled]);
 
     React.useEffect(() => {
         if (initialAudioEnabled !== undefined) {
