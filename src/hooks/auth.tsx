@@ -47,7 +47,7 @@ export const useSignIn = (location, emailValue, passwordValue) => {
         try {
             await Auth.signIn(emailValue.trim(), passwordValue);
             localStorage.removeItem(TEMP_TOKEN);
-            return history.push(typeof params === "string" ? params : "/dashboard");
+            return history.push(typeof params === "string" ? params : "/depositions");
         } catch (e) {
             setLoading(false);
             return setSubmitError(ERRORS.AWS_ERRORS[e.message] || ERRORS.NETWORK_ERROR);

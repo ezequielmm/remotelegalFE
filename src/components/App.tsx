@@ -9,7 +9,6 @@ import { ThemeProvider } from "styled-components";
 import GlobalStyle from "./GlobalStyle";
 import { theme } from "../constants/styles/theme";
 import MockInDepo from "../routes/MockInDepo";
-import Dashboard from "../routes/dashboard/dashboard";
 import Login from "../routes/Login";
 import SignUp from "../routes/SignUp";
 import MyCases from "../routes/MyCases";
@@ -63,12 +62,9 @@ function App() {
                     <Route path="/verifyUser" component={Login} />
                     <Route exact path="/sign-up" component={SignUp} />
                     <Route exact path="/deposition/pre-join/:depositionID" component={PreJoinDepo} />
-
                     <Authenticator routesWithGuestToken={ROUTES_WITH_GUEST_TOKEN}>
-                        <RouteWithLayout exact path="/dashboard" component={Dashboard} />
                         <RouteWithLayout exact path="/my-cases" component={MyCases} />
                         <RouteWithLayout exact path="/deposition/new" component={CreateDeposition} />
-                        <RouteWithLayout exact path="/my-depositions" component={MyDepositions} />
                         <RouteWithLayout exact path="/depositions" component={MyDepositions} />
                         <RouteWithLayout
                             exact

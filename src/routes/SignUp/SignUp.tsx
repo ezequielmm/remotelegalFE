@@ -144,7 +144,7 @@ const SignUp = ({ location }) => {
         !checked;
 
     return isAuthenticated ? (
-        <Redirect to="/dashboard" />
+        <Redirect to="/depositions" />
     ) : (
         <Container>
             <Row justify="center" align="middle">

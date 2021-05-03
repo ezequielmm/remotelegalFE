@@ -31,7 +31,7 @@ const ResetPassword = () => {
     const { isAuthenticated } = useAuthentication();
 
     return isAuthenticated ? (
-        <Redirect to="/dashboard" />
+        <Redirect to="/depositions" />
     ) : (
         <Container>
             <Row justify="center" align="middle">

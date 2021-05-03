@@ -6,31 +6,29 @@ import renderWithGlobalContext from "../utils/renderWithGlobalContext";
 import { theme } from "../../constants/styles/theme";
 import Layout from "../../components/Layout";
 
-const Dashboard = () => {
-    return <div>DASHBOARD</div>;
-};
-
 const Deposition = () => {
     return <div>DEPOSITION</div>;
 };
 
-const menuRoutes = [{ title: "MENU", routes: [{ path: "/dashboard", name: "Dashboard" }] }];
+const NewDeposition = () => {
+    return <div>NEW DEPOSITION</div>;
+};
 
-test("expect click on menu option to redirect me to dashboard", async () => {
+test("expect click on menu option to redirect me to depositions", async () => {
     const { getByText } = renderWithGlobalContext(
         <ThemeProvider theme={theme}>
             <BrowserRouter>
                 <Switch>
-                    <Layout menuRoutes={menuRoutes}>
-                        <Route exact path="/dashboard" component={Dashboard} />
+                    <Layout>
+                        <Route exact path="/depositions" component={Deposition} />
                     </Layout>
                 </Switch>
             </BrowserRouter>
         </ThemeProvider>
     );
-    const menuOption = getByText("Dashboard");
+    const menuOption = getByText("My depositions");
     userEvent.click(menuOption);
-    expect(getByText("DASHBOARD")).toBeInTheDocument();
+    expect(getByText("DEPOSITION")).toBeInTheDocument();
 });
 
 test("click on schedule deposition takes me to deposition", async () => {
@@ -38,9 +36,8 @@ test("click on schedule deposition takes me to deposition", async () => {
         <ThemeProvider theme={theme}>
             <BrowserRouter>
                 <Switch>
-                    <Route exact path="/deposition/new" component={Deposition} />
-                    <Layout menuRoutes={menuRoutes}>
-                        <Route exact path="/dashboard" component={Dashboard} />
+                    <Layout>
+                        <Route exact path="/deposition/new" component={NewDeposition} />
                     </Layout>
                 </Switch>
             </BrowserRouter>
@@ -48,5 +45,5 @@ test("click on schedule deposition takes me to deposition", async () => {
     );
     const button = getByText("Schedule deposition");
     userEvent.click(button);
-    expect(getByText("DEPOSITION")).toBeInTheDocument();
+    expect(getByText("NEW DEPOSITION")).toBeInTheDocument();
 });

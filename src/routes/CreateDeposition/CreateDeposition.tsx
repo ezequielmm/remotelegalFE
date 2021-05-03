@@ -121,7 +121,7 @@ const CreateDeposition = () => {
                             type="text"
                             onClick={() => {
                                 if (history.length === 2) {
-                                    return history.push("/dashboard");
+                                    return history.push("/depositions");
                                 }
                                 return history.goBack();
                             }}
