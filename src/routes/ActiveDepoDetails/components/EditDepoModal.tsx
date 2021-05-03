@@ -197,7 +197,8 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
 
     const handleChangeDate = (current: any) => {
         const newEndTime = formStatus.endDate ? changeDate(current, formStatus.timeZone, formStatus.endDate) : null;
-        setFormStatus({ ...formStatus, startDate: current, endDate: newEndTime });
+        const newStartTime = changeDate(current, formStatus.timeZone, formStatus.startDate);
+        setFormStatus({ ...formStatus, startDate: newStartTime, endDate: newEndTime });
         if (current && current.isBefore(moment(new Date()).subtract(5, "m"))) {
             return setInvalidStartTime(true);
         }
