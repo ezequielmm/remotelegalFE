@@ -272,7 +272,7 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
 
         bodyWithoutFile.startDate = changeTimeZone(formStatus.startDate, deposition.timeZone, formStatus.timeZone);
 
-        rescheduleDeposition(deposition.id, bodyWithoutFile, file, deleteCaption);
+        return rescheduleDeposition(deposition.id, bodyWithoutFile, file, deleteCaption);
     };
 
     return (
@@ -601,7 +601,12 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
                                     data-testid={
                                         CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_CANCEL_BUTTON_TEST_ID
                                     }
-                                    disabled={editLoading || cancelLoading || revertCancelLoading}
+                                    disabled={
+                                        editLoading ||
+                                        cancelLoading ||
+                                        revertCancelLoading ||
+                                        rescheduleDepositionLoading
+                                    }
                                     onClick={handleCloseModalAndResetFormStatus}
                                 >
                                     {CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_CANCEL_BUTTON_TEXT}
@@ -615,9 +620,15 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
                                         cancelLoading ||
                                         revertCancelLoading ||
                                         invalidStartTime ||
-                                        invalidEndTime
+                                        invalidEndTime ||
+                                        rescheduleDepositionLoading
                                     }
-                                    loading={editLoading || cancelLoading || revertCancelLoading}
+                                    loading={
+                                        editLoading ||
+                                        cancelLoading ||
+                                        revertCancelLoading ||
+                                        rescheduleDepositionLoading
+                                    }
                                     htmlType="submit"
                                     type="primary"
                                     onClick={handleSubmit}
