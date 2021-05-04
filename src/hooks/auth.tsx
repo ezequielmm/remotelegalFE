@@ -79,7 +79,7 @@ export const useVerifyToken = () => {
     const { deps } = useContext(GlobalStateContext);
     const [verifyToken, , error, data] = useAsyncCallback(async (hash) => {
         const response = await deps.apiService.verifyUser({ verificationHash: hash });
-        return response === "";
+        return response;
     }, []);
 
     const verifyTokenRef = useRef(verifyToken);

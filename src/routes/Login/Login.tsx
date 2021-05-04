@@ -61,16 +61,20 @@ const Login = ({ location }: LoginProps) => {
                                     Log in into your account
                                 </Text>
                             </Space.Item>
-                            {data ||
-                                (typeof location?.state === "object" && location.state.changedPassword && (
-                                    <Alert
-                                        data-testid={
-                                            data ? "successful_verification_message" : "successful_password_message"
-                                        }
-                                        message={data ? CONSTANTS.EMAIL_VERIFIED : CONSTANTS.PASSWORD_CHANGED}
-                                        type="success"
-                                    />
-                                ))}
+                            {data && (
+                                <Alert
+                                    data-testid="successful_verification_message"
+                                    message={CONSTANTS.EMAIL_VERIFIED}
+                                    type="success"
+                                />
+                            )}
+                            {location?.state?.changedPassword && (
+                                <Alert
+                                    data-testid="successful_password_message"
+                                    message={CONSTANTS.PASSWORD_CHANGED}
+                                    type="success"
+                                />
+                            )}
                             {(error && error !== 409) ||
                                 (typeof location?.state === "object" && location.state.changedPassword === false && (
                                     <Alert
