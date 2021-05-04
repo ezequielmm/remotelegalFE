@@ -52,7 +52,7 @@ const RealTime = ({
             return setClicked(clickedTranscription?.id);
         };
 
-        if (transcriptionsWithoutEvents && playedSeconds) {
+        if (transcriptionsWithoutEvents && transcriptionsWithoutEvents.length && playedSeconds) {
             highlightTranscript();
         }
     }, [playedSeconds, transcriptionsWithoutEvents]);
