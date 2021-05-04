@@ -29,6 +29,7 @@ export enum ACTION_TYPE {
     IN_DEPO_SET_PARTICIPANTS_DATA = "IN_DEPO_SET_PARTICIPANTS_DATA",
     IN_DEPO_SET_TOKEN = "IN_DEPO_SET_TOKEN",
     IN_DEPO_SET_IS_MUTED = "IN_DEPO_SET_IS_MUTED",
+    IN_DEPO_SET_JOB_NUMBER = "IN_DEPO_SET_JOB_NUMBER",
     ADD_WITNESS = "IN_DEPO_ADD_WITNESS",
     SET_TIMEZONE = "IN_DEPO_SET_TIMEZONE",
     IN_DEPO_SET_PERMISSIONS = "IN_DEPO_SET_PERMISSIONS",
@@ -177,6 +178,10 @@ const actions = {
     }),
     setIsMuted: (payload) => ({
         type: ACTION_TYPE.IN_DEPO_SET_IS_MUTED,
+        payload,
+    }),
+    setJobNumber: (payload) => ({
+        type: ACTION_TYPE.IN_DEPO_SET_JOB_NUMBER,
         payload,
     }),
 };

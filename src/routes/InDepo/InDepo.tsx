@@ -47,6 +47,7 @@ const InDepo = () => {
         shouldSendToPreDepo,
         currentExhibitPage,
         currentUser,
+        jobNumber,
     } = state.room;
     const { depositionID } = useParams<DepositionID>();
     const [realTimeOpen, togglerRealTime] = useState<boolean>(false);
@@ -228,6 +229,7 @@ const InDepo = () => {
                         togglerExhibits={togglerExhibits}
                         localParticipant={currentRoom.localParticipant}
                         initialAudioEnabled={initialAudioEnabled}
+                        jobNumber={jobNumber}
                     />
                 </StyledRoomFooter>
             </StyledInDepoContainer>

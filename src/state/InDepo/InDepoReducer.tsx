@@ -42,6 +42,7 @@ export interface IRoom {
     token: string;
     mockDepoRoom?: Room;
     isMuted?: boolean;
+    jobNumber?: string;
 }
 
 export const RoomReducerInitialState: IRoom = {
@@ -73,6 +74,7 @@ export const RoomReducerInitialState: IRoom = {
     participants: [],
     token: null,
     isMuted: false,
+    jobNumber: "",
 };
 
 const RoomReducer: Reducer<IRoom, IAction> = (state: IRoom, action: IAction): IRoom => {
@@ -245,6 +247,11 @@ const RoomReducer: Reducer<IRoom, IAction> = (state: IRoom, action: IAction): IR
             return {
                 ...state,
                 isMuted: action.payload,
+            };
+        case ACTION_TYPE.IN_DEPO_SET_JOB_NUMBER:
+            return {
+                ...state,
+                jobNumber: action.payload,
             };
 
         default:

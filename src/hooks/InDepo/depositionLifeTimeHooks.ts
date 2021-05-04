@@ -123,7 +123,7 @@ export const useJoinDepositionForMockRoom = () => {
     return useAsyncCallback(
         async (depositionID: string) => {
             const dataTrack = new LocalDataTrack({ maxPacketLifeTime: null, maxRetransmits: null });
-            const { token, participants, shouldSendToPreDepo, startDate }: any = await generateToken();
+            const { token, participants, shouldSendToPreDepo, startDate, jobNumber }: any = await generateToken();
             const breakrooms = await getBreakrooms();
             if (!shouldSendToPreDepo) {
                 history.push(`/deposition/join/${depositionID}`);
@@ -147,6 +147,7 @@ export const useJoinDepositionForMockRoom = () => {
             dispatch(actions.setMockRoom(room));
             dispatch(actions.setParticipantsData(participants));
             dispatch(actions.addDataTrack(dataTrack));
+            dispatch(actions.setJobNumber(jobNumber));
             return configParticipantListeners(
                 room,
                 (callbackRoom) => {
@@ -201,8 +202,10 @@ export const useJoinDeposition = () => {
                 isSharing,
                 participants,
                 shouldSendToPreDepo,
+                jobNumber,
             }: any = await generateToken();
             dispatch(actions.setDepoStatus(shouldSendToPreDepo));
+            dispatch(actions.setJobNumber(jobNumber));
 
             if (shouldSendToPreDepo && userStatus.participant?.role !== Roles.courtReporter) {
                 return history.push(`/deposition/pre/${depositionID}`);

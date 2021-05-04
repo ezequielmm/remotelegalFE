@@ -31,7 +31,16 @@ const InDepo = () => {
     const inDepoTheme = { ...theme, mode: ThemeMode.inDepo };
     const { state, dispatch } = useContext(GlobalStateContext);
     const [joinDeposition, loading, error] = useJoinDepositionForMockRoom();
-    const { isRecording, mockDepoRoom, transcriptions, timeZone, participants, startTime, breakrooms } = state.room;
+    const {
+        isRecording,
+        mockDepoRoom,
+        transcriptions,
+        timeZone,
+        participants,
+        startTime,
+        breakrooms,
+        jobNumber,
+    } = state.room;
     const { depositionID } = useParams<DepositionID>();
     const [realTimeOpen, togglerRealTime] = useState<boolean>(false);
     const [exhibitsOpen, togglerExhibits] = useState<boolean>(false);
@@ -180,6 +189,7 @@ const InDepo = () => {
                         togglerExhibits={togglerExhibits}
                         localParticipant={mockDepoRoom.localParticipant}
                         initialAudioEnabled={initialAudioEnabled}
+                        jobNumber={jobNumber}
                     />
                 </StyledRoomFooter>
                 <StartMessage

@@ -27,6 +27,7 @@ import ActiveDepositionDetails from "../routes/ActiveDepoDetails";
 import ResetPassword from "../routes/ResetPassword";
 import ChangePassword from "../routes/ChangePassword";
 import WaitingRoom from "../routes/WaitingRoom";
+import Help from "../routes/Help";
 
 function App() {
     const tagManagerId = {
@@ -66,6 +67,7 @@ function App() {
                         <RouteWithLayout exact path="/my-cases" component={MyCases} />
                         <RouteWithLayout exact path="/deposition/new" component={CreateDeposition} />
                         <RouteWithLayout exact path="/depositions" component={MyDepositions} />
+                        <RouteWithLayout exact path="/help" component={Help} />
                         <RouteWithLayout
                             exact
                             path="/deposition/post-depo-details/:depositionID"
