@@ -194,7 +194,7 @@ const MyDepositions = () => {
                                     setSorting(sorter);
                                     handleListChange(page, getFilterParam(filterCriteria), sorter);
                                 }}
-                                sortDirections={["descend", "ascend"]}
+                                sortDirections={["descend", "ascend", "descend"]}
                                 pagination={{
                                     current: page,
                                     position: ["bottomRight"],
