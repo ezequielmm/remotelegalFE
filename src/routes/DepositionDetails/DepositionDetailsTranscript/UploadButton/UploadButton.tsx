@@ -31,6 +31,8 @@ export default function UploadButton({
                 } else if (file.status === "uploading") {
                     setDisabled(true);
                     onChange(file);
+                } else if (file.size > 52428800 && file.percent === 100) {
+                    setDisabled(false);
                 }
             }}
             customRequest={customRequest}
