@@ -28,7 +28,8 @@ import { TranscriptFile } from "../../../types/TranscriptFile";
 import Message from "../../../components/Message";
 
 const DepositionDetailsTranscripts = () => {
-    const [file, setFile] = React.useState({ percent: 0, status: "" });
+    const emptyFile = { percent: 0, status: "", size: 0 };
+    const [file, setFile] = React.useState(emptyFile);
     const [showProgressBar, setShowProgressBar] = React.useState(false);
     const [openDeleteModal, setOpenDeleteModal] = useState(false);
     const tableRef = React.useRef(null);
@@ -211,6 +212,7 @@ const DepositionDetailsTranscripts = () => {
                                 customRequest={upload}
                                 uploadProps={{ accept: ".pdf, .txt, .ptx" }}
                                 onChange={handleUploadChange}
+                                data-testid={CONSTANTS.DETAILS_TRANSCRIPT_UPLOAD_BUTTON_TEST_ID}
                             >
                                 <Button type="primary" icon={<Icon icon={UploadIcon} size={9} />} size="middle">
                                     {CONSTANTS.DETAILS_TRANSCRIPT_BUTTON_UPLOAD}
@@ -219,7 +221,20 @@ const DepositionDetailsTranscripts = () => {
                         )}
                     </Space>
                 </Space>
-                {showProgressBar && <ProgressBar percent={file?.percent} />}
+                {showProgressBar && (
+                    <ProgressBar
+                        percent={file?.percent}
+                        errors={
+                            file?.size > CONSTANTS.DEPOSITION_DETAILS_SUMMARY_FILE_SIZE_LIMIT && file?.percent === 100
+                                ? [CONSTANTS.DETAILS_EXHIBIT_FILE_EXCEEDS_LIMIT]
+                                : []
+                        }
+                        onClose={() => {
+                            setShowProgressBar(false);
+                            setFile(emptyFile);
+                        }}
+                    />
+                )}
                 <Table
                     ref={tableRef}
                     rowKey="id"

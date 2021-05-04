@@ -165,9 +165,12 @@ export class ApiService {
         });
     };
 
-    rescheduleDeposition = async (depoID: string, data) => {
+    rescheduleDeposition = async (depoID: string, data, file?, deleteCaption?) => {
         const formData = new FormData();
-        formData.set("json", JSON.stringify({ deposition: data }));
+        if (file) {
+            formData.append(file.uid, file);
+        }
+        formData.set("json", JSON.stringify({ deposition: data, deleteCaption }));
 
         return this.request<boolean>({
             path: `/api/depositions/${depoID}/reschedule`,

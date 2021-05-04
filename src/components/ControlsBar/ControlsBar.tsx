@@ -48,6 +48,7 @@ import CopyLink from "./components/CopyLink";
 import EndDepoModal from "./components/EndDepoModal";
 import getLeaveModalTextContent from "./helpers/getLeaveModalTextContent";
 import { LockedMenuItem, StyledComposedIconContainer, StyledContainer, StyledLogo } from "./styles";
+import HelpModal from "./components/HelpModal";
 
 interface IControlsBar {
     breakrooms?: BreakroomModel.Breakroom[];
@@ -65,6 +66,7 @@ interface IControlsBar {
     togglerRealTime: React.Dispatch<React.SetStateAction<boolean>> | ((value: React.SetStateAction<boolean>) => void);
     handleJoinBreakroom?: (roomNumber: string) => void;
     initialAudioEnabled?: boolean;
+    jobNumber?: string;
 }
 
 export default function ControlsBar({
@@ -83,6 +85,7 @@ export default function ControlsBar({
     canRecord,
     handleJoinBreakroom,
     initialAudioEnabled,
+    jobNumber,
 }: IControlsBar): ReactElement {
     const { videoTracks, audioTracks } = useParticipantTracks(localParticipant);
     const { isAudioEnabled, isCameraEnabled, setAudioEnabled, setCameraEnabled } = useTracksStatus(
@@ -95,11 +98,11 @@ export default function ControlsBar({
     const [summaryOpen, togglerSummary] = useState(false);
     const [moreOpen, togglerMore] = useState(false);
     const [breakroomsOpen, togglerBreakrooms] = useState(false);
-    const [modal, setModal] = useState(false);
+    const [endDepoModal, setEndDepoModal] = useState(false);
+    const [helpModal, setHelpModal] = useState(false);
     const [breakroomModal, setBreakroomModal] = useState(false);
     const [openLeaveModal, setOpenLeaveModal] = useState(false);
     const { setEndDepo } = useEndDepo();
-    const toggleMicrophone = useStreamAudio();
     const joinDepositionLink = useJoinDepositionLink();
     const [sendToggledMuted] = useSendParticipantStatus();
     const isWitness = localParticipant && JSON.parse(localParticipant.identity)?.role === "Witness";
@@ -121,6 +124,8 @@ export default function ControlsBar({
         disableChat,
     });
 
+    useStreamAudio(isAudioEnabled);
+
     const handleRedirection = () => {
         return isWitness && !isAuthenticated
             ? history.push({
@@ -136,11 +141,6 @@ export default function ControlsBar({
                         }
               );
     };
-
-    React.useEffect(() => {
-        toggleMicrophone(isRecording && isAudioEnabled);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isRecording, isAudioEnabled]);
 
     React.useEffect(() => {
         if (initialAudioEnabled !== undefined) {
@@ -234,12 +234,13 @@ export default function ControlsBar({
             />
             <EndDepoModal
                 endDepoFunc={() => {
-                    setModal(false);
+                    setEndDepoModal(false);
                     return setEndDepo(true);
                 }}
-                visible={modal}
-                closeModal={() => setModal(false)}
+                visible={endDepoModal}
+                closeModal={() => setEndDepoModal(false)}
             />
+            <HelpModal visible={helpModal} jobNumber={jobNumber} closeModal={() => setHelpModal(false)} />
             <Space.Item flex="1 0 0">
                 <StyledLogo>
                     <Logo version="light" height="100%" />
@@ -302,7 +303,7 @@ export default function ControlsBar({
                         <Control
                             data-testid="end"
                             onClick={() => {
-                                setModal(true);
+                                setEndDepoModal(true);
                             }}
                             type="rounded"
                             color="red"
@@ -419,7 +420,11 @@ export default function ControlsBar({
                             overlay={
                                 <Menu>
                                     <Menu.Item key="0">
-                                        <Button data-testid="support_button" type="link">
+                                        <Button
+                                            data-testid="support_button"
+                                            type="link"
+                                            onClick={() => setHelpModal(true)}
+                                        >
                                             <Space size="small" align="center">
                                                 <Icon icon={SupportIcon} size={8} color={ColorStatus.white} />
                                                 <Text state={ColorStatus.white} size="small">

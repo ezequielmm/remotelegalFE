@@ -197,7 +197,8 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
 
     const handleChangeDate = (current: any) => {
         const newEndTime = formStatus.endDate ? changeDate(current, formStatus.timeZone, formStatus.endDate) : null;
-        setFormStatus({ ...formStatus, startDate: current, endDate: newEndTime });
+        const newStartTime = changeDate(current, formStatus.timeZone, formStatus.startDate);
+        setFormStatus({ ...formStatus, startDate: newStartTime, endDate: newEndTime });
         if (current && current.isBefore(moment(new Date()).subtract(5, "m"))) {
             return setInvalidStartTime(true);
         }
@@ -271,7 +272,7 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
 
         bodyWithoutFile.startDate = changeTimeZone(formStatus.startDate, deposition.timeZone, formStatus.timeZone);
 
-        rescheduleDeposition(deposition.id, bodyWithoutFile, file, deleteCaption);
+        return rescheduleDeposition(deposition.id, bodyWithoutFile, file, deleteCaption);
     };
 
     return (
@@ -600,7 +601,12 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
                                     data-testid={
                                         CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_CANCEL_BUTTON_TEST_ID
                                     }
-                                    disabled={editLoading || cancelLoading || revertCancelLoading}
+                                    disabled={
+                                        editLoading ||
+                                        cancelLoading ||
+                                        revertCancelLoading ||
+                                        rescheduleDepositionLoading
+                                    }
                                     onClick={handleCloseModalAndResetFormStatus}
                                 >
                                     {CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_CANCEL_BUTTON_TEXT}
@@ -614,9 +620,15 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
                                         cancelLoading ||
                                         revertCancelLoading ||
                                         invalidStartTime ||
-                                        invalidEndTime
+                                        invalidEndTime ||
+                                        rescheduleDepositionLoading
                                     }
-                                    loading={editLoading || cancelLoading || revertCancelLoading}
+                                    loading={
+                                        editLoading ||
+                                        cancelLoading ||
+                                        revertCancelLoading ||
+                                        rescheduleDepositionLoading
+                                    }
                                     htmlType="submit"
                                     type="primary"
                                     onClick={handleSubmit}

@@ -15,7 +15,7 @@ Amplify.configure({
 
 Storage.prototype.removeItem = jest.fn();
 
-const Dashboard = () => {
+const Depositions = () => {
     return <div>Login Successfully</div>;
 };
 
@@ -157,7 +157,7 @@ describe("Login", () => {
             <>
                 <Login />
                 <Switch>
-                    <Route exact path="/dashboard" component={Dashboard} />
+                    <Route exact path="/depositions" component={Depositions} />
                 </Switch>
             </>
         );
@@ -171,7 +171,7 @@ describe("Login", () => {
             <>
                 <Login />
                 <Switch>
-                    <Route exact path="/dashboard" component={Dashboard} />
+                    <Route exact path="/depositions" component={Depositions} />
                 </Switch>
             </>
         );

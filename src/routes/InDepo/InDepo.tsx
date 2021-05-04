@@ -47,6 +47,7 @@ const InDepo = () => {
         shouldSendToPreDepo,
         currentExhibitPage,
         currentUser,
+        jobNumber,
     } = state.room;
     const { depositionID } = useParams<DepositionID>();
     const [realTimeOpen, togglerRealTime] = useState<boolean>(false);
@@ -131,9 +132,10 @@ const InDepo = () => {
         if (participants?.length && currentRoom?.localParticipant) {
             const localParticipantEmail = JSON.parse(currentRoom?.localParticipant?.identity)?.email;
             const isMuted = participants.find((participant) => participant?.email === localParticipantEmail)?.isMuted;
+            dispatch(actions.setIsMuted(isMuted));
             setInitialAudioEnabled(!isMuted);
         }
-    }, [participants, currentRoom]);
+    }, [participants, currentRoom, dispatch]);
 
     useEffect(() => {
         const onReceiveAnnotations = (message) => {
@@ -227,6 +229,7 @@ const InDepo = () => {
                         togglerExhibits={togglerExhibits}
                         localParticipant={currentRoom.localParticipant}
                         initialAudioEnabled={initialAudioEnabled}
+                        jobNumber={jobNumber}
                     />
                 </StyledRoomFooter>
             </StyledInDepoContainer>

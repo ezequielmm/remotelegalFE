@@ -24,7 +24,10 @@ export const DETAILS_TRANSCRIPT_BUTTON_NOTIFY = "Notify parties";
 export const DETAILS_TRANSCRIPT_BUTTON_DOWNLOAD = "Download";
 export const DETAILS_TRANSCRIPT_BUTTON_TEST_ID = "deposition_details_download_button";
 export const DETAILS_TRANSCRIPT_NOTIFY_BUTTON_TEST_ID = "deposition_details_notify_button";
+export const DETAILS_TRANSCRIPT_UPLOAD_BUTTON_TEST_ID = "deposition_details_upload_button";
+export const DETAILS_TRANSCRIPT_UPLOAD_PROGRESS_BAR_TEST_ID = "deposition_details_progress_bar";
 export const DETAILS_TRANSCRIPT_BUTTON_UPLOAD = "Upload transcript";
+export const DETAILS_EXHIBIT_FILE_EXCEEDS_LIMIT = "Exhibit size exceeds the allowed limit";
 
 export const DEFAULT_ACTIVE_TAB = "summary";
 
@@ -144,5 +147,5 @@ export const DEPOSITION_DETAILS_DELETE_MODAL_YES = "YES, DELETE FILE";
 
 export const DEPOSITION_DETAILS_SUMMARY_DOWNLOAD_TITLE = "RECORDING";
 export const DEPOSITION_DETAILS_SUMMARY_DOWNLOAD_ROUGH_DRAFT_TITLE = "ROUGH DRAFT TRANSCRIPT";
-
+export const DEPOSITION_DETAILS_SUMMARY_FILE_SIZE_LIMIT = 52428800;
 export const DEPOSITION_DETAILS_EMAIL_SENT_MESSAGE = "An email has been sent to all invited parties";

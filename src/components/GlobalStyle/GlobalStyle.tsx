@@ -52,6 +52,9 @@ const GlobalStyle = createGlobalStyle`
 
     .ant-result {
         padding: 0;
+        &-icon > .anticon {
+            font-size: ${({ theme }) => getREM(theme.default.spaces[6] * 6)};        
+        }
     }
     ${({ theme }) => `
         .ant-notification-notice-message{

@@ -1,10 +1,11 @@
-import { fireEvent, waitForDomChange } from "@testing-library/react";
+import { fireEvent, waitForDomChange, waitForElement } from "@testing-library/react";
 import React from "react";
 import Amplify from "aws-amplify";
 import ControlsBar from "../../components/ControlsBar";
 import { getBreakrooms } from "../mocks/breakroom";
 import * as CONSTANTS from "../../constants/inDepo";
 import * as TEST_CONSTANTS from "../constants/InDepo";
+import { HELP_TITLE } from "../../constants/help";
 import getParticipant from "../mocks/participant";
 import renderWithGlobalContext from "../utils/renderWithGlobalContext";
 import getMockDeps from "../utils/getMockDeps";
@@ -312,4 +313,59 @@ test("Shows a locked breakroom item when a breakroom is locked and show disabled
     );
     fireEvent.click(queryByTestId("breakrooms"));
     expect(queryByTestId("breakroom_locked")).not.toBeDisabled();
+});
+
+test("After clicks on the support button a modal should open", async () => {
+    AUTH.VALID();
+    const { queryByTestId, queryByText } = renderWithGlobalContext(
+        <ControlsBar
+            {...props}
+            localParticipant={getParticipant("test", "Witness")}
+            isRecording
+            canJoinToLockedBreakroom
+        />
+    );
+
+    expect(queryByText(HELP_TITLE)).not.toBeInTheDocument();
+    fireEvent.click(queryByTestId("more_dropdown").children[0].firstChild);
+    expect(queryByTestId("support_button")).toBeInTheDocument();
+    fireEvent.click(queryByTestId("support_button"));
+    await waitForDomChange();
+    expect(queryByText(HELP_TITLE)).toBeInTheDocument();
+});
+
+test("After clicks on the support button, a modal should open and not display the jobNumber if it doesn't have", async () => {
+    AUTH.VALID();
+    const { queryByTestId } = renderWithGlobalContext(
+        <ControlsBar
+            {...props}
+            localParticipant={getParticipant("test", "Witness")}
+            isRecording
+            canJoinToLockedBreakroom
+        />
+    );
+
+    fireEvent.click(queryByTestId("more_dropdown").children[0].firstChild);
+    fireEvent.click(queryByTestId("support_button"));
+    await waitForDomChange();
+    expect(queryByTestId("job_number")).not.toBeInTheDocument();
+});
+
+test("After clicks on the support button a modal should open and also display the jobNumber", async () => {
+    AUTH.VALID();
+    const jobNumber = "JobNumber";
+    const { queryByTestId, queryByText } = renderWithGlobalContext(
+        <ControlsBar
+            {...props}
+            localParticipant={getParticipant("test", "Witness")}
+            isRecording
+            canJoinToLockedBreakroom
+            jobNumber={jobNumber}
+        />
+    );
+
+    fireEvent.click(queryByTestId("more_dropdown").children[0].firstChild);
+    fireEvent.click(queryByTestId("support_button"));
+    await waitForDomChange();
+    expect(queryByText(jobNumber)).toBeInTheDocument();
 });

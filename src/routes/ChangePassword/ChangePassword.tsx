@@ -73,7 +73,7 @@ const ChangePassword = () => {
     if (loadingVerifyToken) return <Spinner />;
 
     return isAuthenticated && !verificationHash ? (
-        <Redirect to="/dashboard" />
+        <Redirect to="/depositions" />
     ) : (
         <Container>
             <Row justify="center" align="middle">

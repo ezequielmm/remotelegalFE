@@ -1,6 +1,7 @@
 import React from "react";
 import { Row, Tooltip } from "antd";
 import styled from "styled-components";
+import { useCallback } from "react";
 import Table from "../../components/Table";
 import Button from "../../components/Button";
 import CaseModal from "./CaseModal";
@@ -23,7 +24,7 @@ const StyledSpace = styled(Space)`
 const MyCases = () => {
     const [openCaseModal, setOpenCaseModal] = React.useState(false);
     const { handleListChange, sortedField, sortDirection, error, data, loading, refreshList } = useFetchCases();
-
+    const handleClose = useCallback(() => setOpenCaseModal(false), []);
     const getCaseColumns = React.useCallback(
         () => [
             {
@@ -53,13 +54,7 @@ const MyCases = () => {
 
     return (
         <>
-            <CaseModal
-                handleClose={() => {
-                    setOpenCaseModal(false);
-                }}
-                fetchCases={refreshList}
-                open={openCaseModal}
-            />
+            <CaseModal handleClose={handleClose} fetchCases={refreshList} open={openCaseModal} />
             {!error && (data === undefined || data?.length > 0) && (
                 <StyledSpace direction="vertical" size="large" fullWidth>
                     <Row justify="space-between" style={{ width: "100%" }}>
@@ -82,7 +77,7 @@ const MyCases = () => {
                         dataSource={data || []}
                         columns={getCaseColumns()}
                         onChange={handleListChange}
-                        sortDirections={["descend", "ascend"]}
+                        sortDirections={["descend", "ascend", "descend"]}
                         pagination={false}
                         scroll
                         style={{ height: "100%" }}

@@ -1,4 +1,4 @@
-import { waitForElement, waitForDomChange, fireEvent } from "@testing-library/react";
+import { waitForElement, waitForDomChange, fireEvent, act } from "@testing-library/react";
 import React from "react";
 import renderWithGlobalContext from "../utils/renderWithGlobalContext";
 import * as SIGN_UP_CONSTANTS from "../constants/signUp";
@@ -22,6 +22,16 @@ jest.mock("react-router", () => ({
     useParams: () => ({ depositionID: "depoId" }),
 }));
 
+jest.mock("../../services/UploadService", () => ({
+    __esModule: true,
+    default: jest.fn().mockImplementation((_, __, func) => {
+        func({
+            loaded: 1,
+            total: 1,
+        });
+    }),
+}));
+
 describe("Deposition Details Transcripts", () => {
     it("show a title with CONSTANTS.DETAILS_TRANSCRIPT_TITLE constant", async () => {
         const { getByTestId } = renderWithGlobalContext(<DepositionDetailsTranscript />);
@@ -33,6 +43,48 @@ describe("Deposition Details Transcripts", () => {
         await waitForDomChange();
         expect(queryByText(CONSTANTS.DETAILS_TRANSCRIPT_BUTTON_UPLOAD)).toBeTruthy();
     });
+    it("show progress bar on uploading file", async () => {
+        customDeps.apiService.currentUser = jest.fn().mockResolvedValue(SIGN_UP_CONSTANTS.getUser1());
+        customDeps.apiService.getTokenSet = jest.fn().mockResolvedValue("");
+        const { getByTestId, queryByText, queryByTestId } = renderWithGlobalContext(
+            <DepositionDetailsTranscript />,
+            customDeps
+        );
+        const file = new File(["file"], "file.pdf", { type: "application/x-pdf" });
+
+        await waitForDomChange();
+
+        expect(queryByText(CONSTANTS.DETAILS_TRANSCRIPT_BUTTON_UPLOAD)).toBeTruthy();
+
+        await act(async () => {
+            await fireEvent.change(getByTestId(CONSTANTS.DETAILS_TRANSCRIPT_UPLOAD_BUTTON_TEST_ID), {
+                target: { files: [file] },
+            });
+        });
+
+        expect(queryByTestId(CONSTANTS.DETAILS_TRANSCRIPT_UPLOAD_PROGRESS_BAR_TEST_ID)).toBeInTheDocument();
+    });
+
+    it("show progress bar error on big files", async () => {
+        customDeps.apiService.currentUser = jest.fn().mockResolvedValue(SIGN_UP_CONSTANTS.getUser1());
+        customDeps.apiService.getTokenSet = jest.fn().mockResolvedValue("");
+        const { getByTestId, queryByText, getByText } = renderWithGlobalContext(
+            <DepositionDetailsTranscript />,
+            customDeps
+        );
+        const file = new File(["file"], "file.pdf", { type: "application/x-pdf" });
+        Object.defineProperty(file, "size", { value: CONSTANTS.DEPOSITION_DETAILS_SUMMARY_FILE_SIZE_LIMIT + 1 });
+        await waitForDomChange();
+        expect(queryByText(CONSTANTS.DETAILS_TRANSCRIPT_BUTTON_UPLOAD)).toBeTruthy();
+        act(() => {
+            fireEvent.change(getByTestId(CONSTANTS.DETAILS_TRANSCRIPT_UPLOAD_BUTTON_TEST_ID), {
+                target: { files: [file] },
+            });
+        });
+        await waitForDomChange();
+        getByText(CONSTANTS.DETAILS_EXHIBIT_FILE_EXCEEDS_LIMIT);
+    });
+
     it("hide UPLOAD button if user is not admin", async () => {
         customDeps.apiService.currentUser = jest.fn().mockResolvedValue(SIGN_UP_CONSTANTS.getUserNotAdmin());
         const { queryByText } = renderWithGlobalContext(<DepositionDetailsTranscript />, customDeps);

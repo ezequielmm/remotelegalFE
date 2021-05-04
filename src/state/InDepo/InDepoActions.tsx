@@ -28,6 +28,8 @@ export enum ACTION_TYPE {
     IN_DEPO_SET_EXHIBIT_DOCUMENT_INSTANCE = "IN_DEPO_SET_EXHIBIT_DOCUMENT_INSTANCE",
     IN_DEPO_SET_PARTICIPANTS_DATA = "IN_DEPO_SET_PARTICIPANTS_DATA",
     IN_DEPO_SET_TOKEN = "IN_DEPO_SET_TOKEN",
+    IN_DEPO_SET_IS_MUTED = "IN_DEPO_SET_IS_MUTED",
+    IN_DEPO_SET_JOB_NUMBER = "IN_DEPO_SET_JOB_NUMBER",
     ADD_WITNESS = "IN_DEPO_ADD_WITNESS",
     SET_TIMEZONE = "IN_DEPO_SET_TIMEZONE",
     IN_DEPO_SET_PERMISSIONS = "IN_DEPO_SET_PERMISSIONS",
@@ -172,6 +174,14 @@ const actions = {
     }),
     setMockRoom: (payload) => ({
         type: ACTION_TYPE.MOCK_DEPO_SET_ROOM,
+        payload,
+    }),
+    setIsMuted: (payload) => ({
+        type: ACTION_TYPE.IN_DEPO_SET_IS_MUTED,
+        payload,
+    }),
+    setJobNumber: (payload) => ({
+        type: ACTION_TYPE.IN_DEPO_SET_JOB_NUMBER,
         payload,
     }),
 };
