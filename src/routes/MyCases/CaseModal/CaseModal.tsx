@@ -28,6 +28,7 @@ const CaseModal = ({ open, handleClose, fetchCases, noStep2, setCase }: IModalPr
     const [caseNumber, setCaseNumber] = React.useState("");
     const [displaySuccess, setDisplaySuccess] = React.useState(false);
     const elementRef = useRef(null);
+    const newCaseCreated = useRef(false);
     const { inputValue: caseNameValue, input: caseNameInput, invalid: caseNameInvalid, setValue } = useInput(
         isInputEmpty,
         {
@@ -42,6 +43,7 @@ const CaseModal = ({ open, handleClose, fetchCases, noStep2, setCase }: IModalPr
 
     useEffect(() => {
         if (data && !noStep2) {
+            newCaseCreated.current = true;
             setDisplaySuccess(true);
             if (elementRef.current) elementRef.current.focus();
         }
@@ -59,20 +61,28 @@ const CaseModal = ({ open, handleClose, fetchCases, noStep2, setCase }: IModalPr
         }
     }, [data, noStep2, handleClose, setCase, setValue, fetchCases]);
 
+    const resetState = () => {
+        if (caseNameValue) {
+            setValue("");
+        }
+        if (caseNumber) {
+            setCaseNumber("");
+        }
+        if (displaySuccess) {
+            setDisplaySuccess(false);
+        }
+        newCaseCreated.current = false;
+    };
+
     const handleCloseAndRedirect = () => {
         if (loading) {
             return;
         }
-        if (caseNumber.length) {
-            setCaseNumber("");
-        }
-        if (caseNameValue.length) {
-            setValue("");
-        }
-        if (data) {
+
+        if (newCaseCreated.current) {
             fetchCases();
-            setDisplaySuccess(false);
         }
+        resetState();
         handleClose();
     };
 
