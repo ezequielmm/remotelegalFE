@@ -77,7 +77,7 @@ const MyCases = () => {
                         dataSource={data || []}
                         columns={getCaseColumns()}
                         onChange={handleListChange}
-                        sortDirections={["descend", "ascend", "descend"]}
+                        sortDirections={["descend", "ascend"]}
                         pagination={false}
                         scroll
                         style={{ height: "100%" }}

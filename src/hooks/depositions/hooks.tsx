@@ -57,20 +57,22 @@ export const useFetchDepositions = () => {
             if (filter) {
                 setCurrentFilter(newFilter);
             }
-            if (sorter?.order) {
-                setSortedField(sorter?.field);
-                setSortDirection(sorter?.order);
-            }
+
+            setSortedField(sorter?.field || undefined);
+            setSortDirection(sorter?.order || undefined);
+
             if (page) {
                 setPageNumber(page);
             }
+
             const sortParams = !sorter?.order
                 ? {}
                 : {
-                      sortedField: sorter?.field ?? undefined,
-                      sortDirection: sorter.order ? sorter.order : undefined,
+                      sortedField: sorter?.field,
+                      sortDirection: sorter?.order,
                   };
             const pageParams = { page: page ?? pageNumber };
+
             fetchDepositions({
                 ...sortParams,
                 ...newFilter,

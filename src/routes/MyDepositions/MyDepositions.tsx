@@ -190,11 +190,11 @@ const MyDepositions = () => {
                                 loading={loading}
                                 dataSource={mappedDepositions || []}
                                 columns={depositionColumns}
-                                onChange={(page, filter, sorter) => {
+                                onChange={(newPage, _, sorter) => {
                                     setSorting(sorter);
-                                    handleListChange(page, getFilterParam(filterCriteria), sorter);
+                                    handleListChange(newPage, getFilterParam(filterCriteria), sorter);
                                 }}
-                                sortDirections={["descend", "ascend", "descend"]}
+                                sortDirections={["descend", "ascend"]}
                                 pagination={{
                                     current: page,
                                     position: ["bottomRight"],
