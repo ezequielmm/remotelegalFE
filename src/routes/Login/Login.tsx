@@ -61,7 +61,7 @@ const Login = ({ location }: LoginProps) => {
                                     Log in into your account
                                 </Text>
                             </Space.Item>
-                            {data && (
+                            {data?.success && (
                                 <Alert
                                     data-testid="successful_verification_message"
                                     message={CONSTANTS.EMAIL_VERIFIED}
@@ -87,7 +87,7 @@ const Login = ({ location }: LoginProps) => {
                                         type="error"
                                     />
                                 ))}
-                            {error === 409 && (
+                            {data?.success === false && (
                                 <Alert
                                     data-testid={CONSTANTS.INVALID_CODE_ERROR}
                                     message={CONSTANTS.INVALID_CODE_ERROR}
