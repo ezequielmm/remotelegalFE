@@ -26,6 +26,7 @@ import ColorStatus from "../../../types/ColorStatus";
 import Confirm from "../../../components/Confirm";
 import { TranscriptFile } from "../../../types/TranscriptFile";
 import Message from "../../../components/Message";
+import Alert from "../../../components/Alert";
 
 const DepositionDetailsTranscripts = () => {
     const emptyFile = { percent: 0, status: "", size: 0 };
@@ -110,26 +111,6 @@ const DepositionDetailsTranscripts = () => {
         await removeTranscript(depositionID, selectedRecord.current.id);
         handleFetchFiles();
     };
-
-    useEffect(() => {
-        if (notifyPartiesError) {
-            Message({
-                content: CONSTANTS.NETWORK_ERROR,
-                type: "error",
-                duration: 3,
-            });
-        }
-    }, [notifyPartiesError]);
-
-    useEffect(() => {
-        if (notified) {
-            Message({
-                content: CONSTANTS.DEPOSITION_DETAILS_EMAIL_SENT_MESSAGE,
-                type: "success",
-                duration: 3,
-            });
-        }
-    }, [notified]);
 
     const handleNotifyParties = () => {
         notifyParties(depositionID);
@@ -246,6 +227,19 @@ const DepositionDetailsTranscripts = () => {
                     rowSelection={rowSelection}
                 />
             </Space>
+            {!notifyPartiesLoading && notified && (
+                <Alert
+                    message={CONSTANTS.DEPOSITION_DETAILS_EMAIL_SENT_MESSAGE}
+                    float
+                    type="success"
+                    duration={3}
+                    fullWidth={false}
+                />
+            )}
+
+            {!notifyPartiesLoading && notifyPartiesError && (
+                <Alert message={CONSTANTS.NETWORK_ERROR} float type="error" duration={3} fullWidth={false} />
+            )}
         </>
     );
 };
