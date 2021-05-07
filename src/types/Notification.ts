@@ -6,6 +6,7 @@ export enum NotificationEntityType {
     deposition = "deposition",
     joinResponse = "joinResponse",
     lockBreakRoom = "lockBreakRoom",
+    endDeposition = "endDeposition",
 }
 
 export enum NotificationAction {

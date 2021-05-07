@@ -102,7 +102,7 @@ export default function ControlsBar({
     const [helpModal, setHelpModal] = useState(false);
     const [breakroomModal, setBreakroomModal] = useState(false);
     const [openLeaveModal, setOpenLeaveModal] = useState(false);
-    const { setEndDepo } = useEndDepo();
+    const { setEndDepo, loading } = useEndDepo();
     const joinDepositionLink = useJoinDepositionLink();
     const [sendToggledMuted] = useSendParticipantStatus();
     const isWitness = localParticipant && JSON.parse(localParticipant.identity)?.role === "Witness";
@@ -303,6 +303,9 @@ export default function ControlsBar({
                         <Control
                             data-testid="end"
                             onClick={() => {
+                                if (loading) {
+                                    return;
+                                }
                                 setEndDepoModal(true);
                             }}
                             type="rounded"

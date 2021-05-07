@@ -1,26 +1,29 @@
-import { useContext, useEffect, useState } from "react";
-import { useHistory, useParams } from "react-router";
+import { useEffect, useState } from "react";
 import { useKillDepo } from "./depositionLifeTimeHooks";
-import { GlobalStateContext } from "../../state/GlobalState";
-import disconnectFromDepo from "../../helpers/disconnectFromDepo";
+import * as CONSTANTS from "../../constants/inDepo";
+import Message from "../../components/Message";
 
 const useEndDepo = () => {
     const [endDepo, setEndDepo] = useState(false);
-    const { state, dispatch } = useContext(GlobalStateContext);
-    const { dataTrack, currentRoom } = state.room;
-    const [killDepo] = useKillDepo();
-    const history = useHistory();
-    const { depositionID } = useParams<{ depositionID: string }>();
+    const [killDepo, loading, error] = useKillDepo();
+
+    useEffect(() => {
+        if (error) {
+            Message({
+                content: CONSTANTS.NETWORK_ERROR,
+                type: "error",
+                duration: 3,
+            });
+            setEndDepo(false);
+        }
+    }, [error]);
 
     useEffect(() => {
         if (endDepo) {
-            dataTrack.send(JSON.stringify({ module: "endDepo", value: "" }));
-            // This somewhat ensures that the disconnect function runs after the dataTrack message has been sent. Should be replaced in the near future.
-            setTimeout(() => disconnectFromDepo(currentRoom, dispatch, history, killDepo, depositionID), 2000);
+            killDepo();
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [endDepo]);
+    }, [endDepo, killDepo]);
 
-    return { setEndDepo };
+    return { setEndDepo, loading, error };
 };
 export default useEndDepo;

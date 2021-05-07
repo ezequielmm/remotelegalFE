@@ -1,7 +1,6 @@
 import { Roles } from "../../models/participant";
 import { timeZone } from "../mocks/transcription";
 
-export const END_DEPO_DATATRACK_MESSAGE = JSON.stringify({ module: "endDepo", value: "" });
 export const JOIN_DEPOSITION_MOCK = {
     token: "1234",
     witnessEmail: "test@test.com",
@@ -64,3 +63,4 @@ export const getParticipant = (number) => ({
 export const getWaitingRoomParticipants = () => [getParticipant(0)];
 export const NON_WITNESS_NON_REGISTERED_EXPECTED_REDIRECT_BODY = { pathname: "/sign-up", state: { email: undefined } };
 export const WITNESS_EXPECTED_REDIRECT_BODY = { pathname: "/deposition/end", state: { isWitness: true } };
+export const NETWORK_ERROR = "An unexpected error occurred!";

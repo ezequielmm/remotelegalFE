@@ -1,5 +1,5 @@
 import { Reducer } from "react";
-import { LocalDataTrack, Participant, Room } from "twilio-video";
+import { LocalDataTrack, LocalTrack, Participant, Room } from "twilio-video";
 import { CoreControls } from "@pdftron/webviewer";
 import { TimeZones } from "../../models/general";
 import { BreakroomModel, TranscriptionModel } from "../../models";
@@ -18,6 +18,7 @@ export interface IRoom {
     currentRoom?: Room;
     currentBreakroom?: Room;
     error?: string;
+    tracks?: LocalTrack[];
     message?: DataTrackMessage;
     dataTrack?: LocalDataTrack | null;
     breakroomDataTrack?: LocalDataTrack | null;
@@ -55,6 +56,7 @@ export const RoomReducerInitialState: IRoom = {
     dominantSpeaker: null,
     currentBreakroom: null,
     error: "",
+    tracks: [],
     dataTrack: null,
     breakroomDataTrack: null,
     message: { module: "", value: "" },
@@ -252,6 +254,11 @@ const RoomReducer: Reducer<IRoom, IAction> = (state: IRoom, action: IAction): IR
             return {
                 ...state,
                 jobNumber: action.payload,
+            };
+        case ACTION_TYPE.ADD_USER_TRACKS:
+            return {
+                ...state,
+                tracks: action.payload,
             };
 
         default:

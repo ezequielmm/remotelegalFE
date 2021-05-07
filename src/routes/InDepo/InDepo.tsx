@@ -26,6 +26,7 @@ import { useUserIsAdmin } from "../../hooks/users/hooks";
 import Spinner from "../../components/Spinner";
 import LoadingScreen from "./LoadingScreen";
 import { NotificationEntityType } from "../../types/Notification";
+import stopAllTracks from "../../helpers/stopAllTracks";
 
 const InDepo = () => {
     const isMounted = useRef(true);
@@ -48,7 +49,9 @@ const InDepo = () => {
         currentExhibitPage,
         currentUser,
         jobNumber,
+        tracks,
     } = state.room;
+
     const { depositionID } = useParams<DepositionID>();
     const [realTimeOpen, togglerRealTime] = useState<boolean>(false);
     const [exhibitsOpen, togglerExhibits] = useState<boolean>(false);
@@ -73,6 +76,12 @@ const InDepo = () => {
     );
 
     useEffect(() => {
+        return () => {
+            stopAllTracks(tracks);
+        };
+    }, [tracks]);
+
+    useEffect(() => {
         if (signalR?.connectionState === "Connected" && depositionID) {
             sendMessage("SubscribeToDeposition", { depositionId: depositionID });
         }
@@ -86,7 +95,7 @@ const InDepo = () => {
             currentRoom.on("dominantSpeakerChanged", setDominantSpeaker);
         }
         const cleanUpFunction = () => {
-            disconnectFromDepo(currentRoom, dispatch, null, null, depositionID);
+            disconnectFromDepo(currentRoom, dispatch, null, depositionID, tracks);
         };
         window.addEventListener("beforeunload", cleanUpFunction);
 
@@ -94,10 +103,10 @@ const InDepo = () => {
             if (currentRoom) {
                 currentRoom.off("dominantSpeakerChange", setDominantSpeaker);
             }
-            disconnectFromDepo(currentRoom, dispatch, null, null, depositionID);
+
             window.removeEventListener("beforeunload", cleanUpFunction);
         };
-    }, [currentRoom, dispatch, depositionID]);
+    }, [currentRoom, dispatch, depositionID, tracks]);
 
     useEffect(() => {
         if (depositionID && isAuthenticated !== null && userIsAdmin !== undefined) {
@@ -113,14 +122,11 @@ const InDepo = () => {
     }, [realTimeOpen, exhibitsOpen]);
 
     useEffect(() => {
-        if (message.module === "endDepo") {
-            disconnectFromDepo(currentRoom, dispatch, history, null, depositionID);
-        }
         if (message.module === "recordDepo") {
             dispatch(actions.setIsRecording(message.value.eventType === EventModel.EventType.onTheRecord));
             dispatch(actions.addTranscription(message.value));
         }
-    }, [message, currentRoom, dispatch, history, depositionID]);
+    }, [dispatch, message]);
 
     useEffect(() => {
         if (currentExhibit || currentExhibitPage) {
@@ -138,32 +144,46 @@ const InDepo = () => {
     }, [participants, currentRoom, dispatch]);
 
     useEffect(() => {
-        const onReceiveAnnotations = (message) => {
+        const onReceiveAnnotations = (signalRMessage) => {
             if (
-                message.entityType === NotificationEntityType.bringAllTo &&
+                signalRMessage.entityType === NotificationEntityType.bringAllTo &&
                 currentUser?.id &&
-                currentUser?.id !== message?.content?.userId
+                currentUser?.id !== signalRMessage?.content?.userId
             ) {
                 dispatch(actions.setCurrentExhibitPage("-1"));
-                dispatch(actions.setCurrentExhibitPage(message?.content?.documentLocation));
+                dispatch(actions.setCurrentExhibitPage(signalRMessage?.content?.documentLocation));
             }
-            if (message.entityType === NotificationEntityType.lockBreakRoom) {
+            if (signalRMessage.entityType === NotificationEntityType.lockBreakRoom) {
                 dispatch(
                     actions.setBreakrooms(
                         breakrooms.map((breakroom) => ({
                             ...breakroom,
                             isLocked:
-                                breakroom.id === message?.content?.id ? message?.content?.isLocked : breakroom.isLocked,
+                                breakroom.id === signalRMessage?.content?.id
+                                    ? signalRMessage?.content?.isLocked
+                                    : breakroom.isLocked,
                         }))
                     )
                 );
+            }
+            if (signalRMessage.entityType === NotificationEntityType.endDeposition) {
+                disconnectFromDepo(currentRoom, dispatch, history, depositionID);
             }
         };
         subscribeToGroup("ReceiveNotification", onReceiveAnnotations);
         return () => {
             unsubscribeMethodFromGroup("ReceiveNotification", onReceiveAnnotations);
         };
-    }, [subscribeToGroup, unsubscribeMethodFromGroup, currentUser, dispatch, breakrooms]);
+    }, [
+        subscribeToGroup,
+        unsubscribeMethodFromGroup,
+        currentUser,
+        dispatch,
+        breakrooms,
+        currentRoom,
+        history,
+        depositionID,
+    ]);
 
     if (userIsAdminLoading || (loading && userStatus === null && shouldSendToPreDepo === null)) {
         return <Spinner />;

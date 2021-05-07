@@ -25,6 +25,7 @@ import StartMessage from "../../components/StartMessage";
 import { ReactComponent as CalendarIcon } from "../../assets/icons/calendar.svg";
 import getDepositionTime from "./helpers/getDepositionTime";
 import { NotificationAction, NotificationEntityType } from "../../types/Notification";
+import stopAllTracks from "../../helpers/stopAllTracks";
 
 const InDepo = () => {
     const isMounted = useRef(true);
@@ -32,6 +33,7 @@ const InDepo = () => {
     const { state, dispatch } = useContext(GlobalStateContext);
     const [joinDeposition, loading, error] = useJoinDepositionForMockRoom();
     const {
+        tracks,
         isRecording,
         mockDepoRoom,
         transcriptions,
@@ -88,6 +90,12 @@ const InDepo = () => {
     );
 
     useEffect(() => {
+        return () => {
+            stopAllTracks(tracks);
+        };
+    }, [tracks]);
+
+    useEffect(() => {
         if (userStatusError) {
             Message({
                 content: CONSTANTS.MOCK_DEPO_USER_STATUS_ERROR,
@@ -105,7 +113,7 @@ const InDepo = () => {
             mockDepoRoom.on("dominantSpeakerChanged", setDominantSpeaker);
         }
         const cleanUpFunction = () => {
-            disconnectFromDepo(mockDepoRoom, dispatch, null, null, depositionID);
+            disconnectFromDepo(mockDepoRoom, dispatch, null, depositionID, tracks);
         };
         window.addEventListener("beforeunload", cleanUpFunction);
 
@@ -113,10 +121,9 @@ const InDepo = () => {
             if (mockDepoRoom) {
                 mockDepoRoom.off("dominantSpeakerChange", setDominantSpeaker);
             }
-            disconnectFromDepo(mockDepoRoom, dispatch, null, null, depositionID);
             window.removeEventListener("beforeunload", cleanUpFunction);
         };
-    }, [mockDepoRoom, dispatch, depositionID]);
+    }, [mockDepoRoom, dispatch, depositionID, tracks]);
 
     useEffect(() => {
         if (depositionID) {

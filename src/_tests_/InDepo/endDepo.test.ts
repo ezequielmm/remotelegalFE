@@ -1,8 +1,20 @@
 import { renderHook, act } from "@testing-library/react-hooks";
-import dataTrackMock from "../mocks/dataTrack";
-import wrapper from "../mocks/wrapper";
-import { END_DEPO_DATATRACK_MESSAGE } from "../constants/InDepo";
 import useEndDepo from "../../hooks/InDepo/useEndDepo";
+import state from "../mocks/state";
+import { defineProviderValues } from "../../state/GlobalState";
+import getMockDeps from "../utils/getMockDeps";
+import Message from "../../components/Message";
+import { NETWORK_ERROR } from "../constants/InDepo";
+
+jest.mock("../../components/Message", () => ({
+    __esModule: true,
+    default: jest.fn(),
+}));
+
+const { dispatch } = state;
+const mockDeps = getMockDeps();
+mockDeps.apiService.endDeposition = jest.fn();
+const overridenWrapper = ({ children }) => defineProviderValues(state.state, dispatch, mockDeps, children);
 
 jest.mock("audio-recorder-polyfill", () => {
     return jest.fn().mockImplementation(() => ({
@@ -30,19 +42,25 @@ jest.mock("../../helpers/disconnectFromDepo", () => ({
     default: jest.fn(),
 }));
 
-test("endDepo hook calls dataTrack with proper params", () => {
-    const { result } = renderHook(() => useEndDepo(), { wrapper });
+test("endDepo hook calls killDepo endpoint", () => {
+    const { result } = renderHook(() => useEndDepo(), { wrapper: overridenWrapper });
     act(() => {
         result.current.setEndDepo(true);
     });
-    expect(dataTrackMock.send).toBeCalledWith(END_DEPO_DATATRACK_MESSAGE);
+    expect(mockDeps.apiService.endDeposition).toHaveBeenCalled();
 });
 
-test("endDepo hook calls disconnect with proper params", (done) => {
-    const { result } = renderHook(() => useEndDepo(), { wrapper });
+test("endDepo hook shows toast if fetch fails", () => {
+    mockDeps.apiService.endDeposition = jest.fn().mockRejectedValue(new Error("error"));
+    const { result, waitFor } = renderHook(() => useEndDepo(), { wrapper: overridenWrapper });
     act(() => {
         result.current.setEndDepo(true);
     });
-    // TODO fix this test
-    done();
+    waitFor(() =>
+        expect(Message).toHaveBeenCalledWith({
+            content: NETWORK_ERROR,
+            type: "error",
+            duration: 3,
+        })
+    );
 });

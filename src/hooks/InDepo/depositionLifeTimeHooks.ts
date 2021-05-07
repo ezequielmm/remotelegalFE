@@ -1,6 +1,7 @@
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { connect, createLocalTracks, LocalDataTrack, Room } from "twilio-video";
 import { useHistory, useParams } from "react-router";
+import useSound from "use-sound";
 import { GlobalStateContext } from "../../state/GlobalState";
 import configParticipantListeners from "../../helpers/configParticipantListeners";
 import useAsyncCallback from "../useAsyncCallback";
@@ -16,7 +17,6 @@ import { TWILIO_VIDEO_CONFIG } from "../../constants/inDepo";
 import { useCheckUserStatus } from "../preJoinDepo/hooks";
 import { Roles } from "../../models/participant";
 import { useAuthentication } from "../auth";
-import useSound from "use-sound";
 
 // TODO: Find the way to use import instead of using require
 const beep = require("../../assets/sounds/Select.mp3");
@@ -56,6 +56,7 @@ export const useJoinBreakroom = () => {
     useEffect(() => {
         return () => {
             if (breakroom) return disconnectFromDepo(breakroom, dispatch);
+            return null;
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [breakroom]);
@@ -72,15 +73,15 @@ export const useJoinBreakroom = () => {
             const token: any = await generateBreakroomToken();
             if (!token) return "";
 
-            const room = await createLocalTracks({ audio: true, video: { aspectRatio: 1.777777777777778 } }).then(
-                (localTracks) => {
-                    return connect(token, {
-                        ...TWILIO_VIDEO_CONFIG,
-                        name: breakroomID,
-                        tracks: [...localTracks, dataTrack],
-                    });
-                }
-            );
+            const tracks = await createLocalTracks({ audio: true, video: { aspectRatio: 1.777777777777778 } });
+            tracks.push(dataTrack);
+            const room = await connect(token, {
+                ...TWILIO_VIDEO_CONFIG,
+                name: breakroomID,
+                tracks,
+            });
+
+            dispatch(actions.addUserTracks(tracks));
             setBreakroom(room);
 
             const breakrooms = await getBreakrooms();
@@ -129,15 +130,15 @@ export const useJoinDepositionForMockRoom = () => {
                 history.push(`/deposition/join/${depositionID}`);
             }
 
-            const room = await createLocalTracks({ audio: true, video: { aspectRatio: 1.777777777777778 } }).then(
-                (localTracks) => {
-                    return connect(token, {
-                        ...TWILIO_VIDEO_CONFIG,
-                        name: depositionID,
-                        tracks: [...localTracks, dataTrack],
-                    });
-                }
-            );
+            const tracks = await createLocalTracks({ audio: true, video: { aspectRatio: 1.777777777777778 } });
+            tracks.push(dataTrack);
+            const room = await connect(token, {
+                ...TWILIO_VIDEO_CONFIG,
+                name: depositionID,
+                tracks,
+            });
+
+            dispatch(actions.addUserTracks(tracks));
 
             if (!isMounted.current) {
                 return disconnectFromDepo(room, dispatch);
@@ -172,6 +173,7 @@ export const useJoinDeposition = () => {
     useEffect(() => {
         return () => {
             if (depoRoom) return disconnectFromDepo(depoRoom, dispatch);
+            return null;
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [depoRoom]);
@@ -223,15 +225,15 @@ export const useJoinDeposition = () => {
             if (isSharing) {
                 fetchExhibitFileInfo(depositionID);
             }
-            const room = await createLocalTracks({ audio: true, video: { aspectRatio: 1.777777777777778 } }).then(
-                (localTracks) => {
-                    return connect(token, {
-                        ...TWILIO_VIDEO_CONFIG,
-                        name: depositionID,
-                        tracks: [...localTracks, dataTrack],
-                    });
-                }
-            );
+            const tracks = await createLocalTracks({ audio: true, video: { aspectRatio: 1.777777777777778 } });
+            tracks.push(dataTrack);
+            const room = await connect(token, {
+                ...TWILIO_VIDEO_CONFIG,
+                name: depositionID,
+                tracks,
+            });
+
+            dispatch(actions.addUserTracks(tracks));
             setDepoRoom(room);
 
             if (!isMounted.current) {

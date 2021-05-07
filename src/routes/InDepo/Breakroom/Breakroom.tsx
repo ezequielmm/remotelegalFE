@@ -23,12 +23,13 @@ import { StyledInDepoContainer, StyledInDepoLayout, StyledRoomFooter } from "../
 import VideoConference from "../VideoConference";
 import { ReactComponent as LockBreakroomIcon } from "../../../assets/icons/Lock.svg";
 import { ReactComponent as UnLockBreakroomIcon } from "../../../assets/icons/Unlock.svg";
+import stopAllTracks from "../../../helpers/stopAllTracks";
 
 const Breakroom = () => {
     const inDepoTheme = { ...theme, mode: ThemeMode.inDepo };
     const { state, dispatch } = useContext(GlobalStateContext);
     const [joinBreakroom, loading, error, , errorGeneratingToken] = useJoinBreakroom();
-    const { breakrooms, currentBreakroom, timeZone, breakroomDataTrack } = state.room;
+    const { breakrooms, currentBreakroom, timeZone, breakroomDataTrack, tracks } = state.room;
     const { breakroomID, depositionID } = useParams<{ depositionID: string; breakroomID: string }>();
     const currentBreakroomData = breakrooms?.find((breakroom) => breakroom.id === breakroomID);
     const [exhibitsOpen, togglerExhibits] = useState<boolean>(false);
@@ -81,15 +82,20 @@ const Breakroom = () => {
     }, [exhibitsOpen]);
 
     useEffect(() => {
+        return () => {
+            stopAllTracks(tracks);
+        };
+    }, [tracks]);
+
+    useEffect(() => {
         let cleanUpFunction;
         const setDominantSpeaker = (participant: Participant | null) => {
             dispatch(actions.setAddDominantSpeaker(participant));
         };
         if (currentBreakroom) {
             currentBreakroom.on("dominantSpeakerChanged", setDominantSpeaker);
-
             cleanUpFunction = () => {
-                disconnectFromDepo(currentBreakroom, dispatch, null, null, depositionID);
+                disconnectFromDepo(currentBreakroom, dispatch, null, depositionID, tracks);
             };
             window.addEventListener("beforeunload", cleanUpFunction);
         }
@@ -97,11 +103,10 @@ const Breakroom = () => {
         return () => {
             if (currentBreakroom) {
                 currentBreakroom.off("dominantSpeakerChange", setDominantSpeaker);
-                disconnectFromDepo(currentBreakroom, dispatch, null, null, depositionID);
-                window.removeEventListener("beforeunload", cleanUpFunction);
             }
+            window.removeEventListener("beforeunload", cleanUpFunction);
         };
-    }, [currentBreakroom, dispatch, depositionID]);
+    }, [currentBreakroom, dispatch, depositionID, tracks]);
 
     useEffect(() => {
         if (errorGeneratingToken === 400) {

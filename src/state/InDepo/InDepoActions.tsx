@@ -1,4 +1,4 @@
-import { LocalDataTrack, Participant, Room } from "twilio-video";
+import { LocalDataTrack, LocalTrack, Participant, Room } from "twilio-video";
 import { CoreControls } from "@pdftron/webviewer";
 import { TimeZones } from "../../models/general";
 import { DataTrackMessage, DisconnectRoomState } from "../types";
@@ -41,12 +41,17 @@ export enum ACTION_TYPE {
     ADD_DOMINANT_SPEAKER = "ADD_DOMINANT_SPEAKER",
     SET_USER_STATUS = "SET_USER_STATUS",
     SET_DEPO_STATUS = "SET_DEPO_STATUS",
+    ADD_USER_TRACKS = "ADD_USER_TRACKS",
 }
 
 const actions = {
     addDataTrack: (dataTrack: LocalDataTrack) => ({
         type: ACTION_TYPE.IN_DEPO_ADD_DATA_TRACK,
         payload: dataTrack,
+    }),
+    addUserTracks: (tracks: LocalTrack[]) => ({
+        type: ACTION_TYPE.ADD_USER_TRACKS,
+        payload: tracks,
     }),
 
     addBreakroomDataTrack: (dataTrack: LocalDataTrack) => ({
