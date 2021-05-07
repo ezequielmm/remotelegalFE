@@ -86,6 +86,7 @@ const PDFTronViewer = ({
         }
         if (showStamp && canStamp && PDFTron && isRecording) {
             PDFTron.setHeaderItems((header) => {
+                header.delete("rubberStampToolGroupButton");
                 header.get("customFullScreenButton").insertAfter({
                     ...CONSTANTS.OPEN_STAMP_MODAL_BUTTON,
                     onClick() {

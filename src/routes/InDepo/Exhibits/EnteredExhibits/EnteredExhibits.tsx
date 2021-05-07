@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Row, Col } from "antd";
 import Space from "../../../../components/Space";
 import Result from "../../../../components/Result";
@@ -10,6 +10,7 @@ import {
     ENTERED_EXHIBITS_EMPTY_STATE_SUBTITLE,
     ENTERED_EXHIBITS_EMPTY_STATE_TITLE,
     ENTERED_EXHIBITS_TITLE,
+    EXHIBIT_TABS,
 } from "../../../../constants/exhibits";
 import { ReactComponent as EnteredExhibitsIcon } from "../../../../assets/icons/EnteredExhibits-empty.svg";
 import { ExhibitTabPaneSpacer, ScrollTableContainer } from "../styles";
@@ -20,6 +21,7 @@ import { ExhibitFile } from "../../../../types/ExhibitFile";
 import ExhibitViewer from "../ExhibitViewer";
 import { useEnteredExhibit } from "../../../../hooks/useEnteredExhibits";
 import { TOOLBAR_GROUP_ANNOTATE, TOOLBAR_GROUP_VIEW } from "../../../../constants/PDFTronViewer";
+import { GlobalStateContext } from "../../../../state/GlobalState";
 
 export default function EnteredExhibits() {
     const {
@@ -29,9 +31,13 @@ export default function EnteredExhibits() {
         enteredExhibitsError,
     } = useEnteredExhibit();
     const [selectedFile, setSelectedFile] = useState<ExhibitFile>(null);
+    const { state } = useContext(GlobalStateContext);
+    const { currentExhibitTabName } = state.room;
     useEffect(() => {
-        handleFetchFiles();
-    }, [handleFetchFiles]);
+        if (currentExhibitTabName === EXHIBIT_TABS.enteredExhibits) {
+            handleFetchFiles();
+        }
+    }, [handleFetchFiles, currentExhibitTabName]);
     return (
         <ExhibitTabPaneSpacer direction="vertical" size="large">
             {!selectedFile && (
