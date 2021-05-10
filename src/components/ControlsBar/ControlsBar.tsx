@@ -124,7 +124,7 @@ export default function ControlsBar({
         disableChat,
     });
 
-    useStreamAudio(isAudioEnabled);
+    useStreamAudio(isAudioEnabled, audioTracks);
 
     const handleRedirection = () => {
         return isWitness && !isAuthenticated

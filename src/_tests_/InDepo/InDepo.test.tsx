@@ -156,6 +156,8 @@ beforeEach(() => {
         }
         return createElement(tagName);
     };
+
+    window.MediaStream = (jest.fn() as any).mockImplementation(() => {});
 });
 
 test("spinner is shown on mount", async () => {

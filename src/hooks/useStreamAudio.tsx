@@ -3,42 +3,35 @@ import React, { useCallback, useContext, useEffect, useState } from "react";
 import { GlobalStateContext } from "../state/GlobalState";
 import useTranscriptAudio from "./InDepo/useTranscriptAudio";
 
-export default (isAudioEnabled: boolean) => {
+export default (isAudioEnabled: boolean, audioTracks) => {
     const [recorder, setRecorder] = useState(null);
     const { state } = useContext(GlobalStateContext);
-    const { isMuted, isRecording } = state.room;
+    const { isRecording } = state.room;
     const [sampleRate, setSampleRate] = useState<number>(undefined);
     const [stopAudio, transcriptAudio] = useTranscriptAudio();
-    const [isStartCompleted, setIsStartCompleted] = useState(false);
-
-    const muteRecorderTracks = useCallback(() => {
-        recorder?.stop();
-        recorder?.stream?.getTracks()?.forEach((track) => {
-            track.enabled = false;
-            track.stop();
-        });
-    }, [recorder]);
 
     const stopMicrophone = useCallback(async () => {
         if (recorder) {
-            muteRecorderTracks();
             if (sampleRate) {
                 setTimeout(() => {
                     stopAudio(sampleRate);
                 }, 500);
             }
         }
-    }, [stopAudio, sampleRate, recorder, muteRecorderTracks]);
+    }, [stopAudio, sampleRate, recorder]);
 
     useEffect(() => {
         return () => {
-            muteRecorderTracks();
+            if (recorder) {
+                recorder.stop();
+                recorder.stream.getTracks().forEach((track) => track.stop());
+            }
         };
-    }, [muteRecorderTracks]);
+    }, [recorder]);
 
     React.useEffect(() => {
         let dataAvailableHandler;
-        if (recorder) {
+        if (recorder && isRecording && isAudioEnabled) {
             dataAvailableHandler = (e) => {
                 const fileReader = new FileReader();
                 fileReader.onload = (event) => {
@@ -60,32 +53,20 @@ export default (isAudioEnabled: boolean) => {
                 recorder.removeEventListener("dataavailable", dataAvailableHandler);
             }
         };
-    }, [sampleRate, recorder, transcriptAudio]);
+    }, [sampleRate, recorder, transcriptAudio, isRecording, isAudioEnabled]);
 
     const getMicrophone = useCallback(async () => {
-        const newAudio = await navigator.mediaDevices.getUserMedia({
-            audio: true,
-            video: false,
-        });
-        if (!newAudio) return;
+        if (!audioTracks?.length) return;
+        const mediaTracks = audioTracks
+            .filter((track) => track.kind === "audio")
+            .map((trackPublication) => trackPublication?.mediaStreamTrack);
 
-        setIsStartCompleted(false);
-        const newRecorder = new AudioRecorder(newAudio);
-        if (!isMuted) newRecorder.start(1000);
-        setIsStartCompleted(true);
+        const stream = new MediaStream(mediaTracks);
+        const newRecorder = new AudioRecorder(stream);
+        newRecorder.start(1000);
         setRecorder(newRecorder);
-
         // Start recording
-    }, [isMuted]);
-
-    useEffect(() => {
-        if (recorder && isStartCompleted && isMuted) {
-            muteRecorderTracks();
-        } else if (recorder && isStartCompleted) {
-            recorder?.start(1000);
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isMuted]);
+    }, [audioTracks]);
 
     const toggleMicrophone = useCallback(
         (start) => {
@@ -99,9 +80,9 @@ export default (isAudioEnabled: boolean) => {
     );
 
     useEffect(() => {
-        toggleMicrophone(isRecording && isAudioEnabled);
+        toggleMicrophone(isRecording && isAudioEnabled && audioTracks.length);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isRecording, isAudioEnabled]);
+    }, [isRecording, isAudioEnabled, audioTracks]);
 
     return toggleMicrophone;
 };
