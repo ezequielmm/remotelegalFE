@@ -18,7 +18,7 @@ const useSignalR = (url: string): any => {
                 skipNegotiation: true,
                 transport: HttpTransportType.WebSockets,
             })
-            .withAutomaticReconnect()
+            .withAutomaticReconnect([0, 200, 10000, 30000, 60000, 120000])
             .build();
 
         await newSignalR.start();
