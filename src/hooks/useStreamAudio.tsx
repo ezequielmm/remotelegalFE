@@ -80,7 +80,7 @@ export default (isAudioEnabled: boolean, audioTracks) => {
     );
 
     useEffect(() => {
-        toggleMicrophone(isRecording && isAudioEnabled && audioTracks.length);
+        toggleMicrophone(isRecording && isAudioEnabled);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isRecording, isAudioEnabled, audioTracks]);
 
