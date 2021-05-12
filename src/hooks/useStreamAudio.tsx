@@ -27,7 +27,8 @@ export default (isAudioEnabled: boolean, audioTracks) => {
                 recorder.stream.getTracks().forEach((track) => track.stop());
             }
         };
-    }, [recorder]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     React.useEffect(() => {
         let dataAvailableHandler;
