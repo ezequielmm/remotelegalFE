@@ -1,5 +1,5 @@
 import AudioRecorder from "audio-recorder-polyfill";
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { GlobalStateContext } from "../state/GlobalState";
 import useTranscriptAudio from "./InDepo/useTranscriptAudio";
 
@@ -9,7 +9,7 @@ export default (isAudioEnabled: boolean, audioTracks) => {
     const { isRecording } = state.room;
     const [sampleRate, setSampleRate] = useState<number>(undefined);
     const [stopAudio, transcriptAudio] = useTranscriptAudio();
-
+    const recorderRef = useRef(null);
     const stopMicrophone = useCallback(async () => {
         if (recorder) {
             if (sampleRate) {
@@ -21,14 +21,20 @@ export default (isAudioEnabled: boolean, audioTracks) => {
     }, [stopAudio, sampleRate, recorder]);
 
     useEffect(() => {
+        const innerRef = recorderRef;
         return () => {
-            if (recorder) {
-                recorder.stop();
-                recorder.stream.getTracks().forEach((track) => track.stop());
+            if (innerRef?.current) {
+                innerRef.current.stop();
+                innerRef.current.stream.getTracks().forEach((track) => track.stop());
             }
         };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    useEffect(() => {
+        if (recorder) {
+            recorderRef.current = recorder;
+        }
+    }, [recorder]);
 
     React.useEffect(() => {
         let dataAvailableHandler;
@@ -56,29 +62,31 @@ export default (isAudioEnabled: boolean, audioTracks) => {
         };
     }, [sampleRate, recorder, transcriptAudio, isRecording, isAudioEnabled]);
 
-    const getMicrophone = useCallback(async () => {
-        if (!audioTracks?.length) return;
-        const mediaTracks = audioTracks
-            .filter((track) => track.kind === "audio")
-            .map((trackPublication) => trackPublication?.mediaStreamTrack);
+    const getMicrophone = () => {
+        if (recorder) {
+            return recorder.start(1000);
+        }
+        if (audioTracks.length) {
+            const mediaTracks = audioTracks
+                .filter((track) => track.kind === "audio")
+                .map((trackPublication) => trackPublication?.mediaStreamTrack);
 
-        const stream = new MediaStream(mediaTracks);
-        const newRecorder = new AudioRecorder(stream);
-        newRecorder.start(1000);
-        setRecorder(newRecorder);
-        // Start recording
-    }, [audioTracks]);
+            const stream = new MediaStream(mediaTracks);
+            const newRecorder = new AudioRecorder(stream);
+            newRecorder.start(1000);
+            return setRecorder(newRecorder);
+        }
 
-    const toggleMicrophone = useCallback(
-        (start) => {
-            if (!start) {
-                stopMicrophone();
-            } else {
-                getMicrophone();
-            }
-        },
-        [stopMicrophone, getMicrophone]
-    );
+        return null;
+    };
+
+    const toggleMicrophone = (start) => {
+        if (!start) {
+            stopMicrophone();
+        } else {
+            getMicrophone();
+        }
+    };
 
     useEffect(() => {
         toggleMicrophone(isRecording && isAudioEnabled);
