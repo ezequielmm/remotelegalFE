@@ -8,6 +8,7 @@ import {
     getTranscriptionsWithPaused,
     timeZone,
 } from "../mocks/transcription";
+import "mutationobserver-shim";
 import renderWithGlobalContext from "../utils/renderWithGlobalContext";
 
 window.HTMLElement.prototype.scrollIntoView = jest.fn();

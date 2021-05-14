@@ -4,6 +4,7 @@ import renderWithGlobalContext from "../utils/renderWithGlobalContext";
 import * as CONSTANTS from "../../constants/depositionDetails";
 import DepositionDetailsVideoSection from "../../routes/DepositionDetails/DepositionDetailsSummary/DepositionDetailsVideoSection";
 import { RecordingStatus } from "../../models/recording";
+import "mutationobserver-shim";
 
 const customDeps = getMockDeps();
 
@@ -186,7 +187,7 @@ describe("DepositionDetailsVideoSection", () => {
         );
         expect(queryByText("Audio-alert.svg")).toBeInTheDocument();
     });
-    
+
     it("shows an video image when has not public url and the output format is mp4", async () => {
         const recordInfoData = {
             totalTime: 0,

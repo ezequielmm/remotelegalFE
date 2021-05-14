@@ -9,6 +9,7 @@ import getMockDeps from "../utils/getMockDeps";
 import { getTranscriptFileList, getTranscriptFileListOnlyOne } from "../mocks/transcriptsFileList";
 import downloadFile from "../../helpers/downloadFile";
 import { wait } from "../../helpers/wait";
+import "mutationobserver-shim";
 
 const customDeps = getMockDeps();
 

@@ -8,6 +8,7 @@ import downloadFile from "../../helpers/downloadFile";
 import { wait } from "../../helpers/wait";
 import enteredExhibitsMock from "../mocks/EnteredExhibits";
 import * as TEST_CONSTANTS from "../constants/depositionDetails";
+import "mutationobserver-shim";
 
 jest.mock("../../helpers/downloadFile", () => ({
     __esModule: true,

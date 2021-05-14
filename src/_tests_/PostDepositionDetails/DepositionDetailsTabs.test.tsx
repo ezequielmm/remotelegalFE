@@ -5,6 +5,7 @@ import * as CONSTANTS from "../../constants/depositionDetails";
 import { DepositionDetailsTabData } from "../../constants/depositionDetails";
 import DepositionDetailsTabs from "../../routes/DepositionDetails/DepositionDetailsTabs";
 import renderWithGlobalContext from "../utils/renderWithGlobalContext";
+import "mutationobserver-shim";
 
 describe("DepositionDetailsTabs", () => {
     it.each(CONSTANTS.DEPOSITION_DETAILS_TABS_DATA.map((tab) => [tab.title, tab]))(

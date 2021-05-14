@@ -9,13 +9,14 @@ import * as CONSTANTS from "../../constants/depositionDetails";
 import { wait } from "../../helpers/wait";
 import DepositionDetails from "../../routes/DepositionDetails";
 import * as TESTS_CONSTANTS from "../constants/depositionDetails";
-import { DEPOSITION_ID, getDepositions, getDepositionWithOverrideValues } from "../constants/depositions";
+import { DEPOSITION_ID, getDepositions } from "../constants/depositions";
 import getMockDeps from "../utils/getMockDeps";
 import DEPO_PARTICIPANT_MOCK from "../mocks/depoParticipant";
 import renderWithGlobalContext from "../utils/renderWithGlobalContext";
 import DepositionDetailsAttendees from "../../routes/DepositionDetails/DepositionDetailsAttendees";
 import { Roles } from "../../models/participant";
 import { mapTimeZone } from "../../models/general";
+import "mutationobserver-shim";
 
 jest.mock("audio-recorder-polyfill", () => {
     return jest.fn().mockImplementation(() => ({

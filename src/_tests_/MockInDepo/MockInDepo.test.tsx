@@ -10,6 +10,7 @@ import renderWithGlobalContext from "../utils/renderWithGlobalContext";
 import * as AUTH from "../mocks/Auth";
 import { getUserDepoStatusWithParticipantAdmitted } from "../constants/preJoinDepo";
 import getDepositionTime from "../../routes/MockInDepo/helpers/getDepositionTime";
+import "mutationobserver-shim";
 
 let signalREventTriggered;
 jest.mock("../../hooks/useSignalR", () => () => ({

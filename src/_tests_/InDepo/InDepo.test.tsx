@@ -16,6 +16,7 @@ import getParticipant from "../mocks/participant";
 import { currentExhibit } from "../mocks/currentExhibit";
 import * as AUTH from "../mocks/Auth";
 import { getUserDepoStatusWithParticipantAdmitted } from "../constants/preJoinDepo";
+import "mutationobserver-shim";
 
 jest.mock("@microsoft/signalr");
 

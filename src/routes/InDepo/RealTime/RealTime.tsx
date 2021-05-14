@@ -59,22 +59,35 @@ const RealTime = ({
 
     useEffect(() => {
         const innerRef = scrollableRef;
-        const scrollToBottom = (event) => {
-            const { currentTarget: target } = event;
-            if (!scrollToHighlighted) target.scroll({ top: target.scrollHeight, behavior: "smooth" });
+        const observerOptions = {
+            childList: true,
+            subtree: true,
         };
+        const scrollToBottom = (element) => {
+            if (!scrollToHighlighted) element.scrollIntoView({ behavior: "smooth" });
+        };
+        const observerNewNodeAddedCallback = (mutationsList) => {
+            mutationsList.forEach((mutation) => {
+                if (mutation.type === "childList") {
+                    if (mutation.addedNodes?.length) {
+                        scrollToBottom(mutation.addedNodes[0]);
+                    }
+                }
+            });
+        };
+        const observer = new MutationObserver(observerNewNodeAddedCallback);
         if (scrollableRef?.current && !scrollToHighlighted) {
-            innerRef.current.addEventListener("DOMNodeInserted", scrollToBottom);
+            observer.observe(innerRef.current, observerOptions);
         }
-        return () => innerRef?.current?.removeEventListener("DOMNodeInserted", scrollToBottom);
+        return () => observer.disconnect();
     }, [scrollToHighlighted]);
 
     return (
         <StyledLayoutCotainer noBackground={disableAutoscroll} visible={visible}>
             <StyledLayoutContent>
                 <StyledRealTimeContainer>
-                    <div ref={scrollableRef}>
-                        <div>
+                    <div>
+                        <div ref={scrollableRef}>
                             {!disableAutoscroll && <RoughDraftPill>ROUGH DRAFT: NOT FOR OFFICIAL USE</RoughDraftPill>}
                             <Space direction="vertical" size="middle">
                                 {transcriptions

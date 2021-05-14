@@ -12,6 +12,7 @@ import {
 import { getTranscriptionsWithOffset } from "../mocks/transcription";
 import getMockDeps from "../utils/getMockDeps";
 import renderWithGlobalContext from "../utils/renderWithGlobalContext";
+import "mutationobserver-shim";
 
 jest.mock("react-router", () => ({
     ...jest.requireActual("react-router"),
