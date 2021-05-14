@@ -26,6 +26,7 @@ import { ReactComponent as CalendarIcon } from "../../assets/icons/calendar.svg"
 import getDepositionTime from "./helpers/getDepositionTime";
 import { NotificationAction, NotificationEntityType } from "../../types/Notification";
 import stopAllTracks from "../../helpers/stopAllTracks";
+import generalUIActions from "../../state/GeneralUi/GeneralUiActions";
 
 const InDepo = () => {
     const isMounted = useRef(true);
@@ -93,7 +94,12 @@ const InDepo = () => {
         return () => {
             stopAllTracks(tracks);
         };
-    }, [tracks]);
+    }, [tracks, dispatch]);
+
+    useEffect(() => {
+        dispatch(generalUIActions.toggleTheme(ThemeMode.inDepo));
+        return () => dispatch(generalUIActions.toggleTheme(ThemeMode.default));
+    }, [dispatch]);
 
     useEffect(() => {
         if (userStatusError) {

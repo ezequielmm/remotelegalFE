@@ -4,6 +4,8 @@ import { Story, Meta } from "@storybook/react/types-6-0";
 import { UserOutlined } from "@ant-design/icons";
 import Alert from "../components/Alert";
 import { IAlertProps } from "../components/Alert/Alert";
+import Button from "../components/Button";
+import useFloatingAlertContext from "../hooks/useFloatingAlertContext";
 
 export default {
     title: "Alert (Message)",
@@ -34,6 +36,14 @@ export default {
 
 const Template: Story = (args: IAlertProps) => <Alert closable {...args} />;
 
+const FloatAlertTemplate: Story = (args: IAlertProps) => {
+    const addFloatingAlert = useFloatingAlertContext();
+    const newAlert = () => {
+        addFloatingAlert(args);
+    };
+    return <Button onClick={newAlert}>New Alert</Button>;
+};
+
 export const AntAlert = Template.bind({});
 AntAlert.args = {
     message:
@@ -46,4 +56,12 @@ AntAlertIcon.args = {
     message: "Anne  Stewart joined the breakroom",
     type: "info",
     icon: <UserOutlined />,
+};
+
+export const FloatAlert = FloatAlertTemplate.bind({});
+FloatAlert.args = {
+    message: "This is a floating Alert",
+    type: "success",
+    icon: <UserOutlined />,
+    closable: true,
 };

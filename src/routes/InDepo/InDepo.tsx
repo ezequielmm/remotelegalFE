@@ -16,6 +16,7 @@ import { theme } from "../../constants/styles/theme";
 import RecordPill from "../../components/RecordPill";
 import { DepositionID } from "../../state/types";
 import actions from "../../state/InDepo/InDepoActions";
+import generalUIActions from "../../state/GeneralUi/GeneralUiActions";
 import { ThemeMode } from "../../types/ThemeType";
 import { EventModel } from "../../models";
 import useSignalR from "../../hooks/useSignalR";
@@ -62,6 +63,11 @@ const InDepo = () => {
     const { isAuthenticated } = useAuthentication();
     const [checkIfUserIsAdmin, userIsAdminLoading, errorUserIsAdmin, userIsAdmin] = useUserIsAdmin();
     const { stop, sendMessage, signalR, subscribeToGroup, unsubscribeMethodFromGroup } = useSignalR("/depositionHub");
+
+    useEffect(() => {
+        dispatch(generalUIActions.toggleTheme(ThemeMode.inDepo));
+        return () => dispatch(generalUIActions.toggleTheme(ThemeMode.default));
+    }, [dispatch]);
 
     useEffect(
         () => {

@@ -16,6 +16,7 @@ import { useJoinBreakroom } from "../../../hooks/InDepo/depositionLifeTimeHooks"
 import useSignalR from "../../../hooks/useSignalR";
 import { GlobalStateContext } from "../../../state/GlobalState";
 import actions from "../../../state/InDepo/InDepoActions";
+import generalUIActions from "../../../state/GeneralUi/GeneralUiActions";
 import { NotificationEntityType } from "../../../types/Notification";
 import { ThemeMode } from "../../../types/ThemeType";
 import Exhibits from "../Exhibits";
@@ -86,6 +87,11 @@ const Breakroom = () => {
             stopAllTracks(tracks);
         };
     }, [tracks]);
+
+    useEffect(() => {
+        dispatch(generalUIActions.toggleTheme(ThemeMode.inDepo));
+        return () => dispatch(generalUIActions.toggleTheme(ThemeMode.default));
+    }, [dispatch]);
 
     useEffect(() => {
         let cleanUpFunction;

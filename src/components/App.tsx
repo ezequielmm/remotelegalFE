@@ -28,6 +28,7 @@ import ResetPassword from "../routes/ResetPassword";
 import ChangePassword from "../routes/ChangePassword";
 import WaitingRoom from "../routes/WaitingRoom";
 import Help from "../routes/Help";
+import { FloatingAlertContextProvider } from "../contexts/FloatingAlertContext";
 
 function App() {
     const tagManagerId = {
@@ -54,42 +55,44 @@ function App() {
 
     return (
         <ThemeProvider theme={{ ...theme, mode: ThemeMode[theme.mode] }}>
-            <GlobalStyle />
-            <Router history={history}>
-                <Switch>
-                    <Route exact path="/changePassword" component={ChangePassword} />
-                    <Route exact path="/password-recovery" component={ResetPassword} />
-                    <Route exact path="/" component={Login} />
-                    <Route path="/verifyUser" component={Login} />
-                    <Route exact path="/sign-up" component={SignUp} />
-                    <Route exact path="/deposition/pre-join/:depositionID" component={PreJoinDepo} />
-                    <Authenticator routesWithGuestToken={ROUTES_WITH_GUEST_TOKEN}>
-                        <RouteWithLayout exact path="/my-cases" component={MyCases} />
-                        <RouteWithLayout exact path="/deposition/new" component={CreateDeposition} />
-                        <RouteWithLayout exact path="/depositions" component={MyDepositions} />
-                        <RouteWithLayout exact path="/help" component={Help} />
-                        <RouteWithLayout
-                            exact
-                            path="/deposition/post-depo-details/:depositionID"
-                            component={DepositionDetails}
-                        />
-                        <RouteWithLayout
-                            exact
-                            path="/deposition/details/:depositionID"
-                            component={ActiveDepositionDetails}
-                        />
-                        <Route
-                            exact
-                            path="/deposition/join/:depositionID/breakroom/:breakroomID"
-                            component={Breakroom}
-                        />
-                        <Route exact path="/deposition/end" component={EndDepoScreen} />
-                        <Route exact path="/deposition/join/:depositionID" component={InDepo} />
-                        <Route exact path="/deposition/pre/:depositionID" component={MockInDepo} />
-                        <Route exact path="/deposition/pre/:depositionID/waiting" component={WaitingRoom} />
-                    </Authenticator>
-                </Switch>
-            </Router>
+            <FloatingAlertContextProvider>
+                <GlobalStyle />
+                <Router history={history}>
+                    <Switch>
+                        <Route exact path="/changePassword" component={ChangePassword} />
+                        <Route exact path="/password-recovery" component={ResetPassword} />
+                        <Route exact path="/" component={Login} />
+                        <Route path="/verifyUser" component={Login} />
+                        <Route exact path="/sign-up" component={SignUp} />
+                        <Route exact path="/deposition/pre-join/:depositionID" component={PreJoinDepo} />
+                        <Authenticator routesWithGuestToken={ROUTES_WITH_GUEST_TOKEN}>
+                            <RouteWithLayout exact path="/my-cases" component={MyCases} />
+                            <RouteWithLayout exact path="/deposition/new" component={CreateDeposition} />
+                            <RouteWithLayout exact path="/depositions" component={MyDepositions} />
+                            <RouteWithLayout exact path="/help" component={Help} />
+                            <RouteWithLayout
+                                exact
+                                path="/deposition/post-depo-details/:depositionID"
+                                component={DepositionDetails}
+                            />
+                            <RouteWithLayout
+                                exact
+                                path="/deposition/details/:depositionID"
+                                component={ActiveDepositionDetails}
+                            />
+                            <Route
+                                exact
+                                path="/deposition/join/:depositionID/breakroom/:breakroomID"
+                                component={Breakroom}
+                            />
+                            <Route exact path="/deposition/end" component={EndDepoScreen} />
+                            <Route exact path="/deposition/join/:depositionID" component={InDepo} />
+                            <Route exact path="/deposition/pre/:depositionID" component={MockInDepo} />
+                            <Route exact path="/deposition/pre/:depositionID/waiting" component={WaitingRoom} />
+                        </Authenticator>
+                    </Switch>
+                </Router>
+            </FloatingAlertContextProvider>
         </ThemeProvider>
     );
 }

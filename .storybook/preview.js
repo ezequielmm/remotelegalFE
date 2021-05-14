@@ -6,6 +6,7 @@ import styled from "styled-components";
 import GlobalStyle from "../src/components/GlobalStyle"
 import "./storybook.css";
 import { ThemeMode } from "../src/types/ThemeType";
+import { FloatingAlertContextProvider } from "../src/contexts/FloatingAlertContext";
 
 export const globalTypes = {
     theme: {
@@ -34,10 +35,12 @@ const withThemeProvider = (Story, context) => {
 
     return (
         <ThemeProvider theme={selectedTheme}>
-            <GlobalStyle />
-            <BackgroundWrapper>
-                <Story {...context} />
-            </BackgroundWrapper>
+            <FloatingAlertContextProvider parentThemeMode={selectedTheme.mode}>
+                <GlobalStyle />
+                <BackgroundWrapper>
+                    <Story {...context} />
+                </BackgroundWrapper>
+            </FloatingAlertContextProvider>
         </ThemeProvider>
     );
 };

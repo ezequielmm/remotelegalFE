@@ -51,7 +51,7 @@ const StyledAlert = styled(ANTDAlert)<IAlertProps>`
             width: ${fullWidth ? "100%" : "auto"};
             padding: ${alertPadding};
             padding-left: ${getREM(theme.default.spaces[12] + theme.default.spaces[5])};
-
+            transition-timing-function: ease-in-out;
             .ant-alert-icon {
                 top: calc(${getREM(theme.default.spaces[9])} - 1px);
                 left: ${getREM(theme.default.spaces[5])};

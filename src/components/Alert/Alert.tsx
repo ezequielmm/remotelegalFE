@@ -9,10 +9,12 @@ export interface IAlertProps extends AlertProps {
     duration?: number;
     fullWidth?: boolean;
     onClose?: () => void;
+    id?: string;
 }
 
 const Alert = ({ showIcon = true, duration, closable = false, onClose, ...rest }: IAlertProps) => {
     const [isVisible, setIsVisible] = useState(true);
+    const [classList, setClassList] = useState("");
     const timeOut = duration * 1000;
     let hasCloseIcon;
     if (closable) {
@@ -20,10 +22,14 @@ const Alert = ({ showIcon = true, duration, closable = false, onClose, ...rest }
     }
     useEffect(() => {
         const handleClose = () => {
-            setIsVisible(false);
-            if (onClose) {
-                onClose();
-            }
+            setClassList("ant-alert-motion-leave ant-alert-motion-leave-active ant-alert-motion");
+            const timer = setTimeout(() => {
+                setIsVisible(false);
+                if (onClose) {
+                    onClose();
+                }
+            }, 300);
+            return () => clearTimeout(timer);
         };
         if (duration) {
             const timer = setTimeout(() => {
@@ -34,7 +40,14 @@ const Alert = ({ showIcon = true, duration, closable = false, onClose, ...rest }
     }, [timeOut, duration, onClose]);
     return (
         isVisible && (
-            <StyledAlert onClose={onClose} closable={closable} closeText={hasCloseIcon} showIcon={showIcon} {...rest} />
+            <StyledAlert
+                className={classList}
+                onClose={onClose}
+                closable={closable}
+                closeText={hasCloseIcon}
+                showIcon={showIcon}
+                {...rest}
+            />
         )
     );
 };

@@ -4,10 +4,12 @@ import { ACTION_TYPE } from "./GeneralUiActions";
 
 export interface IGeneralUi {
     isSiderCollapsed: boolean;
+    theme: string;
 }
 
 export const GeneralUiReducerInitialState: IGeneralUi = {
     isSiderCollapsed: false,
+    theme: "default",
 };
 
 const GeneralUiReducer: Reducer<IGeneralUi, IAction> = (state: IGeneralUi, action: IAction): IGeneralUi => {
@@ -16,6 +18,12 @@ const GeneralUiReducer: Reducer<IGeneralUi, IAction> = (state: IGeneralUi, actio
             return {
                 ...state,
                 isSiderCollapsed: !state.isSiderCollapsed,
+            };
+        }
+        case ACTION_TYPE.TOGGLE_THEME: {
+            return {
+                ...state,
+                theme: action.payload,
             };
         }
         default:
