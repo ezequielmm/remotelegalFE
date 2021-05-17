@@ -69,7 +69,7 @@ export const useJoinBreakroom = () => {
 
     const joinBreakroomAsync = useAsyncCallback(
         async (breakroomID: string) => {
-            const dataTrack = new LocalDataTrack({ maxPacketLifeTime: null, maxRetransmits: null });
+            const dataTrack = new LocalDataTrack();
             const token: any = await generateBreakroomToken();
             if (!token) return "";
 
@@ -123,7 +123,7 @@ export const useJoinDepositionForMockRoom = () => {
 
     return useAsyncCallback(
         async (depositionID: string) => {
-            const dataTrack = new LocalDataTrack({ maxPacketLifeTime: null, maxRetransmits: null });
+            const dataTrack = new LocalDataTrack();
             const { token, participants, shouldSendToPreDepo, startDate, jobNumber }: any = await generateToken();
             const breakrooms = await getBreakrooms();
             if (!shouldSendToPreDepo) {
@@ -194,7 +194,7 @@ export const useJoinDeposition = () => {
 
     return useAsyncCallback(
         async (depositionID: string) => {
-            const dataTrack = new LocalDataTrack({ maxPacketLifeTime: null, maxRetransmits: null });
+            const dataTrack = new LocalDataTrack();
             const userStatus = await checkUserStatus(depositionID, currentEmail.current);
             dispatch(actions.setUserStatus(userStatus));
             const {

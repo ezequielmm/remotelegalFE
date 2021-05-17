@@ -7,13 +7,9 @@ export const TWILIO_VIDEO_CONFIG: ConnectOptions = {
     bandwidthProfile: {
         video: {
             mode: "collaboration",
-            //    maxTracks: 10,
+            clientTrackSwitchOffControl: "auto",
             dominantSpeakerPriority: "standard",
-            renderDimensions: {
-                high: { height: 1080, width: 1920 },
-                standard: { height: 720, width: 1280 },
-                low: { height: 176, width: 144 },
-            },
+            contentPreferencesMode: "auto",
         },
     },
     maxAudioBitrate: 16000,
