@@ -33,15 +33,15 @@ const RealTime = ({
     scrollToHighlighted?: boolean;
 }) => {
     const scrollableRef = useRef(null);
-    const [clicked, setClicked] = useState(null);
+    const [currentTranscript, setCurrentTranscript] = useState(null);
 
     useEffect(() => {
         const highlightTranscript = () => {
             const lastTranscription = transcriptionsWithoutEvents[transcriptionsWithoutEvents.length - 1];
             if (playedSeconds >= lastTranscription.transcriptionVideoTime) {
-                return setClicked(lastTranscription.id);
+                return setCurrentTranscript(lastTranscription.id);
             }
-            const clickedTranscription = transcriptionsWithoutEvents.find(
+            const currentTranscriptTranscription = transcriptionsWithoutEvents.find(
                 (transcription, index) =>
                     playedSeconds <=
                     transcription.transcriptionVideoTime +
@@ -49,38 +49,19 @@ const RealTime = ({
                         transcription.transcriptionVideoTime
             );
 
-            return setClicked(clickedTranscription?.id);
+            return setCurrentTranscript(currentTranscriptTranscription?.id);
         };
 
-        if (transcriptionsWithoutEvents && transcriptionsWithoutEvents.length && playedSeconds) {
+        if (transcriptionsWithoutEvents?.length && playedSeconds) {
             highlightTranscript();
         }
     }, [playedSeconds, transcriptionsWithoutEvents]);
 
     useEffect(() => {
-        const innerRef = scrollableRef;
-        const observerOptions = {
-            childList: true,
-            subtree: true,
-        };
-        const scrollToBottom = (element) => {
-            if (!scrollToHighlighted) element.scrollIntoView({ behavior: "smooth" });
-        };
-        const observerNewNodeAddedCallback = (mutationsList) => {
-            mutationsList.forEach((mutation) => {
-                if (mutation.type === "childList") {
-                    if (mutation.addedNodes?.length) {
-                        scrollToBottom(mutation.addedNodes[0]);
-                    }
-                }
-            });
-        };
-        const observer = new MutationObserver(observerNewNodeAddedCallback);
-        if (scrollableRef?.current && !scrollToHighlighted) {
-            observer.observe(innerRef.current, observerOptions);
+        if (!scrollToHighlighted && transcriptions?.length) {
+            setCurrentTranscript(transcriptions[transcriptions.length - 1].id);
         }
-        return () => observer.disconnect();
-    }, [scrollToHighlighted]);
+    }, [scrollToHighlighted, transcriptions]);
 
     return (
         <StyledLayoutCotainer noBackground={disableAutoscroll} visible={visible}>
@@ -147,7 +128,11 @@ const RealTime = ({
                                                         block
                                                         ellipsis={false}
                                                         dataTestId="transcription_text"
-                                                        highlighted={clicked === transcription.id}
+                                                        scrollTo={currentTranscript === transcription.id}
+                                                        highlighted={
+                                                            scrollToHighlighted &&
+                                                            currentTranscript === transcription.id
+                                                        }
                                                         pointer={!!manageTranscriptionClicked}
                                                         onClick={() => {
                                                             if (manageTranscriptionClicked)
