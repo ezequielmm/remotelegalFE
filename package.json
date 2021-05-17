@@ -7,6 +7,7 @@
         "@ant-design/icons": "^4.2.2",
         "@babel/helper-skip-transparent-expression-wrappers": "^7.11.0",
         "@craco/craco": "^5.7.0",
+        "@datadog/browser-logs": "^2.8.1",
         "@hookform/resolvers": "^1.0.1",
         "@microsoft/signalr": "^5.0.3",
         "@pdftron/webviewer": "^7.2.0",

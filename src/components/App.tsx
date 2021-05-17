@@ -4,6 +4,7 @@ import { createBrowserHistory } from "history";
 import React from "react";
 import ReactGA from "react-ga";
 import TagManager from "react-gtm-module";
+import "@datadog/browser-logs/bundle/datadog-logs";
 import { Route, Router, Switch } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 import GlobalStyle from "./GlobalStyle";
@@ -30,10 +31,25 @@ import WaitingRoom from "../routes/WaitingRoom";
 import Help from "../routes/Help";
 import { FloatingAlertContextProvider } from "../contexts/FloatingAlertContext";
 
+declare global {
+    interface Window {
+        DD_LOGS: any;
+    }
+}
+
 function App() {
     const tagManagerId = {
         gtmId: "GTM-TMP4C9Q",
     };
+
+    window.DD_LOGS.init({
+        clientToken: process.env.REACT_APP_DATADOG_TOKEN,
+        site: process.env.REACT_APP_DATADOG_URL,
+        forwardErrorsToLogs: true,
+        sampleRate: 100,
+        env: process.env.REACT_APP_ENV,
+    });
+
     TagManager.initialize(tagManagerId);
 
     ReactGA.initialize(tagManagerId.gtmId);
