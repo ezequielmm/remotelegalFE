@@ -45,6 +45,7 @@ const ChatScreen = ({
 }) => {
     const [text, setText] = useState("");
     const scrollDiv = useRef(null);
+    const inputRef = useRef(null);
     const { state } = useContext(GlobalStateContext);
 
     const { currentRoom, timeZone } = state.room;
@@ -64,7 +65,10 @@ const ChatScreen = ({
 
     useEffect(() => {
         if (open) {
-            setTimeout(() => scrollToBottom(), 10);
+            setTimeout(() => {
+                if (inputRef.current) inputRef.current.focus();
+                scrollToBottom();
+            }, 10);
         }
     }, [open]);
 
@@ -144,6 +148,7 @@ const ChatScreen = ({
                     onKeyPress={(e) =>
                         (e.key?.toLocaleLowerCase() === "enter" || e.keyCode === 13) && handleSendMessage()
                     }
+                    ref={inputRef}
                 />
                 <StyledSendButton
                     data-testid={CONSTANTS.CHAT_INPUT_BUTTON_TEST_ID}

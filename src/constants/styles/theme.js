@@ -153,6 +153,7 @@ const modifiedVariables = {
     "@tabs-bar-margin": `0 0 ${getREM(theme.default.spaces[4])} 0`,
     "@zindex-modal": "2000",
     "@zindex-modal-mask": "2000",
+    "@popover-padding-horizontal": `${getREM(theme.default.spaces[9])}`,
 };
 
 module.exports = { theme, modifiedVariables };

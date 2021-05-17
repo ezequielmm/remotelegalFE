@@ -28,6 +28,7 @@ export const StyledMessagesContainer = styled.div`
     width: 100%;
     height: 100%;
     overflow-y: auto;
+    overflow-x: hidden;
     padding-right: ${({ theme }) => `${getREM(theme.default.spaces[3])}`};
     scrollbar-color: ${({ theme }) => `${theme.colors.disabled[7]} ${theme.default.disabledBg}`};
     scrollbar-width: thin;

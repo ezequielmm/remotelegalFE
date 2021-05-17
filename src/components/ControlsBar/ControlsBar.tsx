@@ -1,5 +1,4 @@
-import { Badge } from "antd";
-import React, { ReactElement, useState } from "react";
+import React, { ReactElement, useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import { ThemeProvider } from "styled-components";
 import { LocalAudioTrack, LocalParticipant, LocalVideoTrack } from "twilio-video";
@@ -39,7 +38,9 @@ import Button from "../Button";
 import Confirm from "../Confirm";
 import Control from "../Control/Control";
 import Dropdown from "../Dropdown";
+import Popover from "../Popover";
 import Icon from "../Icon";
+import Badge from "../Badge";
 import Logo from "../Logo";
 import Menu from "../Menu";
 import Space from "../Space";
@@ -123,6 +124,42 @@ export default function ControlsBar({
         unreadedChats,
         disableChat,
     });
+
+    const [newMessagePopUp, setNewMessagePopUp] = useState({
+        unreadedChats,
+        show: false,
+    });
+
+    const author = messages[messages.length - 1]?.state?.author;
+
+    const newMessageObj = {
+        lastMessage: messages[messages.length - 1]?.state?.body || "",
+        author: (author && JSON.parse(messages[messages.length - 1]?.state?.author)?.name) || "",
+    };
+
+    useEffect(() => {
+        let timer;
+        if (unreadedChats > newMessagePopUp.unreadedChats) {
+            setNewMessagePopUp((prevState) => ({ ...prevState, show: true }));
+            timer = setTimeout(() => {
+                setNewMessagePopUp((prevState) => ({
+                    ...prevState,
+                    show: false,
+                    unreadedChats,
+                }));
+            }, 3000);
+        }
+        return () => clearTimeout(timer);
+    }, [messages, newMessagePopUp.unreadedChats, unreadedChats]);
+
+    useEffect(() => {
+        if (chatOpen)
+            setNewMessagePopUp((prevState) => ({
+                ...prevState,
+                show: false,
+                unreadedChats: 0,
+            }));
+    }, [chatOpen]);
 
     useStreamAudio(isAudioEnabled, audioTracks);
 
@@ -355,20 +392,42 @@ export default function ControlsBar({
                             </Dropdown>
                         )}
                         {!disableChat && (
-                            <ThemeProvider theme={{ ...theme, mode: ThemeMode.default }}>
+                            <Popover
+                                overlay={
+                                    <Space size="0" direction="vertical">
+                                        <Text weight="bold" state={ColorStatus.white}>
+                                            {newMessageObj.author}
+                                        </Text>
+                                        <Text state={ColorStatus.white}>{newMessageObj.lastMessage}</Text>
+                                    </Space>
+                                }
+                                trigger="click"
+                                dataTestId={CONSTANTS.POPOVER_NEW_MESSAGE}
+                                visible={newMessagePopUp.show}
+                                closable
+                                onClose={() =>
+                                    setNewMessagePopUp((prevState) => ({
+                                        ...prevState,
+                                        show: false,
+                                        unreadedChats,
+                                    }))
+                                }
+                            >
                                 <Dropdown
                                     dataTestId={CONSTANTS.CHAT_DROPDOWN_TEST_ID}
                                     overlay={
-                                        <Chat
-                                            closePopOver={toggleChat}
-                                            open={chatOpen}
-                                            height={getREM(theme.default.spaces[6] * 28)}
-                                            messages={messages}
-                                            sendMessage={sendMessage}
-                                            loadClient={loadClient}
-                                            loadingClient={loadingClient}
-                                            errorLoadingClient={errorLoadingClient}
-                                        />
+                                        <ThemeProvider theme={summaryTheme}>
+                                            <Chat
+                                                closePopOver={toggleChat}
+                                                open={chatOpen}
+                                                height={getREM(theme.default.spaces[6] * 28)}
+                                                messages={messages}
+                                                sendMessage={sendMessage}
+                                                loadClient={loadClient}
+                                                loadingClient={loadingClient}
+                                                errorLoadingClient={errorLoadingClient}
+                                            />
+                                        </ThemeProvider>
                                     }
                                     placement="topCenter"
                                     onVisibleChange={toggleChat}
@@ -389,13 +448,15 @@ export default function ControlsBar({
                                                 data-testid={CONSTANTS.UNREADED_CHATS_TEST_ID}
                                                 count={unreadedChats}
                                                 size="small"
+                                                color={ColorStatus.error}
+                                                rounded
                                             >
                                                 <Icon icon={ChatIcon} size="1.625rem" />
                                             </Badge>
                                         }
                                     />
                                 </Dropdown>
-                            </ThemeProvider>
+                            </Popover>
                         )}
                         <Dropdown
                             dataTestId="summary_button"

@@ -56,6 +56,9 @@ export const StyledBubble = styled.div<{ isCurrentUser: boolean; failed: boolean
             width: fit-content;
             background-color: ${theme.default.disabledBg};
             border-radius: ${`${getREM(spaces[6])} ${getREM(spaces[6])} ${getREM(spaces[6])} 0`};
+            max-width: 100%;
+            overflow: hidden;
+            overflow-wrap: break-word;
             ${currentUserStyles}
         `;
     }}

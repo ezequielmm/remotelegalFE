@@ -1,6 +1,7 @@
-import { fireEvent, waitForDomChange, waitForElement } from "@testing-library/react";
+import { act, fireEvent, waitForDomChange, waitForElement } from "@testing-library/react";
 import React from "react";
 import Amplify from "aws-amplify";
+import { LocalParticipant } from "twilio-video/tsdef/LocalParticipant";
 import ControlsBar from "../../components/ControlsBar";
 import { getBreakrooms } from "../mocks/breakroom";
 import * as CONSTANTS from "../../constants/inDepo";
@@ -13,6 +14,51 @@ import * as AUTH from "../mocks/Auth";
 import { AMPLIFY_CONFIG } from "../constants/login";
 import getLeaveModalTextContent from "../../components/ControlsBar/helpers/getLeaveModalTextContent";
 import { wait } from "../../helpers/wait";
+import { MESSAGE, MESSAGE_CURRENT_USER } from "../mocks/messages";
+import { rootReducer } from "../../state/GlobalState";
+import { TimeZones } from "../../models/general";
+
+const customReducer = {
+    ...rootReducer,
+    initialState: {
+        ...rootReducer.initialState,
+        room: {
+            ...rootReducer.initialState.room,
+            currentRoom: {
+                ...rootReducer.initialState.room.currentRoom,
+                localParticipant: getParticipant("test1", "ROLE", "fcastello@makingsense.com") as LocalParticipant,
+            },
+            token: "some-token",
+            timeZone: TimeZones.ET,
+        },
+    },
+};
+
+let handleOnSendMessage;
+
+jest.mock("@twilio/conversations", () => ({
+    Client: {
+        create: jest.fn().mockResolvedValue({
+            getConversationByUniqueName: jest.fn().mockResolvedValue({
+                sendMessage: jest.fn(),
+                getMessages: jest.fn().mockResolvedValue({
+                    items: [
+                        {
+                            index: 0,
+                            author: '{"name":"Facu Cast","role":"Observer","email":"fepel@makingsense.com"}',
+                            dateCreated: "2021-04-01T16:15:32.268Z",
+                            body: "Hi!",
+                        },
+                    ],
+                }),
+            }),
+            on: (action, cb) => {
+                handleOnSendMessage = cb;
+            },
+            off: jest.fn(),
+        }),
+    },
+}));
 
 jest.mock("audio-recorder-polyfill", () => {
     return jest.fn().mockImplementation(() => ({
@@ -368,4 +414,45 @@ test("After clicks on the support button a modal should open and also display th
     fireEvent.click(queryByTestId("support_button"));
     await waitForDomChange();
     expect(queryByText(jobNumber)).toBeInTheDocument();
+});
+
+test("Show popup and close by time", async () => {
+    const { queryByTestId, container } = renderWithGlobalContext(
+        <ControlsBar {...props} disableChat={false} />,
+        undefined,
+        customReducer
+    );
+    await wait(300);
+
+    await act(async () => {
+        handleOnSendMessage(MESSAGE);
+    });
+
+    await wait(1000);
+
+    expect(queryByTestId(CONSTANTS.POPOVER_NEW_MESSAGE)).toBeInTheDocument();
+
+    setTimeout(() => {
+        expect(container.getElementsByClassName("ant-popover-hidden").length).toBe(1);
+    }, 4000);
+});
+
+test("Show popup and close by close button", async () => {
+    const { queryByTestId, container } = renderWithGlobalContext(
+        <ControlsBar {...props} disableChat={false} />,
+        undefined,
+        customReducer
+    );
+    await wait(300);
+
+    await act(async () => {
+        handleOnSendMessage(MESSAGE);
+    });
+
+    await wait(1000);
+
+    expect(queryByTestId(CONSTANTS.POPOVER_NEW_MESSAGE)).toBeInTheDocument();
+
+    fireEvent.click(queryByTestId("close-button"));
+    expect(container.getElementsByClassName("ant-popover-hidden").length).toBe(1);
 });

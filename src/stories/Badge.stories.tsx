@@ -4,6 +4,9 @@ import { Story, Meta } from "@storybook/react/types-6-0";
 
 import Badge from "../components/Badge";
 import { ContainerSmall } from "./Decorators";
+import ColorStatus from "../types/ColorStatus";
+import Icon from "../components/Icon";
+import { ReactComponent as CalendarIcon } from "../assets/icons/calendar.svg";
 
 export default {
     title: "Badge",
@@ -12,10 +15,18 @@ export default {
         size: {
             control: {
                 type: "select",
-                options: ["small", "default", "large"],
+                options: ["small", "default"],
             },
         },
         count: { control: "number" },
+        rounded: { control: "boolean" },
+        dot: { control: "boolean" },
+        color: {
+            control: {
+                type: "select",
+                options: ColorStatus,
+            },
+        },
     },
     decorators: [
         (Template) => (
@@ -29,6 +40,19 @@ export default {
 const Template: Story = (args) => <Badge {...args} />;
 export const PRBadge = Template.bind({});
 PRBadge.args = {
+    dot: true,
+};
+
+export const PRBadgeCount = Template.bind({});
+PRBadgeCount.args = {
     size: "default",
     count: 5,
+};
+
+export const PRBadgeWithIcon = Template.bind({});
+PRBadgeWithIcon.args = {
+    size: "small",
+    count: 5,
+    rounded: true,
+    children: <Icon icon={CalendarIcon} size={9} />,
 };

@@ -38,6 +38,7 @@ export const CHAT_ERROR_TEST_ID = "chat_error";
 export const CHAT_INPUT_TEST_ID = "chat_input";
 export const CHAT_INPUT_BUTTON_TEST_ID = "chat_input_button";
 export const CHAT_TRY_AGAIN_TEST_ID = "chat_error_screen_button";
+export const POPOVER_NEW_MESSAGE = "popover_new_message";
 
 export const COULDNT_SEND_MESSAGE = "Couldn't send the message. Please try again.";
 
