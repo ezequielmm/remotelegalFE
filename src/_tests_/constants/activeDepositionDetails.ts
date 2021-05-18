@@ -33,3 +33,10 @@ export const EXPECTED_DEPOSITION_BODY = {
 };
 export const ACTIVE_DEPO_DETAILS_ROUTE = "/deposition/details/";
 export const ACTIVE_POST_DEPO_DETAILS_ROUTE = "/deposition/post-depo-details/:depositionID";
+export const EDIT_PARTICIPANT_BODY = {
+    email: "test@test.com",
+    id: "3810fda6-452b-4dec-374f-08d8eb0cd148",
+    name: "Participant Name",
+    phone: "3333333333",
+    role: "Paralegal",
+};

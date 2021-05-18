@@ -9,6 +9,7 @@ import * as CONSTANTS from "../../../constants/activeDepositionDetails";
 import Icon from "../../../components/Icon";
 import { ReactComponent as DeleteIcon } from "../../../assets/icons/delete.svg";
 import { ReactComponent as AddIcon } from "../../../assets/general/Add.svg";
+import { ReactComponent as EditIcon } from "../../../assets/icons/edit.svg";
 import Confirm from "../../../components/Confirm";
 import { IParticipant, Roles } from "../../../models/participant";
 import ColorStatus from "../../../types/ColorStatus";
@@ -20,6 +21,8 @@ import CardFetchError from "../../../components/CardFetchError";
 import { UserInfo } from "../../../models/user";
 import Message from "../../../components/Message";
 import { Status } from "../../../components/StatusPill/StatusPill";
+import EditParticipantModal from "./EditParticipantModal";
+import removeWhiteSpace from "../../../helpers/removeWhitespace";
 
 const ParticipantListTable = ({
     deposition,
@@ -31,8 +34,10 @@ const ParticipantListTable = ({
     const [fetchParticipants, loading, error, participants] = useFetchParticipants();
     const [mappedParticipants, setMappedParticipants] = useState([]);
     const [openDeleteModal, setOpenDeleteModal] = useState(false);
+    const [openEditModal, setOpenEditModal] = useState(false);
     const [openAddParticipantModal, setOpenParticipantModal] = useState(false);
     const toggleDeleteModal = () => setOpenDeleteModal(!openDeleteModal);
+    const toggleEditModal = useCallback(() => setOpenEditModal(false), []);
     const toggleAddParticipantModal = () => setOpenParticipantModal(!openAddParticipantModal);
     const isCourtReporterPresent = useRef(false);
     const sortingRef = useRef({
@@ -49,7 +54,8 @@ const ParticipantListTable = ({
 
     useEffect(() => {
         if (removedParticipant) {
-            const participantWasCourtReporter = selectedParticipant.current.role === "Court Reporter";
+            const participantWasCourtReporter =
+                removeWhiteSpace(selectedParticipant.current.role) === Roles.courtReporter;
             if (participantWasCourtReporter) {
                 isCourtReporterPresent.current = false;
             }
@@ -78,19 +84,31 @@ const ParticipantListTable = ({
         {
             render: (record: UserInfo["participant"]) => {
                 const depo = deposition;
-                if (depo.status !== Status.canceled && record.role !== Roles.witness) {
+                if (depo.status !== Status.canceled) {
                     return (
                         <Space justify="flex-end" fullWidth>
                             <Icon
-                                data-testid={`${record.name}_delete_icon`}
-                                icon={DeleteIcon}
+                                data-testid={`${record.name}_edit_icon`}
+                                icon={EditIcon}
                                 onClick={() => {
                                     selectedParticipant.current = record;
-                                    toggleDeleteModal();
+                                    setOpenEditModal(true);
                                 }}
                                 color={ColorStatus.primary}
                                 size={8}
                             />
+                            {record.role !== Roles.witness && (
+                                <Icon
+                                    data-testid={`${record.name}_delete_icon`}
+                                    icon={DeleteIcon}
+                                    onClick={() => {
+                                        selectedParticipant.current = record;
+                                        toggleDeleteModal();
+                                    }}
+                                    color={ColorStatus.primary}
+                                    size={8}
+                                />
+                            )}
                         </Space>
                     );
                 }
@@ -114,10 +132,11 @@ const ParticipantListTable = ({
                     isCourtReporterPresent.current = true;
                 }
                 return {
+                    user,
                     email,
                     id,
                     name: user ? `${user.firstName} ${user.lastName}` : name,
-                    phone,
+                    phone: phone || user?.phoneNumber,
                     role: isCourtReporter ? "Court Reporter" : role,
                 };
             });
@@ -144,6 +163,15 @@ const ParticipantListTable = ({
                 open={openAddParticipantModal}
                 fetchParticipants={handleSortAndReFetchParticipants}
                 depositionStatus={deposition.status}
+            />
+
+            <EditParticipantModal
+                deposition={deposition}
+                currentParticipant={selectedParticipant.current}
+                isCourtReporterPresent={isCourtReporterPresent.current}
+                handleClose={toggleEditModal}
+                visible={openEditModal}
+                fetchParticipants={handleSortAndReFetchParticipants}
             />
 
             <Confirm

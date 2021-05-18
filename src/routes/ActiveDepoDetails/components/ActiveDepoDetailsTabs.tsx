@@ -19,6 +19,7 @@ const ActiveDepositionDetailsTabs = ({
         <Space mt={9} direction="vertical">
             <Space fullWidth>
                 <Tabs
+                    destroyInactiveTabPane
                     onChange={setActiveKey}
                     style={{ width: "100%" }}
                     renderTabBar={(props: { activeKey: string }, DefaultTabBar) => (

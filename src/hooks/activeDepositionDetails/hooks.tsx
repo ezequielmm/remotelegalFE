@@ -27,6 +27,14 @@ export const useAddParticipantToExistingDepo = () => {
     }, []);
 };
 
+export const useEditParticipant = () => {
+    const { deps } = React.useContext(GlobalStateContext);
+    return useAsyncCallback<any, any>(async (depoID, payload) => {
+        const response = await deps.apiService.editDepoParticipant(depoID, payload);
+        return response;
+    }, []);
+};
+
 export const useRemoveParticipantFromExistingDepo = () => {
     const { deps } = React.useContext(GlobalStateContext);
     return useAsyncCallback<any, any>(async (depoID, payload) => {

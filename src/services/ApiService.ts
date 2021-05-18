@@ -257,8 +257,15 @@ export class ApiService {
         return this.request({
             path: `/api/Depositions/${depositionID}/addParticipant`,
             payload,
-            withToken: false,
             method: HTTP_METHOD.POST,
+        });
+    };
+
+    editDepoParticipant = async (depositionID: string, payload) => {
+        return this.request({
+            path: `/api/Depositions/${depositionID}/editParticipant`,
+            payload,
+            method: HTTP_METHOD.PATCH,
         });
     };
 

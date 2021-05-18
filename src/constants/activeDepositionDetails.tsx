@@ -265,3 +265,26 @@ export const DEPOSITION_DETAILS_ADD_PARTICIPANT_CONFIRM_CONFIRM_YES = "YES, ADD"
 export const DEPOSITION_DETAILS_CHANGE_TO_CONFIRM_EMAIL_SENT_TO_ALL =
     "Deposition has been updated successfully and invitation email has been sent to the parties";
 export const DEPOSITION_DETAILS_CHANGE_TO_CONFIRM_EMAIL_SENT = "An email has been sent to participant";
+export const DEPOSITION_DETAILS_EDIT_PARTICIPANT_CONFIRM_POSITIVE_LABEL = "Yes, edit";
+export const DEPOSITION_DETAILS_EDIT_PARTICIPANT_CONFIRM_NEGATIVE_LABEL = "No, keep it";
+export const DEPOSITION_DETAILS_EDIT_PARTICIPANT_TITLE = "Edit Participant";
+export const DEPOSITION_DETAILS_EDIT_PARTICIPANT_ID = "deposition_details_edit_participant_title";
+export const DEPOSITION_DETAILS_EDIT_PARTICIPANT_EMAIL_PLACEHOLDER = "Type email address";
+export const DEPOSITION_DETAILS_EDIT_PARTICIPANT_EMAIL_INPUT_ID = "deposition_details_edit_participant_email";
+export const DEPOSITION_DETAILS_EDIT_PARTICIPANT_NAME_PLACEHOLDER = "Type participant name";
+export const DEPOSITION_DETAILS_EDIT_PARTICIPANT_NAME_INPUT_ID = "deposition_details_edit_participant_name";
+export const DEPOSITION_DETAILS_EDIT_PARTICIPANT_PHONE_PLACEHOLDER = "Enter phone number";
+export const DEPOSITION_DETAILS_EDIT_PARTICIPANT_PHONE_INPUT_ID = "deposition_details_edit_participant_phone";
+export const DEPOSITION_DETAILS_EDIT_PARTICIPANT_ROLE_PLACEHOLDER = "Select role";
+export const DEPOSITION_DETAILS_EDIT_PARTICIPANT_ROLE_INPUT_ID = "deposition_details_edit_participant_role";
+export const DEPOSITION_DETAILS_EDIT_PARTICIPANT_ROLE_INPUT_ID_DISABLED =
+    "deposition_details_edit_participant_role_disabled";
+export const DEPOSITION_DETAILS_CANCEL_BUTTON_LABEL = "Cancel";
+export const DEPOSITION_DETAILS_CANCEL_BUTTON_ID = "deposition_details_edit_participant_cancel";
+export const DEPOSITION_DETAILS_SAVE_BUTTON_LABEL = "Save";
+export const DEPOSITION_DETAILS_SAVE_BUTTON_ID = "deposition_details_edit_participant_save";
+export const DEPOSITION_DETAILS_NO_NAME_FOR_PARTICIPANT = "this participant";
+export const DEPOSITION_DETAILS_EDIT_PARTICIPANT_CONFIRMED_DEPOSITION_TOAST =
+    "Participant has been edited successfully and invitation email has been sent";
+export const DEPOSITION_DETAILS_EDIT_PARTICIPANT_NO_CONFIRMED_DEPOSITION_TOAST =
+    "Participant has been edited successfully";

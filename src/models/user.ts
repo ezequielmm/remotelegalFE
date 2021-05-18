@@ -1,4 +1,5 @@
 import { DateLike } from "./general";
+import { Roles } from "./participant";
 
 export interface IUser {
     id?: string;
@@ -21,7 +22,7 @@ export type UserInfo = {
         name: string;
         email: string;
         phone: string;
-        role: string;
+        role: Roles;
         hasJoined: boolean;
         isAdmitted: boolean;
         user?: IUser;

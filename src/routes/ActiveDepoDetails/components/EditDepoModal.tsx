@@ -289,6 +289,7 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
             }}
         >
             <Confirm
+                positiveLoading={editLoading || cancelLoading || rescheduleDepositionLoading || revertCancelLoading}
                 onNegativeClick={() => setStatusModal({ ...openStatusModal, open: false })}
                 onPositiveClick={() => {
                     if (isStatusConfirmed) {
@@ -305,6 +306,7 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
                 negativeLabel={openStatusModal.modalContent.cancelButton}
             />
             <Confirm
+                positiveLoading={editLoading || cancelLoading || rescheduleDepositionLoading || revertCancelLoading}
                 onNegativeClick={handleCloseConfirmAndResetFormStatus}
                 onPositiveClick={handleSubmitWithReschedule}
                 visible={!openStatusModal.open && openRescheduleModal.open}
