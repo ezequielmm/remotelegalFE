@@ -7,7 +7,8 @@ const disconnectFromDepo = (
     dispatch: React.SetStateAction<any>,
     history?,
     depositionID?: string,
-    tracks?: LocalTrack[]
+    tracks?: LocalTrack[],
+    isWitness?: boolean
 ) => {
     const initialState = {
         mockDepoRoom: null,
@@ -39,6 +40,6 @@ const disconnectFromDepo = (
         room.disconnect();
     }
     dispatch(actions.disconnect(initialState));
-    return history?.push("/deposition/end", { depositionID, isWitness: false });
+    return history?.push("/deposition/end", { depositionID, isWitness });
 };
 export default disconnectFromDepo;

@@ -173,7 +173,10 @@ const InDepo = () => {
                 );
             }
             if (signalRMessage.entityType === NotificationEntityType.endDeposition) {
-                disconnectFromDepo(currentRoom, dispatch, history, depositionID);
+                const isWitness =
+                    currentRoom?.localParticipant?.identity &&
+                    JSON.parse(currentRoom?.localParticipant?.identity).role === Roles.witness;
+                disconnectFromDepo(currentRoom, dispatch, history, depositionID, [], isWitness);
             }
         };
         subscribeToGroup("ReceiveNotification", onReceiveAnnotations);
