@@ -101,7 +101,7 @@ const EditParticipantModal = ({
                 invalid: false,
             },
             phone: {
-                value: currentParticipant?.phone,
+                value: currentParticipant?.phone || currentParticipant?.user?.phoneNumber,
                 invalid: false,
             },
             name: {
