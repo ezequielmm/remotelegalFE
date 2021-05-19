@@ -126,6 +126,7 @@ const InDepo = () => {
         return () => {
             if (mockDepoRoom) {
                 mockDepoRoom.off("dominantSpeakerChange", setDominantSpeaker);
+                disconnectFromDepo(mockDepoRoom, dispatch, null, depositionID, tracks);
             }
             window.removeEventListener("beforeunload", cleanUpFunction);
         };
