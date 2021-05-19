@@ -48,7 +48,8 @@ const EnteredExhibitsTable = (props: IEnteredExhibitsTable) => {
                     key="addedBy"
                     sorter={({ addedBy: a }, { addedBy: b }) => a.firstName.localeCompare(b.firstName)}
                     width="25%"
-                    render={(addedBy) => `${addedBy?.firstName} ${addedBy?.lastName}`}
+                    ellipsis
+                    render={(addedBy) => <Text>{`${addedBy?.firstName} ${addedBy?.lastName}`}</Text>}
                 />
                 <Column
                     title="STAMP LABEL"
@@ -56,7 +57,8 @@ const EnteredExhibitsTable = (props: IEnteredExhibitsTable) => {
                     key="stampLabel"
                     sorter={({ stampLabel: a }, { stampLabel: b }) => a.localeCompare(b)}
                     width="25%"
-                    render={(stampLabel) => stampLabel}
+                    ellipsis
+                    render={(stampLabel) => <Text>{stampLabel}</Text>}
                     defaultSortOrder="ascend"
                 />
             </Table>

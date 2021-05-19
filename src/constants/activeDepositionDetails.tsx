@@ -2,6 +2,7 @@ import React from "react";
 import DepositionDetailsSection from "../routes/ActiveDepoDetails/components/ActiveDepoDetailsSection";
 import ParticipantListTable from "../routes/ActiveDepoDetails/components/ParticipantListTable";
 import normalizedRoles from "./roles";
+import Text from "../components/Typography/Text";
 
 export enum DEPOSITION_DETAILS_TABS {
     "Additional Information",
@@ -47,29 +48,32 @@ export const DEPOSITION_DETAILS_INVITED_PARTIES_COLUMNS = [
     {
         title: "ROLE",
         dataIndex: "role",
-        ellipsis: true,
         sorter: true,
+        ellipsis: true,
+        render: (record) => <Text>{normalizedRoles[record] || record}</Text>,
         width: "20%",
-        render: (record) => normalizedRoles[record] || record,
     },
     {
         title: "NAME",
         dataIndex: "name",
-        ellipsis: true,
         sorter: true,
+        ellipsis: true,
+        render: (record) => <Text>{record}</Text>,
         width: "25%",
     },
     {
         title: "EMAIL",
         dataIndex: "email",
-        ellipsis: true,
         sorter: true,
+        ellipsis: true,
+        render: (record) => <Text>{record}</Text>,
         width: "25%",
     },
     {
         title: "PHONE NUMBER",
         dataIndex: "phone",
         ellipsis: true,
+        render: (record) => <Text>{record}</Text>,
     },
 ];
 

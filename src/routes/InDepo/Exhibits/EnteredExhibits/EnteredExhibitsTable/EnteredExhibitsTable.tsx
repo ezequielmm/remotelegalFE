@@ -74,7 +74,10 @@ const EnteredExhibitsTable = ({ onClickViewFile, ...props }: IEnteredExhibitsTab
                     key="addedBy"
                     sorter={({ addedBy: a }, { addedBy: b }) => a.firstName.localeCompare(b.firstName)}
                     width={getREM(GlobalTheme.default.spaces[6] * 8)}
-                    render={(addedBy) => `${addedBy?.firstName} ${addedBy?.lastName}`}
+                    ellipsis
+                    render={(addedBy) => (
+                        <Text state={ColorStatus.white}>{`${addedBy?.firstName} ${addedBy?.lastName}`}</Text>
+                    )}
                 />
                 <Column
                     title="SHARED AT"
@@ -85,7 +88,12 @@ const EnteredExhibitsTable = ({ onClickViewFile, ...props }: IEnteredExhibitsTab
                     }
                     defaultSortOrder="descend"
                     width={getREM(GlobalTheme.default.spaces[8] * 6)}
-                    render={(sharedAt) => moment(sharedAt).tz(mapTimeZone[timeZone]).format("hh:mm A")}
+                    ellipsis
+                    render={(sharedAt) => (
+                        <Text state={ColorStatus.white}>
+                            {moment(sharedAt).tz(mapTimeZone[timeZone]).format("hh:mm A")}
+                        </Text>
+                    )}
                 />
                 <Column
                     title=""

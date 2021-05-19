@@ -5,10 +5,12 @@ import { Menu, Dropdown } from "antd";
 import { FilePdfOutlined, MoreOutlined } from "@ant-design/icons";
 import { ContainerBackground } from "./Decorators";
 import Button from "../components/Button";
+import Text from "../components/Typography/Text";
 
 import Table from "../components/Table";
 import { theme } from "../constants/styles/theme";
 import { ThemeMode } from "../types/ThemeType";
+import Space from "../components/Space";
 
 const menu = (
     <Menu>
@@ -42,18 +44,24 @@ const casesColumns = [
         dataIndex: "name",
         key: "name",
         sorter: (a, b) => a.name - b.name,
+        ellipsis: true,
+        render: (record) => <Text>{record}</Text>,
     },
     {
         title: "Number",
         dataIndex: "number",
         key: "number",
         sorter: (a, b) => a.number - b.number,
+        ellipsis: true,
+        render: (record) => <Text>{record}</Text>,
     },
     {
         title: "Added By",
         dataIndex: "addedBy",
         key: "addedBy",
         sorter: (a, b) => a.addedBy - b.addedBy,
+        ellipsis: true,
+        render: (record) => <Text>{record}</Text>,
     },
 ];
 
@@ -100,49 +108,52 @@ const depositionsColumns = [
         dataIndex: "status",
         key: "status",
         sorter: (a, b) => a.status - b.status,
-        render: (text) => <small>{text}</small>,
+        ellipsis: true,
+        render: (record) => <Text>{record}</Text>,
     },
     {
         title: "Law Firm",
         dataIndex: "lawFirm",
         key: "lawFirm",
         sorter: (a, b) => a.lawFirm - b.lawFirm,
-        render: (text) => (
-            <small>
-                <b>{text}</b>
-            </small>
-        ),
+        ellipsis: true,
+        render: (record) => <Text weight="bold">{record}</Text>,
     },
     {
         title: "Requested By",
         dataIndex: "requestedBy",
         key: "requestedBy",
         sorter: (a, b) => a.requestedBy - b.requestedBy,
-        render: (text) => <small>{text}</small>,
+        ellipsis: true,
+        render: (record) => <Text>{record}</Text>,
     },
     {
         title: "Case",
         dataIndex: "case",
         key: "case",
         sorter: (a, b) => a.case - b.case,
-        render: (text) => (
-            <small>
-                <a href={text.url}>{text.label}</a>
-            </small>
+        ellipsis: true,
+        render: (record) => (
+            <Text>
+                <a href={record.url}>{record.label}</a>
+            </Text>
         ),
         width: 120,
-        ellipsis: true,
     },
     {
         title: "Date and Time",
         dataIndex: "dateAndTime",
         key: "dateAndTime",
         sorter: (a, b) => a.dateAndTime - b.dateAndTime,
-        render: (text) => (
-            <>
-                <small>{text.date}</small>
-                <small>{text.time}</small>
-            </>
+        ellipsis: true,
+        render: (record) => (
+            <Text>
+                <>
+                    {record.date}
+                    <br />
+                    {record.time}
+                </>
+            </Text>
         ),
     },
     {
@@ -150,23 +161,24 @@ const depositionsColumns = [
         dataIndex: "witness",
         key: "witness",
         sorter: (a, b) => a.witness - b.witness,
-        render: (text) => (
-            <small>
-                <b>{text}</b>
-            </small>
-        ),
+        ellipsis: true,
+        render: (record) => <Text>{record}</Text>,
     },
     {
         title: "Court Reporter",
         dataIndex: "courtReporter",
         key: "courtReporter",
         sorter: (a, b) => a.courtReporter - b.courtReporter,
+        ellipsis: true,
+        render: (record) => <Text>{record}</Text>,
     },
     {
         title: "Job#",
         dataIndex: "jobNumber",
         key: "jobNumber",
         sorter: (a, b) => a.jobNumber - b.jobNumber,
+        ellipsis: true,
+        render: (record) => <Text>{record}</Text>,
     },
     {
         title: "",
@@ -210,42 +222,38 @@ const exhibitsColumns = [
         dataIndex: "fileIcon",
         key: "fileIcon",
         render: () => <FilePdfOutlined />,
-        width: theme.default.spaces[5],
+        width: theme.default.baseUnit * theme.default.spaces[12],
     },
     {
         title: "File",
         dataIndex: "file",
         key: "file",
         sorter: (a, b) => a.file - b.file,
-        render: (text) => <small>{text}</small>,
+        ellipsis: true,
+        render: (record) => <Text>{record}</Text>,
     },
     {
         title: "File size",
         dataIndex: "fileSize",
         key: "fileSize",
-        render: (text) => <small>{text}</small>,
+        ellipsis: true,
+        render: (record) => <Text>{record}</Text>,
     },
     {
         title: "",
-        dataIndex: "viewAction",
-        key: "viewAction",
+        dataIndex: "actions",
+        key: "actions",
         render: () => (
-            <Button size="small" type="link">
-                VIEW
-            </Button>
+            <Space align="center" size="large">
+                <Button size="small" type="link">
+                    VIEW
+                </Button>
+                <Button size="small" type="ghost">
+                    Share
+                </Button>
+            </Space>
         ),
-        width: theme.default.spaces[11],
-    },
-    {
-        title: "",
-        dataIndex: "shareAction",
-        key: "shareAction",
-        render: () => (
-            <Button size="small" type="ghost">
-                Share
-            </Button>
-        ),
-        width: theme.default.spaces[11],
+        width: theme.default.baseUnit * theme.default.spaces[6] * 10,
     },
     {
         title: "",
@@ -256,7 +264,7 @@ const exhibitsColumns = [
                 <MoreOutlined onClick={(e) => e.preventDefault()} />
             </Dropdown>
         ),
-        width: theme.default.spaces[5],
+        width: theme.default.baseUnit * theme.default.spaces[6] * 3,
     },
 ];
 
@@ -330,13 +338,16 @@ const columns = [
         title: "Title",
         dataIndex: "title",
         key: "title",
+        ellipsis: true,
+        render: (record) => <Text>{record}</Text>,
         width: theme.default.baseUnit * theme.default.spaces[6] * 12,
     },
     {
         title: "Description",
         key: "description",
         dataIndex: "description",
-        render: (text) => <small>{text}</small>,
+        ellipsis: true,
+        render: (record) => <Text>{record}</Text>,
         width: theme.default.baseUnit * theme.default.spaces[6] * 12,
     },
     {

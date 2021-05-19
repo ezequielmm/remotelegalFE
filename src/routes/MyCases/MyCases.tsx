@@ -1,11 +1,11 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { Row, Tooltip } from "antd";
 import styled from "styled-components";
-import { useCallback } from "react";
 import Table from "../../components/Table";
 import Button from "../../components/Button";
 import CaseModal from "./CaseModal";
 import Title from "../../components/Typography/Title";
+import Text from "../../components/Typography/Text";
 import Space from "../../components/Space";
 import { useFetchCases } from "../../hooks/cases/hooks";
 import * as CONSTANTS from "../../constants/cases";
@@ -30,23 +30,34 @@ const MyCases = () => {
             {
                 title: CONSTANTS.CASE_COLUMNS_TITLES[0],
                 dataIndex: CONSTANTS.CASE_COLUMNS_FIELDS[0],
-                sortOrder: sortedField === CONSTANTS.CASE_COLUMNS_FIELDS[0] && sortDirection,
-                render: (text) => <Tooltip title={text}>{text}</Tooltip>,
                 sorter: true,
+                sortOrder: sortedField === CONSTANTS.CASE_COLUMNS_FIELDS[0] && sortDirection,
+                ellipsis: true,
+                render: (text) => (
+                    <Tooltip title={text}>
+                        <Text>{text}</Text>
+                    </Tooltip>
+                ),
             },
             {
                 title: CONSTANTS.CASE_COLUMNS_TITLES[1],
                 dataIndex: CONSTANTS.CASE_COLUMNS_FIELDS[1],
-                sortOrder: sortedField === CONSTANTS.CASE_COLUMNS_FIELDS[1] && sortDirection,
-                render: (text) => text || "-",
                 sorter: true,
+                sortOrder: sortedField === CONSTANTS.CASE_COLUMNS_FIELDS[1] && sortDirection,
+                ellipsis: true,
+                render: (text) => <Text>{text || "-"}</Text>,
             },
             {
                 title: CONSTANTS.CASE_COLUMNS_TITLES[2],
                 dataIndex: CONSTANTS.CASE_COLUMNS_FIELDS[2],
-                sortOrder: sortedField === CONSTANTS.CASE_COLUMNS_FIELDS[2] && sortDirection,
-                render: (text) => <Tooltip title={text}>{text}</Tooltip>,
                 sorter: true,
+                sortOrder: sortedField === CONSTANTS.CASE_COLUMNS_FIELDS[2] && sortDirection,
+                ellipsis: true,
+                render: (text) => (
+                    <Tooltip title={text}>
+                        <Text>{text}</Text>
+                    </Tooltip>
+                ),
             },
         ],
         [sortedField, sortDirection]

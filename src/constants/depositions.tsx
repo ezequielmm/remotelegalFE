@@ -2,6 +2,7 @@ import { History } from "history";
 import React from "react";
 import { Tooltip } from "antd";
 import Button from "../components/Button";
+import Text from "../components/Typography/Text";
 import Space from "../components/Space";
 import StatusPill from "../components/StatusPill";
 import { Status } from "../components/StatusPill/StatusPill";
@@ -18,15 +19,17 @@ export interface TableColumn {
 export const STATUS_COLUMN = {
     title: "STATUS",
     field: "status",
+    ellipsis: true,
     render: (text) => <StatusPill status={text} />,
     width: 120,
 };
 export const REQUESTER_BY_COLUMN = {
     title: "REQUESTER",
     field: "requester",
+    ellipsis: true,
     render: (text) => (
         <Tooltip title={text}>
-            <small>{text}</small>
+            <Text>{text}</Text>
         </Tooltip>
     ),
     width: "13%",
@@ -36,18 +39,11 @@ export const LAW_COLUMN = {
     field: "company",
     ellipsis: true,
     width: "11%",
-    render: (text) =>
-        text ? (
-            <Tooltip title={text}>
-                <small>
-                    <b>{text}</b>
-                </small>
-            </Tooltip>
-        ) : (
-            <small>
-                <b>-</b>
-            </small>
-        ),
+    render: (text) => (
+        <Tooltip title={text}>
+            <Text weight="bold">{text || "-"}</Text>
+        </Tooltip>
+    ),
 };
 export const CASE_COLUMN = {
     title: "CASE",
@@ -56,18 +52,22 @@ export const CASE_COLUMN = {
     width: "13%",
     render: (text) => (
         <Tooltip title={text}>
-            <small>{text}</small>
+            <Text>{text}</Text>
         </Tooltip>
     ),
 };
 export const DATE_COLUMN = {
     title: "DATE AND TIME",
     field: "startDate",
+    ellipsis: true,
     render: ({ date, time }: { date: string; time: string }) => (
-        <>
-            <small>{date}</small>
-            <small>{time}</small>
-        </>
+        <Text>
+            <>
+                {date}
+                <br />
+                {time}
+            </>
+        </Text>
     ),
     width: "15%",
 };
@@ -75,39 +75,27 @@ export const WITNESS_COLUMN = {
     title: "WITNESS",
     sorter: false,
     field: "witness",
-    render: (text) =>
-        text ? (
-            <Tooltip title={text}>
-                <small>
-                    <b>{text}</b>
-                </small>
-            </Tooltip>
-        ) : (
-            <small>
-                <b>-</b>
-            </small>
-        ),
+    ellipsis: true,
+    render: (text) => (
+        <Tooltip title={text}>
+            <Text weight="bold">{text || "-"}</Text>
+        </Tooltip>
+    ),
     width: "12%",
 };
 export const COURT_REPORTER_COLUMN = {
     title: "COURT REPORTER",
     sorter: false,
     field: "courtReporter",
-    render: (text) =>
-        text ? (
-            <Tooltip title={text}>
-                <small>
-                    <b>{text}</b>
-                </small>
-            </Tooltip>
-        ) : (
-            <small>
-                <b>-</b>
-            </small>
-        ),
+    ellipsis: true,
+    render: (text) => (
+        <Tooltip title={text}>
+            <Text weight="bold">{text || "-"}</Text>
+        </Tooltip>
+    ),
     width: "13%",
 };
-export const JOB_COLUMN = { title: "JOB#", field: "job", render: (text) => <small>{text || "-"}</small>, width: "8%" };
+export const JOB_COLUMN = { title: "JOB#", field: "job", render: (text) => <Text>{text || "-"}</Text>, width: "8%" };
 export const getActionColumns = (history) => ({
     render: ({ id, status }: MappedDeposition) => {
         const isCompleted = status === Status.completed;

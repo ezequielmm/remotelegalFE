@@ -137,7 +137,8 @@ const FileListTable = ({ onClickViewFile, onOptionsConfirmOk, ...props }: IFileL
                     dataIndex="size"
                     key="size"
                     width={getREM(GlobalTheme.default.spaces[6] * 6)}
-                    render={(size) => formatBytes(size, 0)}
+                    ellipsis
+                    render={(size) => <Text state={ColorStatus.white}>{formatBytes(size, 0)}</Text>}
                 />
                 <Column
                     title=""

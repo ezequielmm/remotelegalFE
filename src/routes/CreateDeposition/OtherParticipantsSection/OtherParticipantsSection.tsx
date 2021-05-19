@@ -104,24 +104,32 @@ export default function OtherParticipantsSection(): ReactElement {
                             title={CONSTANTS.OTHER_PARTICIPANTS_COLUMNS_TITLES[0]}
                             dataIndex="email"
                             key="email"
+                            ellipsis
+                            render={(text) => <Text>{text}</Text>}
                         />
                         <Column
                             width="25%"
                             title={CONSTANTS.OTHER_PARTICIPANTS_COLUMNS_TITLES[1]}
                             dataIndex="name"
                             key="name"
+                            ellipsis
+                            render={(text) => <Text>{text}</Text>}
                         />
                         <Column
                             width="20%"
                             title={CONSTANTS.OTHER_PARTICIPANTS_COLUMNS_TITLES[2]}
                             dataIndex="phone"
                             key="phone"
+                            ellipsis
+                            render={(text) => <Text>{text}</Text>}
                         />
                         <Column
                             width="20%"
                             title={CONSTANTS.OTHER_PARTICIPANTS_COLUMNS_TITLES[3]}
                             dataIndex="role"
                             key="role"
+                            ellipsis
+                            render={(text) => <Text>{text}</Text>}
                         />
                         <Column
                             align="right"

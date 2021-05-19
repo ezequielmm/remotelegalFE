@@ -3,6 +3,8 @@ import DepositionDetailsSummary from "../routes/DepositionDetails/DepositionDeta
 import DepositionDetailsEnteredExhibits from "../routes/DepositionDetails/DepositionDetailsEnteredExhibits";
 import DepositionDetailsTranscript from "../routes/DepositionDetails/DepositionDetailsTranscript";
 import DepositionDetailsAttendees from "../routes/DepositionDetails/DepositionDetailsAttendees";
+import Text from "../components/Typography/Text";
+import React from "react";
 
 export enum DEPOSITION_DETAILS_TABS {
     summary = "summary",
@@ -36,23 +38,27 @@ export const DEPOSITION_DETAILS_ATTENDEES_COLUMNS = [
         title: "ROLE",
         dataIndex: "role",
         ellipsis: true,
+        render: (record) => <Text>{record}</Text>,
         width: "20%",
     },
     {
         title: "NAME",
         dataIndex: "name",
         ellipsis: true,
+        render: (record) => <Text>{record}</Text>,
         width: "25%",
     },
     {
         title: "EMAIL",
         dataIndex: "email",
         ellipsis: true,
+        render: (record) => <Text>{record}</Text>,
         width: "25%",
     },
     {
         title: "PHONE NUMBER",
         dataIndex: "phone",
+        render: (record) => <Text>{record}</Text>,
         ellipsis: true,
     },
 ];
@@ -125,12 +131,15 @@ export const DEPOSITION_DETAILS_TRANSCRIPTS_COLUMNS = [
         title: "Name",
         dataIndex: "displayName",
         key: "displayName",
+        ellipsis: true,
+        render: (record) => <Text>{record}</Text>,
     },
     {
         title: "Size",
         dataIndex: "size",
         key: "size",
-        render: (size: number) => formatBytes(size, 0),
+        ellipsis: true,
+        render: (size: number) => <Text>{formatBytes(size, 0)}</Text>,
     },
 ];
 
