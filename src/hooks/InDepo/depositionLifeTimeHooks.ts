@@ -17,6 +17,7 @@ import { TWILIO_VIDEO_CONFIG } from "../../constants/inDepo";
 import { useCheckUserStatus } from "../preJoinDepo/hooks";
 import { Roles } from "../../models/participant";
 import { useAuthentication } from "../auth";
+import stopAllTracks from "../../helpers/stopAllTracks";
 
 // TODO: Find the way to use import instead of using require
 const beep = require("../../assets/sounds/Select.mp3");
@@ -88,6 +89,7 @@ export const useJoinBreakroom = () => {
             dispatch(actions.setBreakrooms(breakrooms || []));
 
             if (!isMounted.current) {
+                stopAllTracks(tracks);
                 return disconnectFromDepo(room, dispatch);
             }
             dispatch(actions.joinToBreakroom(room));
@@ -141,6 +143,7 @@ export const useJoinDepositionForMockRoom = () => {
             dispatch(actions.addUserTracks(tracks));
 
             if (!isMounted.current) {
+                stopAllTracks(tracks);
                 return disconnectFromDepo(room, dispatch);
             }
             dispatch(actions.setBreakrooms(breakrooms || []));
@@ -237,6 +240,7 @@ export const useJoinDeposition = () => {
             setDepoRoom(room);
 
             if (!isMounted.current) {
+                stopAllTracks(tracks);
                 return disconnectFromDepo(room, dispatch);
             }
             dispatch(actions.setToken(token));
