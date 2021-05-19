@@ -93,6 +93,8 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
     const { file, caption, deleteCaption, ...bodyWithoutFile } = formStatus;
     const isStatusCanceled = formStatus.status === Status.canceled;
     const isStatusConfirmed = deposition.status === Status.pending && formStatus.status === Status.confirmed;
+    const isStatusConfirmedAfterCanceled =
+        deposition.status === Status.canceled && formStatus.status === Status.confirmed;
     const [invalidStartTime, setInvalidStartTime] = useState(false);
     const [invalidEndTime, setInvalidEndTime] = useState(false);
     const [openRescheduleModal, setRescheduleModal] = useState({
@@ -117,9 +119,10 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
         }, 200);
     };
     useEffect(() => {
-        const content = isStatusConfirmed
-            ? CONSTANTS.DEPOSITION_DETAILS_CHANGE_TO_CONFIRM_EMAIL_SENT_TO_ALL
-            : CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_SUCCESS_TOAST;
+        const content =
+            isStatusConfirmed || isStatusConfirmedAfterCanceled
+                ? CONSTANTS.DEPOSITION_DETAILS_CHANGE_TO_CONFIRM_EMAIL_SENT_TO_ALL
+                : CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_SUCCESS_TOAST;
 
         if (editedDeposition || canceledDeposition || revertedCanceledDeposition || rescheduledDeposition) {
             Message({

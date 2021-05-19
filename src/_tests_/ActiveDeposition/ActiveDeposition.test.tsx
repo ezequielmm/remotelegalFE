@@ -940,7 +940,7 @@ describe("tests the cancel depo flows", () => {
         expect(getByText(modalText.title)).toBeInTheDocument();
         fireEvent.click(getByText(modalText.confirmButton));
         await waitForDomChange();
-        await waitForElement(() => getByText(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_SUCCESS_TOAST));
+        await waitForElement(() => getByText(CONSTANTS.DEPOSITION_DETAILS_CHANGE_TO_CONFIRM_EMAIL_SENT_TO_ALL));
         expect(customDeps.apiService.revertCancelDeposition).toHaveBeenCalledWith(
             fullDeposition.id,
             {
