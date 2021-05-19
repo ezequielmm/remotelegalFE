@@ -10,6 +10,7 @@ import { getTranscriptFileList, getTranscriptFileListOnlyOne } from "../mocks/tr
 import downloadFile from "../../helpers/downloadFile";
 import { wait } from "../../helpers/wait";
 import "mutationobserver-shim";
+import { rootReducer } from "../../state/GlobalState";
 
 const customDeps = getMockDeps();
 
@@ -40,7 +41,16 @@ describe("Deposition Details Transcripts", () => {
     });
     it("show UPLOAD button if user is admin", async () => {
         customDeps.apiService.currentUser = jest.fn().mockResolvedValue(SIGN_UP_CONSTANTS.getUser1());
-        const { queryByText } = renderWithGlobalContext(<DepositionDetailsTranscript />, customDeps);
+        const { queryByText } = renderWithGlobalContext(<DepositionDetailsTranscript />, customDeps, {
+            ...rootReducer,
+            initialState: {
+                room: {
+                    ...rootReducer.initialState.room,
+                },
+                user: { currentUser: { firstName: "First Name", lastName: "Last Name", isAdmin: true } },
+                signalR: { signalR: null },
+            },
+        });
         await waitForDomChange();
         expect(queryByText(CONSTANTS.DETAILS_TRANSCRIPT_BUTTON_UPLOAD)).toBeTruthy();
     });
@@ -49,7 +59,17 @@ describe("Deposition Details Transcripts", () => {
         customDeps.apiService.getTokenSet = jest.fn().mockResolvedValue("");
         const { getByTestId, queryByText, queryByTestId } = renderWithGlobalContext(
             <DepositionDetailsTranscript />,
-            customDeps
+            customDeps,
+            {
+                ...rootReducer,
+                initialState: {
+                    room: {
+                        ...rootReducer.initialState.room,
+                    },
+                    user: { currentUser: { firstName: "First Name", lastName: "Last Name", isAdmin: true } },
+                    signalR: { signalR: null },
+                },
+            }
         );
         const file = new File(["file"], "file.pdf", { type: "application/x-pdf" });
 
@@ -71,7 +91,17 @@ describe("Deposition Details Transcripts", () => {
         customDeps.apiService.getTokenSet = jest.fn().mockResolvedValue("");
         const { getByTestId, queryByText, getByText } = renderWithGlobalContext(
             <DepositionDetailsTranscript />,
-            customDeps
+            customDeps,
+            {
+                ...rootReducer,
+                initialState: {
+                    room: {
+                        ...rootReducer.initialState.room,
+                    },
+                    user: { currentUser: { firstName: "First Name", lastName: "Last Name", isAdmin: true } },
+                    signalR: { signalR: null },
+                },
+            }
         );
         const file = new File(["file"], "file.pdf", { type: "application/x-pdf" });
         Object.defineProperty(file, "size", { value: CONSTANTS.DEPOSITION_DETAILS_SUMMARY_FILE_SIZE_LIMIT + 1 });
@@ -95,7 +125,16 @@ describe("Deposition Details Transcripts", () => {
     it("show DELETE button only if user is admin and file is a transcription", async () => {
         customDeps.apiService.currentUser = jest.fn().mockResolvedValue(SIGN_UP_CONSTANTS.getUser1());
         const mockDataTestId = `${getTranscriptFileListOnlyOne[0].id}_delete_icon`;
-        const { getByTestId } = renderWithGlobalContext(<DepositionDetailsTranscript />, customDeps);
+        const { getByTestId } = renderWithGlobalContext(<DepositionDetailsTranscript />, customDeps, {
+            ...rootReducer,
+            initialState: {
+                room: {
+                    ...rootReducer.initialState.room,
+                },
+                user: { currentUser: { firstName: "First Name", lastName: "Last Name", isAdmin: true } },
+                signalR: { signalR: null },
+            },
+        });
         await waitForDomChange();
         expect(getByTestId(mockDataTestId)).toBeTruthy();
     });
@@ -150,18 +189,45 @@ describe("Deposition Details Transcripts", () => {
     });
     it("show Notify Parties button if user is admin", async () => {
         customDeps.apiService.currentUser = jest.fn().mockResolvedValue(SIGN_UP_CONSTANTS.getUser1());
-        const { queryByTestId } = renderWithGlobalContext(<DepositionDetailsTranscript />, customDeps);
+        const { queryByTestId } = renderWithGlobalContext(<DepositionDetailsTranscript />, customDeps, {
+            ...rootReducer,
+            initialState: {
+                room: {
+                    ...rootReducer.initialState.room,
+                },
+                user: { currentUser: { firstName: "First Name", lastName: "Last Name", isAdmin: true } },
+                signalR: { signalR: null },
+            },
+        });
         await waitForDomChange();
         expect(queryByTestId(CONSTANTS.DETAILS_TRANSCRIPT_NOTIFY_BUTTON_TEST_ID)).toBeTruthy();
     });
     it("The notify parties button shouldn't be disabled when only one record is in the list", async () => {
-        const { queryByTestId } = renderWithGlobalContext(<DepositionDetailsTranscript />, customDeps);
+        const { queryByTestId } = renderWithGlobalContext(<DepositionDetailsTranscript />, customDeps, {
+            ...rootReducer,
+            initialState: {
+                room: {
+                    ...rootReducer.initialState.room,
+                },
+                user: { currentUser: { firstName: "First Name", lastName: "Last Name", isAdmin: true } },
+                signalR: { signalR: null },
+            },
+        });
         await waitForDomChange();
         const notifyButton = queryByTestId(CONSTANTS.DETAILS_TRANSCRIPT_NOTIFY_BUTTON_TEST_ID);
         expect(notifyButton).not.toBeDisabled();
     });
     it("calls download file with the proper params when clicking download", async () => {
-        const { getByTestId } = renderWithGlobalContext(<DepositionDetailsTranscript />, customDeps);
+        const { getByTestId } = renderWithGlobalContext(<DepositionDetailsTranscript />, customDeps, {
+            ...rootReducer,
+            initialState: {
+                room: {
+                    ...rootReducer.initialState.room,
+                },
+                user: { currentUser: { firstName: "First Name", lastName: "Last Name", isAdmin: true } },
+                signalR: { signalR: null },
+            },
+        });
         await waitForDomChange();
         const notifyButton = getByTestId(CONSTANTS.DETAILS_TRANSCRIPT_NOTIFY_BUTTON_TEST_ID);
         fireEvent.click(notifyButton);

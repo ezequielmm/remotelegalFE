@@ -8,7 +8,6 @@ import {
     useGetDocumentsUrlList,
     useNotifyParties,
 } from "../../../hooks/transcripts/hooks";
-import { useUserIsAdmin } from "../../../hooks/users/hooks";
 import Table from "../../../components/Table";
 import Space from "../../../components/Space";
 import Title from "../../../components/Typography/Title";
@@ -27,6 +26,7 @@ import Confirm from "../../../components/Confirm";
 import { TranscriptFile } from "../../../types/TranscriptFile";
 import Message from "../../../components/Message";
 import Alert from "../../../components/Alert";
+import { GlobalStateContext } from "../../../state/GlobalState";
 
 const DepositionDetailsTranscripts = () => {
     const emptyFile = { percent: 0, status: "", size: 0 };
@@ -39,7 +39,8 @@ const DepositionDetailsTranscripts = () => {
     const { upload } = useUploadFile(depositionID);
     const { handleFetchFiles, transcriptFileList, loading } = useTranscriptFileList(depositionID);
     const [notifyParties, notifyPartiesLoading, notifyPartiesError, notified] = useNotifyParties();
-    const [checkIfUserIsAdmin, loadingUserIsAdmin, errorUserIsAdmin, userIsAdmin] = useUserIsAdmin();
+    const { state } = React.useContext(GlobalStateContext);
+    const { currentUser } = state?.user;
     const [selectedRows, setSelectedRows] = useState([]);
     const rowSelection = {
         type: "checkbox" as RowSelectionType,
@@ -61,10 +62,6 @@ const DepositionDetailsTranscripts = () => {
     useEffect(() => {
         handleFetchFiles();
     }, [handleFetchFiles]);
-
-    useEffect(() => {
-        checkIfUserIsAdmin();
-    }, [checkIfUserIsAdmin]);
 
     const handleUploadChange = (currentFile: any) => {
         setFile(currentFile);
@@ -121,7 +118,7 @@ const DepositionDetailsTranscripts = () => {
         {
             render: (record: TranscriptFile) => {
                 return record?.documentType === CONSTANTS.DEPOSITION_DETAILS_DELETABLE_TRANSCRIPT_TYPE
-                    ? !loadingUserIsAdmin && !errorUserIsAdmin && userIsAdmin && (
+                    ? !!currentUser?.isAdmin && (
                           <Space fullWidth>
                               <Icon
                                   data-testid={`${record.id}_delete_icon`}
@@ -162,7 +159,7 @@ const DepositionDetailsTranscripts = () => {
                         {CONSTANTS.DETAILS_TRANSCRIPT_TITLE}
                     </Title>
                     <Space>
-                        {!loadingUserIsAdmin && !errorUserIsAdmin && userIsAdmin && (
+                        {!!currentUser?.isAdmin && (
                             <Button
                                 data-testid={CONSTANTS.DETAILS_TRANSCRIPT_NOTIFY_BUTTON_TEST_ID}
                                 type="text"
@@ -186,7 +183,7 @@ const DepositionDetailsTranscripts = () => {
                         >
                             {CONSTANTS.DETAILS_TRANSCRIPT_BUTTON_DOWNLOAD}
                         </Button>
-                        {!loadingUserIsAdmin && !errorUserIsAdmin && userIsAdmin && (
+                        {!!currentUser?.isAdmin && (
                             <UploadButton
                                 name="file"
                                 onUploadCompleted={refreshList}

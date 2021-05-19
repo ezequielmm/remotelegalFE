@@ -170,15 +170,24 @@ test("spinner is shown on mount", async () => {
         await wait(500);
         return getUserDepoStatusWithParticipantAdmitted();
     });
-    const { getByTestId } = renderWithGlobalContext(
+    const { queryByTestId } = renderWithGlobalContext(
         <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,
         customDeps,
-        undefined,
+        {
+            ...rootReducer,
+            initialState: {
+                room: {
+                    ...rootReducer.initialState.room,
+                },
+                user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+                signalR: { signalR: null },
+            },
+        },
         history
     );
     history.push(TESTS_CONSTANTS.TEST_ROUTE);
     await waitForDomChange();
-    expect(getByTestId("spinner")).toBeInTheDocument();
+    expect(queryByTestId("spinner")).toBeInTheDocument();
 });
 
 test("Error screen is shown when fetch fails", async () => {
@@ -186,7 +195,16 @@ test("Error screen is shown when fetch fails", async () => {
     const { getByText } = renderWithGlobalContext(
         <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,
         customDeps,
-        undefined,
+        {
+            ...rootReducer,
+            initialState: {
+                room: {
+                    ...rootReducer.initialState.room,
+                },
+                user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+                signalR: { signalR: null },
+            },
+        },
         history
     );
     history.push(TESTS_CONSTANTS.TEST_ROUTE);
@@ -202,7 +220,16 @@ test("VideoConference is shown if fetch is successful", async () => {
     const { getByTestId } = renderWithGlobalContext(
         <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,
         customDeps,
-        undefined,
+        {
+            ...rootReducer,
+            initialState: {
+                room: {
+                    ...rootReducer.initialState.room,
+                },
+                user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+                signalR: { signalR: null },
+            },
+        },
         history
     );
 
@@ -216,7 +243,16 @@ test("Off the record is shown when isOnTheRecord is false", async () => {
     const { getByText } = renderWithGlobalContext(
         <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,
         customDeps,
-        undefined,
+        {
+            ...rootReducer,
+            initialState: {
+                room: {
+                    ...rootReducer.initialState.room,
+                },
+                user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+                signalR: { signalR: null },
+            },
+        },
         history
     );
 
@@ -230,7 +266,16 @@ test("On the record is shown when clicking the record button", async () => {
     const { getByText, getByTestId } = renderWithGlobalContext(
         <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,
         customDeps,
-        undefined,
+        {
+            ...rootReducer,
+            initialState: {
+                room: {
+                    ...rootReducer.initialState.room,
+                },
+                user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+                signalR: { signalR: null },
+            },
+        },
         history
     );
 
@@ -249,7 +294,16 @@ test("On the record is shown when isOnTheRecord is true", async () => {
     const { getByText } = renderWithGlobalContext(
         <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,
         customDeps,
-        undefined,
+        {
+            ...rootReducer,
+            initialState: {
+                room: {
+                    ...rootReducer.initialState.room,
+                },
+                user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+                signalR: { signalR: null },
+            },
+        },
         history
     );
 
@@ -263,7 +317,16 @@ test("End depo modal shows when clicking End Deposition button", async () => {
     const { getByTestId, getByText } = renderWithGlobalContext(
         <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,
         customDeps,
-        undefined,
+        {
+            ...rootReducer,
+            initialState: {
+                room: {
+                    ...rootReducer.initialState.room,
+                },
+                user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+                signalR: { signalR: null },
+            },
+        },
         history
     );
 
@@ -283,7 +346,16 @@ test("Cancel button on End Depo modal closes the modal", async () => {
     const { getByTestId, getByText, queryByText } = renderWithGlobalContext(
         <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,
         customDeps,
-        undefined,
+        {
+            ...rootReducer,
+            initialState: {
+                room: {
+                    ...rootReducer.initialState.room,
+                },
+                user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+                signalR: { signalR: null },
+            },
+        },
         history
     );
 
@@ -301,7 +373,16 @@ test("Record button and end deposition are shown", async () => {
     const { getByTestId } = renderWithGlobalContext(
         <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,
         customDeps,
-        undefined,
+        {
+            ...rootReducer,
+            initialState: {
+                room: {
+                    ...rootReducer.initialState.room,
+                },
+                user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+                signalR: { signalR: null },
+            },
+        },
         history
     );
 
@@ -317,7 +398,16 @@ test("Record button and end deposition are not shown", async () => {
     const { queryByTestId } = renderWithGlobalContext(
         <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,
         customDeps,
-        undefined,
+        {
+            ...rootReducer,
+            initialState: {
+                room: {
+                    ...rootReducer.initialState.room,
+                },
+                user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+                signalR: { signalR: null },
+            },
+        },
         history
     );
 
@@ -337,7 +427,16 @@ test("Redirects to PreDepo if shouldSendToPreDepo is true", async () => {
             <Route exact path={TESTS_CONSTANTS.PRE_ROUTE} component={PreDepoRoute} />
         </Switch>,
         customDeps,
-        undefined,
+        {
+            ...rootReducer,
+            initialState: {
+                room: {
+                    ...rootReducer.initialState.room,
+                },
+                user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+                signalR: { signalR: null },
+            },
+        },
         history
     );
 
@@ -359,7 +458,16 @@ test("Redirects to waiting room if shouldSendToPreDepo is false and isAdmitted i
             <Route exact path={TESTS_CONSTANTS.WAITING_ROUTE} component={WaitingRoomRoute} />
         </Switch>,
         customDeps,
-        undefined,
+        {
+            ...rootReducer,
+            initialState: {
+                room: {
+                    ...rootReducer.initialState.room,
+                },
+                user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+                signalR: { signalR: null },
+            },
+        },
         history
     );
 
@@ -373,7 +481,16 @@ describe("InDepo -> RealTime", () => {
         const { getByTestId } = renderWithGlobalContext(
             <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,
             customDeps,
-            undefined,
+            {
+                ...rootReducer,
+                initialState: {
+                    room: {
+                        ...rootReducer.initialState.room,
+                    },
+                    user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+                    signalR: { signalR: null },
+                },
+            },
             history
         );
         history.push(TESTS_CONSTANTS.TEST_ROUTE);
@@ -387,7 +504,16 @@ describe("InDepo -> RealTime", () => {
         const { getByTestId } = renderWithGlobalContext(
             <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,
             customDeps,
-            undefined,
+            {
+                ...rootReducer,
+                initialState: {
+                    room: {
+                        ...rootReducer.initialState.room,
+                    },
+                    user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+                    signalR: { signalR: null },
+                },
+            },
             history
         );
         history.push(TESTS_CONSTANTS.TEST_ROUTE);
@@ -403,7 +529,16 @@ describe("InDepo -> RealTime", () => {
         const { getByTestId } = renderWithGlobalContext(
             <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,
             customDeps,
-            undefined,
+            {
+                ...rootReducer,
+                initialState: {
+                    room: {
+                        ...rootReducer.initialState.room,
+                    },
+                    user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+                    signalR: { signalR: null },
+                },
+            },
             history
         );
         history.push(TESTS_CONSTANTS.TEST_ROUTE);
@@ -419,7 +554,16 @@ describe("InDepo -> RealTime", () => {
         const { getByTestId, queryByTestId } = renderWithGlobalContext(
             <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,
             customDeps,
-            undefined,
+            {
+                ...rootReducer,
+                initialState: {
+                    room: {
+                        ...rootReducer.initialState.room,
+                    },
+                    user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+                    signalR: { signalR: null },
+                },
+            },
             history
         );
         history.push(TESTS_CONSTANTS.TEST_ROUTE);
@@ -437,7 +581,16 @@ describe("InDepo -> RealTime", () => {
         const { getByTestId, queryByTestId } = renderWithGlobalContext(
             <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,
             customDeps,
-            undefined,
+            {
+                ...rootReducer,
+                initialState: {
+                    room: {
+                        ...rootReducer.initialState.room,
+                    },
+                    user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+                    signalR: { signalR: null },
+                },
+            },
             history
         );
         history.push(TESTS_CONSTANTS.TEST_ROUTE);
@@ -457,7 +610,16 @@ describe("inDepo -> Exhibits view with a shared exhibit", () => {
         const { queryByTestId } = renderWithGlobalContext(
             <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,
             customDeps,
-            undefined,
+            {
+                ...rootReducer,
+                initialState: {
+                    room: {
+                        ...rootReducer.initialState.room,
+                    },
+                    user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+                    signalR: { signalR: null },
+                },
+            },
             history
         );
 
@@ -488,7 +650,7 @@ describe("inDepo -> Exhibits view with a shared exhibit", () => {
                         },
                         currentExhibit,
                     },
-                    userPermissions: { isAdmin: undefined },
+                    user: { currentUser: null },
                     signalR: { signalR: null },
                 },
             },
@@ -524,7 +686,7 @@ describe("inDepo -> Exhibits view with a shared exhibit", () => {
                         },
                         currentExhibit,
                     },
-                    userPermissions: { isAdmin: undefined },
+                    user: { currentUser: null },
                     signalR: { signalR: null },
                 },
             },
@@ -563,7 +725,7 @@ describe("inDepo -> Exhibits view with a shared exhibit", () => {
                         ],
                         currentExhibit,
                     },
-                    userPermissions: { isAdmin: undefined },
+                    user: { currentUser: null },
                     signalR: { signalR: null },
                 },
             },
@@ -601,7 +763,7 @@ describe("inDepo -> Exhibits view with a shared exhibit", () => {
                         ],
                         currentExhibit,
                     },
-                    userPermissions: { isAdmin: undefined },
+                    user: { currentUser: null },
                     signalR: { signalR: null },
                 },
             },

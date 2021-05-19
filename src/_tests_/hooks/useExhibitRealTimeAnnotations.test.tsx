@@ -20,6 +20,8 @@ test("should return a null annotation data when the notification is distinct to 
     const currentRoomStateMock = {
         room: {
             ...state.state.room,
+        },
+        user: {
             currentUser: { id: "2" },
         },
     };
@@ -39,6 +41,8 @@ test("should return a null annotation data when the user that created the annota
     const currentRoomStateMock = {
         room: {
             ...state.state.room,
+        },
+        user: {
             currentUser: { id: "1" },
         },
     };
@@ -58,6 +62,8 @@ test("should return a not null annotation data when has an annotation notificati
     const currentRoomStateMock = {
         room: {
             ...state.state.room,
+        },
+        user: {
             currentUser: { id: "2" },
         },
     };
@@ -77,6 +83,8 @@ test("should call the unsubscribeMethodFromGroup function when the hook is unmou
     const currentRoomStateMock = {
         room: {
             ...state.state.room,
+        },
+        user: {
             currentUser: { id: "2" },
         },
     };

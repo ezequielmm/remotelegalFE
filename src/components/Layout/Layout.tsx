@@ -11,8 +11,6 @@ import Menu from "../Menu";
 import Text from "../Typography/Text";
 import Sider from "./Sider";
 import Content from "./Content";
-import { ReactComponent as Bell } from "../../assets/layout/Bell.svg";
-import { ReactComponent as Messages } from "../../assets/icons/Messages.svg";
 import { ReactComponent as DropdownArrow } from "../../assets/layout/DropdownArrow.svg";
 import * as CONSTANTS from "../../constants/layout";
 import ColorStatus from "../../types/ColorStatus";
@@ -34,6 +32,7 @@ const AppLayout = ({ children }: DashboardProps) => {
     const {
         state: {
             generalUi: { isSiderCollapsed },
+            user: { currentUser },
         },
     } = useContext(GlobalStateContext);
 
@@ -62,25 +61,26 @@ const AppLayout = ({ children }: DashboardProps) => {
                 <Space justify="space-between" align="center">
                     <Logo height="2.25rem" />
                     <Space size="large" align="flex-start">
-                        <Icon size={8} icon={Messages} />
-                        <Icon size={8} icon={Bell} />
-                        <Dropdown
-                            data-testid="user_menu"
-                            overlay={menu}
-                            trigger={["click"]}
-                            styled
-                            arrow
-                            placement="bottomRight"
-                        >
-                            <Space align="center" size={4}>
-                                <Text data-testid="user_option" ellipsis={false}>
-                                    User Name
-                                </Text>
-                                <Space.Item>
-                                    <Icon size="0.625rem" icon={DropdownArrow} />
-                                </Space.Item>
-                            </Space>
-                        </Dropdown>
+                        {currentUser && (
+                            <Dropdown
+                                data-testid="user_menu"
+                                overlay={menu}
+                                trigger={["click"]}
+                                styled
+                                arrow
+                                placement="bottomRight"
+                                overlayStyle={{ width: "12rem", maxWidth: "12rem", minWidth: "12rem" }}
+                            >
+                                <Space align="center" size={4}>
+                                    <Text data-testid="user_option" ellipsis={false}>
+                                        {`${currentUser?.firstName} ${currentUser?.lastName}`.trim()}
+                                    </Text>
+                                    <Space.Item>
+                                        <Icon size="0.625rem" icon={DropdownArrow} />
+                                    </Space.Item>
+                                </Space>
+                            </Dropdown>
+                        )}
                     </Space>
                 </Space>
             </Header>

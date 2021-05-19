@@ -194,11 +194,6 @@ const RoomReducer: Reducer<IRoom, IAction> = (state: IRoom, action: IAction): IR
                 ...state,
                 currentExhibitTabName: action.payload,
             };
-        case ACTION_TYPE.IN_DEPO_SET_CURRENT_USER:
-            return {
-                ...state,
-                currentUser: action.payload,
-            };
         case ACTION_TYPE.IN_DEPO_SET_STAMP_LABEL:
             return {
                 ...state,

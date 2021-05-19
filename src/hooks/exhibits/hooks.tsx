@@ -113,8 +113,6 @@ export const useExhibitFileInfo = () => {
     return useAsyncCallback(async (depositionID) => {
         const exhibitFile = await deps.apiService.getSharedExhibit(depositionID);
         if (exhibitFile) {
-            const user = await deps.apiService.currentUser();
-            dispatch(actions.setCurrentUser(user));
             dispatch(actions.setSharedExhibit(exhibitFile));
         }
         return exhibitFile;
@@ -254,7 +252,7 @@ export const useExhibitSendAnnotation = () => {
 
 export const useExhibitRealTimeAnnotations = () => {
     const { state } = useContext(GlobalStateContext);
-    const { currentUser } = state.room;
+    const { currentUser } = state.user;
     const { subscribeToGroup, unsubscribeMethodFromGroup } = useSignalR("/depositionHub");
     const [realTimeAnnotation, setRealTimeAnnotation] = useState(null);
 

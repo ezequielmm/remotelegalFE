@@ -11,8 +11,8 @@ import {
 } from "../../../constants/depositionDetails";
 import normalizedRoles from "../../../constants/roles";
 import { useFetchParticipants } from "../../../hooks/activeDepositionDetails/hooks";
-import { useUserIsAdmin } from "../../../hooks/users/hooks";
 import { IParticipant } from "../../../models/participant";
+import { GlobalStateContext } from "../../../state/GlobalState";
 
 export default function DepositionDetailsAttendees({
     depositionID,
@@ -23,11 +23,8 @@ export default function DepositionDetailsAttendees({
 }) {
     const [fetchAttendees, loading, error, attendees] = useFetchParticipants();
     const [mappedParticipants, setMappedAttendees] = useState([]);
-    const [checkIfUserIsAdmin, loadingUserIsAdmin, errorUserIsAdmin, userIsAdmin] = useUserIsAdmin();
-
-    React.useEffect(() => {
-        checkIfUserIsAdmin();
-    }, [checkIfUserIsAdmin]);
+    const { state } = React.useContext(GlobalStateContext);
+    const { currentUser } = state?.user;
 
     useEffect(() => {
         if (fetchAttendees && depositionID && activeKey === DEPOSITION_DETAILS_TABS.attendees)
@@ -35,23 +32,23 @@ export default function DepositionDetailsAttendees({
     }, [activeKey, fetchAttendees, depositionID]);
 
     useEffect(() => {
-        if (attendees && userIsAdmin !== undefined) {
+        if (attendees && !!currentUser?.isAdmin !== undefined) {
             const attendeesArray = attendees.map((participant: IParticipant) => {
                 const { email, id, name, phone, role, user } = participant;
                 return {
                     id,
                     name: user ? `${user.firstName} ${user.lastName}` : name,
                     user,
-                    email: !userIsAdmin && role === "Witness" ? "" : email,
-                    phone: !userIsAdmin && role === "Witness" ? "" : phone || user?.phoneNumber,
+                    email: !currentUser?.isAdmin && role === "Witness" ? "" : email,
+                    phone: !currentUser?.isAdmin && role === "Witness" ? "" : phone || user?.phoneNumber,
                     role: normalizedRoles[role] || role,
                 };
             });
             setMappedAttendees(attendeesArray);
         }
-    }, [attendees, userIsAdmin]);
+    }, [attendees, currentUser]);
 
-    if (error || errorUserIsAdmin) {
+    if (error) {
         // TODO: Improve error handling
         return <CardFetchError width="100%" onClick={() => fetchAttendees(depositionID)} />;
     }
@@ -69,7 +66,7 @@ export default function DepositionDetailsAttendees({
                 rowKey="id"
                 pagination={false}
                 style={{ height: "100%" }}
-                loading={loading || loadingUserIsAdmin}
+                loading={loading}
                 dataSource={mappedParticipants || []}
             />
         </Space>

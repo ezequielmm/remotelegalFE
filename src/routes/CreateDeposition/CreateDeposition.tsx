@@ -17,11 +17,14 @@ import { useFetchCases } from "../../hooks/cases/hooks";
 import { useScheduleDepositions } from "../../hooks/depositions/hooks";
 import CreateDepositionResultCard from "./CreateDepositionResultCard";
 import mapDepositions from "../../helpers/mapDepositions";
-import { useUserIsAdmin } from "../../hooks/users/hooks";
+import { GlobalStateContext } from "../../state/GlobalState";
+import useCurrentUser from "../../hooks/useCurrentUser";
 
 const CreateDeposition = () => {
     const [createdDepositions, setCreatedDepositions] = React.useState(0);
-    const [checkIfUserIsAdmin, loadingUserIsAdmin, errorUserIsAdmin, userIsAdmin] = useUserIsAdmin();
+    const { state } = React.useContext(GlobalStateContext);
+    const { currentUser } = state?.user;
+    const [getCurrentUser] = useCurrentUser();
     const { error: fetchingCasesError, data, loading: loadingCases, refreshList } = useFetchCases();
     const [scheduleDepositions, loading, error, response] = useScheduleDepositions();
     const [selectedCaseId, setSelectedCaseId] = useState("");
@@ -31,7 +34,7 @@ const CreateDeposition = () => {
 
     const methods = useForm({
         mode: "onTouched",
-        resolver: yupResolver(getDepositionSchema(userIsAdmin)),
+        resolver: yupResolver(getDepositionSchema(!!currentUser?.isAdmin)),
         defaultValues: CONSTANTS.CREATE_DEPOSITION_DEFAULT_VALUES,
     });
 
@@ -39,10 +42,6 @@ const CreateDeposition = () => {
         if (response) setCreatedDepositions(methods.watch("depositions").length);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [response]);
-
-    React.useEffect(() => {
-        checkIfUserIsAdmin();
-    }, [checkIfUserIsAdmin]);
 
     const handleResetForm = () => {
         setCreatedDepositions(0);
@@ -68,7 +67,6 @@ const CreateDeposition = () => {
             details,
             normalizedParticipants,
         });
-
         scheduleDepositions({
             depositionList: mappedDepositions,
             files,
@@ -76,20 +74,19 @@ const CreateDeposition = () => {
         });
     };
 
-    return createdDepositions || fetchingCasesError || errorUserIsAdmin ? (
+    return createdDepositions || fetchingCasesError || !currentUser ? (
         <CreateDepositionResultCard
             addNewCase={handleResetForm}
             createdDepositions={createdDepositions}
             goToDepositions={() => {
                 history.push("/depositions");
             }}
-            type={fetchingCasesError || errorUserIsAdmin ? "error" : "success"}
+            type={fetchingCasesError || !currentUser ? "error" : "success"}
             refreshCasesList={() => {
-                if (errorUserIsAdmin) {
-                    checkIfUserIsAdmin();
-                }
                 if (fetchingCasesError) {
                     refreshList();
+                } else if (!currentUser) {
+                    getCurrentUser();
                 }
             }}
         />
@@ -115,7 +112,7 @@ const CreateDeposition = () => {
                     <WitnessesSection />
                     <OtherParticipantsSection />
                     <DetailsSection />
-                    {userIsAdmin && <RequesterSection invalidRequester={error === 404 && "Invalid email"} />}
+                    {!!currentUser?.isAdmin && <RequesterSection invalidRequester={error === 404 && "Invalid email"} />}
                     <Space size="large" justify="flex-end" fullWidth>
                         <Button
                             type="text"
@@ -130,7 +127,7 @@ const CreateDeposition = () => {
                         </Button>
                         <Button
                             data-testid="create_deposition_button"
-                            loading={loading || loadingUserIsAdmin}
+                            loading={loading}
                             htmlType="submit"
                             onClick={() => {
                                 if (!selectedCaseId) {

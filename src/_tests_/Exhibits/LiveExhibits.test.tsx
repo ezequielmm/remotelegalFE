@@ -52,6 +52,7 @@ test("Should display the close confirmation modal if the shared exhibit is not i
                     currentExhibitTabName: "liveExhibits",
                     currentExhibit: { ...currentExhibit, close: true, isPublic: false },
                 },
+                user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
             },
         }
     );
@@ -85,6 +86,7 @@ test("Should not display the close confirmation modal if the shared exhibit is i
                     currentExhibitTabName: "liveExhibits",
                     currentExhibit: { ...currentExhibit, close: true, isPublic: true },
                 },
+                user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
             },
         }
     );
@@ -119,6 +121,7 @@ test("Should not call getSignedUrl or getPrivateSignedUrl when the current exhib
                     currentExhibitTabName: "liveExhibits",
                     currentExhibit: { ...currentExhibit, close: true, isPublic: true },
                 },
+                user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
             },
         }
     );

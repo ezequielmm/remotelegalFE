@@ -5,6 +5,8 @@ import userEvent from "@testing-library/user-event";
 import renderWithGlobalContext from "../utils/renderWithGlobalContext";
 import { theme } from "../../constants/styles/theme";
 import Layout from "../../components/Layout";
+import getMockDeps from "../utils/getMockDeps";
+import { rootReducer } from "../../state/GlobalState";
 
 const Deposition = () => {
     return <div>DEPOSITION</div>;
@@ -13,6 +15,8 @@ const Deposition = () => {
 const NewDeposition = () => {
     return <div>NEW DEPOSITION</div>;
 };
+
+const customDeps = getMockDeps();
 
 test("expect click on menu option to redirect me to depositions", async () => {
     const { getByText } = renderWithGlobalContext(
@@ -46,4 +50,73 @@ test("click on schedule deposition takes me to deposition", async () => {
     const button = getByText("Schedule deposition");
     userEvent.click(button);
     expect(getByText("NEW DEPOSITION")).toBeInTheDocument();
+});
+
+test("should display current user first and last name text", async () => {
+    const { getByText } = renderWithGlobalContext(
+        <ThemeProvider theme={theme}>
+            <BrowserRouter>
+                <Switch>
+                    <Layout>
+                        <Route exact path="/deposition/new" component={NewDeposition} />
+                    </Layout>
+                </Switch>
+            </BrowserRouter>
+        </ThemeProvider>,
+        customDeps,
+        {
+            ...rootReducer,
+            initialState: {
+                generalUi: { isSiderCollapsed: false },
+                user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+            },
+        }
+    );
+    expect(getByText("First Name Last Name")).toBeInTheDocument();
+});
+
+test("should not display current user last name before than last name text", async () => {
+    const { queryByText } = renderWithGlobalContext(
+        <ThemeProvider theme={theme}>
+            <BrowserRouter>
+                <Switch>
+                    <Layout>
+                        <Route exact path="/deposition/new" component={NewDeposition} />
+                    </Layout>
+                </Switch>
+            </BrowserRouter>
+        </ThemeProvider>,
+        customDeps,
+        {
+            ...rootReducer,
+            initialState: {
+                generalUi: { isSiderCollapsed: false },
+                user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+            },
+        }
+    );
+    expect(queryByText("Last Name First Name")).not.toBeInTheDocument();
+});
+
+test("should not display current user first and last name text when it is null", async () => {
+    const { queryByText } = renderWithGlobalContext(
+        <ThemeProvider theme={theme}>
+            <BrowserRouter>
+                <Switch>
+                    <Layout>
+                        <Route exact path="/deposition/new" component={NewDeposition} />
+                    </Layout>
+                </Switch>
+            </BrowserRouter>
+        </ThemeProvider>,
+        customDeps,
+        {
+            ...rootReducer,
+            initialState: {
+                generalUi: { isSiderCollapsed: false },
+                user: { currentUser: null },
+            },
+        }
+    );
+    expect(queryByText("First Name Last Name")).not.toBeInTheDocument();
 });

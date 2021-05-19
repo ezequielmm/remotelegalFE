@@ -4,23 +4,23 @@ import combineReducers from "./utils/combineReducers";
 import RoomReducer, { RoomReducerInitialState } from "./InDepo/InDepoReducer";
 import GeneralReducer, { GeneralUiReducerInitialState } from "./GeneralUi/GeneralUiReducer";
 import PostDepoReducer, { PostDepoReducerInitialState } from "./PostDepo/PostDepoReducer";
-import UserPermissionsReducer, { UserPermissionsReducerInitialState } from "./UserPermissions/UserPermissionsReducer";
 import SignalRReducer, { SignalRReducerInitialState } from "./SignalR/SignalRReducer";
+import UserReducer, { UserReducerInitialState } from "./User/UserReducer";
 
 export const initialState: IGlobalState = {
     room: RoomReducerInitialState,
     generalUi: GeneralUiReducerInitialState,
     postDepo: PostDepoReducerInitialState,
-    userPermissions: UserPermissionsReducerInitialState,
     signalR: SignalRReducerInitialState,
+    user: UserReducerInitialState,
 };
 
 export const combinedReducer = combineReducers<IGlobalState>({
     room: RoomReducer,
     generalUi: GeneralReducer,
     postDepo: PostDepoReducer,
-    userPermissions: UserPermissionsReducer,
     signalR: SignalRReducer,
+    user: UserReducer,
 });
 
 export const rootReducer = {

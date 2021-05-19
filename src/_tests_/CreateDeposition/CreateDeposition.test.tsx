@@ -14,21 +14,44 @@ import * as ERRORS_CONSTANTS from "../../constants/errors";
 import renderWithGlobalContext from "../utils/renderWithGlobalContext";
 import getMockDeps from "../utils/getMockDeps";
 import { getUserNotAdmin } from "../constants/signUp";
+import { rootReducer } from "../../state/GlobalState";
 
 global.MutationObserver = window.MutationObserver;
 const customDeps = getMockDeps();
 
-beforeEach(() => jest.resetModules());
+beforeEach(() => {
+    jest.resetModules();
+    jest.clearAllMocks();
+});
 
 it("Should show case selection validation if no case is selected", async () => {
-    const { getByText, getByTestId } = renderWithGlobalContext(<CreateDeposition />);
+    const { getByText, getByTestId } = renderWithGlobalContext(<CreateDeposition />, customDeps, {
+        ...rootReducer,
+        initialState: {
+            room: {
+                ...rootReducer.initialState.room,
+            },
+            user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+            signalR: { signalR: null },
+        },
+    });
     await waitForDomChange();
     fireEvent.click(getByTestId("create_deposition_button"));
     await waitForDomChange();
     expect(getByText(CONSTANTS.INVALID_CASE_MESSAGE)).toBeInTheDocument();
 });
+
 it("Should show case selection validation on blur", async () => {
-    const { getByText, container } = renderWithGlobalContext(<CreateDeposition />);
+    const { getByText, container } = renderWithGlobalContext(<CreateDeposition />, customDeps, {
+        ...rootReducer,
+        initialState: {
+            room: {
+                ...rootReducer.initialState.room,
+            },
+            user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+            signalR: { signalR: null },
+        },
+    });
     const caseSelect = await waitForElement(() => getByText(CONSTANTS.CASE_SELECT_PLACEHOLDER));
     act(() => {
         fireEvent.blur(caseSelect);
@@ -37,8 +60,18 @@ it("Should show case selection validation on blur", async () => {
     await waitForDomChange();
     expect(getByText(CONSTANTS.INVALID_CASE_MESSAGE)).toBeInTheDocument();
 });
+
 it("Should show case modal", async () => {
-    const { getByText, getByTestId } = renderWithGlobalContext(<CreateDeposition />);
+    const { getByText, getByTestId } = renderWithGlobalContext(<CreateDeposition />, customDeps, {
+        ...rootReducer,
+        initialState: {
+            room: {
+                ...rootReducer.initialState.room,
+            },
+            user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+            signalR: { signalR: null },
+        },
+    });
     const caseSelect = await waitForElement(() => getByText(CONSTANTS.CASE_SELECT_PLACEHOLDER));
     act(() => {
         userEvent.click(caseSelect);
@@ -49,7 +82,16 @@ it("Should show case modal", async () => {
 });
 
 it("Should show a toast when adding a new case", async () => {
-    const { getByText, getByTestId, getByPlaceholderText } = renderWithGlobalContext(<CreateDeposition />);
+    const { getByText, getByTestId, getByPlaceholderText } = renderWithGlobalContext(<CreateDeposition />, customDeps, {
+        ...rootReducer,
+        initialState: {
+            room: {
+                ...rootReducer.initialState.room,
+            },
+            user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+            signalR: { signalR: null },
+        },
+    });
     const caseSelect = await waitForElement(() => getByText(CONSTANTS.CASE_SELECT_PLACEHOLDER));
     act(() => {
         userEvent.click(caseSelect);
@@ -66,7 +108,16 @@ it("Should show a toast when adding a new case", async () => {
 });
 
 it("Court Reporter shouldn´t appear again in the options once selected", async () => {
-    const { getByTestId, getByText, getAllByText } = renderWithGlobalContext(<CreateDeposition />);
+    const { getByTestId, getByText, getAllByText } = renderWithGlobalContext(<CreateDeposition />, customDeps, {
+        ...rootReducer,
+        initialState: {
+            room: {
+                ...rootReducer.initialState.room,
+            },
+            user: { currentUser: { firstName: "First Name", lastName: "Last Name", isAdmin: true } },
+            signalR: { signalR: null },
+        },
+    });
     const addParticipantButton = getByTestId("show_modal_add_participants_button");
     await act(async () => {
         userEvent.click(addParticipantButton);
@@ -86,7 +137,16 @@ it("Court Reporter shouldn´t appear again in the options once selected", async 
     });
 });
 it("should display all available roles for user admin", async () => {
-    const { getByTestId, getAllByText, getByText } = renderWithGlobalContext(<CreateDeposition />);
+    const { getByTestId, getAllByText, getByText } = renderWithGlobalContext(<CreateDeposition />, customDeps, {
+        ...rootReducer,
+        initialState: {
+            room: {
+                ...rootReducer.initialState.room,
+            },
+            user: { currentUser: { firstName: "First Name", lastName: "Last Name", isAdmin: true } },
+            signalR: { signalR: null },
+        },
+    });
     await act(async () => {
         userEvent.click(getByTestId("show_modal_add_participants_button"));
     });
@@ -99,7 +159,16 @@ it("should display all available roles for user admin", async () => {
 });
 it("should display all available roles for user not admin", async () => {
     customDeps.apiService.currentUser = jest.fn().mockResolvedValue(getUserNotAdmin());
-    const { getByTestId, getAllByText, getByText } = renderWithGlobalContext(<CreateDeposition />);
+    const { getByTestId, getAllByText, getByText } = renderWithGlobalContext(<CreateDeposition />, customDeps, {
+        ...rootReducer,
+        initialState: {
+            room: {
+                ...rootReducer.initialState.room,
+            },
+            user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+            signalR: { signalR: null },
+        },
+    });
     await act(async () => {
         userEvent.click(getByTestId("show_modal_add_participants_button"));
     });
@@ -113,7 +182,16 @@ it("should display all available roles for user not admin", async () => {
 
 it("show an empty list of cases if not admin and filter empty", async () => {
     customDeps.apiService.currentUser = jest.fn().mockResolvedValue(getUserNotAdmin());
-    const { getByTestId, queryAllByText } = renderWithGlobalContext(<CreateDeposition />, customDeps);
+    const { getByTestId, queryAllByText } = renderWithGlobalContext(<CreateDeposition />, customDeps, {
+        ...rootReducer,
+        initialState: {
+            room: {
+                ...rootReducer.initialState.room,
+            },
+            user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+            signalR: { signalR: null },
+        },
+    });
     const caseSelect = await waitForElement(() => getByTestId("case_selector"));
     const caseInput = caseSelect.getElementsByTagName("input")[0];
     await act(async () => {
@@ -127,7 +205,20 @@ it("show an empty list of cases if not admin and filter empty", async () => {
 });
 
 it("trigger validations when blur/change inputs on WitnessesSection", async () => {
-    const { getAllByPlaceholderText, queryByText, getAllByRole } = renderWithGlobalContext(<CreateDeposition />);
+    const { getAllByPlaceholderText, queryByText, getAllByRole } = renderWithGlobalContext(
+        <CreateDeposition />,
+        customDeps,
+        {
+            ...rootReducer,
+            initialState: {
+                room: {
+                    ...rootReducer.initialState.room,
+                },
+                user: { currentUser: { firstName: "First Name", lastName: "Last Name", isAdmin: true } },
+                signalR: { signalR: null },
+            },
+        }
+    );
     await waitForDomChange();
     // EMAIL VALIDATIONS
     const emailInput = getAllByPlaceholderText(CONSTANTS.EMAIL_PLACEHOLDER)[1];
@@ -205,7 +296,16 @@ it("trigger validations when blur/change inputs on WitnessesSection", async () =
 });
 
 it("show a file name when file is selected", async () => {
-    const { queryByText, getByTestId } = renderWithGlobalContext(<CreateDeposition />);
+    const { queryByText, getByTestId } = renderWithGlobalContext(<CreateDeposition />, customDeps, {
+        ...rootReducer,
+        initialState: {
+            room: {
+                ...rootReducer.initialState.room,
+            },
+            user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+            signalR: { signalR: null },
+        },
+    });
     const file = new File(["file"], "file.pdf", { type: "application/pdf" });
     const imageInput = await waitForElement(() => getByTestId("upload_button"));
 
@@ -217,7 +317,16 @@ it("show a file name when file is selected", async () => {
 });
 
 it("trigger validations when blur/change inputs on RequesterSection", async () => {
-    const { getAllByPlaceholderText, queryByText } = renderWithGlobalContext(<CreateDeposition />);
+    const { getAllByPlaceholderText, queryByText } = renderWithGlobalContext(<CreateDeposition />, customDeps, {
+        ...rootReducer,
+        initialState: {
+            room: {
+                ...rootReducer.initialState.room,
+            },
+            user: { currentUser: { firstName: "First Name", lastName: "Last Name", isAdmin: true } },
+            signalR: { signalR: null },
+        },
+    });
     await waitForDomChange();
     // EMAIL VALIDATIONS
     const emailInput = getAllByPlaceholderText(CONSTANTS.EMAIL_PLACEHOLDER)[1];
@@ -277,8 +386,19 @@ it("create a deposition when click on submit button with all required fields fil
         getByText,
         getByTestId,
         queryByText,
+        queryAllByPlaceholderText,
         deps,
-    } = renderWithGlobalContext(<CreateDeposition />);
+    } = renderWithGlobalContext(<CreateDeposition />, customDeps, {
+        ...rootReducer,
+        initialState: {
+            room: {
+                ...rootReducer.initialState.room,
+            },
+            user: { currentUser: { firstName: "First Name", lastName: "Last Name", isAdmin: true } },
+            signalR: { signalR: null },
+        },
+    });
+    // await waitForDomChange();
     const { caseId, requesterName, requesterEmail, depositions } = TEST_CONSTANTS.getDepositions();
     const scheduleDeposition = await waitForElement(() => getByTestId("create_deposition_button"));
     expect(deps.apiService.fetchCases).toHaveBeenCalledWith({});
@@ -335,8 +455,8 @@ it("create a deposition when click on submit button with all required fields fil
         await userEvent.click(radioButtonOption);
     });
     // EMAIL FILL
-    const emailInput = getAllByPlaceholderText(CONSTANTS.EMAIL_PLACEHOLDER)[1];
     await act(async () => {
+        const emailInput = (await waitForElement(() => queryAllByPlaceholderText(CONSTANTS.EMAIL_PLACEHOLDER)))[1];
         await fireEvent.change(emailInput, { target: { value: requesterEmail } });
     });
     // NAME FILL
@@ -359,6 +479,7 @@ it("create a deposition when click on submit button with all required fields fil
     });
     expect(queryByText(CONSTANTS.getSuccessDepositionTitle(1))).toBeFalsy();
 });
+
 it("create a deposition when click on submit button with all required fields filled and select GO TO MY DEPOSITIONS option", async () => {
     const {
         getAllByText,
@@ -370,7 +491,16 @@ it("create a deposition when click on submit button with all required fields fil
         getByText,
         getByTestId,
         deps,
-    } = renderWithGlobalContext(<CreateDeposition />);
+    } = renderWithGlobalContext(<CreateDeposition />, customDeps, {
+        ...rootReducer,
+        initialState: {
+            room: {
+                ...rootReducer.initialState.room,
+            },
+            user: { currentUser: { firstName: "First Name", lastName: "Last Name", isAdmin: true } },
+            signalR: { signalR: null },
+        },
+    });
     const { caseId, requesterName, requesterEmail, depositions } = TEST_CONSTANTS.getDepositions();
     const scheduleDeposition = await waitForElement(() => getByTestId("create_deposition_button"));
     expect(deps.apiService.fetchCases).toHaveBeenCalledWith({});
@@ -451,10 +581,19 @@ it("create a deposition when click on submit button with all required fields fil
     expect(global.window.location.pathname).toBe("/");
 });
 
-it("shows error and try again button when get an error on fetch", async () => {
+it("shows error and try again button when get an error on fetch", async (done) => {
     customDeps.apiService.fetchCases = jest.fn().mockImplementation(() => Promise.reject(Error("")));
 
-    const { getByText, getByTestId } = renderWithGlobalContext(<CreateDeposition />, customDeps);
+    const { getByText, getByTestId } = renderWithGlobalContext(<CreateDeposition />, customDeps, {
+        ...rootReducer,
+        initialState: {
+            room: {
+                ...rootReducer.initialState.room,
+            },
+            user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+            signalR: { signalR: null },
+        },
+    });
 
     await waitForElement(() => getByText(ERRORS_CONSTANTS.FETCH_ERROR_MODAL_TITLE));
     const refreshButton = getByTestId("error_modal_button");
@@ -463,13 +602,45 @@ it("shows error and try again button when get an error on fetch", async () => {
         await fireEvent.click(refreshButton);
     });
     expect(customDeps.apiService.fetchCases).toHaveBeenCalledTimes(2);
+    done();
+});
+
+it("shows error and try again button when current user is null", async () => {
+    const { queryByText, queryByTestId } = renderWithGlobalContext(<CreateDeposition />, customDeps, {
+        ...rootReducer,
+        initialState: {
+            room: {
+                ...rootReducer.initialState.room,
+            },
+            user: { currentUser: null },
+            signalR: { signalR: null },
+        },
+    });
+
+    expect(queryByText(ERRORS_CONSTANTS.FETCH_ERROR_MODAL_TITLE)).toBeInTheDocument();
+    const errorModalButton = queryByTestId("error_modal_button");
+
+    await act(async () => {
+        await fireEvent.click(errorModalButton);
+        expect(customDeps.apiService.currentUser).toBeCalled();
+    });
 });
 
 it("shows validations when click on add witness button", async () => {
-    const { getByText, getByTestId } = renderWithGlobalContext(<CreateDeposition />);
+    customDeps.apiService.fetchCases = jest.fn().mockImplementation(() => []);
+    const { getByText, getByTestId } = renderWithGlobalContext(<CreateDeposition />, customDeps, {
+        ...rootReducer,
+        initialState: {
+            room: {
+                ...rootReducer.initialState.room,
+            },
+            user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+            signalR: { signalR: null },
+        },
+    });
 
     const addWitnessButton = await waitForElement(() => getByTestId("add_witness_button"));
-    await act(async () => userEvent.click(addWitnessButton));
+    await act(async () => await fireEvent.click(addWitnessButton));
     expect(getByText(CONSTANTS.DATE_ERROR)).toBeTruthy();
     expect(getByText(CONSTANTS.OPTION_ERROR)).toBeTruthy();
     expect(getByText(CONSTANTS.REQUIRED_TIME_ERROR)).toBeTruthy();
@@ -483,7 +654,16 @@ it("add a witness when click on add witness button and the required fields are f
         getAllByPlaceholderText,
         getByTestId,
         getAllByTestId,
-    } = renderWithGlobalContext(<CreateDeposition />);
+    } = renderWithGlobalContext(<CreateDeposition />, customDeps, {
+        ...rootReducer,
+        initialState: {
+            room: {
+                ...rootReducer.initialState.room,
+            },
+            user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+            signalR: { signalR: null },
+        },
+    });
     const { depositions } = TEST_CONSTANTS.getDepositions();
 
     // DATE FILL
@@ -531,7 +711,16 @@ it("deletes a witness when click on Delete Witness button", async () => {
         getAllByPlaceholderText,
         getByTestId,
         queryByTestId,
-    } = renderWithGlobalContext(<CreateDeposition />);
+    } = renderWithGlobalContext(<CreateDeposition />, customDeps, {
+        ...rootReducer,
+        initialState: {
+            room: {
+                ...rootReducer.initialState.room,
+            },
+            user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+            signalR: { signalR: null },
+        },
+    });
     const { depositions } = TEST_CONSTANTS.getDepositions();
 
     // DATE FILL
@@ -579,17 +768,46 @@ it("deletes a witness when click on Delete Witness button", async () => {
 });
 
 it("show display the add other participants section", async () => {
-    const { queryByText, getByTestId } = renderWithGlobalContext(<CreateDeposition />);
+    const { queryByText, getByTestId } = renderWithGlobalContext(<CreateDeposition />, customDeps, {
+        ...rootReducer,
+        initialState: {
+            room: {
+                ...rootReducer.initialState.room,
+            },
+            user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+            signalR: { signalR: null },
+        },
+    });
     expect(queryByText(ADD_PARTICIPANTS_CONSTANTS.OTHER_PARTICIPANTS_ADD_BUTTON_LABEL)).toBeTruthy();
     expect(getByTestId("add_participants_table")).toBeTruthy();
     expect(getByTestId("show_modal_add_participants_button")).toBeTruthy();
 });
+
 it("show display the add participant section with empty state when no participant were added", async () => {
-    const { getByTestId } = renderWithGlobalContext(<CreateDeposition />);
+    const { getByTestId } = renderWithGlobalContext(<CreateDeposition />, customDeps, {
+        ...rootReducer,
+        initialState: {
+            room: {
+                ...rootReducer.initialState.room,
+            },
+            user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+            signalR: { signalR: null },
+        },
+    });
     expect(getByTestId("empty_data_section")).toBeTruthy();
 });
+
 it("show display the add participant modal when click on the add particpant button", async () => {
-    const { getByTestId } = renderWithGlobalContext(<CreateDeposition />);
+    const { getByTestId } = renderWithGlobalContext(<CreateDeposition />, customDeps, {
+        ...rootReducer,
+        initialState: {
+            room: {
+                ...rootReducer.initialState.room,
+            },
+            user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+            signalR: { signalR: null },
+        },
+    });
     const addParticipantButton = getByTestId("show_modal_add_participants_button");
     await act(async () => {
         await userEvent.click(addParticipantButton);
@@ -597,9 +815,21 @@ it("show display the add participant modal when click on the add particpant butt
     const modal = await waitForElement(() => getByTestId("add_participants_modal_form"));
     expect(modal).toBeInTheDocument();
 });
+
 it("should create a new participant and display on the add participant table", async () => {
-    const { getByTestId, getAllByText, getByText, debug, queryByTestId } = renderWithGlobalContext(
-        <CreateDeposition />
+    const { getByTestId, getAllByText, getByText, queryByTestId } = renderWithGlobalContext(
+        <CreateDeposition />,
+        customDeps,
+        {
+            ...rootReducer,
+            initialState: {
+                room: {
+                    ...rootReducer.initialState.room,
+                },
+                user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+                signalR: { signalR: null },
+            },
+        }
     );
     const addParticipantButton = getByTestId("show_modal_add_participants_button");
     await act(async () => {
@@ -627,13 +857,31 @@ it("should create a new participant and display on the add participant table", a
 });
 
 it("should show add participant button enabled by default", async () => {
-    const { getByTestId } = renderWithGlobalContext(<CreateDeposition />);
+    const { getByTestId } = renderWithGlobalContext(<CreateDeposition />, customDeps, {
+        ...rootReducer,
+        initialState: {
+            room: {
+                ...rootReducer.initialState.room,
+            },
+            user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+            signalR: { signalR: null },
+        },
+    });
     expect(getByTestId("show_modal_add_participants_button")).not.toHaveAttribute("disabled");
 });
 
 it("should show add participant button be disabled when added more than allowed participants", async () => {
     ADD_PARTICIPANTS_CONSTANTS.MAX_PARTICIPANTS_ALLOWED = 1;
-    const { getByTestId, getAllByText, getByText } = renderWithGlobalContext(<CreateDeposition />);
+    const { getByTestId, getAllByText, getByText } = renderWithGlobalContext(<CreateDeposition />, customDeps, {
+        ...rootReducer,
+        initialState: {
+            room: {
+                ...rootReducer.initialState.room,
+            },
+            user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+            signalR: { signalR: null },
+        },
+    });
     expect(getByTestId("show_modal_add_participants_button")).not.toHaveAttribute("disabled");
     const addParticipantButton = getByTestId("show_modal_add_participants_button");
     await act(async () => {
@@ -658,7 +906,16 @@ it("should show add participant button be disabled when added more than allowed 
 });
 
 it("should open edit participant modal when click on the edit button", async () => {
-    const { getByTestId, getAllByText, getByText } = renderWithGlobalContext(<CreateDeposition />);
+    const { getByTestId, getAllByText, getByText } = renderWithGlobalContext(<CreateDeposition />, customDeps, {
+        ...rootReducer,
+        initialState: {
+            room: {
+                ...rootReducer.initialState.room,
+            },
+            user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+            signalR: { signalR: null },
+        },
+    });
     const addParticipantButton = getByTestId("show_modal_add_participants_button");
     await act(async () => {
         await userEvent.click(addParticipantButton);
@@ -686,7 +943,16 @@ it("should open edit participant modal when click on the edit button", async () 
 });
 
 it("should open delete participant modal when click on the remove button", async () => {
-    const { getByTestId, getAllByText, getByText } = renderWithGlobalContext(<CreateDeposition />);
+    const { getByTestId, getAllByText, getByText } = renderWithGlobalContext(<CreateDeposition />, customDeps, {
+        ...rootReducer,
+        initialState: {
+            room: {
+                ...rootReducer.initialState.room,
+            },
+            user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+            signalR: { signalR: null },
+        },
+    });
     const addParticipantButton = getByTestId("show_modal_add_participants_button");
     await act(async () => {
         await userEvent.click(addParticipantButton);
@@ -712,7 +978,16 @@ it("should open delete participant modal when click on the remove button", async
 });
 
 it("RequesterSection must be hidden when user is admin", async () => {
-    const { queryByTestId } = renderWithGlobalContext(<CreateDeposition />);
+    const { queryByTestId } = renderWithGlobalContext(<CreateDeposition />, customDeps, {
+        ...rootReducer,
+        initialState: {
+            room: {
+                ...rootReducer.initialState.room,
+            },
+            user: { currentUser: { firstName: "First Name", lastName: "Last Name", isAdmin: true } },
+            signalR: { signalR: null },
+        },
+    });
     await waitForDomChange();
     const querySection = queryByTestId("requester_title");
     expect(querySection).toBeTruthy();
@@ -720,7 +995,16 @@ it("RequesterSection must be hidden when user is admin", async () => {
 
 it("RequesterSection must be hidden when user not admin", async () => {
     customDeps.apiService.currentUser = jest.fn().mockResolvedValue(getUserNotAdmin());
-    const { queryByTestId } = renderWithGlobalContext(<CreateDeposition />, customDeps);
+    const { queryByTestId } = renderWithGlobalContext(<CreateDeposition />, customDeps, {
+        ...rootReducer,
+        initialState: {
+            room: {
+                ...rootReducer.initialState.room,
+            },
+            user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+            signalR: { signalR: null },
+        },
+    });
     await waitForDomChange();
     const querySection = queryByTestId("requester_title");
     expect(querySection).toBeFalsy();
@@ -731,7 +1015,18 @@ jest.setTimeout(50000);
 
 it(`add up to ${CONSTANTS.WITNESSES_LIMIT} witnesses and try to add another without success`, async (done) => {
     const { getAllByLabelText, getAllByRole, getAllByPlaceholderText, getByTestId } = renderWithGlobalContext(
-        <CreateDeposition />
+        <CreateDeposition />,
+        customDeps,
+        {
+            ...rootReducer,
+            initialState: {
+                room: {
+                    ...rootReducer.initialState.room,
+                },
+                user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+                signalR: { signalR: null },
+            },
+        }
     );
     const { depositions } = TEST_CONSTANTS.getDepositions();
 

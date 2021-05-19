@@ -23,7 +23,6 @@ import useSignalR from "../../hooks/useSignalR";
 import GuestRequests from "./GuestRequests";
 import { Roles } from "../../models/participant";
 import { useAuthentication } from "../../hooks/auth";
-import { useUserIsAdmin } from "../../hooks/users/hooks";
 import Spinner from "../../components/Spinner";
 import LoadingScreen from "./LoadingScreen";
 import { NotificationEntityType } from "../../types/Notification";
@@ -48,11 +47,11 @@ const InDepo = () => {
         userStatus,
         shouldSendToPreDepo,
         currentExhibitPage,
-        currentUser,
         jobNumber,
         tracks,
     } = state.room;
 
+    const { currentUser } = state?.user;
     const { depositionID } = useParams<DepositionID>();
     const [realTimeOpen, togglerRealTime] = useState<boolean>(false);
     const [exhibitsOpen, togglerExhibits] = useState<boolean>(false);
@@ -61,7 +60,6 @@ const InDepo = () => {
     const [atendeesVisibility, setAtendeesVisibility] = useState<boolean>(true);
     const history = useHistory();
     const { isAuthenticated } = useAuthentication();
-    const [checkIfUserIsAdmin, userIsAdminLoading, errorUserIsAdmin, userIsAdmin] = useUserIsAdmin();
     const { stop, sendMessage, signalR, subscribeToGroup, unsubscribeMethodFromGroup } = useSignalR("/depositionHub");
 
     useEffect(() => {
@@ -71,7 +69,6 @@ const InDepo = () => {
 
     useEffect(
         () => {
-            checkIfUserIsAdmin();
             return () => {
                 isMounted.current = false;
                 if (stop) stop();
@@ -115,11 +112,11 @@ const InDepo = () => {
     }, [currentRoom, dispatch, depositionID, tracks]);
 
     useEffect(() => {
-        if (depositionID && isAuthenticated !== null && userIsAdmin !== undefined) {
+        if (depositionID && isAuthenticated !== null && currentUser) {
             joinDeposition(depositionID);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [depositionID, isAuthenticated, userIsAdmin]);
+    }, [depositionID, isAuthenticated, currentUser]);
 
     useEffect(() => {
         setAtendeesVisibility((prev) => !prev);
@@ -193,15 +190,14 @@ const InDepo = () => {
         history,
         depositionID,
     ]);
-
-    if (userIsAdminLoading || (loading && userStatus === null && shouldSendToPreDepo === null)) {
+    if (loading && userStatus === null && shouldSendToPreDepo === null) {
         return <Spinner />;
     }
     if (userStatus?.participant?.isAdmitted && loading && shouldSendToPreDepo === false) {
         return <LoadingScreen />;
     }
 
-    if (error || errorUserIsAdmin) {
+    if (error) {
         return (
             <ErrorScreen
                 texts={{
@@ -210,9 +206,6 @@ const InDepo = () => {
                     button: CONSTANTS.FETCH_ERROR_RESULT_BUTTON,
                 }}
                 onClick={() => {
-                    if (errorUserIsAdmin) {
-                        return checkIfUserIsAdmin();
-                    }
                     return joinDeposition(depositionID);
                 }}
             />
@@ -222,7 +215,7 @@ const InDepo = () => {
     return currentRoom && dataTrack ? (
         <ThemeProvider theme={inDepoTheme}>
             <StyledInDepoContainer data-testid="videoconference">
-                {(userIsAdmin ||
+                {(!!currentUser?.isAdmin ||
                     JSON.parse(currentRoom?.localParticipant?.identity || "{}").role === Roles.courtReporter) && (
                     <GuestRequests depositionID={depositionID} />
                 )}
@@ -243,7 +236,7 @@ const InDepo = () => {
                     <ControlsBar
                         breakrooms={breakrooms}
                         canJoinToLockedBreakroom={
-                            userIsAdmin ||
+                            !!currentUser?.isAdmin ||
                             JSON.parse(currentRoom?.localParticipant?.identity || "{}").role === Roles.courtReporter
                         }
                         handleJoinBreakroom={(breakroomId) => {
