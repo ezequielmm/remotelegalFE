@@ -91,10 +91,24 @@ const InDepo = () => {
     }, [signalR, depositionID, sendMessage]);
 
     useEffect(() => {
+        const handleRoomEndError = (_, roomError) => {
+            if (roomError.code === 53118 && isMounted.current) {
+                disconnectFromDepo(
+                    currentRoom,
+                    dispatch,
+                    history,
+                    depositionID,
+                    tracks,
+                    currentRoom?.localParticipant?.identity &&
+                        JSON.parse(currentRoom?.localParticipant?.identity).role === Roles.witness
+                );
+            }
+        };
         const setDominantSpeaker = (participant: Participant | null) =>
             dispatch(actions.setAddDominantSpeaker(participant));
 
         if (currentRoom) {
+            currentRoom.on("disconnected", handleRoomEndError);
             currentRoom.on("dominantSpeakerChanged", setDominantSpeaker);
         }
         const cleanUpFunction = () => {
@@ -104,12 +118,13 @@ const InDepo = () => {
 
         return () => {
             if (currentRoom) {
+                currentRoom.off("disconnected", handleRoomEndError);
                 currentRoom.off("dominantSpeakerChange", setDominantSpeaker);
             }
 
             window.removeEventListener("beforeunload", cleanUpFunction);
         };
-    }, [currentRoom, dispatch, depositionID, tracks]);
+    }, [currentRoom, dispatch, depositionID, tracks, history]);
 
     useEffect(() => {
         if (depositionID && isAuthenticated !== null && currentUser) {
@@ -170,10 +185,15 @@ const InDepo = () => {
                 );
             }
             if (signalRMessage.entityType === NotificationEntityType.endDeposition) {
-                const isWitness =
+                disconnectFromDepo(
+                    currentRoom,
+                    dispatch,
+                    history,
+                    depositionID,
+                    [],
                     currentRoom?.localParticipant?.identity &&
-                    JSON.parse(currentRoom?.localParticipant?.identity).role === Roles.witness;
-                disconnectFromDepo(currentRoom, dispatch, history, depositionID, [], isWitness);
+                        JSON.parse(currentRoom?.localParticipant?.identity).role === Roles.witness
+                );
             }
         };
         subscribeToGroup("ReceiveNotification", onReceiveAnnotations);
