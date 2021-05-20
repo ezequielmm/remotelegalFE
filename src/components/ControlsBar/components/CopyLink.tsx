@@ -1,10 +1,9 @@
-import React, { memo, useRef, useState, useContext, useCallback } from "react";
+import React, { memo, useRef, useState, useContext, useCallback, useEffect } from "react";
 import styled, { ThemeContext } from "styled-components";
 import { Divider } from "antd";
 import Title from "../../Typography/Title";
 import Text from "../../Typography/Text";
 import Button from "../../Button";
-import Alert from "../../Alert";
 import Card from "../../Card";
 import Space from "../../Space";
 import Icon from "../../Icon";
@@ -12,6 +11,7 @@ import { ReactComponent as CloseIcon } from "../../../assets/icons/close.svg";
 import { ReactComponent as CopyIcon } from "../../../assets/icons/copy.svg";
 import { getREM } from "../../../constants/styles/utils";
 import ColorStatus from "../../../types/ColorStatus";
+import useFloatingAlertContext from "../../../hooks/useFloatingAlertContext";
 import {
     COPY_LINK_DESCRIPTION,
     COPY_LINK_TITLE,
@@ -57,6 +57,32 @@ const CopyLink = ({ closePopOver, link }: { closePopOver: () => void; link: stri
     };
 
     const resetCopyState = useCallback(() => setCopyDone(false), []);
+
+    const addAlert = useFloatingAlertContext();
+
+    useEffect(() => {
+        if (copyDone) {
+            addAlert({
+                message: COPY_LINK_SUCCESS_MSG,
+                onClose: resetCopyState,
+                closable: true,
+                type: "success",
+                showIcon: false,
+                duration: COPY_LINK_ALERT_DURATION,
+                dataTestId: "copy-link-success-alert",
+            });
+        }
+        if (copyError) {
+            addAlert({
+                message: COPY_LINK_ERROR_MSG,
+                type: "error",
+                showIcon: false,
+                duration: COPY_LINK_ALERT_DURATION,
+                dataTestId: "copy-link-error-alert",
+            });
+        }
+    }, [copyDone, resetCopyState, copyError, addAlert]);
+
     return (
         <Card bg={ColorStatus.white}>
             <StyledCloseIcon icon={CloseIcon} onClick={closePopOver} data-testid="close-button" />
@@ -76,30 +102,6 @@ const CopyLink = ({ closePopOver, link }: { closePopOver: () => void; link: stri
                 {COPY_LINK_BUTTON}
             </Button>
             <StyledHiddenInput ref={refHiddenInput} value={link} readOnly data-testid="hidden-input" />
-            {copyDone && (
-                <Alert
-                    onClose={resetCopyState}
-                    fullWidth={false}
-                    message={COPY_LINK_SUCCESS_MSG}
-                    closable
-                    type="success"
-                    float
-                    showIcon={false}
-                    duration={COPY_LINK_ALERT_DURATION}
-                    data-testid="copy-link-success-alert"
-                />
-            )}
-            {copyError && (
-                <Alert
-                    fullWidth={false}
-                    message={COPY_LINK_ERROR_MSG}
-                    type="error"
-                    float
-                    showIcon={false}
-                    duration={COPY_LINK_ALERT_DURATION}
-                    data-testid="copy-link-error-alert"
-                />
-            )}
         </Card>
     );
 };

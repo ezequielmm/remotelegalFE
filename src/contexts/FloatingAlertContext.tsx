@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext } from "react";
+import React, { createContext, useState, useContext, useCallback } from "react";
 import styled, { ThemeProvider } from "styled-components";
 import Alert from "../components/Alert";
 import { theme } from "../constants/styles/theme";
@@ -43,9 +43,9 @@ export const FloatingAlertContextProvider = ({ children, parentThemeMode }: IFlo
     const contextTheme = globalContext ? globalContext.state.generalUi.theme : ThemeMode.default;
     const currentTheme = parentThemeMode ?? contextTheme;
 
-    const addFloatingAlert = (props) => {
-        setAlerts([...alerts, props]);
-    };
+    const addFloatingAlert = useCallback((props) => {
+        setAlerts((oldAlerts) => [...oldAlerts, props]);
+    }, []);
 
     return (
         <FloatingAlertContext.Provider value={addFloatingAlert}>
@@ -57,7 +57,14 @@ export const FloatingAlertContextProvider = ({ children, parentThemeMode }: IFlo
                             const { message } = alert;
                             const messageId = message.replace(/\s+/g, "-").toLowerCase();
                             const indexval = parseInt(`${index}`, 10);
-                            return <Alert key={`${messageId}${indexval}`} fullWidth={false} {...alert} />;
+                            return (
+                                <Alert
+                                    data-testid={alert.dataTestId}
+                                    key={`${messageId}${indexval}`}
+                                    fullWidth={false}
+                                    {...alert}
+                                />
+                            );
                         })}
                     </FloatingAlertWrapper>
                 </ThemeProvider>
