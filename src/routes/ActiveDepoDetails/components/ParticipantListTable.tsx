@@ -178,7 +178,11 @@ const ParticipantListTable = ({
                 positiveLoading={removeParticipantLoading}
                 visible={openDeleteModal}
                 title={CONSTANTS.DEPOSITION_DETAILS_DELETE_MODAL_TITLE}
-                subTitle={CONSTANTS.DEPOSITION_DETAILS_DELETE_MODAL_SUBTITLE}
+                subTitle={
+                    selectedParticipant?.current?.email && deposition.status !== Status.pending
+                        ? CONSTANTS.DEPOSITION_DETAILS_DELETE_MODAL_SUBTITLE_WITH_EMAIL
+                        : CONSTANTS.DEPOSITION_DETAILS_DELETE_MODAL_SUBTITLE
+                }
                 positiveLabel={CONSTANTS.DEPOSITION_DETAILS_DELETE_MODAL_CONFIRM_BUTTON_LABEL}
                 negativeLabel={CONSTANTS.DEPOSITION_DETAILS_DELETE_MODAL_CANCEL_BUTTON_LABEL}
                 onNegativeClick={() => {

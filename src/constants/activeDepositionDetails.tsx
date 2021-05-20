@@ -41,7 +41,9 @@ export const DEPOSITION_DETAILS_TABS_DATA = [
 export const DEPOSITION_DETAILS_INVITED_PARTIES_TITLE = "Invited Parties";
 export const DEPOSITION_DETAILS_INVITED_PARTIES_DATA_TEST_ID = "deposition_title_invited_parties";
 export const DEPOSITION_DETAILS_DELETE_MODAL_TITLE = "Delete participant?";
-export const DEPOSITION_DETAILS_DELETE_MODAL_SUBTITLE = "Are you sure you want to delete this participant?";
+export const DEPOSITION_DETAILS_DELETE_MODAL_SUBTITLE = "Are you sure you want to delete this participant? ";
+export const DEPOSITION_DETAILS_DELETE_MODAL_SUBTITLE_WITH_EMAIL =
+    "Are you sure you want to delete this participant? The participant will be notified by email about this update.";
 export const DEPOSITION_DETAILS_DELETE_MODAL_CONFIRM_BUTTON_LABEL = "yes, delete";
 export const DEPOSITION_DETAILS_DELETE_MODAL_CANCEL_BUTTON_LABEL = "No, keep it";
 export const DEPOSITION_DETAILS_INVITED_PARTIES_COLUMNS = [
