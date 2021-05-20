@@ -13,6 +13,13 @@ const StyledContent = styled(Content)`
     ${({ theme }) => {
         const styles = `
             padding: ${getREM(theme.default.spaces[6] * 2)};
+
+            // Fix Firefox bug
+            @-moz-document url-prefix() {
+                & > :last-child {
+                    margin-bottom: ${getREM(theme.default.spaces[6] * 2)};
+                }
+            }
             `;
 
         return styles;

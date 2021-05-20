@@ -65,7 +65,6 @@ const GlobalStyle = createGlobalStyle`
             margin-top: ${getREM(theme.default.spaces[3])}
         }
     `}
-    
 `;
 
 export default GlobalStyle;
