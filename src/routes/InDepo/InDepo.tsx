@@ -92,7 +92,7 @@ const InDepo = () => {
 
     useEffect(() => {
         const handleRoomEndError = (_, roomError) => {
-            if (roomError.code === 53118 && isMounted.current) {
+            if (roomError?.code === 53118 && isMounted.current) {
                 disconnectFromDepo(
                     currentRoom,
                     dispatch,
