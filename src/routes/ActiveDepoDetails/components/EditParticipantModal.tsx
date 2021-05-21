@@ -217,7 +217,7 @@ const EditParticipantModal = ({
                                 <Form.Item label="EMAIL ADDRESS (OPTIONAL)" htmlFor="email">
                                     <InputWrapper>
                                         <Input
-                                            disabled={!!currentParticipant?.user}
+                                            disabled={currentParticipant?.user?.isGuest === false}
                                             value={formState.email.value}
                                             invalid={formState.email.invalid}
                                             onChange={(e) =>
@@ -251,7 +251,7 @@ const EditParticipantModal = ({
                                 <Form.Item label="NAME (OPTIONAL)" htmlFor="name">
                                     <InputWrapper>
                                         <Input
-                                            disabled={!!currentParticipant?.user}
+                                            disabled={currentParticipant?.user?.isGuest === false}
                                             maxLength={50}
                                             onChange={(e) =>
                                                 setFormState({
@@ -282,7 +282,7 @@ const EditParticipantModal = ({
                                                     },
                                                 })
                                             }
-                                            disabled={!!currentParticipant?.user}
+                                            disabled={currentParticipant?.user?.isGuest === false}
                                             invalid={formState.phone.invalid}
                                             value={formState.phone.value}
                                             data-testid={CONSTANTS.DEPOSITION_DETAILS_EDIT_PARTICIPANT_PHONE_INPUT_ID}

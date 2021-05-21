@@ -16,6 +16,7 @@ test("Should display a registered user with disabled fields for everything but r
     const overridenParticipantMock = {
         ...PARTICIPANT_MOCK,
         user: {
+            isGuest: false,
             firstName: "",
             lastName: "",
             emailAddress: "",
