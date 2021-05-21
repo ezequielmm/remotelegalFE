@@ -12,10 +12,9 @@ export default (isAudioEnabled: boolean, audioTracks) => {
     const recorderRef = useRef(null);
     const stopMicrophone = useCallback(async () => {
         if (recorder) {
+            recorder.stop();
             if (sampleRate) {
-                setTimeout(() => {
-                    stopAudio(sampleRate);
-                }, 500);
+                stopAudio(sampleRate);
             }
         }
     }, [stopAudio, sampleRate, recorder]);
