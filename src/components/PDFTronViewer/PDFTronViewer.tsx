@@ -273,8 +273,15 @@ const PDFTronViewer = ({
     }, []);
 
     const loadPDFTronVideo = async (instance, video) => {
-        const { loadVideo } = await initializeVideoViewer(instance, "");
-        loadVideo(`${video}&`);
+        try {
+            const { loadVideo } = await initializeVideoViewer(
+                instance,
+                "Precision Reporters LLC(precisionreporters.com):OEM:Remote Legal::B+:AMS(20220210):72A5A0AD0457260A7360B13AC982737860616F5CD9387AD28B625582AD4C3EB6329431F5C7"
+            );
+            loadVideo(`${video}&`);
+        } catch (error) {
+            console.error("pdftron loadvideo error", error);
+        }
     };
 
     useEffect(() => {
