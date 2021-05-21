@@ -2,7 +2,6 @@ import React, { useCallback, useContext, useEffect, useState } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 import { Participant } from "twilio-video";
-import Alert from "../../../components/Alert";
 import BreakroomControlsBar from "../../../components/BreakroomControlsBar";
 import ErrorScreen from "../../../components/ErrorScreen";
 import RecordPill from "../../../components/RecordPill";
@@ -25,6 +24,7 @@ import VideoConference from "../VideoConference";
 import { ReactComponent as LockBreakroomIcon } from "../../../assets/icons/Lock.svg";
 import { ReactComponent as UnLockBreakroomIcon } from "../../../assets/icons/Unlock.svg";
 import stopAllTracks from "../../../helpers/stopAllTracks";
+import useFloatingAlertContext from "../../../hooks/useFloatingAlertContext";
 
 const Breakroom = () => {
     const inDepoTheme = { ...theme, mode: ThemeMode.inDepo };
@@ -40,6 +40,7 @@ const Breakroom = () => {
     const history = useHistory();
     const { signalR, sendMessage, subscribeToGroup, unsubscribeMethodFromGroup } = useSignalR("/depositionHub");
     const [shouldShowAlert, setShouldShowAlert] = useState(false);
+    const addAlert = useFloatingAlertContext();
 
     const [lockRoom, , lockRoomError, lockedRoom] = useToggleLockRoom();
 
@@ -135,6 +136,21 @@ const Breakroom = () => {
         setIsLocked(currentBreakroomData?.isLocked);
     }, [currentBreakroomData]);
 
+    useEffect(() => {
+        if (shouldShowAlert || lockRoomError !== undefined) {
+            addAlert({
+                onClose: () => setShouldShowAlert(false),
+                message: getAlertMessage(),
+                type: isLocked || lockRoomError !== undefined ? "error" : "success",
+                closable: true,
+                duration: CONSTANTS.BREAKROOM_LOCK_ALERT_DURATION,
+                icon: <Icon icon={isLocked || lockRoomError !== undefined ? LockBreakroomIcon : UnLockBreakroomIcon} />,
+                dataTestId: "breakroom-lock-unlock-alert",
+            });
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isLocked, lockRoomError, addAlert]);
+
     const handleRejoinDepo = useCallback(() => {
         if (depositionID) {
             history.push(`/deposition/join/${depositionID}`);
@@ -160,23 +176,6 @@ const Breakroom = () => {
     return currentBreakroom && breakroomDataTrack ? (
         <ThemeProvider theme={inDepoTheme}>
             <StyledInDepoContainer data-testid="videoconference_breakroom">
-                {(shouldShowAlert || lockRoomError !== undefined) && (
-                    <Alert
-                        onClose={() => setShouldShowAlert(false)}
-                        fullWidth={false}
-                        message={getAlertMessage()}
-                        closable
-                        type={isLocked || lockRoomError !== undefined ? "error" : "success"}
-                        float
-                        duration={CONSTANTS.BREAKROOM_LOCK_ALERT_DURATION}
-                        data-testid="breakroom-lock-unlock-alert"
-                        icon={
-                            <Icon
-                                icon={isLocked || lockRoomError !== undefined ? LockBreakroomIcon : UnLockBreakroomIcon}
-                            />
-                        }
-                    />
-                )}
                 <StyledInDepoLayout>
                     <RecordPill on={false} />
                     <Exhibits visible={exhibitsOpen} />
