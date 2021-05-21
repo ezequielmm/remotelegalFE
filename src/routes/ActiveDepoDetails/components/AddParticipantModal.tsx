@@ -13,11 +13,11 @@ import ColorStatus from "../../../types/ColorStatus";
 import isPhoneInvalid from "../../../helpers/isPhoneInvalid";
 import isInvalidEmail from "../../../helpers/isInvalidEmail";
 import { useAddParticipantToExistingDepo } from "../../../hooks/activeDepositionDetails/hooks";
-import Message from "../../../components/Message";
 import filterEmptyPropertiesFromObject from "../../../helpers/filterEmptyPropertiesFromObject";
 import Confirm from "../../../components/Confirm";
 import { getAddParticipantConfirmTextContext } from "../helpers/getModalTextContent";
 import { Status } from "../../../components/StatusPill/StatusPill";
+import useFloatingAlertContext from "../../../hooks/useFloatingAlertContext";
 
 interface IModalProps {
     open: boolean;
@@ -54,11 +54,12 @@ const AddParticipantModal = ({
             confirmButton: "",
         },
     });
+    const addAlert = useFloatingAlertContext();
 
     useEffect(() => {
         if (addedParticipant) {
-            Message({
-                content: CONSTANTS.DEPOSITION_DETAILS_ADD_PARTICIPANT_MODAL_ADDED_PARTICIPANT_TOAST,
+            addAlert({
+                message: CONSTANTS.DEPOSITION_DETAILS_ADD_PARTICIPANT_MODAL_ADDED_PARTICIPANT_TOAST,
                 type: "success",
                 duration: 3,
             });
@@ -66,12 +67,12 @@ const AddParticipantModal = ({
             handleClose(false);
             setFormStatus(INITIAL_FORM_STATE);
         }
-    }, [addedParticipant, handleClose, fetchParticipants]);
+    }, [addedParticipant, handleClose, fetchParticipants, addAlert]);
 
     useEffect(() => {
         if (error) {
-            Message({
-                content:
+            addAlert({
+                message:
                     error === 400
                         ? CONSTANTS.DEPOSITION_DETAILS_ADD_PARTICIPANT_MODAL_PARTICIPANT_ALREADY_EXISTS_ERROR
                         : CONSTANTS.NETWORK_ERROR,
@@ -79,7 +80,7 @@ const AddParticipantModal = ({
                 duration: 3,
             });
         }
-    }, [error]);
+    }, [error, addAlert]);
 
     const handleSubmit = () => {
         const { email, role, phone, name } = formStatus;

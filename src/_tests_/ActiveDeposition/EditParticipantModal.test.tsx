@@ -1,4 +1,4 @@
-import { waitForDomChange, fireEvent, waitForElement } from "@testing-library/react";
+import { waitForDomChange, fireEvent, waitForElement, act } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import React from "react";
 import * as TEST_CONSTANTS from "../constants/activeDepositionDetails";
@@ -11,6 +11,104 @@ import EditParticipantModal from "../../routes/ActiveDepoDetails/components/Edit
 import { Roles } from "../../models/participant";
 
 const customDeps = getMockDeps();
+
+test("Should call the edit participant endpoint with the proper body and show the confirm modal with the participant´s name and show the correct toast", async () => {
+    customDeps.apiService.editDepoParticipant = jest.fn().mockResolvedValue({});
+    const overridenParticipantMock = {
+        ...PARTICIPANT_MOCK,
+        user: null,
+    };
+    const handleClose = jest.fn();
+    const deposition = getDepositionWithOverrideValues({ status: "Confirmed" });
+    const fetchParticipants = jest.fn();
+    const { getByTestId, getByText } = renderWithGlobalContext(
+        <EditParticipantModal
+            handleClose={handleClose}
+            deposition={deposition}
+            fetchParticipants={fetchParticipants}
+            visible
+            currentParticipant={overridenParticipantMock}
+        />,
+        customDeps
+    );
+    const newEmail = "test@test1.com";
+    fireEvent.change(getByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_PARTICIPANT_EMAIL_INPUT_ID), {
+        target: { value: newEmail },
+    });
+    fireEvent.change(getByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_PARTICIPANT_PHONE_INPUT_ID), {
+        target: { value: PARTICIPANT_MOCK.phone },
+    });
+    fireEvent.change(getByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_PARTICIPANT_NAME_INPUT_ID), {
+        target: { value: PARTICIPANT_MOCK.name },
+    });
+    await act(async () => {
+        userEvent.click(getByText(PARTICIPANT_MOCK.role));
+        const role = await waitForElement(() => getByTestId("Paralegal"));
+        userEvent.click(role);
+    });
+
+    fireEvent.click(getByTestId(CONSTANTS.DEPOSITION_DETAILS_SAVE_BUTTON_ID));
+    await waitForDomChange();
+    expect(
+        getByText(
+            `Are you sure you want to edit ${PARTICIPANT_MOCK.name}? The participant will be notified by email about this invitation.`
+        )
+    ).toBeInTheDocument();
+    fireEvent.click(getByText(CONSTANTS.DEPOSITION_DETAILS_EDIT_PARTICIPANT_CONFIRM_POSITIVE_LABEL));
+    await waitForDomChange();
+    expect(getByText(CONSTANTS.DEPOSITION_DETAILS_EDIT_PARTICIPANT_CONFIRMED_DEPOSITION_TOAST)).toBeInTheDocument();
+    expect(handleClose).toHaveBeenCalledTimes(1);
+    expect(fetchParticipants).toHaveBeenCalledTimes(1);
+    expect(customDeps.apiService.editDepoParticipant).toHaveBeenCalledTimes(1);
+    expect(customDeps.apiService.editDepoParticipant).toHaveBeenCalledWith(deposition.id, {
+        ...TEST_CONSTANTS.EDIT_PARTICIPANT_BODY,
+        email: newEmail,
+    });
+});
+
+test("Should call the edit participant endpoint with the proper body and show the confirm modal with ¨this participant¨", async () => {
+    customDeps.apiService.editDepoParticipant = jest.fn().mockResolvedValue({});
+    const overridenParticipantMock = {
+        ...PARTICIPANT_MOCK,
+        user: null,
+    };
+    const handleClose = jest.fn();
+    const deposition = getDepositionWithOverrideValues({ status: "Confirmed" });
+    const fetchParticipants = jest.fn();
+    const { getByTestId, getByText } = renderWithGlobalContext(
+        <EditParticipantModal
+            handleClose={handleClose}
+            deposition={deposition}
+            fetchParticipants={fetchParticipants}
+            visible
+            currentParticipant={overridenParticipantMock}
+        />,
+        customDeps
+    );
+    const newEmail = "test@test1.com";
+    fireEvent.change(getByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_PARTICIPANT_EMAIL_INPUT_ID), {
+        target: { value: newEmail },
+    });
+    fireEvent.change(getByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_PARTICIPANT_PHONE_INPUT_ID), {
+        target: { value: PARTICIPANT_MOCK.phone },
+    });
+    fireEvent.change(getByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_PARTICIPANT_NAME_INPUT_ID), {
+        target: { value: "" },
+    });
+    await act(async () => {
+        userEvent.click(getByText(PARTICIPANT_MOCK.role));
+        const role = await waitForElement(() => getByTestId("Paralegal"));
+        userEvent.click(role);
+    });
+
+    fireEvent.click(getByTestId(CONSTANTS.DEPOSITION_DETAILS_SAVE_BUTTON_ID));
+    await waitForDomChange();
+    expect(
+        getByText(
+            `Are you sure you want to edit ${CONSTANTS.DEPOSITION_DETAILS_NO_NAME_FOR_PARTICIPANT}? The participant will be notified by email about this invitation.`
+        )
+    ).toBeInTheDocument();
+});
 
 test("Should display a registered user with disabled fields for everything but role", () => {
     const overridenParticipantMock = {
@@ -192,96 +290,4 @@ test("Should show error toast if fetch fails", async () => {
     expect(handleClose).not.toHaveBeenCalled();
     expect(fetchParticipants).not.toHaveBeenCalled();
     expect(customDeps.apiService.editDepoParticipant).toHaveBeenCalledTimes(1);
-});
-
-test("Should call the edit participant endpoint with the proper body and show the confirm modal with the participant´s name and show the correct toast", async () => {
-    customDeps.apiService.editDepoParticipant = jest.fn().mockResolvedValue({});
-    const overridenParticipantMock = {
-        ...PARTICIPANT_MOCK,
-        user: null,
-    };
-    const handleClose = jest.fn();
-    const deposition = getDepositionWithOverrideValues({ status: "Confirmed" });
-    const fetchParticipants = jest.fn();
-    const { getByTestId, getByText, getAllByText } = renderWithGlobalContext(
-        <EditParticipantModal
-            handleClose={handleClose}
-            deposition={deposition}
-            fetchParticipants={fetchParticipants}
-            visible
-            currentParticipant={overridenParticipantMock}
-        />,
-        customDeps
-    );
-    const newEmail = "test@test1.com";
-    fireEvent.change(getByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_PARTICIPANT_EMAIL_INPUT_ID), {
-        target: { value: newEmail },
-    });
-    fireEvent.change(getByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_PARTICIPANT_PHONE_INPUT_ID), {
-        target: { value: PARTICIPANT_MOCK.phone },
-    });
-    fireEvent.change(getByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_PARTICIPANT_NAME_INPUT_ID), {
-        target: { value: PARTICIPANT_MOCK.name },
-    });
-    userEvent.click(getByText(PARTICIPANT_MOCK.role));
-    const role = await waitForElement(() => getAllByText("Paralegal"));
-    userEvent.click(role[0]);
-    fireEvent.click(getByTestId(CONSTANTS.DEPOSITION_DETAILS_SAVE_BUTTON_ID));
-    await waitForDomChange();
-    expect(
-        getByText(
-            `Are you sure you want to edit ${PARTICIPANT_MOCK.name}? The participant will be notified by email about this invitation.`
-        )
-    ).toBeInTheDocument();
-    fireEvent.click(getByText(CONSTANTS.DEPOSITION_DETAILS_EDIT_PARTICIPANT_CONFIRM_POSITIVE_LABEL));
-    await waitForDomChange();
-    expect(getByText(CONSTANTS.DEPOSITION_DETAILS_EDIT_PARTICIPANT_CONFIRMED_DEPOSITION_TOAST)).toBeInTheDocument();
-    expect(handleClose).toHaveBeenCalledTimes(1);
-    expect(fetchParticipants).toHaveBeenCalledTimes(1);
-    expect(customDeps.apiService.editDepoParticipant).toHaveBeenCalledTimes(1);
-    expect(customDeps.apiService.editDepoParticipant).toHaveBeenCalledWith(deposition.id, {
-        ...TEST_CONSTANTS.EDIT_PARTICIPANT_BODY,
-        email: newEmail,
-    });
-});
-
-test("Should call the edit participant endpoint with the proper body and show the confirm modal with ¨this participant¨", async () => {
-    customDeps.apiService.editDepoParticipant = jest.fn().mockResolvedValue({});
-    const overridenParticipantMock = {
-        ...PARTICIPANT_MOCK,
-        user: null,
-    };
-    const handleClose = jest.fn();
-    const deposition = getDepositionWithOverrideValues({ status: "Confirmed" });
-    const fetchParticipants = jest.fn();
-    const { getByTestId, getByText, getAllByText } = renderWithGlobalContext(
-        <EditParticipantModal
-            handleClose={handleClose}
-            deposition={deposition}
-            fetchParticipants={fetchParticipants}
-            visible
-            currentParticipant={overridenParticipantMock}
-        />,
-        customDeps
-    );
-    const newEmail = "test@test1.com";
-    fireEvent.change(getByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_PARTICIPANT_EMAIL_INPUT_ID), {
-        target: { value: newEmail },
-    });
-    fireEvent.change(getByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_PARTICIPANT_PHONE_INPUT_ID), {
-        target: { value: PARTICIPANT_MOCK.phone },
-    });
-    fireEvent.change(getByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_PARTICIPANT_NAME_INPUT_ID), {
-        target: { value: "" },
-    });
-    userEvent.click(getByText(PARTICIPANT_MOCK.role));
-    const role = await waitForElement(() => getAllByText("Paralegal"));
-    userEvent.click(role[0]);
-    fireEvent.click(getByTestId(CONSTANTS.DEPOSITION_DETAILS_SAVE_BUTTON_ID));
-    await waitForDomChange();
-    expect(
-        getByText(
-            `Are you sure you want to edit ${CONSTANTS.DEPOSITION_DETAILS_NO_NAME_FOR_PARTICIPANT}? The participant will be notified by email about this invitation.`
-        )
-    ).toBeInTheDocument();
 });

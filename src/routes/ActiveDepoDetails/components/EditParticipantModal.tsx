@@ -17,9 +17,9 @@ import isInvalidEmail from "../../../helpers/isInvalidEmail";
 import isPhoneInvalid from "../../../helpers/isPhoneInvalid";
 import ColorStatus from "../../../types/ColorStatus";
 import { useEditParticipant } from "../../../hooks/activeDepositionDetails/hooks";
-import Message from "../../../components/Message";
 import { Status } from "../../../components/StatusPill/StatusPill";
 import removeWhiteSpace from "../../../helpers/removeWhitespace";
+import useFloatingAlertContext from "../../../hooks/useFloatingAlertContext";
 
 export interface IModalProps {
     visible: boolean;
@@ -67,11 +67,12 @@ const EditParticipantModal = ({
     const [showConfirm, toggleConfirm] = useState(false);
     const [editParticipant, loading, error, addedParticipant] = useEditParticipant();
     const wasEmailChangedRef = useRef(false);
+    const addAlert = useFloatingAlertContext();
 
     useEffect(() => {
         if (addedParticipant) {
-            Message({
-                content: wasEmailChangedRef.current
+            addAlert({
+                message: wasEmailChangedRef.current
                     ? CONSTANTS.DEPOSITION_DETAILS_EDIT_PARTICIPANT_CONFIRMED_DEPOSITION_TOAST
                     : CONSTANTS.DEPOSITION_DETAILS_EDIT_PARTICIPANT_NO_CONFIRMED_DEPOSITION_TOAST,
                 type: "success",
@@ -82,17 +83,17 @@ const EditParticipantModal = ({
             wasEmailChangedRef.current = false;
             toggleConfirm(false);
         }
-    }, [addedParticipant, handleClose, fetchParticipants]);
+    }, [addedParticipant, handleClose, fetchParticipants, addAlert]);
 
     useEffect(() => {
         if (error) {
-            Message({
-                content: CONSTANTS.NETWORK_ERROR,
+            addAlert({
+                message: CONSTANTS.NETWORK_ERROR,
                 type: "error",
                 duration: 3,
             });
         }
-    }, [error]);
+    }, [error, addAlert]);
 
     useEffect(() => {
         setFormState({

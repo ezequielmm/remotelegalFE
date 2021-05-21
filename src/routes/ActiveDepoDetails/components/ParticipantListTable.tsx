@@ -19,10 +19,10 @@ import {
 } from "../../../hooks/activeDepositionDetails/hooks";
 import CardFetchError from "../../../components/CardFetchError";
 import { UserInfo } from "../../../models/user";
-import Message from "../../../components/Message";
 import { Status } from "../../../components/StatusPill/StatusPill";
 import EditParticipantModal from "./EditParticipantModal";
 import removeWhiteSpace from "../../../helpers/removeWhitespace";
+import useFloatingAlertContext from "../../../hooks/useFloatingAlertContext";
 
 const ParticipantListTable = ({
     deposition,
@@ -51,6 +51,7 @@ const ParticipantListTable = ({
         removeParticipantError,
         removedParticipant,
     ] = useRemoveParticipantFromExistingDepo();
+    const addAlert = useFloatingAlertContext();
 
     useEffect(() => {
         if (removedParticipant) {
@@ -60,24 +61,24 @@ const ParticipantListTable = ({
                 isCourtReporterPresent.current = false;
             }
             setOpenDeleteModal(false);
-            Message({
-                content: CONSTANTS.DEPOSITION_DETAILS_REMOVE_PARTICIPANT_TOAST,
+            addAlert({
+                message: CONSTANTS.DEPOSITION_DETAILS_REMOVE_PARTICIPANT_TOAST,
                 type: "success",
                 duration: 3,
             });
             fetchParticipants(deposition.id, sortingRef.current?.sortDirection ? sortingRef.current : {});
         }
-    }, [removedParticipant, fetchParticipants, deposition.id]);
+    }, [removedParticipant, fetchParticipants, deposition.id, addAlert]);
 
     useEffect(() => {
         if (removeParticipantError) {
-            Message({
-                content: CONSTANTS.NETWORK_ERROR,
+            addAlert({
+                message: CONSTANTS.NETWORK_ERROR,
                 type: "error",
                 duration: 3,
             });
         }
-    }, [removeParticipantError]);
+    }, [removeParticipantError, addAlert]);
 
     const columns = [
         ...CONSTANTS.DEPOSITION_DETAILS_INVITED_PARTIES_COLUMNS,
