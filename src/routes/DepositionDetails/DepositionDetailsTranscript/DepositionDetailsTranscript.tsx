@@ -25,8 +25,8 @@ import ColorStatus from "../../../types/ColorStatus";
 import Confirm from "../../../components/Confirm";
 import { TranscriptFile } from "../../../types/TranscriptFile";
 import Message from "../../../components/Message";
-import Alert from "../../../components/Alert";
 import { GlobalStateContext } from "../../../state/GlobalState";
+import useFloatingAlertContext from "../../../hooks/useFloatingAlertContext";
 
 const DepositionDetailsTranscripts = () => {
     const emptyFile = { percent: 0, status: "", size: 0 };
@@ -112,6 +112,25 @@ const DepositionDetailsTranscripts = () => {
     const handleNotifyParties = () => {
         notifyParties(depositionID);
     };
+
+    const addAlert = useFloatingAlertContext();
+    useEffect(() => {
+        if (notified && !notifyPartiesLoading) {
+            addAlert({
+                message: CONSTANTS.DEPOSITION_DETAILS_EMAIL_SENT_MESSAGE,
+                type: "success",
+                duration: 3,
+            });
+        }
+
+        if (notifyPartiesError && !notifyPartiesLoading) {
+            addAlert({
+                message: CONSTANTS.NETWORK_ERROR,
+                type: "error",
+                duration: 3,
+            });
+        }
+    }, [notified, notifyPartiesLoading, notifyPartiesError, addAlert]);
 
     const columns = [
         ...CONSTANTS.DEPOSITION_DETAILS_TRANSCRIPTS_COLUMNS,
@@ -224,19 +243,6 @@ const DepositionDetailsTranscripts = () => {
                     rowSelection={rowSelection}
                 />
             </Space>
-            {!notifyPartiesLoading && notified && (
-                <Alert
-                    message={CONSTANTS.DEPOSITION_DETAILS_EMAIL_SENT_MESSAGE}
-                    float
-                    type="success"
-                    duration={3}
-                    fullWidth={false}
-                />
-            )}
-
-            {!notifyPartiesLoading && notifyPartiesError && (
-                <Alert message={CONSTANTS.NETWORK_ERROR} float type="error" duration={3} fullWidth={false} />
-            )}
         </>
     );
 };
