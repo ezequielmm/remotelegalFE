@@ -39,7 +39,7 @@ export default function ProgressBar({ statusText = "", percent, errors = [], onC
             ))}
             <StyledProgressBarContainer>
                 <StyledProgressBar
-                    data-testId="progress-bar"
+                    data-testid="progress-bar"
                     percent={percent}
                     status={errors.length ? "exception" : "active"}
                     strokeColor={errors.length ? theme.default.errorColor : theme.default.successColor}

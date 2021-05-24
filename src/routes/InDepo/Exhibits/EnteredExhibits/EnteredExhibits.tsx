@@ -58,6 +58,7 @@ export default function EnteredExhibits() {
                                 sortDirections={["descend", "ascend"]}
                                 onClickViewFile={setSelectedFile}
                                 onChange={handleFetchFiles}
+                                rowKey="id"
                             />
                         )}
                         {(enteredExhibits?.length === 0 || enteredExhibitsError) && (
