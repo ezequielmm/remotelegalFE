@@ -12,3 +12,17 @@ export const MESSAGE_CURRENT_USER = {
     dateCreated: "2021-04-01T16:15:32.268Z",
     body: "Hi!",
 };
+
+export const MESSAGE_WITH_UNIQUE_NAME = {
+    conversation: {
+        channelState: {
+            uniqueName: "test1234",
+        },
+    },
+    state: {
+        index: 0,
+        author: '{"name":"Facu Cast","role":"Observer","email":"fepel@makingsense.com"}',
+        dateCreated: "2021-04-01T16:15:32.268Z",
+        body: "Hi!",
+    },
+};

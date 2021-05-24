@@ -42,15 +42,17 @@ const useChat = ({ chatOpen, disableChat, setUnreadedChats, unreadedChats }): an
         let handleMessageAdded;
         if (conversationsClient) {
             handleMessageAdded = (message) => {
-                setMessages([...messages, message]);
-                if (!chatOpen) setUnreadedChats(unreadedChats + 1);
+                if (message?.conversation?.channelState.uniqueName === depositionID) {
+                    setMessages([...messages, message]);
+                    if (!chatOpen) setUnreadedChats(unreadedChats + 1);
+                }
             };
             conversationsClient.on("messageAdded", handleMessageAdded);
         }
         return () => {
             if (handleMessageAdded) conversationsClient.off("messageAdded", handleMessageAdded);
         };
-    }, [messages, conversationsClient, setUnreadedChats, unreadedChats, chatOpen]);
+    }, [messages, conversationsClient, setUnreadedChats, unreadedChats, chatOpen, depositionID]);
 
     useEffect(() => {
         if (!token || disableChat || !isMounted.current) return;

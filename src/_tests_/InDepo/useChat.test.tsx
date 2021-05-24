@@ -2,7 +2,7 @@ import { act, renderHook } from "@testing-library/react-hooks";
 import { Client } from "@twilio/conversations";
 import useChat from "../../hooks/InDepo/useChat";
 import { defineProviderValues } from "../../state/GlobalState";
-import { MESSAGE } from "../mocks/messages";
+import { MESSAGE, MESSAGE_WITH_UNIQUE_NAME } from "../mocks/messages";
 import state from "../mocks/state";
 import getMockDeps from "../utils/getMockDeps";
 
@@ -99,7 +99,7 @@ test("It should receive one message", async () => {
         result = hook.result;
     });
     await act(async () => {
-        handleOnSendMessage(MESSAGE);
+        handleOnSendMessage(MESSAGE_WITH_UNIQUE_NAME);
     });
     expect(result.current.messages).toHaveLength(1);
 });
@@ -149,7 +149,7 @@ test("It should add an unreadedChat when chat is not open", async () => {
         });
     });
     await act(async () => {
-        handleOnSendMessage(MESSAGE);
+        handleOnSendMessage(MESSAGE_WITH_UNIQUE_NAME);
     });
     expect(setUnreadedChats).toBeCalledWith(unreadedChats + 1);
 });
