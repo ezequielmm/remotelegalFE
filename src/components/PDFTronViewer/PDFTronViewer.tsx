@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState, useCallback, useContext } from "react";
+import React, { useRef, useEffect, useState, useCallback, useContext, Dispatch, SetStateAction } from "react";
 import WebViewer, { Annotations, CoreControls, WebViewerInstance } from "@pdftron/webviewer";
 import { initializeVideoViewer, renderControlsToDOM } from "@pdftron/webviewer-video";
 import * as CONSTANTS from "../../constants/PDFTronViewer";
@@ -11,12 +11,14 @@ import { AnnotationAction, AnnotationActionType } from "../../types/Annotation";
 import { serializeToString } from "../../helpers/serializeToString";
 import actions from "../../state/InDepo/InDepoActions";
 import { useExhibitGetAnnotations, useExhibitRealTimeAnnotations } from "../../hooks/exhibits/hooks";
+import useFloatingAlertContext from "../../hooks/useFloatingAlertContext";
 
 export type AnnotationPayload = {
     action: string;
     details: string;
 };
 export interface PdfTronViewerProps {
+    setShowSpinner?: Dispatch<SetStateAction<boolean>>;
     document?: string | Blob | File;
     filename?: string;
     canStamp?: boolean;
@@ -42,7 +44,9 @@ const PDFTronViewer = ({
     setPage,
     disableElements = [],
     readOnly = false,
+    setShowSpinner,
 }: PdfTronViewerProps) => {
+    const addAlert = useFloatingAlertContext();
     const { state, dispatch } = useContext(GlobalStateContext);
     const { timeZone, currentExhibitPage, isRecording } = state.room;
     const [openStampModal, setStampModal] = useState(false);
@@ -285,8 +289,20 @@ const PDFTronViewer = ({
     };
 
     useEffect(() => {
+        const alertError = (error) => {
+            console.error("error while loading PDF file", error?.detail);
+            addAlert({
+                message: "An error occurred while loading the file",
+                type: "error",
+                showIcon: false,
+                duration: 4,
+                dataTestId: "pdftron-error-alert",
+            });
+            setShowSpinner(false);
+        };
         if (PDFTron && document && filename) {
             stampRef.current = null;
+            PDFTron.iframeWindow.addEventListener("loaderror", alertError);
             PDFTron.annotManager.on("annotationChanged", onAnnotationChangeHandler);
             PDFTron.docViewer.on("documentLoaded", onDocumentLoadedHandler);
             PDFTron.docViewer.on("annotationsLoaded", onAnnotationsLoaded);
@@ -299,6 +315,7 @@ const PDFTronViewer = ({
             }
         }
         return () => {
+            PDFTron?.iframeWindow.removeEventListener("loaderror", alertError);
             PDFTron?.annotManager.off("annotationChanged", onAnnotationChangeHandler);
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -38,7 +38,6 @@ interface Props extends PdfTronViewerProps {
 export const ExhibitViewer = ({
     file,
     onClose,
-    onBringAllToMe,
     onClosePending = false,
     showBackButtonOnHeader = true,
     showCloseButtonOnHeader = false,
@@ -72,6 +71,7 @@ export const ExhibitViewer = ({
             />
             {documentUrl && (
                 <PDFTronViewer
+                    setShowSpinner={setShowSpinner}
                     canStamp={
                         permissions.includes(DepositionModel.DepositionPermissionsTypes.stampExhibit) && !isPublic
                     }
