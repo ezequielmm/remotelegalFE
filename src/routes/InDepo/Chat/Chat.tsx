@@ -20,6 +20,7 @@ import {
     StyledSendMessage,
     StyledInput,
     StyledSendButton,
+    StyledInputWrapper,
 } from "./styles";
 import Button from "../../../components/Button";
 import { Message } from "../../../models/general";
@@ -47,6 +48,7 @@ const ChatScreen = ({
     const scrollDiv = useRef(null);
     const inputRef = useRef(null);
     const { state } = useContext(GlobalStateContext);
+    const [textRows, setTextRows] = useState(1);
 
     const { currentRoom, timeZone } = state.room;
 
@@ -80,6 +82,37 @@ const ChatScreen = ({
         if (text && String(text).trim()) {
             sendMessage(text);
             setText("");
+            setTextRows(1);
+        }
+    };
+
+    const handleChange = (event) => {
+        const textareaLineHeight = 21;
+        const minRows = 1;
+        const maxRows = 4;
+        const previousRows = event.target.rows;
+        event.target.rows = minRows;
+        const currentRows = event.target.scrollHeight / textareaLineHeight;
+
+        if (currentRows === previousRows) {
+            event.target.rows = currentRows;
+        }
+
+        if (currentRows >= maxRows) {
+            event.target.rows = maxRows;
+            event.target.scrollTop = event.target.scrollHeight;
+        }
+        setTextRows(currentRows < maxRows ? currentRows : maxRows);
+        setText(event.target.value);
+    };
+    useEffect(() => {
+        scrollToBottom();
+    }, [textRows]);
+
+    const handleInputKeyPress = (e) => {
+        if (e.key?.toLocaleLowerCase() === "enter" || e.keyCode === 13) {
+            e.preventDefault();
+            handleSendMessage();
         }
     };
 
@@ -138,18 +171,19 @@ const ChatScreen = ({
             </StyledChatBody>
             <Divider hasMargin={false} />
             <StyledSendMessage>
-                <StyledInput
-                    data-testid={CONSTANTS.CHAT_INPUT_TEST_ID}
-                    required
-                    placeholder="Type message to everyone…"
-                    value={text}
-                    disabled={loadingClient || errorLoadingClient}
-                    onChange={(event) => setText(event.target.value)}
-                    onKeyPress={(e) =>
-                        (e.key?.toLocaleLowerCase() === "enter" || e.keyCode === 13) && handleSendMessage()
-                    }
-                    ref={inputRef}
-                />
+                <StyledInputWrapper>
+                    <StyledInput
+                        data-testid={CONSTANTS.CHAT_INPUT_TEST_ID}
+                        required
+                        placeholder="Type message to everyone…"
+                        value={text}
+                        disabled={loadingClient || errorLoadingClient}
+                        onChange={(event) => handleChange(event)}
+                        onKeyDown={(event) => handleInputKeyPress(event)}
+                        ref={inputRef}
+                        rows={textRows}
+                    />
+                </StyledInputWrapper>
                 <StyledSendButton
                     data-testid={CONSTANTS.CHAT_INPUT_BUTTON_TEST_ID}
                     onClick={handleSendMessage}
