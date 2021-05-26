@@ -42,17 +42,17 @@ export const setTranscriptionMessages = (
     return transcriptionsWithPauses;
 };
 
-export const addTranscriptionMessages = (newTranscription, transcriptions = []) => {
+export const addTranscriptionMessages = (newTranscription, transcriptions = [], isRecording: boolean) => {
     if (!transcriptions) {
         return [];
     }
     const transcriptionsCopy = [...transcriptions];
 
-    if (newTranscription.eventType === EventModel.EventType.offTheRecord) {
+    if (newTranscription.eventType === EventModel.EventType.offTheRecord && !isRecording) {
         return [...transcriptionsCopy, { from: newTranscription.creationDate, id: newTranscription.id }];
     }
 
-    if (newTranscription.eventType === EventModel.EventType.onTheRecord) {
+    if (newTranscription.eventType === EventModel.EventType.onTheRecord && isRecording) {
         return transcriptionsCopy.length > 0
             ? [
                   ...transcriptionsCopy.slice(0, transcriptionsCopy.length - 1),
@@ -60,7 +60,7 @@ export const addTranscriptionMessages = (newTranscription, transcriptions = []) 
               ]
             : [];
     }
-    if (newTranscription.text === "") return transcriptionsCopy;
+    if (newTranscription.text === "" || !isRecording) return transcriptionsCopy;
 
     const isTranscriptionInArray = transcriptionsCopy.findIndex((item) => item.id === newTranscription.id);
 

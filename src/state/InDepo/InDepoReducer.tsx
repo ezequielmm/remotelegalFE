@@ -94,7 +94,7 @@ const RoomReducer: Reducer<IRoom, IAction> = (state: IRoom, action: IAction): IR
         case ACTION_TYPE.IN_DEPO_ADD_TRANSCRIPTION: {
             return {
                 ...state,
-                transcriptions: addTranscriptionMessages(action.payload, state.transcriptions),
+                transcriptions: addTranscriptionMessages(action.payload, state.transcriptions, state.isRecording),
             };
         }
         case ACTION_TYPE.IN_DEPO_SET_PERMISSIONS:
