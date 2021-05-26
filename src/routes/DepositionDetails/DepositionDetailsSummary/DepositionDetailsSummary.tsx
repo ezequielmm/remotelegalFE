@@ -128,6 +128,16 @@ export default function DepositionDetailsSummary({ setActiveKey, deposition }: I
         fetchParticipants(depositionID);
     }, [fetchParticipants, depositionID]);
 
+    const manageTranscriptionClicked = (transcription) => {
+        dispatch(
+            actions.setChangeTime(
+                // This to ensure the playtime is just a tiny bit after so that the highlight works
+                transcription.transcriptionVideoTime + 0.02
+            )
+        );
+        dispatch(actions.setPlaying(true));
+    };
+
     return (
         <>
             <StyledSummaryLayout>
@@ -221,18 +231,7 @@ export default function DepositionDetailsSummary({ setActiveKey, deposition }: I
                                 <ThemeProvider theme={inDepoTheme}>
                                     <RealTime
                                         transcriptionsWithoutEvents={transcriptionsWithoutEvents}
-                                        manageTranscriptionClicked={
-                                            duration > 0 &&
-                                            ((transcription) => {
-                                                dispatch(
-                                                    actions.setChangeTime(
-                                                        // This to ensure the playtime is just a tiny bit after so that the highlight works
-                                                        transcription.transcriptionVideoTime + 0.02
-                                                    )
-                                                );
-                                                dispatch(actions.setPlaying(true));
-                                            })
-                                        }
+                                        manageTranscriptionClicked={duration > 0 && manageTranscriptionClicked}
                                         disableAutoscroll
                                         transcriptions={transcriptions}
                                         visible

@@ -587,7 +587,6 @@ test("Shows correct info when modal pops up after clicking the edit icon on the 
     await waitForDomChange();
     const editButton = getAllByTestId(CONSTANTS.DEPOSITION_CARD_DETAILS_EDIT_BUTTON_DATA_TEST_ID);
     fireEvent.click(editButton[0]);
-    await waitForDomChange();
     expect(getAllByText(fullDeposition.status)).toHaveLength(3);
     expect(getByTestId("true YES")).toBeChecked();
     expect(getByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_DATA_TEST_ID_JOB)).toHaveValue(
