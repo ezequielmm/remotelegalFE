@@ -34,7 +34,6 @@ const disconnectFromDepo = (
         exhibitTab: "myExhibits",
         currentExhibitTabName: "",
         lastAnnotationId: "",
-        currentUser: null,
         stampLabel: "",
         exhibitDocument: null,
         participants: [],

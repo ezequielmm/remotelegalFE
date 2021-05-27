@@ -8,7 +8,7 @@ import { ACTION_TYPE } from "./InDepoActions";
 import { ExhibitFile } from "../../types/ExhibitFile";
 import { EXHIBIT_TAB } from "../../constants/exhibits";
 import { addTranscriptionMessages, setTranscriptionMessages } from "../../helpers/formatTranscriptionsMessages";
-import { IUser, UserInfo } from "../../models/user";
+import { UserInfo } from "../../models/user";
 
 export interface IRoom {
     info?: object;
@@ -35,7 +35,6 @@ export interface IRoom {
     currentExhibitTabName?: string;
     rawAnnotations?: string;
     lastAnnotationId?: string;
-    currentUser?: IUser;
     stampLabel?: string;
     exhibitDocument?: CoreControls.Document;
     dominantSpeaker?: Participant | null;
@@ -70,7 +69,6 @@ export const RoomReducerInitialState: IRoom = {
     exhibitTab: "myExhibits",
     currentExhibitTabName: "",
     lastAnnotationId: "",
-    currentUser: null,
     stampLabel: "",
     exhibitDocument: null,
     participants: [],

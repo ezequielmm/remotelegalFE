@@ -151,6 +151,7 @@ test("Should call getSignedUrl and not getPrivateSignedUrl when the current exhi
                     currentExhibitTabName: "liveExhibits",
                     currentExhibit: { ...currentExhibit, preSignedUrl: "", close: true, isPublic: true },
                 },
+                user: { currentUser: null },
             },
         }
     );
@@ -180,6 +181,7 @@ test("Should call getPrivateSignedUrl and not getSignedUrl when the current exhi
                     currentExhibitTabName: "liveExhibits",
                     currentExhibit: { ...currentExhibit, preSignedUrl: "", close: true, isPublic: false },
                 },
+                user: { currentUser: null },
             },
         }
     );
@@ -209,6 +211,7 @@ test("should display the close shared exhibit button when has the allowed permis
                     currentExhibit: { ...currentExhibit, preSignedUrl: "", close: true, isPublic: false },
                     stampLabel: "",
                 },
+                user: { currentUser: null },
             },
         }
     );
@@ -239,6 +242,7 @@ test("should not display the close shared exhibit button when has not the allowe
                     currentExhibit: { ...currentExhibit, preSignedUrl: "", close: false, isPublic: false },
                     stampLabel: "",
                 },
+                user: { currentUser: null },
             },
         }
     );
@@ -269,6 +273,7 @@ test("should display the close shared exhibit modal when after click the button"
                     currentExhibit: { ...currentExhibit, preSignedUrl: "", close: true, isPublic: false },
                     stampLabel: "",
                 },
+                user: { currentUser: null },
             },
         }
     );
@@ -301,6 +306,7 @@ test("should display the close shared exhibit document modal with not stamped ex
                     currentExhibit: { ...currentExhibit, preSignedUrl: "", close: true, isPublic: false },
                     stampLabel: "",
                 },
+                user: { currentUser: null },
             },
         }
     );
@@ -339,6 +345,7 @@ test("should display the close shared exhibit document modal with stamped exhibi
                     currentExhibit: { ...currentExhibit, preSignedUrl: "", close: true, isPublic: false },
                     stampLabel: "Stamp Label",
                 },
+                user: { currentUser: null },
             },
         }
     );
@@ -384,9 +391,9 @@ test("should display the bring all to me button when the user is the owner of th
                             id: "1",
                         },
                     },
-                    currentUser: { ...userMock, id: "1" },
                     stampLabel: "Stamp Label",
                 },
+                user: { currentUser: { ...userMock, id: "1" } },
             },
         }
     );
@@ -423,9 +430,9 @@ test("should not display the bring all to me button when the user is the owner o
                             id: "1",
                         },
                     },
-                    currentUser: { ...userMock, id: "2" },
                     stampLabel: "Stamp Label",
                 },
+                user: { currentUser: { ...userMock, id: "2" } },
             },
         }
     );
@@ -453,9 +460,9 @@ test("should not display the bring all to me button when has not any shared exhi
                     isRecording: true,
                     currentExhibitTabName: "liveExhibits",
                     currentExhibit: null,
-                    currentUser: { ...userMock, id: "2" },
                     stampLabel: "Stamp Label",
                 },
+                user: { currentUser: { ...userMock, id: "2" } },
             },
         }
     );

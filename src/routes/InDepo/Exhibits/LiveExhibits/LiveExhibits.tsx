@@ -14,7 +14,8 @@ import { GlobalStateContext } from "../../../../state/GlobalState";
 
 export default function LiveExhibits() {
     const { state } = useContext(GlobalStateContext);
-    const { currentExhibit, currentUser } = state.room;
+    const { currentExhibit } = state.room;
+    const { currentUser } = state.user;
     const { closeSharedExhibit, pendingCloseSharedExhibit } = useCloseSharedExhibit();
     const { sendAnnotation } = useExhibitSendAnnotation();
 
