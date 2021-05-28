@@ -110,6 +110,7 @@ const depositionsColumns = [
         sorter: (a, b) => a.status - b.status,
         ellipsis: true,
         render: (record) => <Text>{record}</Text>,
+        fixed: "left",
     },
     {
         title: "Law Firm",
@@ -190,6 +191,7 @@ const depositionsColumns = [
             </Button>
         ),
         width: 90,
+        fixed: "right",
     },
 ];
 
@@ -285,7 +287,7 @@ export default {
     ],
 } as Meta;
 
-const Template: Story = (args) => <Table pagination={pagination} {...args} />;
+const Template: Story = (args) => <Table hscroll={1500} pagination={pagination} {...args} />;
 export const CasesTable = Template.bind({});
 CasesTable.args = {
     dataSource: cases,

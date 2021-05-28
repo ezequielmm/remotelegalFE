@@ -10,10 +10,14 @@ import useWindowSize from "../../hooks/useWindowSize";
 export interface ITableProps extends Omit<TableProps<DefaultRecordType>, "scroll"> {
     cursorPointer?: boolean;
     scroll?: boolean;
+    hscroll?: number;
+    parentBg?: string;
 }
 
-const StyledTable = styled(Table)<TableProps<DefaultRecordType> & Pick<ITableProps, "cursorPointer">>`
-    ${({ theme, scroll, cursorPointer }) => {
+const StyledTable = styled(Table)<
+    TableProps<DefaultRecordType> & Pick<ITableProps, "cursorPointer" | "parentBg" | "hscroll">
+>`
+    ${({ theme, scroll, cursorPointer, parentBg, hscroll }) => {
         const { fontSizes, spaces, borderRadiusBase } = theme.default;
         const { neutrals, disabled, primary, inDepoBlue, inDepoNeutrals } = theme.colors;
 
@@ -114,12 +118,29 @@ const StyledTable = styled(Table)<TableProps<DefaultRecordType> & Pick<ITablePro
                 }
 
                 .ant-table-body {
-                    overflow-y: auto !important;
-
+                    overflow-y: ${hscroll ? "scroll" : "auto"} !important;
                     ${
-                        scroll
+                        hscroll
                             ? `
-                                padding-right: ${getREM(theme.default.spaces[6])}; 
+                            &:before{
+                                content: "";
+                                width: ${getREM(theme.default.spaces[4])};
+                                position: absolute;
+                                background-color: ${
+                                    parentBg || (theme.mode === ThemeMode.inDepo ? inDepoNeutrals[6] : neutrals[5])
+                                };
+                                top: ${getPX(theme.default.spaces[12] + theme.default.spaces[8])};
+                                bottom: ${getPX(theme.default.spaces[3])};
+                                right: ${getPX(theme.default.spaces[3])};
+                                z-index: 6;
+                            }`
+                            : ``
+                    }
+                    
+                    ${
+                        scroll || hscroll
+                            ? `
+                                padding-right: ${getREM(theme.default.spaces[4])}; 
                                 scrollbar-color: ${`${theme.colors.disabled[7]} ${theme.default.disabledBg}`};
                                 scrollbar-width: thin;
                                 &::-webkit-scrollbar {
@@ -132,6 +153,11 @@ const StyledTable = styled(Table)<TableProps<DefaultRecordType> & Pick<ITablePro
                                 &::-webkit-scrollbar-thumb {
                                     border-radius: ${getPX(theme.default.spaces[5])};
                                     background: ${theme.colors.disabled[7]};
+                                }
+                                ::-webkit-scrollbar-corner{
+                                    background-color: ${
+                                        parentBg || (theme.mode === ThemeMode.inDepo ? inDepoNeutrals[6] : neutrals[5])
+                                    };
                                 }
                             `
                             : ""
@@ -208,6 +234,11 @@ const StyledTable = styled(Table)<TableProps<DefaultRecordType> & Pick<ITablePro
                                         }
                                     }
                                 }
+                                &.ant-table-cell-fix-left, &.ant-table-cell-fix-right{
+                                    background-color: ${
+                                        parentBg || (theme.mode === ThemeMode.inDepo ? inDepoNeutrals[6] : neutrals[5])
+                                    };
+                                }
                             }
                         }
                     }
@@ -232,6 +263,7 @@ const StyledTable = styled(Table)<TableProps<DefaultRecordType> & Pick<ITablePro
                             &.ant-table-row-selected > td {
                                 background-color: transparent;
                             }
+                            
 
                             > td.ant-table-cell {
                                 box-shadow: ${
@@ -246,7 +278,7 @@ const StyledTable = styled(Table)<TableProps<DefaultRecordType> & Pick<ITablePro
                                 height: ${getREM(spaces[10] * 2)};
                                 color: ${theme.mode === ThemeMode.inDepo ? neutrals[6] : ""};
                                 border-bottom-color: ${theme.mode === ThemeMode.inDepo ? disabled[9] : ""};
-                                &:first-child {
+                                &:first-child:not(.ant-table-cell-fix-left) {
                                     border-radius: ${
                                         theme.mode === ThemeMode.inDepo
                                             ? `0`
@@ -254,7 +286,7 @@ const StyledTable = styled(Table)<TableProps<DefaultRecordType> & Pick<ITablePro
                                     };
                                     padding: ${getREM(spaces[4])} ${getREM(spaces[6])};
                                 }
-                                &:last-child {
+                                &:last-child:not(.ant-table-cell-fix-right) {
                                     border-radius: ${
                                         theme.mode === ThemeMode.inDepo
                                             ? `0`
@@ -312,13 +344,44 @@ const StyledTable = styled(Table)<TableProps<DefaultRecordType> & Pick<ITablePro
                         }
                     }
                 }
+                td.ant-table-cell-fix-left, td.ant-table-cell-fix-right{
+                    background-color: ${
+                        parentBg || (theme.mode === ThemeMode.inDepo ? inDepoNeutrals[6] : neutrals[5])
+                    };
+                    z-index: 3;
+                    &:before{
+                        content: "";
+                        width: 100%;
+                        height: 100%;
+                        z-index: -2;
+                        top: 0;
+                        left: 0;
+                        display: block;
+                        position: absolute;
+                        background: ${
+                            theme.mode === ThemeMode.inDepo ? parentBg || inDepoNeutrals[6] : theme.default.whiteColor
+                        };
+                    }
+                }
+                .ant-table-cell-fix-left{
+                    border-radius: 0;
+                    &:before{
+                        border-radius: ${getREM(borderRadiusBase)} 0 0 ${getREM(borderRadiusBase)};
+                    }
+                }
+                .ant-table-cell-fix-right{
+                    border-radius: 0;
+                    &:before{
+                        border-radius: 0 ${getREM(borderRadiusBase)} ${getREM(borderRadiusBase)} 0;
+                    }
+                }
             }
         `;
         return styles;
     }}
 `;
 
-const table = forwardRef(({ scroll, ...props }: ITableProps) => {
+const table = forwardRef(({ scroll, hscroll, ...props }: ITableProps) => {
     const [windowHeight] = useWindowSize();
     const [tableScrollHeight, setTableScrollHeight] = React.useState<number>(0);
     const tableRef = React.useRef(null);
@@ -344,7 +407,11 @@ const table = forwardRef(({ scroll, ...props }: ITableProps) => {
 
     return (
         <div ref={tableRef} style={{ flex: 1, overflow: "hidden", width: "100%" }}>
-            <StyledTable {...props} scroll={scroll && props.dataSource ? { y: tableScrollHeight } : null} />
+            <StyledTable
+                {...props}
+                hscroll={hscroll}
+                scroll={{ x: hscroll || null, y: scroll && props.dataSource ? tableScrollHeight : null }}
+            />
         </div>
     );
 });
