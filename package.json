@@ -43,6 +43,7 @@
         "react-scripts": "3.4.4",
         "react-test-renderer": "^16.14.0",
         "screenfull": "^5.1.0",
+        "source-map-explorer": "^2.5.2",
         "styled-components": "^5.2.1",
         "twilio-video": "^2.14.0",
         "typescript": "~3.7.5",
@@ -50,6 +51,7 @@
         "yup": "^0.29.3"
     },
     "scripts": {
+        "analyze": "source-map-explorer 'build/static/js/*.js'",
         "start": "node ./src/helpers/copyPDFTronAssets.js && craco start",
         "build": "node ./src/helpers/copyPDFTronAssets.js && craco build",
         "test": "craco test",
