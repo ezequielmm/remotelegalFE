@@ -1,6 +1,11 @@
-import moment from "moment-timezone";
+import dayjs from "dayjs";
+import timezone from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
 import { ConnectOptions } from "twilio-video";
 import { mapTimeZone } from "../models/general";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 export const TWILIO_VIDEO_CONFIG: ConnectOptions = {
     video: { height: 720, frameRate: 24, width: 1280 },
@@ -41,8 +46,8 @@ export const COULDNT_SEND_MESSAGE = "Couldn't send the message. Please try again
 export const TRANSCRIPTIONS_PAUSED =
     "Transcription paused - Once the deposition is on the record, transcript will resume.";
 export const getPauseText = (from, to, timeZone) =>
-    `Transcript paused from ${moment(from).tz(mapTimeZone[timeZone])?.format("hh:mm:ss A")} to ${
-        to && moment(to).tz(mapTimeZone[timeZone])?.format("hh:mm:ss A")
+    `Transcript paused from ${dayjs(from).tz(mapTimeZone[timeZone])?.format("hh:mm:ss A")} to ${
+        to && dayjs(to).tz(mapTimeZone[timeZone])?.format("hh:mm:ss A")
     }`;
 
 export const CLOCK_SECOND = 1000;

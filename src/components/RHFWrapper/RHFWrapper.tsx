@@ -22,7 +22,7 @@ export interface RHFWrapperProps {
           ) => React.ReactElement<any, string | any | (new (props: any) => React.Component<any, any, any>)> | null)
         | (new (props: any) => React.Component<any, any, any>)
     >;
-    defaultValue?: object | string;
+    defaultValue?: any;
     control: Control<any>;
     errorMessage?: string;
     name: string;

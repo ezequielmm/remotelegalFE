@@ -1,10 +1,8 @@
-import moment from "moment";
+import dayjs, { Dayjs } from "dayjs";
 
-const isCanceledDateInvalid = (
-    date: string | number | moment.Moment | Date | (string | number)[] | moment.MomentInputObject
-) => {
-    const currentDate = moment(new Date());
-    const depoDate = moment(date);
+const isCanceledDateInvalid = (date: string | number | Dayjs | Date) => {
+    const currentDate = dayjs(new Date());
+    const depoDate = dayjs(date);
     const minutes = depoDate.diff(currentDate, "minutes");
     return minutes < 1;
 };

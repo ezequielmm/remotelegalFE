@@ -1,14 +1,13 @@
 import styled from "styled-components";
-import { DatePicker as AntDatePicker } from "antd";
-import { RangePickerProps } from "antd/lib/date-picker";
-import { IDatePickerProps } from "./DatePicker";
+import AntDatePicker from "../GenerateDatePicker";
+import { DatePickerProps, RangePickerProps } from "../GenerateDatePicker/interfaces/interfaces";
 import PopupContainer from "../PopupContainer";
 import { IPopupContainer } from "../PopupContainer/PopupContainer";
 import { getREM, hexToRGBA, getWeightNumber } from "../../constants/styles/utils";
 
-export const StyledDatePicker = styled(AntDatePicker).attrs((props: IDatePickerProps) => ({
+export const StyledDatePicker = styled(AntDatePicker).attrs((props: DatePickerProps) => ({
     invalid: props.invalid ? "true" : undefined,
-}))<IDatePickerProps>`
+}))<DatePickerProps>`
     ${({ size, invalid, theme }) => {
         const { inputHeightBase, disabledColor, errorColor } = theme.default;
 
@@ -48,7 +47,45 @@ export const StyledDatePicker = styled(AntDatePicker).attrs((props: IDatePickerP
     }}
 `;
 
-export const StyledRangePicker = styled(StyledDatePicker)<RangePickerProps>``;
+export const StyledRangePicker = styled(StyledDatePicker.RangePicker)<RangePickerProps>`
+    ${({ size, invalid, theme }) => {
+        const { inputHeightBase, disabledColor, errorColor } = theme.default;
+
+        // TODO add switch of sizes
+        const maxHeight = size === undefined || size === "middle" ? getREM(inputHeightBase) : "unset";
+
+        const sizeStyles = `
+          max-height: ${maxHeight};
+      `;
+
+        const invalidStyles = `
+          border-color: ${errorColor};
+          box-shadow: 0 0 0 2px ${hexToRGBA(errorColor, 0.2)};
+      `;
+
+        const styles = `
+      ${sizeStyles};
+      ${invalid ? invalidStyles : ""};
+      line-height: 1.3;
+      width: 100%;
+
+      .ant-picker-input {
+          & > input {
+              border-radius: 0;
+          }
+          & > input::placeholder {
+              color: ${disabledColor};
+              line-height: 1.3;
+          }
+      }
+      .ant-picker-clear {
+        box-shadow: -5px 0 10px 10px ${theme.default.whiteColor};
+      }
+      `;
+
+        return styles;
+    }}
+`;
 
 export const StyledPopupContainer = styled(PopupContainer)<IPopupContainer>`
     width: 100%;

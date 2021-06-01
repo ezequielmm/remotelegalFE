@@ -1,5 +1,6 @@
 /* eslint-disable no-plusplus */
-import moment from "moment-timezone";
+import dayjs from "dayjs";
+
 import { EventModel, TranscriptionModel } from "../models";
 
 export const setTranscriptionMessages = (
@@ -33,7 +34,7 @@ export const setTranscriptionMessages = (
         }));
     let index = 0;
     while (pauses.length > 0 && index < transcriptionsWithPauses.length) {
-        if (moment(pauses[0].to).isBefore(moment(transcriptionsWithPauses[index].transcriptDateTime), "second")) {
+        if (dayjs(pauses[0].to).isBefore(dayjs(transcriptionsWithPauses[index].transcriptDateTime), "second")) {
             transcriptionsWithPauses.splice(index, 0, pauses.shift());
         }
         index++;

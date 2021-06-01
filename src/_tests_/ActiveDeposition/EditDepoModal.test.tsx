@@ -1,18 +1,21 @@
 import { waitForDomChange, fireEvent, waitForElement, act } from "@testing-library/react";
 import React from "react";
 import userEvent from "@testing-library/user-event";
-import moment from "moment-timezone";
+import dayjs from "dayjs";
+import timezone from "dayjs/plugin/timezone";
+import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
 import * as CONSTANTS from "../../constants/activeDepositionDetails";
 import * as TEST_CONSTANTS from "../constants/activeDepositionDetails";
 import { getDepositionWithOverrideValues } from "../constants/depositions";
 import getMockDeps from "../utils/getMockDeps";
 import renderWithGlobalContext from "../utils/renderWithGlobalContext";
 import ActiveDepositionDetails from "../../routes/ActiveDepoDetails";
-import changeTimeZone, { changeDate } from "../../routes/ActiveDepoDetails/helpers/changeTimeZone";
 import { TimeZones, mapTimeZone } from "../../models/general";
 import getModalTextContent from "../../routes/ActiveDepoDetails/helpers/getModalTextContent";
 import { Status } from "../../components/StatusPill/StatusPill";
 
+dayjs.extend(timezone);
+dayjs.extend(isSameOrAfter);
 const customDeps = getMockDeps();
 
 describe("Tests Edit Deposition Modal", () => {
@@ -72,7 +75,7 @@ describe("Tests Edit Deposition Modal", () => {
             {
                 ...TEST_CONSTANTS.EXPECTED_EDIT_DEPOSITION_BODY,
                 endDate: null,
-                startDate: moment(startDate).tz(mapTimeZone[TimeZones.ET]),
+                startDate: dayjs(startDate).tz(mapTimeZone[TimeZones.ET]),
             },
             file,
             true
@@ -129,8 +132,8 @@ describe("Tests Edit Deposition Modal", () => {
         await waitForElement(() => getAllByText(CONSTANTS.NETWORK_ERROR));
     });
     test("Show an invalid end time label when the end time is before start time", async () => {
-        const { startDate } = TEST_CONSTANTS.EXPECTED_DEPOSITION_BODY;
-        const endTime = moment(startDate).tz(mapTimeZone[TimeZones.ET]).subtract(15, "m").format(CONSTANTS.TIME_FORMAT);
+        const startDate = new Date(new Date().getTime() + 30 * 60000);
+        const endTime = dayjs(startDate).tz(mapTimeZone[TimeZones.ET]).subtract(15, "m").format(CONSTANTS.TIME_FORMAT);
         const fullDeposition = getDepositionWithOverrideValues({ startDate });
 
         customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
@@ -161,28 +164,11 @@ describe("Tests Edit Deposition Modal", () => {
         });
         expect(queryByTestId(CONSTANTS.DEPOSITIONS_DETAILS_EDIT_MODAL_INVALID_END_TIME_TEST_ID)).toBeInTheDocument();
     });
-    test("Validate changeTimeZone functionality", () => {
-        const mapTimeZones = [
-            { initial: "ET", hourDiff: "-04:00" },
-            { initial: "AT", hourDiff: "-04:00" },
-            { initial: "CT", hourDiff: "-05:00" },
-            { initial: "MT", hourDiff: "-06:00" },
-            { initial: "PT", hourDiff: "-07:00" },
-            { initial: "AKT", hourDiff: "-08:00" },
-            { initial: "HT", hourDiff: "-10:00" },
-            { initial: "AZ", hourDiff: "-07:00" },
-        ];
-        const newDate = "2021-04-20T18:52:00.000-04:00";
-        mapTimeZones.map(({ hourDiff, initial }) => {
-            const dateTime = changeTimeZone(newDate, TimeZones.ET, initial);
-            const expectedDateTime = `2021-04-20T18:52:00.000${hourDiff}`;
-            return expect(dateTime).toBe(expectedDateTime);
-        });
-    });
+
     test("Show an invalid start time label when the start is before start time", async () => {
         const { startDate } = TEST_CONSTANTS.EXPECTED_DEPOSITION_BODY;
-        const startTime = moment(startDate).tz(mapTimeZone[TimeZones.ET]).add(6, "m").format(CONSTANTS.TIME_FORMAT);
-        const endTime = moment(startDate).tz(mapTimeZone[TimeZones.ET]).format(CONSTANTS.TIME_FORMAT);
+        const startTime = dayjs(startDate).tz(mapTimeZone[TimeZones.ET]).add(6, "m").format(CONSTANTS.TIME_FORMAT);
+        const endTime = dayjs(startDate).tz(mapTimeZone[TimeZones.ET]).format(CONSTANTS.TIME_FORMAT);
         const fullDeposition = getDepositionWithOverrideValues({ startDate });
         customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
             return fullDeposition;
@@ -224,13 +210,5 @@ describe("Tests Edit Deposition Modal", () => {
         expect(
             queryByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_START_TIME_TEST_ID)
         ).toBeInTheDocument();
-    });
-    test("Validate changeDate functionality", () => {
-        const startDate = moment("2021-04-21T06:52:00.000-04:00").tz(mapTimeZone[TimeZones.ET]);
-        const endDate = moment("2021-04-20T09:00:00.000-04:00").tz(mapTimeZone[TimeZones.ET]);
-        const expectedNewDate = "2021-04-21T09:00:00.000-04:00";
-
-        const newEndDate = changeDate(startDate, TimeZones.ET, endDate);
-        expect(newEndDate.format("YYYY-MM-DDTHH:mm:ss.SSSZ")).toBe(expectedNewDate);
     });
 });

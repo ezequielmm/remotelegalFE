@@ -1,10 +1,14 @@
 import React, { MutableRefObject, useEffect, useRef } from "react";
-import moment from "moment-timezone";
+import dayjs from "dayjs";
+import timezone from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
 import styled from "styled-components";
 import { TimeZones, mapTimeZone } from "../../../models/general";
 import { theme } from "../../../constants/styles/theme";
 import { getREM, roundRect } from "../../../constants/styles/utils";
 
+dayjs.extend(utc);
+dayjs.extend(timezone);
 interface IStampCanvasProps {
     title?: string;
     timeZone: TimeZones;
@@ -51,7 +55,7 @@ const StampCanvas = ({ title = "", timeZone, getRef }: IStampCanvasProps) => {
     useEffect(() => {
         const canvas = canvasRef?.current;
         const context = canvas?.getContext("2d");
-        const timeStamp = moment().tz(mapTimeZone[timeZone]).format("MMM DD YYYY");
+        const timeStamp = dayjs().tz(mapTimeZone[timeZone]).format("MMM DD YYYY");
         if (context) draw(context, title, timeStamp);
     }, [title, timeZone]);
     return (

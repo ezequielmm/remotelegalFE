@@ -1,12 +1,19 @@
 import React from "react";
 // also exported from '@storybook/react' if you can deal with breaking changes in 6.1
 import { Story, Meta } from "@storybook/react/types-6-0";
-
-import { RangePickerProps } from "antd/lib/date-picker";
-import moment from "moment-timezone";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+import dayjs from "dayjs";
+import localeData from "dayjs/plugin/localeData";
+import weekday from "dayjs/plugin/weekday";
 import DatePicker from "../components/DatePicker";
-import { IDatePickerProps } from "../components/DatePicker/DatePicker";
+import { DatePickerProps, RangePickerProps } from "../components/GenerateDatePicker/interfaces/interfaces";
 import { ContainerSmall } from "./Decorators";
+
+dayjs.extend(weekday);
+dayjs.extend(localeData);
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 export default {
     title: "DatePicker",
@@ -25,7 +32,7 @@ export default {
     ],
 } as Meta;
 
-const Template: Story = (args: IDatePickerProps) => {
+const Template: Story = (args: DatePickerProps) => {
     return <DatePicker {...args} />;
 };
 
@@ -45,11 +52,11 @@ export const PRRangePicker: Story = (args: RangePickerProps) => {
 PRRangePicker.args = {
     placeholder: ["MM/YY/DD", "MM/YY/DD"],
     disabledDate: (date) => {
-        return date.isBefore(moment().subtract(1, "year"));
+        return date.isBefore(dayjs().subtract(1, "year"));
     },
     ranges: {
-        Today: [moment(), moment()],
-        "This Week": [moment().startOf("week"), moment().endOf("week")],
-        "This Month": [moment().startOf("month"), moment().endOf("month")],
+        Today: [dayjs(), dayjs()],
+        "This Week": [dayjs().startOf("week"), dayjs().endOf("week")],
+        "This Month": [dayjs().startOf("month"), dayjs().endOf("month")],
     },
 };

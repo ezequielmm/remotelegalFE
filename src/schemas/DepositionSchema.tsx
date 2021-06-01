@@ -1,6 +1,9 @@
-import moment from "moment-timezone";
+import dayjs from "dayjs";
+import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
 import * as yup from "yup";
 import * as CONSTANTS from "../constants/createDeposition";
+
+dayjs.extend(isSameOrAfter);
 
 const getDepositionSchema = (isAdmin) =>
     yup.object().shape({
@@ -28,9 +31,9 @@ const getDepositionSchema = (isAdmin) =>
                     .test("start_time_test", CONSTANTS.INVALID_START_TIME_ERROR, function (value) {
                         const { date } = this.parent;
                         if (!date || !value) return true;
-                        const today = moment();
-                        const isSame = today.isSame(moment(date), "day");
-                        if (isSame && today.add(1, "h").isSameOrAfter(moment(value))) return false;
+                        const today = dayjs();
+                        const isSame = today.isSame(dayjs(date), "day");
+                        if (isSame && today.add(1, "h").isSameOrAfter(dayjs(value))) return false;
                         return true;
                     }),
                 endTime: yup
@@ -40,7 +43,7 @@ const getDepositionSchema = (isAdmin) =>
                     .test("end_time_test", CONSTANTS.INVALID_END_TIME_ERROR, function (value) {
                         const { startTime } = this.parent;
                         if (!startTime || !value) return true;
-                        if (moment(startTime).add(59, "m").isSameOrAfter(moment(value))) return false;
+                        if (dayjs(startTime).add(59, "m").isSameOrAfter(dayjs(value))) return false;
                         return true;
                     }),
                 isVideoRecordingNeeded: yup.string().nullable().required(CONSTANTS.OPTION_ERROR),

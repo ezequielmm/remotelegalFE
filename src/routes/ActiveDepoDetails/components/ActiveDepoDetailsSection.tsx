@@ -1,6 +1,8 @@
 import React, { SetStateAction, useEffect, useRef, useState } from "react";
 import { Row } from "antd";
-import moment from "moment-timezone";
+import dayjs from "dayjs";
+import timezone from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
 import Space from "../../../components/Space";
 import Title from "../../../components/Typography/Title";
 import { ReactComponent as SuccessIcon } from "../../../assets/icons/Success.svg";
@@ -33,6 +35,9 @@ import Spinner from "../../../components/Spinner";
 import EditDepoModal from "./EditDepoModal";
 import EditRequesterNotesModal from "./RequesterModal";
 import { mapTimeZone } from "../../../models/general";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 const DepositionDetailsSection = ({
     deposition,
@@ -99,9 +104,9 @@ const DepositionDetailsSection = ({
     }, [captionUrl]);
 
     const getFormattedDay = () => {
-        const month = moment(creationDate).format("MMMM");
-        const day = moment(creationDate).format("Do");
-        const year = moment(creationDate).format("YYYY");
+        const month = dayjs(creationDate).format("MMMM");
+        const day = dayjs(creationDate).format("Do");
+        const year = dayjs(creationDate).format("YYYY");
         return `${month} ${day}, ${year}`;
     };
 
@@ -111,8 +116,8 @@ const DepositionDetailsSection = ({
 
     const getTimeText = () => {
         const startTimeZone = endDate ? "" : timeZone;
-        return `${moment(startDate).tz(mapTimeZone[timeZone])?.format("hh:mm A")} ${startTimeZone} ${
-            endDate ? ` to ${moment(endDate).tz(mapTimeZone[timeZone])?.format("hh:mm A")} ${timeZone}` : ""
+        return `${dayjs(startDate).tz(mapTimeZone[timeZone])?.format("hh:mm A")} ${startTimeZone} ${
+            endDate ? ` to ${dayjs(endDate).tz(mapTimeZone[timeZone])?.format("hh:mm A")} ${timeZone}` : ""
         }`;
     };
 
@@ -162,7 +167,7 @@ const DepositionDetailsSection = ({
                             colProps={{ xl: 9 }}
                             icon={CalendarIcon}
                             title={CONSTANTS.DEPOSITION_DETAILS_SUMMARY_SECTION_DATE_TITLE}
-                            text={moment(startDate)
+                            text={dayjs(startDate)
                                 .tz(mapTimeZone[timeZone])
                                 ?.format(CONSTANTS.DEPOSITION_DETAILS_SUMMARY_SECTION_DATE_FORMAT)}
                         />

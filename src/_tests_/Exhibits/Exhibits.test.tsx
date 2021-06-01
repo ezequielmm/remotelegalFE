@@ -51,16 +51,6 @@ jest.mock("react-router-dom", () => ({
     }),
 }));
 
-jest.mock("moment-timezone", () => {
-    return jest.fn().mockImplementation(() => ({
-        tz: jest.fn((dtz: string) => {
-            return {
-                format: jest.fn((df) => "06:30 AM"),
-            };
-        }),
-    }));
-});
-
 beforeEach(() => {
     useUploadFile.mockImplementation(() => ({
         upload: jest.fn(),

@@ -2,6 +2,7 @@ import { act, fireEvent, waitForDomChange, waitForElement } from "@testing-libra
 import userEvent from "@testing-library/user-event";
 import { createMemoryHistory } from "history";
 import React from "react";
+import dayjs from "dayjs";
 import * as COMPONENTS_CONSTANTS from "../../constants/depositions";
 import { PAST_DEPOSITION_TAB_TITLE, UPCOMING_DEPOSITION_TAB_TITLE } from "../../constants/depositions";
 import * as ERRORS_CONSTANTS from "../../constants/errors";
@@ -13,7 +14,7 @@ import getMockDeps from "../utils/getMockDeps";
 import renderWithGlobalContext from "../utils/renderWithGlobalContext";
 
 import { dateToUTCString } from "../../helpers/dateToUTCString";
-import moment from "moment";
+
 import { rootReducer } from "../../state/GlobalState";
 
 const MOCKED_DATE = "mocked_date";
@@ -620,7 +621,7 @@ describe("MyDepositions", () => {
             await userEvent.click(startDateRangeInput);
         });
 
-        const minMaxDate = moment();
+        const minMaxDate = dayjs();
 
         await act(async () => {
             await fireEvent.click(queryAllByText(minMaxDate.format("D"))[0]);
@@ -642,7 +643,7 @@ describe("MyDepositions", () => {
         const totalPast = 1;
         customDeps.apiService.fetchDepositions = jest.fn().mockResolvedValue({ depositions, totalUpcoming, totalPast });
         customDeps.apiService.currentUser = jest.fn().mockResolvedValue(SIGN_UP_CONSTANTS.getUser1());
-        const { getByPlaceholderText, queryByTitle } = renderWithGlobalContext(<MyDepositions />, customDeps, {
+        const { getByPlaceholderText, queryAllByTitle } = renderWithGlobalContext(<MyDepositions />, customDeps, {
             ...rootReducer,
             initialState: {
                 room: {
@@ -654,7 +655,7 @@ describe("MyDepositions", () => {
         });
         await waitForDomChange();
         const startDateRangeInput = getByPlaceholderText("End date");
-        const disabledNextYearAndMonthDate = moment().add(365, "day");
+        const disabledNextYearAndMonthDate = dayjs().add(365, "day");
         await act(async () => {
             await userEvent.click(startDateRangeInput);
             await userEvent.click(document.querySelector(".ant-picker-header-super-next-btn"));
@@ -663,7 +664,9 @@ describe("MyDepositions", () => {
             });
         });
 
-        expect(queryByTitle(disabledNextYearAndMonthDate.format("YYYY-MM-DD"))).toHaveClass("ant-picker-cell-disabled");
+        expect(queryAllByTitle(disabledNextYearAndMonthDate.format("YYYY-MM-DD"))[0]).toHaveClass(
+            "ant-picker-cell-disabled"
+        );
     });
 
     it("Should able select the date between today + 364 days", async () => {
@@ -673,20 +676,24 @@ describe("MyDepositions", () => {
         const totalPast = 1;
         customDeps.apiService.fetchDepositions = jest.fn().mockResolvedValue({ depositions, totalUpcoming, totalPast });
         customDeps.apiService.currentUser = jest.fn().mockResolvedValue(SIGN_UP_CONSTANTS.getUser1());
-        const { getByPlaceholderText, queryByTitle } = renderWithGlobalContext(<MyDepositions />, customDeps, {
-            ...rootReducer,
-            initialState: {
-                room: {
-                    ...rootReducer.initialState.room,
+        const { getByPlaceholderText, queryByTitle, queryAllByTitle } = renderWithGlobalContext(
+            <MyDepositions />,
+            customDeps,
+            {
+                ...rootReducer,
+                initialState: {
+                    room: {
+                        ...rootReducer.initialState.room,
+                    },
+                    user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+                    signalR: { signalR: null },
                 },
-                user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
-                signalR: { signalR: null },
-            },
-        });
+            }
+        );
         await waitForDomChange();
         const startDateRangeInput = getByPlaceholderText("End date");
-        const nextYearAndMonthDate = moment().add(364, "day");
-        const disabledNextYearAndMonthDate = moment().add(365, "day");
+        const nextYearAndMonthDate = dayjs().add(364, "day");
+        const disabledNextYearAndMonthDate = dayjs().add(365, "day");
         await act(async () => {
             await userEvent.click(startDateRangeInput);
             await userEvent.click(document.querySelector(".ant-picker-header-next-btn"));
@@ -695,7 +702,11 @@ describe("MyDepositions", () => {
             });
         });
 
-        expect(queryByTitle(nextYearAndMonthDate.format("YYYY-MM-DD"))).not.toHaveClass("ant-picker-cell-disabled");
-        expect(queryByTitle(disabledNextYearAndMonthDate.format("YYYY-MM-DD"))).toHaveClass("ant-picker-cell-disabled");
+        expect(queryAllByTitle(nextYearAndMonthDate.format("YYYY-MM-DD"))[0]).not.toHaveClass(
+            "ant-picker-cell-disabled"
+        );
+        expect(queryAllByTitle(disabledNextYearAndMonthDate.format("YYYY-MM-DD"))[0]).toHaveClass(
+            "ant-picker-cell-disabled"
+        );
     });
 });

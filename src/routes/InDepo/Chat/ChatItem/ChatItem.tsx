@@ -1,5 +1,7 @@
 /* eslint-disable no-nested-ternary */
-import moment from "moment-timezone";
+import dayjs from "dayjs";
+import timezone from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
 import React from "react";
 import Space from "../../../../components/Space";
 import Text from "../../../../components/Typography/Text";
@@ -9,6 +11,9 @@ import Icon from "../../../../components/Icon";
 import { StyledItem, StyledText, StyledBubble } from "./styles";
 import { mapTimeZone, Message, TimeZones } from "../../../../models/general";
 import * as CONSTANTS from "../../../../constants/inDepo";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 const ChatItem = ({
     message,
@@ -37,7 +42,7 @@ const ChatItem = ({
                             {isCurrentUser ? "You" : JSON.parse(message.author).name}
                         </StyledText>
                         <StyledText size="small" color={ColorStatus.disabled} weight="light">
-                            {moment(message.dateCreated).tz(mapTimeZone[timeZone]).format("hh:mm A")}
+                            {dayjs(message.dateCreated).tz(mapTimeZone[timeZone]).format("hh:mm A")}
                         </StyledText>
                     </Space>
                 )}

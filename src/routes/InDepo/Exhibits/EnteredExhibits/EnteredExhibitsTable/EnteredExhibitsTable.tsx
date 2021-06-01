@@ -1,6 +1,9 @@
 import React, { useContext, useState } from "react";
 import { Tooltip } from "antd";
 import Column from "antd/lib/table/Column";
+import timezone from "dayjs/plugin/timezone";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
 import { theme as GlobalTheme } from "../../../../../constants/styles/theme";
 import { getREM } from "../../../../../constants/styles/utils";
 import Button from "../../../../../components/Button";
@@ -11,12 +14,13 @@ import { ExhibitFile } from "../../../../../types/ExhibitFile";
 import { StyledFileNameCell } from "./styles";
 import ColorStatus from "../../../../../types/ColorStatus";
 import { GlobalStateContext } from "../../../../../state/GlobalState";
-import moment from "moment-timezone";
 import { mapTimeZone } from "../../../../../models/general";
 import ExhibitSharingModal from "../../ExhibitViewer/ExhibitSharingModal";
 import { useShareExhibitFile } from "../../../../../hooks/exhibits/hooks";
 import { ITableProps } from "../../../../../components/Table/Table";
 
+dayjs.extend(utc);
+dayjs.extend(timezone);
 interface IEnteredExhibitsTable extends ITableProps {
     onClickViewFile: (item: any) => void;
 }
@@ -84,14 +88,14 @@ const EnteredExhibitsTable = ({ onClickViewFile, ...props }: IEnteredExhibitsTab
                     dataIndex="sharedAt"
                     key="sharedAt"
                     sorter={({ sharedAt: a }, { sharedAt: b }) =>
-                        moment(a).isBefore(b) ? -1 : moment(a).isAfter(b) ? 1 : 0
+                        dayjs(a).isBefore(b) ? -1 : dayjs(a).isAfter(b) ? 1 : 0
                     }
                     defaultSortOrder="descend"
                     width={getREM(GlobalTheme.default.spaces[8] * 6)}
                     ellipsis
                     render={(sharedAt) => (
                         <Text state={ColorStatus.white}>
-                            {moment(sharedAt).tz(mapTimeZone[timeZone]).format("hh:mm A")}
+                            {dayjs(sharedAt).tz(mapTimeZone[timeZone]).format("hh:mm A")}
                         </Text>
                     )}
                 />

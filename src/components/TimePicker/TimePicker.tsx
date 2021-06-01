@@ -1,20 +1,16 @@
 import React from "react";
-import { TimePicker as ANTTimePicker } from "antd";
-import { TimePickerProps } from "antd/lib/time-picker";
 import styled from "styled-components";
+import ANTTimePicker from "../GenerateDatePicker/components/TimePicker";
 import { getPX, getREM, hexToRGBA } from "../../constants/styles/utils";
 import Icon from "../Icon";
 import { ReactComponent as TimeIcon } from "../../assets/icons/time.svg";
 import PopupContainer from "../PopupContainer";
 import { IPopupContainer } from "../PopupContainer/PopupContainer";
+import { TimePickerProps } from "../GenerateDatePicker/interfaces/interfaces";
 
-export type ITimePickerProps = TimePickerProps & {
-    invalid?: boolean;
-};
-
-export const StyledTimePicker = styled(ANTTimePicker).attrs((props: ITimePickerProps) => ({
+export const StyledTimePicker = styled(ANTTimePicker).attrs((props: TimePickerProps) => ({
     invalid: props.invalid ? "true" : undefined,
-}))<ITimePickerProps>`
+}))<TimePickerProps>`
     ${({ size, invalid, theme }) => {
         const { inputHeightBase, disabledColor, errorColor } = theme.default;
 
@@ -119,7 +115,7 @@ const StyledPopupContainer = styled(PopupContainer)<IPopupContainer>`
     }}
 `;
 
-const TimePicker = (props: ITimePickerProps) => (
+const TimePicker = (props: TimePickerProps) => (
     <StyledPopupContainer>
         <StyledTimePicker
             getPopupContainer={(trigger) => trigger.parentElement}

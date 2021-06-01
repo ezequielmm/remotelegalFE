@@ -1,3 +1,4 @@
+import { Dayjs } from "dayjs";
 import { Status } from "../components/StatusPill/StatusPill";
 import { DateLike, TimeZones } from "./general";
 import { IParticipant } from "./participant";
@@ -48,10 +49,10 @@ export interface IDeposition {
 
 export interface ICreateDeposition {
     isVideoRecordingNeeded: string;
-    date: string;
-    startTime: string;
+    date: Dayjs | string;
+    startTime: Dayjs | string;
     timeZone: TimeZones;
     witness?: IParticipant;
-    endTime?: string;
+    endTime?: Dayjs | string;
     file?: File & { uid: string };
 }

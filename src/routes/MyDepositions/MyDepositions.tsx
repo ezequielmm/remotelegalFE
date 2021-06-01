@@ -1,8 +1,11 @@
 import { Row, Col } from "antd";
-import moment from "moment-timezone";
+import dayjs from "dayjs";
 import React, { useState } from "react";
 import styled from "styled-components";
 import { useHistory } from "react-router";
+import localeData from "dayjs/plugin/localeData";
+import weekday from "dayjs/plugin/weekday";
+import utc from "dayjs/plugin/utc";
 import CardFetchError from "../../components/CardFetchError";
 import { Status } from "../../components/StatusPill/StatusPill";
 import Table from "../../components/Table";
@@ -20,7 +23,9 @@ import { DEPOSITIONS_COUNT_PER_PAGE } from "../../constants/depositions";
 import { GlobalStateContext } from "../../state/GlobalState";
 import useCurrentUser from "../../hooks/useCurrentUser";
 
-const { RangePicker } = DatePicker;
+dayjs.extend(weekday);
+dayjs.extend(localeData);
+dayjs.extend(utc);
 
 const StyledSpaceItem = styled(Space.Item)`
     overflow: hidden;
@@ -42,12 +47,14 @@ export interface MappedDeposition {
 }
 
 const parseDate = ({ startDate, endDate }): { date: string; time: string } => {
-    const date = moment(startDate).local();
-    const dateFormat = date.format("ddd MMM DD, yyyy");
+    const date = dayjs(startDate).local();
+    const dateFormat = date.format("ddd MMM DD YYYY");
     const startTime = date.format("hh:mm A");
-    const endTime = endDate ? ` to ${moment(endDate).local().format("hh:mm A")}` : "";
+    const endTime = endDate ? ` to ${dayjs(endDate).local().format("hh:mm A")}` : "";
     return { date: dateFormat, time: `${startTime}${endTime}` };
 };
+
+const { RangePicker } = DatePicker;
 
 const MyDepositions = () => {
     const {
@@ -159,11 +166,11 @@ const MyDepositions = () => {
                                 <RangePicker
                                     data-testid="depositions_date_range"
                                     disabled={loading}
-                                    disabledDate={(date) => date.isAfter(moment().add(364, "day"))}
+                                    disabledDate={(date) => date.isAfter(dayjs().add(364, "day"))}
                                     ranges={{
-                                        Today: [moment(), moment()],
-                                        "This Week": [moment().startOf("week"), moment().endOf("week")],
-                                        "This Month": [moment().startOf("month"), moment().endOf("month")],
+                                        Today: [dayjs(), dayjs()],
+                                        "This Week": [dayjs().startOf("week"), dayjs().endOf("week")],
+                                        "This Month": [dayjs().startOf("month"), dayjs().endOf("month")],
                                     }}
                                     onChange={(dateRange) => onFilterByDateChange(dateRange)}
                                 />

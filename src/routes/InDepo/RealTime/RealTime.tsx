@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
-import moment from "moment-timezone";
+import dayjs from "dayjs";
+import timezone from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
 import Space from "../../../components/Space";
 import Text from "../../../components/Typography/Text";
 import Alert from "../../../components/Alert";
@@ -13,6 +15,9 @@ import * as CONSTANTS from "../../../constants/inDepo";
 import ColorStatus from "../../../types/ColorStatus";
 import { mapTimeZone, TimeZones } from "../../../models/general";
 import { TranscriptionModel } from "../../../models";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 const RealTime = ({
     disableAutoscroll,
@@ -117,7 +122,7 @@ const RealTime = ({
                                                     >
                                                         <>
                                                             {`${transcription.userName || "Guest"} `}
-                                                            {moment(transcription.transcriptDateTime)
+                                                            {dayjs(transcription.transcriptDateTime)
                                                                 .tz(mapTimeZone[timeZone])
                                                                 ?.format("hh:mm:ss A")}
                                                         </>

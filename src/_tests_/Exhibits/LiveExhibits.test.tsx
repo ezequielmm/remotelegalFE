@@ -19,16 +19,6 @@ jest.mock("react-router-dom", () => ({
     }),
 }));
 
-jest.mock("moment-timezone", () => {
-    return jest.fn().mockImplementation(() => ({
-        tz: jest.fn((dtz: string) => {
-            return {
-                format: jest.fn((df) => "06:30 AM"),
-            };
-        }),
-    }));
-});
-
 const customDeps = getMockDeps();
 
 test("Should display the close confirmation modal if the shared exhibit is not isPublic", async () => {

@@ -1,9 +1,8 @@
 import React from "react";
 // also exported from '@storybook/react' if you can deal with breaking changes in 6.1
 import { Story, Meta } from "@storybook/react/types-6-0";
-
 import TimePicker from "../components/TimePicker";
-import { ITimePickerProps } from "../components/TimePicker/TimePicker";
+import { TimePickerProps } from "../components/GenerateDatePicker/interfaces/interfaces";
 import { ContainerSmall } from "./Decorators";
 
 export default {
@@ -23,7 +22,7 @@ export default {
     ],
 } as Meta;
 
-const Template: Story = (args: ITimePickerProps) => {
+const Template: Story = (args: TimePickerProps) => {
     // eslint-disable-next-line react/jsx-props-no-spreading
     return <TimePicker {...args} />;
 };

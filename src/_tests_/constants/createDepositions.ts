@@ -1,5 +1,4 @@
-import moment from "moment-timezone";
-import * as CONSTANTS from "../../constants/createDeposition";
+import dayjs from "dayjs";
 import mapDepositions from "../../helpers/mapDepositions";
 import { TimeZones } from "../../models/general";
 import { getCaseAsc } from "./cases";
@@ -16,9 +15,9 @@ export const getDepositions = () => ({
                 phone: null,
             },
             file: null,
-            date: moment("00:00 AM", CONSTANTS.TIME_FORMAT).add(2, "days").toString(),
-            startTime: moment("12:30 AM", CONSTANTS.TIME_FORMAT).toString(),
-            endTime: moment("02:30 AM", CONSTANTS.TIME_FORMAT).toString(),
+            date: dayjs().hour(0).minute(0).add(2, "days").toDate().toString(),
+            startTime: dayjs().hour(24).minute(30).second(0).toString(),
+            endTime: dayjs().hour(2).minute(30).second(0).toDate().toString(),
             timeZone: TimeZones.ET,
             isVideoRecordingNeeded: null,
         },

@@ -2,8 +2,9 @@ import { waitForDomChange, fireEvent, waitForElement, act } from "@testing-libra
 import { createMemoryHistory } from "history";
 import userEvent from "@testing-library/user-event";
 import React from "react";
-import moment from "moment-timezone";
 import { Route, Switch } from "react-router";
+import dayjs from "dayjs";
+import timezone from "dayjs/plugin/timezone";
 import { wait } from "../../helpers/wait";
 import ActiveDepositionDetails from "../../routes/ActiveDepoDetails";
 import getMockDeps from "../utils/getMockDeps";
@@ -21,6 +22,8 @@ import getModalTextContent from "../../routes/ActiveDepoDetails/helpers/getModal
 import { Status } from "../../components/StatusPill/StatusPill";
 import { PARTICIPANT_MOCK, PARTICIPANT_MOCK_NAME } from "../constants/preJoinDepo";
 import { mapTimeZone, TimeZones } from "../../models/general";
+
+dayjs.extend(timezone);
 
 const history = createMemoryHistory();
 
@@ -109,9 +112,9 @@ test("Loads proper headers with proper texts when full info is available", async
         CONSTANTS.DEPOSITION_DETAILS_STATUS_TITLE,
         CONSTANTS.DEPOSITION_DETAILS_JOB_TITLE,
     ];
-    const month = moment(fullDeposition.creationDate).format("MMMM");
-    const day = moment(fullDeposition.creationDate).format("Do");
-    const year = moment(fullDeposition.creationDate).format("YYYY");
+    const month = dayjs(fullDeposition.creationDate).format("MMMM");
+    const day = dayjs(fullDeposition.creationDate).format("Do");
+    const year = dayjs(fullDeposition.creationDate).format("YYYY");
     const formattedDay = `${month} ${day}, ${year}`;
 
     customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
@@ -124,14 +127,14 @@ test("Loads proper headers with proper texts when full info is available", async
     expect(getByText(fullDeposition.witness.name)).toBeInTheDocument();
     expect(
         getByText(
-            moment(fullDeposition.startDate).tz(mapTimeZone[fullDeposition.timeZone]).format(CONSTANTS.FORMAT_DATE)
+            dayjs(fullDeposition.startDate).tz(mapTimeZone[fullDeposition.timeZone]).format(CONSTANTS.FORMAT_DATE)
         )
     ).toBeInTheDocument();
-    const startDate = moment(fullDeposition.startDate)
+    const startDate = dayjs(fullDeposition.startDate)
         .tz(mapTimeZone[fullDeposition.timeZone])
         .format(CONSTANTS.FORMAT_TIME)
         .split(" ");
-    const completeDate = moment(fullDeposition.endDate)
+    const completeDate = dayjs(fullDeposition.endDate)
         .tz(mapTimeZone[fullDeposition.timeZone])
         .format(CONSTANTS.FORMAT_TIME);
     expect(
@@ -206,11 +209,11 @@ test("complete date is not shown if completed date is missing", async () => {
     });
     const { queryByText, getByText } = renderWithGlobalContext(<ActiveDepositionDetails />, customDeps);
     await waitForDomChange();
-    const startDate = moment(fullDeposition.startDate)
+    const startDate = dayjs(fullDeposition.startDate)
         .tz(mapTimeZone[fullDeposition.timeZone])
         .format(CONSTANTS.FORMAT_TIME)
         .split(" ");
-    const completeDate = moment(fullDeposition.endDate)
+    const completeDate = dayjs(fullDeposition.endDate)
         .tz(mapTimeZone[fullDeposition.timeZone])
         .format(CONSTANTS.FORMAT_TIME);
     expect(
@@ -664,7 +667,7 @@ test("Shows error toast if fetch fails", async () => {
 });
 
 test("Shows toast when properly canceled and depo status is pending", async () => {
-    const startDate = moment(new Date()).add(30, "minutes").utc();
+    const startDate = dayjs(new Date()).add(30, "minutes").utc();
     const fullDeposition = getDepositionWithOverrideValues({ startDate });
     customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
         return fullDeposition;
@@ -690,7 +693,7 @@ test("Shows toast when properly canceled and depo status is pending", async () =
     expect(customDeps.apiService.cancelDeposition).toHaveBeenCalledWith(fullDeposition.id);
 });
 test("Shows validation error message if start date is invalid", async () => {
-    const startDate = moment(new Date()).add(0.5, "minutes").utc();
+    const startDate = dayjs(new Date()).add(0.5, "minutes").utc();
     const fullDeposition = getDepositionWithOverrideValues({ startDate });
     customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
         return fullDeposition;
@@ -717,7 +720,7 @@ test("Shows validation error message if start date is invalid", async () => {
     expect(customDeps.apiService.cancelDeposition).not.toHaveBeenCalled();
 });
 test("Shows error toast if cancel endpoint fails and depo status is pending", async () => {
-    const startDate = moment(new Date()).add(30, "minutes").utc();
+    const startDate = dayjs(new Date()).add(30, "minutes").utc();
     const fullDeposition = getDepositionWithOverrideValues({ startDate });
     customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
         return fullDeposition;
@@ -741,7 +744,7 @@ test("Shows error toast if cancel endpoint fails and depo status is pending", as
     await waitForElement(() => getByText(CONSTANTS.NETWORK_ERROR));
 });
 test("Shows modal when canceling a confirmed depo and a toast if the cancel succeeds", async () => {
-    const startDate = moment(new Date()).add(30, "minutes").utc();
+    const startDate = dayjs(new Date()).add(30, "minutes").utc();
     const fullDeposition = getDepositionWithOverrideValues({ startDate, status: "Confirmed" });
     const modalText = getModalTextContent(Status.canceled, fullDeposition);
     customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
@@ -774,7 +777,7 @@ test("Shows modal when canceling a confirmed depo and a toast if the cancel succ
     expect(customDeps.apiService.cancelDeposition).toHaveBeenCalledWith(fullDeposition.id);
 });
 test("Shows modal when canceling a confirmed depo and a toast if the cancel endpoint fails", async () => {
-    const startDate = moment(new Date()).add(30, "minutes").utc();
+    const startDate = dayjs(new Date()).add(30, "minutes").utc();
     const fullDeposition = getDepositionWithOverrideValues({ startDate, status: "Confirmed" });
     const modalText = getModalTextContent(Status.canceled, fullDeposition);
     customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
@@ -842,7 +845,7 @@ test("Shows modal when reverting a canceled depo and a toast if the revert fails
         {
             ...TEST_CONSTANTS.EXPECTED_REACTIVATED_TO_PENDING_DEPO_BODY,
             endDate: null,
-            startDate: moment(startDate).tz(mapTimeZone[TimeZones.ET]),
+            startDate: dayjs(startDate).tz(mapTimeZone[TimeZones.ET]),
         },
         null,
         false
@@ -884,7 +887,7 @@ test("Shows modal when reverting a canceled depo and a toast if the revert succe
         {
             ...TEST_CONSTANTS.EXPECTED_REACTIVATED_TO_PENDING_DEPO_BODY,
             endDate: null,
-            startDate: moment(startDate).tz(mapTimeZone[TimeZones.ET]),
+            startDate: dayjs(startDate).tz(mapTimeZone[TimeZones.ET]),
         },
         null,
         false
@@ -927,7 +930,7 @@ test("Shows modal when reverting a canceled depo to confirmed and a toast if the
             ...TEST_CONSTANTS.EXPECTED_REACTIVATED_TO_PENDING_DEPO_BODY,
             status: "Confirmed",
             endDate: null,
-            startDate: moment(startDate).tz(mapTimeZone[TimeZones.ET]),
+            startDate: dayjs(startDate).tz(mapTimeZone[TimeZones.ET]),
         },
         null,
         false
@@ -974,7 +977,7 @@ test("Shows modal when reverting a canceled depo to confirmed and a toast if the
             ...TEST_CONSTANTS.EXPECTED_REACTIVATED_TO_PENDING_DEPO_BODY,
             endDate: null,
             status: "Confirmed",
-            startDate: moment(startDate).tz(mapTimeZone[TimeZones.ET]),
+            startDate: dayjs(startDate).tz(mapTimeZone[TimeZones.ET]),
         },
         null,
         false

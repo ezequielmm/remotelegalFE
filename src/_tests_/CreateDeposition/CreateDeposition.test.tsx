@@ -1,10 +1,10 @@
 /* eslint-disable no-await-in-loop */
 import { fireEvent, waitForElement, waitForDomChange } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import moment from "moment-timezone";
 import "mutationobserver-shim";
 import React from "react";
 import { act } from "react-dom/test-utils";
+import dayjs from "dayjs";
 import * as TEST_CONSTANTS from "../constants/createDepositions";
 import * as CONSTANTS from "../../constants/createDeposition";
 import * as ADD_PARTICIPANTS_CONSTANTS from "../../constants/otherParticipants";
@@ -423,7 +423,7 @@ it("create a deposition when click on submit button with all required fields fil
     await act(async () => {
         await userEvent.click(dateInput);
         await fireEvent.change(dateInput, {
-            target: { value: moment(depositions[0].date).format(CONSTANTS.DATE_FORMAT) },
+            target: { value: dayjs(depositions[0].date).format(CONSTANTS.DATE_FORMAT) },
         });
         await fireEvent.keyDown(dateInput, { key: "enter", keyCode: 13 });
     });
@@ -432,7 +432,7 @@ it("create a deposition when click on submit button with all required fields fil
     await act(async () => {
         await userEvent.click(startInput);
         await fireEvent.change(startInput, {
-            target: { value: moment(depositions[0].startTime).format(CONSTANTS.TIME_FORMAT) },
+            target: { value: dayjs(depositions[0].startTime).format(CONSTANTS.TIME_FORMAT) },
         });
     });
     await act(async () => {
@@ -442,7 +442,7 @@ it("create a deposition when click on submit button with all required fields fil
     await act(async () => {
         await userEvent.click(endInput);
         await fireEvent.change(endInput, {
-            target: { value: moment(depositions[0].endTime).format(CONSTANTS.TIME_FORMAT) },
+            target: { value: dayjs(depositions[0].endTime).format(CONSTANTS.TIME_FORMAT) },
         });
     });
     await act(async () => {
@@ -525,7 +525,7 @@ it("create a deposition when click on submit button with all required fields fil
     await act(async () => {
         await userEvent.click(dateInput);
         await fireEvent.change(dateInput, {
-            target: { value: moment(depositions[0].date).format(CONSTANTS.DATE_FORMAT) },
+            target: { value: dayjs(depositions[0].date).format(CONSTANTS.DATE_FORMAT) },
         });
         await fireEvent.keyDown(dateInput, { key: "enter", keyCode: 13 });
     });
@@ -534,7 +534,7 @@ it("create a deposition when click on submit button with all required fields fil
     await act(async () => {
         await userEvent.click(startInput);
         await fireEvent.change(startInput, {
-            target: { value: moment(depositions[0].startTime).format(CONSTANTS.TIME_FORMAT) },
+            target: { value: dayjs(depositions[0].startTime).format(CONSTANTS.TIME_FORMAT) },
         });
     });
     await act(async () => {
@@ -544,7 +544,7 @@ it("create a deposition when click on submit button with all required fields fil
     await act(async () => {
         await userEvent.click(endInput);
         await fireEvent.change(endInput, {
-            target: { value: moment(depositions[0].endTime).format(CONSTANTS.TIME_FORMAT) },
+            target: { value: dayjs(depositions[0].endTime).format(CONSTANTS.TIME_FORMAT) },
         });
     });
     await act(async () => {
@@ -674,7 +674,7 @@ it("add a witness when click on add witness button and the required fields are f
     await act(async () => {
         await userEvent.click(dateInput);
         await fireEvent.change(dateInput, {
-            target: { value: moment(depositions[0].date).format(CONSTANTS.DATE_FORMAT) },
+            target: { value: dayjs(depositions[0].date).format(CONSTANTS.DATE_FORMAT) },
         });
         await fireEvent.keyDown(dateInput, { key: "enter", keyCode: 13 });
     });
@@ -683,7 +683,7 @@ it("add a witness when click on add witness button and the required fields are f
     await act(async () => {
         await userEvent.click(startInput);
         await fireEvent.change(startInput, {
-            target: { value: moment(depositions[0].startTime).format(CONSTANTS.TIME_FORMAT) },
+            target: { value: dayjs(depositions[0].startTime).format(CONSTANTS.TIME_FORMAT) },
         });
     });
     await act(async () => {
@@ -731,7 +731,7 @@ it("deletes a witness when click on Delete Witness button", async () => {
     await act(async () => {
         await userEvent.click(dateInput);
         await fireEvent.change(dateInput, {
-            target: { value: moment(depositions[0].date).format(CONSTANTS.DATE_FORMAT) },
+            target: { value: dayjs(depositions[0].date).format(CONSTANTS.DATE_FORMAT) },
         });
         await fireEvent.keyDown(dateInput, { key: "enter", keyCode: 13 });
     });
@@ -740,7 +740,7 @@ it("deletes a witness when click on Delete Witness button", async () => {
     await act(async () => {
         await userEvent.click(startInput);
         await fireEvent.change(startInput, {
-            target: { value: moment(depositions[0].startTime).format(CONSTANTS.TIME_FORMAT) },
+            target: { value: dayjs(depositions[0].startTime).format(CONSTANTS.TIME_FORMAT) },
         });
     });
     await act(async () => {
@@ -762,7 +762,7 @@ it("deletes a witness when click on Delete Witness button", async () => {
     const deleteButton = await waitForElement(() => getByTestId("witness_delete_button"));
     await act(async () => userEvent.click(deleteButton));
     // CHECK IF FIRST WITNESS STILL EXISTS
-    expect(queryByDisplayValue(moment(depositions[0].date).format(CONSTANTS.DATE_FORMAT))).toBeTruthy();
+    expect(queryByDisplayValue(dayjs(depositions[0].date).format(CONSTANTS.DATE_FORMAT))).toBeTruthy();
 
     expect(queryByTestId("witness_delete_button")).toBeFalsy();
 });
@@ -1040,7 +1040,7 @@ it(`add up to ${CONSTANTS.WITNESSES_LIMIT} witnesses and try to add another with
         await act(async () => {
             await userEvent.click(dateInput);
             await fireEvent.change(dateInput, {
-                target: { value: moment(depositions[0].date).format(CONSTANTS.DATE_FORMAT) },
+                target: { value: dayjs(depositions[0].date).format(CONSTANTS.DATE_FORMAT) },
             });
             await fireEvent.keyDown(dateInput, { key: "enter", keyCode: 13 });
         });
@@ -1050,7 +1050,7 @@ it(`add up to ${CONSTANTS.WITNESSES_LIMIT} witnesses and try to add another with
         await act(async () => {
             await userEvent.click(startInput);
             await fireEvent.change(startInput, {
-                target: { value: moment(depositions[0].startTime).format(CONSTANTS.TIME_FORMAT) },
+                target: { value: dayjs(depositions[0].startTime).format(CONSTANTS.TIME_FORMAT) },
             });
         });
         await act(async () => {

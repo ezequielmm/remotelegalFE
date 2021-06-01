@@ -1,6 +1,9 @@
-import moment from "moment-timezone";
+import dayjs, { Dayjs } from "dayjs";
+import timezone from "dayjs/plugin/timezone";
 import { DepositionModel, ParticipantModel } from "../models";
 import formatToDateOffset from "./formatToDateOffset";
+
+dayjs.extend(timezone);
 
 const mapDepositions = ({
     requesterPhone,
@@ -21,8 +24,7 @@ const mapDepositions = ({
     const mappedDepositions = depositions.map(
         ({ witness, isVideoRecordingNeeded, date, startTime, endTime, file, timeZone, ...deposition }) => {
             if (file) files.push(file);
-            const formattedStart = moment(startTime).format("HH:mm:ss");
-            const formattedEnd = endTime && moment(endTime).format("HH:mm:ss");
+
             const mapWitness =
                 witness.email || witness.name || witness.phone
                     ? {
@@ -32,10 +34,11 @@ const mapDepositions = ({
                           role: "witness",
                       }
                     : undefined;
+
             return {
                 ...deposition,
-                startDate: formatToDateOffset(String(date), formattedStart, timeZone),
-                endDate: formattedEnd === "" ? null : formatToDateOffset(String(date), formattedEnd, timeZone),
+                startDate: formatToDateOffset(date as Dayjs, startTime as Dayjs, timeZone),
+                endDate: endTime ? formatToDateOffset(date as Dayjs, endTime as Dayjs, timeZone) : null,
                 caption: file?.uid,
                 witness: mapWitness,
                 participants: normalizedParticipants,

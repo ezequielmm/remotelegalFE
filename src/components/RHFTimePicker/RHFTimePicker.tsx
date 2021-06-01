@@ -1,11 +1,10 @@
-import { TimePickerProps } from "antd/lib/time-picker";
 import React from "react";
-import moment from "moment-timezone";
 import styled from "styled-components";
 import RHFWrapper from "../RHFWrapper";
 import TimePicker from "../TimePicker";
 import Button from "../Button";
 import { RHFWrapperProps } from "../RHFWrapper/RHFWrapper";
+import { TimePickerProps } from "../GenerateDatePicker/interfaces/interfaces";
 
 interface RHFTimePickerProps extends RHFWrapperProps {
     placeholder?: string;
@@ -32,7 +31,7 @@ export default function RHFTimePicker({
         <RHFWrapper
             component={({ name: inputName, onChange, onBlur, value }) => (
                 <TimePicker
-                    defaultValue={moment(wrapperProps.defaultValue)}
+                    defaultValue={wrapperProps.defaultValue}
                     placeholder={placeholder}
                     name={inputName}
                     data-testid={dataTestId}

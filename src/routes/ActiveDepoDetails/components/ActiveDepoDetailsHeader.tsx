@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
-import moment from "moment-timezone";
+import dayjs from "dayjs";
+import timezone from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
 import { ThemeProvider } from "styled-components";
 import { Col, Row, Tooltip } from "antd";
 import Card from "../../../components/Card";
@@ -20,6 +22,9 @@ import * as CONSTANTS from "../../../constants/activeDepositionDetails";
 import { CustomGridSpace, TitleWrapper } from "../../DepositionDetails/styles";
 import { mapTimeZone } from "../../../models/general";
 
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
 const ActiveDepositionDetailsHeader = ({ deposition }: { deposition: DepositionModel.IDeposition }) => {
     const [formattedDates, setFormattedDates] = useState<string[]>([]);
     const { caseName, caseNumber, witness, endDate, startDate, status, timeZone, job } = deposition || {};
@@ -29,10 +34,9 @@ const ActiveDepositionDetailsHeader = ({ deposition }: { deposition: DepositionM
     useEffect(() => {
         if (!startDate) return;
         const formattedStartDate =
-            startDate && moment(startDate).tz(mapTimeZone[timeZone]).format(CONSTANTS.FORMAT_TIME).split(" ");
+            startDate && dayjs(startDate).tz(mapTimeZone[timeZone]).format(CONSTANTS.FORMAT_TIME).split(" ");
 
-        const formattedCompleteDate =
-            endDate && moment(endDate).tz(mapTimeZone[timeZone]).format(CONSTANTS.FORMAT_TIME);
+        const formattedCompleteDate = endDate && dayjs(endDate).tz(mapTimeZone[timeZone]).format(CONSTANTS.FORMAT_TIME);
         setFormattedDates([
             (formattedCompleteDate?.split(" ")[1] === formattedStartDate[1]
                 ? formattedStartDate[0]
@@ -110,7 +114,7 @@ const ActiveDepositionDetailsHeader = ({ deposition }: { deposition: DepositionM
                                 </Text>
                                 <Tooltip
                                     title={
-                                        startDate && moment(startDate).tz(mapTimeZone[timeZone]).format("MMM D, YYYY")
+                                        startDate && dayjs(startDate).tz(mapTimeZone[timeZone]).format("MMM D, YYYY")
                                     }
                                 >
                                     <TitleWrapper>
@@ -122,7 +126,7 @@ const ActiveDepositionDetailsHeader = ({ deposition }: { deposition: DepositionM
                                             noMargin
                                         >
                                             {startDate &&
-                                                moment(startDate).tz(mapTimeZone[timeZone]).format("MMM D, YYYY")}
+                                                dayjs(startDate).tz(mapTimeZone[timeZone]).format("MMM D, YYYY")}
                                         </Title>
                                     </TitleWrapper>
                                 </Tooltip>

@@ -1,7 +1,7 @@
 import React from "react";
-import moment from "moment-timezone";
 import { Row, Col } from "antd";
 import { ArrayField, useFormContext } from "react-hook-form";
+import dayjs from "dayjs";
 import Space from "../../../../components/Space";
 import ButtonUpload from "../../../../components/ButtonUpload";
 import Icon from "../../../../components/Icon";
@@ -46,8 +46,7 @@ const WitnessItem = ({ deposition, removeWitness, witnessNumber }: WitnessItemPr
 
     const disabledDate = (current) => {
         return (
-            current &&
-            (current.isBefore(moment().startOf("day")) || current.isAfter(moment().startOf("day").add(1, "y")))
+            current && (current.isBefore(dayjs().startOf("day")) || current.isAfter(dayjs().startOf("day").add(1, "y")))
         );
     };
 

@@ -1,14 +1,14 @@
-import { DatePickerProps } from "antd/lib/date-picker";
-import moment from "moment-timezone";
+import { Dayjs } from "dayjs";
 import React from "react";
 import { Control } from "react-hook-form";
 import { DATE_FORMAT } from "../../constants/createDeposition";
 import DatePicker from "../DatePicker";
+import { DatePickerProps } from "../GenerateDatePicker/interfaces/interfaces";
 import RHFWrapper from "../RHFWrapper";
 
 interface RHFDatePickerProps {
     control: Control<any>;
-    defaultValue?: string;
+    defaultValue?: Dayjs;
     name: string;
     errorMessage?: string;
     label?: React.ReactNode;
@@ -30,13 +30,13 @@ export default function RHFDatePicker({
             component={({ name: inputName, onChange, onBlur, value }) => (
                 <DatePicker
                     data-testid="date_picker"
-                    defaultValue={typeof defaultValue === "string" ? moment(new Date(defaultValue)) : defaultValue}
+                    defaultValue={defaultValue}
                     format={DATE_FORMAT}
                     placeholder={placeholder}
                     name={inputName}
                     onBlur={onBlur}
                     onChange={onChange}
-                    value={typeof value === "string" ? moment(new Date(value)) : value}
+                    value={value}
                     invalid={!!errorMessage}
                     {...datePickerProps}
                 />
