@@ -5,6 +5,7 @@ import React from "react";
 import { Route, Switch } from "react-router";
 import dayjs from "dayjs";
 import timezone from "dayjs/plugin/timezone";
+import Do from "dayjs/plugin/advancedFormat";
 import { wait } from "../../helpers/wait";
 import ActiveDepositionDetails from "../../routes/ActiveDepoDetails";
 import getMockDeps from "../utils/getMockDeps";
@@ -24,6 +25,7 @@ import { PARTICIPANT_MOCK, PARTICIPANT_MOCK_NAME } from "../constants/preJoinDep
 import { mapTimeZone, TimeZones } from "../../models/general";
 
 dayjs.extend(timezone);
+dayjs.extend(Do);
 
 const history = createMemoryHistory();
 

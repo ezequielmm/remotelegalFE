@@ -3,6 +3,7 @@ import { Row } from "antd";
 import dayjs from "dayjs";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
+import Do from "dayjs/plugin/advancedFormat";
 import Space from "../../../components/Space";
 import Title from "../../../components/Typography/Title";
 import { ReactComponent as SuccessIcon } from "../../../assets/icons/Success.svg";
@@ -38,6 +39,7 @@ import { mapTimeZone } from "../../../models/general";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
+dayjs.extend(Do);
 
 const DepositionDetailsSection = ({
     deposition,
