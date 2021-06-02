@@ -81,6 +81,9 @@ export const StyledRangePicker = styled(StyledDatePicker.RangePicker)<RangePicke
       .ant-picker-clear {
         box-shadow: -5px 0 10px 10px ${theme.default.whiteColor};
       }
+      .ant-picker-range-separator{
+        padding: 0 ${getREM(theme.default.spaces[6])} 0 ${getREM(theme.default.spaces[3])};
+      }
       `;
 
         return styles;
