@@ -49,6 +49,7 @@ export default function RHFTimePicker({
                     }
                     invalid={!!wrapperProps.errorMessage}
                     {...timePickerProps}
+                    onSelect={(ev) => onChange(ev)}
                 />
             )}
             {...wrapperProps}

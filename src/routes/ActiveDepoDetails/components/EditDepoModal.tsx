@@ -396,6 +396,7 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
                                             value={formStatus.startDate}
                                             invalid={invalidStartTime}
                                             {...CONSTANTS.TIME_PICKER_PROPS}
+                                            onSelect={handleChangeStartTime}
                                         />
                                         {invalidStartTime && (
                                             <Text
@@ -426,6 +427,7 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
                                             value={formStatus.endDate}
                                             onChange={handleChangeEndTime}
                                             placeholder={CONSTANTS.END_PLACEHOLDER}
+                                            onSelect={handleChangeEndTime}
                                             {...CONSTANTS.TIME_PICKER_PROPS}
                                             allowClear
                                         />
