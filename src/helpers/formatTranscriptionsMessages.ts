@@ -63,10 +63,14 @@ export const addTranscriptionMessages = (newTranscription, transcriptions = [], 
     }
     if (newTranscription.text === "" || !isRecording) return transcriptionsCopy;
 
-    const isTranscriptionInArray = transcriptionsCopy.findIndex((item) => item.id === newTranscription.id);
+    const transcriptionsSlicingLength = transcriptionsCopy.length > 20 ? transcriptionsCopy.length - 20 : 0;
+
+    const isTranscriptionInArray = transcriptionsCopy
+        .slice(transcriptionsSlicingLength)
+        .findIndex((item) => item.id === newTranscription.id);
 
     if (isTranscriptionInArray !== -1) {
-        transcriptionsCopy[isTranscriptionInArray] = newTranscription;
+        transcriptionsCopy[transcriptionsSlicingLength + isTranscriptionInArray] = newTranscription;
     } else {
         transcriptionsCopy.push(newTranscription);
     }

@@ -62,11 +62,23 @@ const RealTime = ({
         }
     }, [playedSeconds, transcriptionsWithoutEvents]);
 
+    const transcriptionSlicingLength = transcriptions?.length > 20 ? transcriptions?.length - 20 : 0;
+
+    const sortedTranscriptions = !scrollToHighlighted
+        ? transcriptions
+              ?.slice(transcriptionSlicingLength)
+              .sort((a, b) => new Date(a.transcriptDateTime).getTime() - new Date(b.transcriptDateTime).getTime())
+        : [];
+
+    const transcriptionsWithoutDuplicates = !scrollToHighlighted
+        ? [].concat(transcriptions.slice(0, transcriptionSlicingLength), sortedTranscriptions)
+        : transcriptions;
+
     useEffect(() => {
-        if (!scrollToHighlighted && transcriptions?.length) {
-            setCurrentTranscript(transcriptions[transcriptions.length - 1].id);
+        if (!scrollToHighlighted && transcriptionsWithoutDuplicates?.length) {
+            setCurrentTranscript(transcriptionsWithoutDuplicates[transcriptionsWithoutDuplicates.length - 1]?.id);
         }
-    }, [scrollToHighlighted, transcriptions]);
+    }, [scrollToHighlighted, transcriptionsWithoutDuplicates]);
 
     return (
         <StyledLayoutCotainer noBackground={disableAutoscroll} visible={visible}>
@@ -76,79 +88,72 @@ const RealTime = ({
                         <div ref={scrollableRef}>
                             {!disableAutoscroll && <RoughDraftPill>ROUGH DRAFT: NOT FOR OFFICIAL USE</RoughDraftPill>}
                             <Space direction="vertical" size="middle">
-                                {transcriptions
-                                    ?.sort(
-                                        (a, b) =>
-                                            new Date(a.transcriptDateTime).getTime() -
-                                            new Date(b.transcriptDateTime).getTime()
-                                    )
-                                    .map(
-                                        (transcription, i) =>
-                                            (transcription.from || transcription.text) &&
-                                            (transcription.from ? (
-                                                <Alert
-                                                    data-testid={
-                                                        transcription.to
-                                                            ? "transcription_paused"
-                                                            : "transcription_currently_paused"
+                                {transcriptionsWithoutDuplicates?.map(
+                                    (transcription, i) =>
+                                        (transcription.from || transcription.text) &&
+                                        (transcription.from ? (
+                                            <Alert
+                                                data-testid={
+                                                    transcription.to
+                                                        ? "transcription_paused"
+                                                        : "transcription_currently_paused"
+                                                }
+                                                key={transcription.id}
+                                                message={
+                                                    transcription.to
+                                                        ? CONSTANTS.getPauseText(
+                                                              transcription.from,
+                                                              transcription.to,
+                                                              timeZone
+                                                          )
+                                                        : CONSTANTS.TRANSCRIPTIONS_PAUSED
+                                                }
+                                                type={transcription.to ? "info" : "warning"}
+                                                icon={<Icon icon={transcription.to ? TimeIcon : InfoIcon} />}
+                                            />
+                                        ) : (
+                                            <Space direction="vertical" key={transcription.id}>
+                                                {playedSeconds !== undefined &&
+                                                    (i === 0 || playedSeconds - transcription.prevEndTime >= 0) &&
+                                                    playedSeconds - transcription.transcriptionVideoTime < 0 && (
+                                                        <HiddenRef />
+                                                    )}
+                                                <Text
+                                                    state={ColorStatus.disabled}
+                                                    font="code"
+                                                    size="small"
+                                                    weight="bold"
+                                                    block
+                                                    dataTestId="transcription_title"
+                                                >
+                                                    <>
+                                                        {`${transcription.userName || "Guest"} `}
+                                                        {dayjs(transcription.transcriptDateTime)
+                                                            .tz(mapTimeZone[timeZone])
+                                                            ?.format("hh:mm:ss A")}
+                                                    </>
+                                                </Text>
+                                                <TranscriptionText
+                                                    font="code"
+                                                    size="small"
+                                                    block
+                                                    ellipsis={false}
+                                                    dataTestId="transcription_text"
+                                                    scrollTo={currentTranscript === transcription.id}
+                                                    highlighted={
+                                                        scrollToHighlighted && currentTranscript === transcription.id
                                                     }
-                                                    key={transcription.id}
-                                                    message={
-                                                        transcription.to
-                                                            ? CONSTANTS.getPauseText(
-                                                                  transcription.from,
-                                                                  transcription.to,
-                                                                  timeZone
-                                                              )
-                                                            : CONSTANTS.TRANSCRIPTIONS_PAUSED
-                                                    }
-                                                    type={transcription.to ? "info" : "warning"}
-                                                    icon={<Icon icon={transcription.to ? TimeIcon : InfoIcon} />}
-                                                />
-                                            ) : (
-                                                <Space direction="vertical" key={transcription.id}>
-                                                    {playedSeconds !== undefined &&
-                                                        (i === 0 || playedSeconds - transcription.prevEndTime >= 0) &&
-                                                        playedSeconds - transcription.transcriptionVideoTime < 0 && (
-                                                            <HiddenRef />
-                                                        )}
-                                                    <Text
-                                                        state={ColorStatus.disabled}
-                                                        font="code"
-                                                        size="small"
-                                                        weight="bold"
-                                                        block
-                                                        dataTestId="transcription_title"
-                                                    >
-                                                        <>
-                                                            {`${transcription.userName || "Guest"} `}
-                                                            {dayjs(transcription.transcriptDateTime)
-                                                                .tz(mapTimeZone[timeZone])
-                                                                ?.format("hh:mm:ss A")}
-                                                        </>
-                                                    </Text>
-                                                    <TranscriptionText
-                                                        font="code"
-                                                        size="small"
-                                                        block
-                                                        ellipsis={false}
-                                                        dataTestId="transcription_text"
-                                                        scrollTo={currentTranscript === transcription.id}
-                                                        highlighted={
-                                                            scrollToHighlighted &&
-                                                            currentTranscript === transcription.id
-                                                        }
-                                                        pointer={!!manageTranscriptionClicked}
-                                                        onClick={() => {
-                                                            if (manageTranscriptionClicked)
-                                                                manageTranscriptionClicked(transcription);
-                                                        }}
-                                                    >
-                                                        {transcription.text}
-                                                    </TranscriptionText>
-                                                </Space>
-                                            ))
-                                    )}
+                                                    pointer={!!manageTranscriptionClicked}
+                                                    onClick={() => {
+                                                        if (manageTranscriptionClicked)
+                                                            manageTranscriptionClicked(transcription);
+                                                    }}
+                                                >
+                                                    {transcription.text}
+                                                </TranscriptionText>
+                                            </Space>
+                                        ))
+                                )}
                             </Space>
                         </div>
                     </div>
