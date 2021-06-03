@@ -11,6 +11,15 @@ export const useCreateCase = () => {
     }, []);
 };
 
+export const useEditCase = () => {
+    const { deps } = React.useContext(GlobalStateContext);
+
+    return useAsyncCallback(async (id, caseObj) => {
+        const editCase = await deps.apiService.editCase({ id, caseObj });
+        return editCase;
+    }, []);
+};
+
 export const useFetchCases = () => {
     const [sortedField, setSortedField] = React.useState();
     const [sortDirection, setSortDirection] = React.useState();

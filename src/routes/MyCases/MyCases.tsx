@@ -1,9 +1,10 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useRef } from "react";
 import { Row, Tooltip } from "antd";
 import styled from "styled-components";
 import Table from "../../components/Table";
 import Button from "../../components/Button";
 import CaseModal from "./CaseModal";
+import Icon from "../../components/Icon";
 import Title from "../../components/Typography/Title";
 import Text from "../../components/Typography/Text";
 import Space from "../../components/Space";
@@ -12,6 +13,9 @@ import * as CONSTANTS from "../../constants/cases";
 import CardFetchError from "../../components/CardFetchError";
 import CardResult from "../../components/CardResult/CardResult";
 import { CustomStatus } from "../../components/Result/Result";
+import ColorStatus from "../../types/ColorStatus";
+import { ReactComponent as EditIcon } from "../../assets/icons/edit.svg";
+import EditCaseModal from "./CaseModal/EditCaseModal";
 
 const StyledSpace = styled(Space)`
     width: 100%;
@@ -22,9 +26,13 @@ const StyledSpace = styled(Space)`
 `;
 
 const MyCases = () => {
+    const selectedCase = useRef<any>(null);
     const [openCaseModal, setOpenCaseModal] = React.useState(false);
+    const [openEditModal, setOpenEditModal] = React.useState(false);
+    const toggleEditModal = useCallback(() => setOpenEditModal(false), []);
     const { handleListChange, sortedField, sortDirection, error, data, loading, refreshList } = useFetchCases();
     const handleClose = useCallback(() => setOpenCaseModal(false), []);
+
     const getCaseColumns = React.useCallback(
         () => [
             {
@@ -59,6 +67,22 @@ const MyCases = () => {
                     </Tooltip>
                 ),
             },
+            {
+                render: (text) => (
+                    <Space justify="flex-end" fullWidth>
+                        <Icon
+                            data-testid={`${text.id}_edit_icon`}
+                            icon={EditIcon}
+                            onClick={() => {
+                                selectedCase.current = text;
+                                setOpenEditModal(true);
+                            }}
+                            color={ColorStatus.primary}
+                            size={8}
+                        />
+                    </Space>
+                ),
+            },
         ],
         [sortedField, sortDirection]
     );
@@ -66,6 +90,12 @@ const MyCases = () => {
     return (
         <>
             <CaseModal handleClose={handleClose} fetchCases={refreshList} open={openCaseModal} />
+            <EditCaseModal
+                handleClose={toggleEditModal}
+                open={openEditModal}
+                currentCase={selectedCase.current}
+                fetchCases={refreshList}
+            />
             {!error && (data === undefined || data?.length > 0) && (
                 <StyledSpace direction="vertical" size="large" fullWidth>
                     <Row justify="space-between" style={{ width: "100%" }}>

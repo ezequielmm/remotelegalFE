@@ -83,6 +83,14 @@ export class ApiService {
         });
     };
 
+    editCase = async (caseData): Promise<CaseModel.ICase> => {
+        return this.request<CaseModel.ICase>({
+            path: `/api/Cases/${caseData.id}`,
+            payload: caseData.caseObj,
+            method: HTTP_METHOD.PUT,
+        });
+    };
+
     getDepositionPermissions = async (depositionID: string) => {
         return this.request<DepositionModel.IDeposition>({
             path: `/api/permissions/depositions/${depositionID}`,
