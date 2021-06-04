@@ -35,6 +35,10 @@ jobs:
               if: ${{ env.CLEAN_NODE_MODULES == 'true' }}
               run: rm -rf node_modules
 
+            - uses: webfactory/ssh-agent@v0.4.1
+              with:
+                ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
             - name: Install Dependencies
               if: ${{ env.ENABLE_CACHE != 'true' && steps.yarn-cache.outputs.cache-hit != 'true' }}
               run: yarn install

@@ -1,8 +1,8 @@
 import React, { useContext, useEffect } from "react";
 import { useHistory } from "react-router";
+import Spinner from "prp-components-library/src/components/Spinner";
 import CardFetchError from "../../components/CardFetchError";
 import Space from "../../components/Space";
-import Spinner from "../../components/Spinner";
 import { Status } from "../../components/StatusPill/StatusPill";
 import Title from "../../components/Typography/Title";
 import { DEPOSITON_DETAILS_TITLE } from "../../constants/depositionDetails";

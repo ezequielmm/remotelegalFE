@@ -4,9 +4,12 @@
     "rules": {
         "semi": 0,
         "eol-last": "error",
-        "react/jsx-filename-extension": [1, {
-            "extensions": [".js", ".jsx", ".tsx"]
-        }],
+        "react/jsx-filename-extension": [
+            1,
+            {
+                "extensions": [".js", ".jsx", ".tsx"]
+            }
+        ],
         "prettier/prettier": [
             "error",
             {
@@ -23,12 +26,13 @@
                 "tsx": "never"
             }
         ],
-        "react/jsx-props-no-spreading":"off"
+        "react/jsx-props-no-spreading": "off"
     },
     "settings": {
         "import/resolver": {
             "node": {
-                "extensions": [".js", ".jsx", ".ts", ".tsx"]
+                "extensions": [".js", ".jsx", ".ts", ".tsx"],
+                "paths": ["src"]
             }
         }
     }

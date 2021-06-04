@@ -31,6 +31,7 @@
         "craco-less": "^1.17.0",
         "dayjs": "^1.10.5",
         "husky": "^4.3.0",
+        "prp-components-library": "ssh://git@github.com/PrecisionReporters/prp-components-library.git#develop",
         "rc-queue-anim": "^1.8.5",
         "react": "^16.14.0",
         "react-dom": "^16.14.0",
@@ -87,6 +88,11 @@
     },
     "resolutions": {
         "styled-components": "^5"
+    },
+    "jest": {
+        "transformIgnorePatterns": [
+            "/node_modules/(?!antd|@ant-design|rc-.+?|@babel/runtime).+(js|jsx)$"
+        ]
     },
     "devDependencies": {
         "@babel/core": "^7.11.6",
