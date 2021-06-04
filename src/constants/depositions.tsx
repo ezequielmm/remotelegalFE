@@ -118,7 +118,6 @@ export const getActionColumns = (history) => ({
     },
     sorter: false,
     width: 90,
-    fixed: "right",
 });
 
 export const getDepositionColumns = (history: History, isAdmin?: boolean) =>

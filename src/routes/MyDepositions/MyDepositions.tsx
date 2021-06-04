@@ -180,7 +180,6 @@ const MyDepositions = () => {
                         <Table
                             data-testid="my_depositions_table"
                             cursorPointer={!!currentUser?.isAdmin}
-                            hscroll={1200}
                             onRow={({ id, status }) => {
                                 return {
                                     onClick: () => {
