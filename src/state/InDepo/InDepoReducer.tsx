@@ -12,6 +12,7 @@ import { UserInfo } from "../../models/user";
 
 export interface IRoom {
     info?: object;
+    stamp?: Document;
     shouldSendToPreDepo?: boolean;
     userStatus?: UserInfo;
     startTime?: string;
@@ -48,6 +49,7 @@ export interface IRoom {
 export const RoomReducerInitialState: IRoom = {
     info: null,
     startTime: "",
+    stamp: null,
     mockDepoRoom: null,
     shouldSendToPreDepo: null,
     userStatus: null,
@@ -162,6 +164,11 @@ const RoomReducer: Reducer<IRoom, IAction> = (state: IRoom, action: IAction): IR
                 ...state,
                 token: action.payload,
             };
+        case ACTION_TYPE.ADD_STAMP:
+            return {
+                ...state,
+                stamp: action.payload,
+            };
         case ACTION_TYPE.SET_IS_RECORDING:
             return {
                 ...state,
@@ -243,6 +250,7 @@ const RoomReducer: Reducer<IRoom, IAction> = (state: IRoom, action: IAction): IR
                 ...state,
                 isMuted: action.payload,
             };
+
         case ACTION_TYPE.IN_DEPO_SET_JOB_NUMBER:
             return {
                 ...state,

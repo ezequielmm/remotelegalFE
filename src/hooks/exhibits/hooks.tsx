@@ -10,6 +10,9 @@ import * as CONSTANTS from "../../constants/exhibits";
 import actions from "../../state/InDepo/InDepoActions";
 import useSignalR from "../useSignalR";
 import { NotificationEntityType } from "../../types/Notification";
+import { convertToXfdf } from "../../helpers/convertToXfdf";
+import { AnnotationAction } from "../../types/Annotation";
+import { serializeToString } from "../../helpers/serializeToString";
 
 interface HandleFetchFilesSorterType {
     field?: Key | Key[];
@@ -193,13 +196,37 @@ export const useShareExhibitFile = () => {
     };
 };
 
+export const useExhibitSendAnnotation = () => {
+    const { deps } = useContext(GlobalStateContext);
+    const { depositionID } = useParams<{ depositionID: string }>();
+    const [sendAnnotation] = useAsyncCallback(async (payload) => {
+        const annotate = await deps.apiService.sendAnnotation({ depositionID, ...payload });
+        return annotate;
+    }, []);
+
+    return {
+        sendAnnotation,
+    };
+};
+
 export const useCloseSharedExhibit = () => {
     const { state, deps, dispatch } = useContext(GlobalStateContext);
     const { depositionID } = useParams<{ depositionID: string }>();
-    const { dataTrack, message, currentExhibit, exhibitDocument, stampLabel, rawAnnotations } = state.room;
+    const { sendAnnotation } = useExhibitSendAnnotation();
+    const { dataTrack, message, currentExhibit, exhibitDocument, stampLabel, stamp, rawAnnotations } = state.room;
     const [closeSharedExhibit, pendingCloseSharedExhibit] = useAsyncCallback(async () => {
         if (stampLabel) {
+            if (stamp) {
+                const newStamp = stamp;
+                newStamp.setAttribute("flags", `${newStamp.getAttribute("flags")},readonly`);
+                const annotationString = serializeToString(newStamp);
+                await sendAnnotation({
+                    action: AnnotationAction.Modify,
+                    details: convertToXfdf(annotationString, AnnotationAction.Modify),
+                });
+            }
             await deps.apiService.closeStampedExhibit({ depositionID, stampLabel });
+            dispatch(actions.addStamp(null));
         } else {
             await deps.apiService.closeExhibit({ depositionID });
         }
@@ -234,19 +261,6 @@ export const useExhibitGetAnnotations = () => {
         savedAnnotations: useMemo(() => savedAnnotations?.map((annotation) => annotation.details), [
             savedAnnotations,
         ]) as [],
-    };
-};
-
-export const useExhibitSendAnnotation = () => {
-    const { deps } = useContext(GlobalStateContext);
-    const { depositionID } = useParams<{ depositionID: string }>();
-    const [sendAnnotation] = useAsyncCallback(async (payload) => {
-        const annotate = await deps.apiService.sendAnnotation({ depositionID, ...payload });
-        return annotate;
-    }, []);
-
-    return {
-        sendAnnotation,
     };
 };
 

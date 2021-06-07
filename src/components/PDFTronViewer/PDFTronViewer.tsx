@@ -21,6 +21,7 @@ export interface PdfTronViewerProps {
     setShowSpinner?: Dispatch<SetStateAction<boolean>>;
     document?: string | Blob | File;
     filename?: string;
+    showSpinner?: boolean;
     canStamp?: boolean;
     showStamp?: boolean;
     shouldGetAnnotations?: boolean;
@@ -35,6 +36,7 @@ export interface PdfTronViewerProps {
 const PDFTronViewer = ({
     document,
     filename,
+    showSpinner,
     canStamp,
     showStamp,
     shouldGetAnnotations,
@@ -48,11 +50,10 @@ const PDFTronViewer = ({
 }: PdfTronViewerProps) => {
     const addAlert = useFloatingAlertContext();
     const { state, dispatch } = useContext(GlobalStateContext);
-    const { timeZone, currentExhibitPage, isRecording } = state.room;
+    const { timeZone, currentExhibitPage, isRecording, stamp: stateStamp } = state.room;
     const [openStampModal, setStampModal] = useState(false);
     const viewerRef = useRef(null);
     const [PDFTron, setPDFTron] = useState<WebViewerInstance>(null);
-    const stampRef = useRef(null);
     const shouldToastAppear = useRef(true);
     const [documentLoaded, setDocumentLoaded] = useState(false);
     const [annotationsLoaded, setAnnotationsLoaded] = useState(false);
@@ -69,32 +70,40 @@ const PDFTronViewer = ({
         await PDFTron?.annotManager.drawAnnotationsFromList(importedAnnotations);
     };
 
-    const handleStampLabel = () => {
+    const handleStampLabel = async () => {
         const stamp = PDFTron?.annotManager.getAnnotationById("STAMP");
         const stampLabel = stamp?.getCustomData("STAMP_LABEL");
-        if (stamp) {
-            if (!canStamp) {
-                stamp.ReadOnly = true;
-            }
-            dispatch(actions.setStampLabel(stampLabel));
-            stampRef.current = stamp;
-        } else {
-            stampRef.current = null;
-            dispatch(actions.setStampLabel(""));
+        if (!stamp) {
+            dispatch(actions.addStamp(null));
+            return dispatch(actions.setStampLabel(""));
         }
+        if (!canStamp) {
+            stamp.ReadOnly = true;
+        }
+        const parser = new DOMParser();
+        const serializedStamp = parser
+            .parseFromString(
+                await PDFTron?.annotManager.exportAnnotations({
+                    annotList: [stamp],
+                }),
+                "text/xml"
+            )
+            .getElementsByTagName("stamp")[0];
+        dispatch(actions.addStamp(serializedStamp));
+        return dispatch(actions.setStampLabel(stampLabel));
     };
 
     useEffect(() => {
         if (!isRecording && PDFTron) {
             PDFTron.setHeaderItems((header) => header.delete("rubberStampToolGroupButton"));
         }
-        if (showStamp && canStamp && PDFTron && isRecording) {
+        if (showStamp && canStamp && PDFTron && isRecording && !showSpinner) {
             PDFTron.setHeaderItems((header) => {
                 header.delete("rubberStampToolGroupButton");
                 header.get("customFullScreenButton").insertAfter({
                     ...CONSTANTS.OPEN_STAMP_MODAL_BUTTON,
                     onClick() {
-                        if (stampRef.current && shouldToastAppear.current) {
+                        if (stateStamp && shouldToastAppear.current) {
                             shouldToastAppear.current = false;
                             return Message({
                                 content: "Please delete the existing stamp and try again",
@@ -102,7 +111,7 @@ const PDFTronViewer = ({
                                 duration: 3,
                             });
                         }
-                        if (!stampRef.current) {
+                        if (!stateStamp) {
                             shouldToastAppear.current = true;
                             return setStampModal(true);
                         }
@@ -110,12 +119,18 @@ const PDFTronViewer = ({
                 });
             });
         }
-    }, [PDFTron, showStamp, canStamp, isRecording]);
+    }, [PDFTron, showStamp, canStamp, isRecording, showSpinner, stateStamp]);
 
     const sendAnnotationChange = useCallback(
         (annotation, action: AnnotationActionType) => {
             if (annotation.nodeType !== annotation.TEXT_NODE) {
+                const parser = new DOMParser();
                 const annotationString = serializeToString(annotation);
+                const commandData = parser.parseFromString(annotationString, "text/xml");
+                const stamp = commandData.getElementsByTagName("stamp").length >= 1;
+                if (stamp) {
+                    dispatch(actions.addStamp(commandData.getElementsByTagName("stamp")[0]));
+                }
                 if (!onAnnotationChange) return;
                 onAnnotationChange({
                     action,
@@ -123,7 +138,7 @@ const PDFTronViewer = ({
                 });
             }
         },
-        [onAnnotationChange]
+        [onAnnotationChange, dispatch]
     );
 
     const onAnnotationChangeHandler = async (
@@ -158,7 +173,7 @@ const PDFTronViewer = ({
         if (action === "delete") {
             changedAnnotations.forEach((annotation: Annotations.Annotation) => {
                 if (annotation.getCustomData("STAMP")) {
-                    stampRef.current = null;
+                    dispatch(actions.addStamp(null));
                     dispatch(actions.setStampLabel(""));
                 }
             });
@@ -225,8 +240,10 @@ const PDFTronViewer = ({
         // handle initial annotations
         savedAnnotations?.forEach(async (row) => {
             drawAnnotationsFromList(row);
-            handleStampLabel();
         });
+        if (savedAnnotations?.length) {
+            handleStampLabel();
+        }
         if (!savedAnnotations?.length) {
             setAnnotationsToExport();
         }
@@ -301,7 +318,6 @@ const PDFTronViewer = ({
             setShowSpinner(false);
         };
         if (PDFTron && document && filename) {
-            stampRef.current = null;
             PDFTron.iframeWindow.addEventListener("loaderror", alertError);
             PDFTron.annotManager.on("annotationChanged", onAnnotationChangeHandler);
             PDFTron.docViewer.on("documentLoaded", onDocumentLoadedHandler);
@@ -337,7 +353,6 @@ const PDFTronViewer = ({
         stamp.MaintainAspectRatio = true;
         annotManager.addAnnotation(stamp, null);
         annotManager.redrawAnnotation(stamp);
-        stampRef.current = stamp;
         dispatch(actions.setStampLabel(stampLabel));
     };
 

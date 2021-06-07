@@ -7,6 +7,7 @@ import { EXHIBIT_TAB } from "../../constants/exhibits";
 import { ExhibitFile } from "../../types/ExhibitFile";
 
 export enum ACTION_TYPE {
+    ADD_STAMP = "ADD_STAMP",
     SEND_MESSAGE = "SEND_MESSAGE",
     SET_DEPO_START_TIME = "SET_DEPO_START_TIME",
     IN_DEPO_JOIN_TO_ROOM = "IN_DEPO_JOIN_TO_ROOM",
@@ -52,7 +53,10 @@ const actions = {
         type: ACTION_TYPE.ADD_USER_TRACKS,
         payload: tracks,
     }),
-
+    addStamp: (stamp: Element) => ({
+        type: ACTION_TYPE.ADD_STAMP,
+        payload: stamp,
+    }),
     addBreakroomDataTrack: (dataTrack: LocalDataTrack) => ({
         type: ACTION_TYPE.IN_DEPO_ADD_BREAKROOM_DATA_TRACK,
         payload: dataTrack,

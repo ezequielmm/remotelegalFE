@@ -12,6 +12,7 @@ const disconnectFromDepo = (
 ) => {
     const initialState = {
         info: null,
+        stamp: null,
         startTime: "",
         mockDepoRoom: null,
         shouldSendToPreDepo: null,

@@ -71,6 +71,7 @@ export const ExhibitViewer = ({
             />
             {documentUrl && (
                 <PDFTronViewer
+                    showSpinner={showSpinner}
                     setShowSpinner={setShowSpinner}
                     canStamp={
                         permissions.includes(DepositionModel.DepositionPermissionsTypes.stampExhibit) && !isPublic
