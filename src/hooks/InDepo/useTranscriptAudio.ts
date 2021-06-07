@@ -6,12 +6,34 @@ import { DepositionID } from "../../state/types";
 import useAsyncCallback from "../useAsyncCallback";
 import useSignalR from "../useSignalR";
 import useWebSocket from "../useWebSocket";
+import ENV from "../../constants/env";
 
-const useTranscriptAudio = () => {
+const useTranscriptAudio = (doNotConnectToSocket = false) => {
     const { dispatch, state } = useContext(GlobalStateContext);
     const { isRecording } = state.room;
     const { depositionID } = useParams<DepositionID>();
-    const { unsubscribeMethodFromGroup, subscribeToGroup, signalR } = useSignalR("/depositionHub");
+    const { TRANSCRIPT_URL } = ENV.API;
+    const { sendMessage: sendSignalRMessage, unsubscribeMethodFromGroup, subscribeToGroup, signalR } = useSignalR(
+        "/transcriptionHub",
+        TRANSCRIPT_URL,
+        true,
+        doNotConnectToSocket
+    );
+
+    useEffect(() => {
+        if (signalR?.connectionState === "Connected" && depositionID) {
+            sendSignalRMessage("SubscribeToDeposition", { depositionId: depositionID });
+        }
+    }, [signalR, depositionID, sendSignalRMessage]);
+
+    useEffect(() => {
+        if (!signalR) {
+            return undefined;
+        }
+        return () => {
+            signalR.stop();
+        };
+    }, [signalR]);
 
     useEffect(() => {
         let manageReceiveNotification;

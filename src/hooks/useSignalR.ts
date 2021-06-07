@@ -1,27 +1,42 @@
 import { HttpTransportType, HubConnection, HubConnectionBuilder } from "@microsoft/signalr";
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import ENV from "../constants/env";
 import { GlobalStateContext } from "../state/GlobalState";
 import actions from "../state/SignalR/SignalRActions";
 import useAsyncCallback from "./useAsyncCallback";
 
-const useSignalR = (url: string): any => {
+const useSignalR = (
+    url: string,
+    baseUrl?: string,
+    setNewSignalRInstance?: boolean,
+    doNotConnectToSocket?: boolean
+): any => {
     const { state, dispatch, deps } = React.useContext(GlobalStateContext);
     const { signalR }: { signalR: HubConnection } = state.signalR;
+    const [newSignalRInstance, setNewSignalR] = useState<HubConnection>(null);
 
     const [connect] = useAsyncCallback(async () => {
-        if (signalR !== null) return signalR;
+        if (doNotConnectToSocket) {
+            return null;
+        }
+
+        if ((!setNewSignalRInstance && signalR !== null) || newSignalRInstance) {
+            return newSignalRInstance || signalR;
+        }
         const token = await deps.apiService.getTokenSet();
         const newSignalR: HubConnection = new HubConnectionBuilder()
-            .withUrl(`${ENV.API.URL}${url}`, {
+            .withUrl(`${baseUrl ?? ENV.API.URL}${url}`, {
                 accessTokenFactory: () => token,
                 skipNegotiation: true,
                 transport: HttpTransportType.WebSockets,
             })
             .withAutomaticReconnect([0, 200, 10000, 30000, 60000, 120000])
             .build();
-
         await newSignalR.start();
+        if (setNewSignalRInstance) {
+            setNewSignalR(newSignalR);
+            return newSignalRInstance;
+        }
         dispatch(actions.setSignalR(newSignalR));
         return newSignalR;
     }, [dispatch, signalR, url]);
@@ -30,23 +45,37 @@ const useSignalR = (url: string): any => {
         if (connect) connect();
     }, [connect]);
 
-    const stop = useCallback(() => {
-        if (signalR === null) return null;
+    const sendMessage = useCallback(
+        (hub, message) =>
+            setNewSignalRInstance ? newSignalRInstance?.send(hub, message) : signalR?.send(hub, message),
+        [setNewSignalRInstance, newSignalRInstance, signalR]
+    );
 
-        signalR.stop();
-        dispatch(actions.setSignalR(null));
-        return null;
-    }, [dispatch, signalR]);
+    const subscribeToGroup = useCallback(
+        (group, onMessage) =>
+            setNewSignalRInstance ? newSignalRInstance?.on(group, onMessage) : signalR?.on(group, onMessage),
+        [setNewSignalRInstance, newSignalRInstance, signalR]
+    );
 
-    const sendMessage = useCallback((hub, message) => signalR?.send(hub, message), [signalR]);
+    const unsubscribeToGroup = useCallback(
+        (group) => (setNewSignalRInstance ? newSignalRInstance?.off(group) : signalR?.off(group)),
+        [setNewSignalRInstance, newSignalRInstance, signalR]
+    );
 
-    const subscribeToGroup = useCallback((group, onMessage) => signalR?.on(group, onMessage), [signalR]);
+    const unsubscribeMethodFromGroup = useCallback(
+        (group, method) =>
+            setNewSignalRInstance ? newSignalRInstance?.off(group, method) : signalR?.off(group, method),
+        [setNewSignalRInstance, newSignalRInstance, signalR]
+    );
 
-    const unsubscribeToGroup = useCallback((group) => signalR?.off(group), [signalR]);
-
-    const unsubscribeMethodFromGroup = useCallback((group, method) => signalR?.off(group, method), [signalR]);
-
-    return { connect, stop, sendMessage, subscribeToGroup, unsubscribeToGroup, unsubscribeMethodFromGroup, signalR };
+    return {
+        connect,
+        sendMessage,
+        subscribeToGroup,
+        unsubscribeToGroup,
+        unsubscribeMethodFromGroup,
+        signalR: setNewSignalRInstance ? newSignalRInstance : signalR,
+    };
 };
 
 export default useSignalR;

@@ -56,6 +56,7 @@ interface IControlsBar {
     canJoinToLockedBreakroom?: boolean;
     disableBreakrooms?: boolean;
     disableChat?: boolean;
+    isPreDepo?: boolean;
     canRecord: boolean;
     leaveWithoutModal?: boolean;
     canEnd: boolean;
@@ -80,6 +81,7 @@ export default function ControlsBar({
     exhibitsOpen,
     togglerExhibits,
     realTimeOpen,
+    isPreDepo,
     togglerRealTime,
     isRecording,
     canEnd,
@@ -161,7 +163,7 @@ export default function ControlsBar({
             }));
     }, [chatOpen]);
 
-    useStreamAudio(isAudioEnabled, audioTracks);
+    useStreamAudio(isAudioEnabled, audioTracks, isPreDepo);
 
     const handleRedirection = () => {
         return isWitness && !isAuthenticated

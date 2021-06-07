@@ -22,6 +22,7 @@ interface RequestParams {
     method?: HTTP_METHOD;
     withContentType?: boolean;
     formData?: FormData;
+    basePath?: string;
 }
 
 export class ApiService {
@@ -100,6 +101,7 @@ export class ApiService {
 
     getDepositionTranscriptions = async (depositionID: string) => {
         return this.request<DepositionModel.IDeposition>({
+            basePath: process.env.REACT_APP_TRANSCRIPT_API_URL,
             path: `/transcriptions/${depositionID}`,
             method: HTTP_METHOD.GET,
         });
@@ -107,6 +109,7 @@ export class ApiService {
 
     getDepositionTranscriptionsWithOffsets = async (depositionID: string) => {
         return this.request<DepositionModel.IDeposition>({
+            basePath: process.env.REACT_APP_TRANSCRIPT_API_URL,
             path: `/transcriptions/${depositionID}/offsets`,
             method: HTTP_METHOD.GET,
         });
@@ -373,7 +376,8 @@ export class ApiService {
 
     fetchTranscriptsFiles = async ({ depositionID, ...payload }): Promise<boolean> => {
         return this.request<boolean>({
-            path: `/Transcriptions/${depositionID}/Files`,
+            basePath: process.env.REACT_APP_TRANSCRIPT_API_URL,
+            path: `/Documents/${depositionID}/Files`,
             payload,
             withToken: true,
             method: HTTP_METHOD.GET,
@@ -550,6 +554,7 @@ export class ApiService {
         method = HTTP_METHOD.GET,
         withContentType = true,
         formData = undefined,
+        basePath = this.apiUrl,
     }: RequestParams): Promise<T> => {
         if (withToken) await this.getTokenSet();
         const jwt = withToken ? `Bearer ${this.tokenSet.accessToken}` : undefined;
@@ -566,7 +571,7 @@ export class ApiService {
                 : formData;
         const contentType = withContentType ? { Accept: "application/json", "Content-Type": "application/json" } : {};
         return this.retryRequest(
-            `${this.apiUrl}${path}${queryParams || ""}`,
+            `${basePath}${path}${queryParams || ""}`,
             {
                 method,
                 body,

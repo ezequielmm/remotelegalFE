@@ -50,10 +50,16 @@ const InDepo = () => {
     const [initialAudioEnabled, setInitialAudioEnabled] = useState<boolean>(true);
     const [videoLayoutSize, setVideoLayoutSize] = useState<number>(0);
     const [atendeesVisibility, setAtendeesVisibility] = useState<boolean>(true);
-    const { stop, subscribeToGroup, signalR, sendMessage } = useSignalR("/depositionHub");
+    const { subscribeToGroup, signalR, sendMessage } = useSignalR("/depositionHub");
     const history = useHistory();
     const { currentEmail, isAuthenticated } = useAuthentication();
     const [checkUserStatus, , userStatusError, userStatus] = useCheckUserStatus();
+
+    useEffect(() => {
+        return () => {
+            isMounted.current = false;
+        };
+    }, []);
 
     useEffect(() => {
         if (signalR?.connectionState === "Connected" && depositionID) {
@@ -78,17 +84,6 @@ const InDepo = () => {
             );
         }
     }, [userStatus, history, depositionID]);
-
-    useEffect(
-        () => {
-            return () => {
-                isMounted.current = false;
-                if (stop) stop();
-            };
-        },
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        []
-    );
 
     useEffect(() => {
         return () => {
@@ -190,6 +185,7 @@ const InDepo = () => {
                 </StyledInDepoLayout>
                 <StyledRoomFooter>
                     <ControlsBar
+                        isPreDepo
                         breakrooms={breakrooms}
                         leaveWithoutModal
                         disableBreakrooms

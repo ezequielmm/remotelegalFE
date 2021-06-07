@@ -18,6 +18,7 @@ jest.mock("../../hooks/useSignalR", () => () => ({
         signalREventTriggered = func;
     },
     signalR: {
+        stop: () => {},
         connectionState: "Connected",
     },
     sendMessage: jest.fn(),

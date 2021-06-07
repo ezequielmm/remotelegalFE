@@ -3,12 +3,12 @@ import React, { useCallback, useContext, useEffect, useRef, useState } from "rea
 import { GlobalStateContext } from "../state/GlobalState";
 import useTranscriptAudio from "./InDepo/useTranscriptAudio";
 
-export default (isAudioEnabled: boolean, audioTracks) => {
+export default (isAudioEnabled: boolean, audioTracks, doNotConnectToSocket = false) => {
     const [recorder, setRecorder] = useState(null);
     const { state } = useContext(GlobalStateContext);
     const { isRecording } = state.room;
     const [sampleRate, setSampleRate] = useState<number>(undefined);
-    const [stopAudio, transcriptAudio] = useTranscriptAudio();
+    const [stopAudio, transcriptAudio] = useTranscriptAudio(doNotConnectToSocket);
     const recorderRef = useRef(null);
     const stopMicrophone = useCallback(async () => {
         if (recorder) {

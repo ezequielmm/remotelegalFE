@@ -16,6 +16,7 @@ import { theme } from "../../constants/styles/theme";
 import RecordPill from "../../components/RecordPill";
 import { DepositionID } from "../../state/types";
 import actions from "../../state/InDepo/InDepoActions";
+import signalRActions from "../../state/SignalR/SignalRActions";
 import generalUIActions from "../../state/GeneralUi/GeneralUiActions";
 import { ThemeMode } from "../../types/ThemeType";
 import { EventModel } from "../../models";
@@ -60,23 +61,28 @@ const InDepo = () => {
     const [atendeesVisibility, setAtendeesVisibility] = useState<boolean>(true);
     const history = useHistory();
     const { isAuthenticated } = useAuthentication();
-    const { stop, sendMessage, signalR, subscribeToGroup, unsubscribeMethodFromGroup } = useSignalR("/depositionHub");
+    const { sendMessage, signalR, subscribeToGroup, unsubscribeMethodFromGroup } = useSignalR("/depositionHub");
 
     useEffect(() => {
         dispatch(generalUIActions.toggleTheme(ThemeMode.inDepo));
         return () => dispatch(generalUIActions.toggleTheme(ThemeMode.default));
     }, [dispatch]);
 
-    useEffect(
-        () => {
-            return () => {
-                isMounted.current = false;
-                if (stop) stop();
-            };
-        },
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        []
-    );
+    useEffect(() => {
+        return () => {
+            isMounted.current = false;
+        };
+    }, []);
+
+    useEffect(() => {
+        if (!signalR) {
+            return undefined;
+        }
+        return () => {
+            signalR.stop();
+            dispatch(signalRActions.setSignalR(null));
+        };
+    }, [signalR, dispatch]);
 
     useEffect(() => {
         return () => {

@@ -1,7 +1,6 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import ENV from "../constants/env";
 import useAsyncCallback from "./useAsyncCallback";
-import React from "react";
 import { GlobalStateContext } from "../state/GlobalState";
 
 const useWebSocket = (url: string, onMessage: (evt: MessageEvent) => void, withAuth?: boolean) => {
