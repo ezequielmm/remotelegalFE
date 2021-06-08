@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { Row, Col } from "antd";
 import { useParams } from "react-router-dom";
 import { useFileList, useUploadFile } from "../../../../hooks/exhibits/hooks";
-import { MY_EXHIBITS_RESULT_SUBTITLE, MY_EXHIBITS_RESULT_TITLE } from "../../../../constants/exhibits";
+import { MY_EXHIBITS_RESULT_SUBTITLE, MY_EXHIBITS_RESULT_TITLE, EXHIBIT_TABS } from "../../../../constants/exhibits";
 import Space from "../../../../components/Space";
 import Result from "../../../../components/Result";
 import { CustomStatus } from "../../../../components/Result/Result";
@@ -10,7 +10,6 @@ import Icon from "../../../../components/Icon";
 import { ReactComponent as MyExhibitsIcon } from "../../../../assets/icons/MyExhibits-empty.svg";
 import Text from "../../../../components/Typography/Text";
 import Badge from "../../../../components/Badge";
-
 import { ExhibitTabPaneSpacer, ScrollTableContainer } from "../styles";
 import UploadButton from "./UploadButton";
 import FileListTable from "./FileListTable";
@@ -19,9 +18,8 @@ import { theme } from "../../../../constants/styles/theme";
 import { ExhibitFile } from "../../../../types/ExhibitFile";
 import ColorStatus from "../../../../types/ColorStatus";
 import { GlobalStateContext } from "../../../../state/GlobalState";
-import { EXHIBIT_TABS } from "../../../../constants/exhibits";
 
-export default function MyExhibits() {
+export default function MyExhibits({ activeKey }: { activeKey: string }) {
     const { depositionID } = useParams<{ depositionID: string }>();
     const { upload } = useUploadFile(depositionID);
     const { handleFetchFiles, loading, errorFetchFiles, files, refreshList } = useFileList(depositionID);
@@ -77,9 +75,10 @@ export default function MyExhibits() {
             )}
             {selectedFile && (
                 <ExhibitViewer
+                    activeKey={activeKey}
                     file={selectedFile}
                     onClose={() => setSelectedFile(null)}
-                    showShareButtonOnHeader={true}
+                    showShareButtonOnHeader
                 />
             )}
         </ExhibitTabPaneSpacer>

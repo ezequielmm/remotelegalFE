@@ -37,7 +37,7 @@ const Exhibits = ({ visible }: ContainerProps) => {
                     {CONSTANTS.EXHIBIT_TABS_DATA.map(({ tabId, ExhibitComponent, tabPaneTestId }) => (
                         <TabPane tab={tabId} key={tabId}>
                             <ExhibitTabPaneContainer data-testid={tabPaneTestId}>
-                                <ExhibitComponent />
+                                <ExhibitComponent activeKey={activeKey} />
                             </ExhibitTabPaneContainer>
                         </TabPane>
                     ))}

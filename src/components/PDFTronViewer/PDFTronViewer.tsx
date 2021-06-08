@@ -12,6 +12,7 @@ import { serializeToString } from "../../helpers/serializeToString";
 import actions from "../../state/InDepo/InDepoActions";
 import { useExhibitGetAnnotations, useExhibitRealTimeAnnotations } from "../../hooks/exhibits/hooks";
 import useFloatingAlertContext from "../../hooks/useFloatingAlertContext";
+import { LIVE_EXHIBIT_TAB } from "../../constants/exhibits";
 
 export type AnnotationPayload = {
     action: string;
@@ -21,6 +22,7 @@ export interface PdfTronViewerProps {
     setShowSpinner?: Dispatch<SetStateAction<boolean>>;
     document?: string | Blob | File;
     filename?: string;
+    activeKey?: string;
     showSpinner?: boolean;
     canStamp?: boolean;
     showStamp?: boolean;
@@ -47,6 +49,7 @@ const PDFTronViewer = ({
     disableElements = [],
     readOnly = false,
     setShowSpinner,
+    activeKey,
 }: PdfTronViewerProps) => {
     const addAlert = useFloatingAlertContext();
     const { state, dispatch } = useContext(GlobalStateContext);
@@ -97,7 +100,15 @@ const PDFTronViewer = ({
         if (!isRecording && PDFTron) {
             PDFTron.setHeaderItems((header) => header.delete("rubberStampToolGroupButton"));
         }
-        if (showStamp && canStamp && PDFTron && isRecording && !showSpinner) {
+        if (activeKey !== LIVE_EXHIBIT_TAB) {
+            if (PDFTron) {
+                PDFTron.setHeaderItems((header) => {
+                    header.delete(CONSTANTS.OPEN_STAMP_MODAL_BUTTON.dataElement);
+                });
+            }
+        }
+
+        if (showStamp && canStamp && PDFTron && isRecording && !showSpinner && activeKey === LIVE_EXHIBIT_TAB) {
             PDFTron.setHeaderItems((header) => {
                 header.delete("rubberStampToolGroupButton");
                 header.get("customFullScreenButton").insertAfter({
@@ -119,7 +130,7 @@ const PDFTronViewer = ({
                 });
             });
         }
-    }, [PDFTron, showStamp, canStamp, isRecording, showSpinner, stateStamp]);
+    }, [PDFTron, showStamp, canStamp, isRecording, showSpinner, stateStamp, activeKey]);
 
     const sendAnnotationChange = useCallback(
         (annotation, action: AnnotationActionType) => {

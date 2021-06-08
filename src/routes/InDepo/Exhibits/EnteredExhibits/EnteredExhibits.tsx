@@ -23,7 +23,7 @@ import { useEnteredExhibit } from "../../../../hooks/useEnteredExhibits";
 import { TOOLBAR_GROUP_ANNOTATE, TOOLBAR_GROUP_VIEW } from "../../../../constants/PDFTronViewer";
 import { GlobalStateContext } from "../../../../state/GlobalState";
 
-export default function EnteredExhibits() {
+export default function EnteredExhibits({ activeKey }: { activeKey: string }) {
     const {
         handleFetchFiles,
         enteredExhibits = [],
@@ -80,9 +80,10 @@ export default function EnteredExhibits() {
             )}
             {selectedFile && (
                 <ExhibitViewer
+                    activeKey={activeKey}
                     file={selectedFile}
                     onClose={() => setSelectedFile(null)}
-                    showShareButtonOnHeader={true}
+                    showShareButtonOnHeader
                     pdfTronDisableElements={[TOOLBAR_GROUP_ANNOTATE, TOOLBAR_GROUP_VIEW]}
                     readOnly
                 />

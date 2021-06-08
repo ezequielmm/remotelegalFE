@@ -12,7 +12,7 @@ import { useCloseSharedExhibit, useExhibitSendAnnotation } from "../../../../hoo
 import { TOOLBAR_GROUP_ANNOTATE, TOOLBAR_GROUP_VIEW } from "../../../../constants/PDFTronViewer";
 import { GlobalStateContext } from "../../../../state/GlobalState";
 
-export default function LiveExhibits() {
+export default function LiveExhibits({ activeKey }: { activeKey: string }) {
     const { state } = useContext(GlobalStateContext);
     const { currentExhibit } = state.room;
     const { currentUser } = state.user;
@@ -23,6 +23,7 @@ export default function LiveExhibits() {
         <ExhibitTabPaneSpacer direction="vertical" size="large" className="live-exhibit">
             {currentExhibit && (
                 <ExhibitViewer
+                    activeKey={activeKey}
                     showShareButtonOnHeader={!currentExhibit}
                     showBackButtonOnHeader={false}
                     showCloseButtonOnHeader={currentExhibit?.close}

@@ -24,6 +24,7 @@ interface Props extends PdfTronViewerProps {
     onClose?: () => void;
     onBringAllToMe?: () => void;
     onClosePending?: boolean;
+    activeKey?: string;
     showBackButtonOnHeader?: boolean;
     showCloseButtonOnHeader?: boolean;
     showShareButtonOnHeader?: boolean;
@@ -37,6 +38,7 @@ interface Props extends PdfTronViewerProps {
 
 export const ExhibitViewer = ({
     file,
+    activeKey,
     onClose,
     onClosePending = false,
     showBackButtonOnHeader = true,
@@ -71,6 +73,7 @@ export const ExhibitViewer = ({
             />
             {documentUrl && (
                 <PDFTronViewer
+                    activeKey={activeKey}
                     showSpinner={showSpinner}
                     setShowSpinner={setShowSpinner}
                     canStamp={
