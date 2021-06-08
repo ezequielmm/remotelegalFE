@@ -377,7 +377,7 @@ export class ApiService {
     fetchTranscriptsFiles = async ({ depositionID, ...payload }): Promise<boolean> => {
         return this.request<boolean>({
             basePath: process.env.REACT_APP_TRANSCRIPT_API_URL,
-            path: `/Documents/${depositionID}/Files`,
+            path: `/Transcriptions/${depositionID}/Files`,
             payload,
             withToken: true,
             method: HTTP_METHOD.GET,

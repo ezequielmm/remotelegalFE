@@ -67,8 +67,9 @@ export const useUploadFile = (depositionID: string) => {
     const { deps } = useContext(GlobalStateContext);
     const upload = useCallback(
         async ({ onSuccess, onError, file, onProgress }) => {
+            // TODO: this should be on the ApiService
             uploadFile(
-                `/Transcriptions/${depositionID}/Files`,
+                `/api/${depositionID}/Files`,
                 file,
                 (event) => onProgress({ percent: (event.loaded / event.total) * 100 }),
                 onSuccess,
