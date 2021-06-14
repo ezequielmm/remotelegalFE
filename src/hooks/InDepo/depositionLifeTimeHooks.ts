@@ -228,7 +228,10 @@ export const useJoinDeposition = () => {
             if (isSharing) {
                 fetchExhibitFileInfo(depositionID);
             }
-            const tracks = await createLocalTracks({ audio: true, video: { aspectRatio: 1.777777777777778 } });
+            const tracks = await createLocalTracks({
+                audio: true,
+                video: { aspectRatio: 1.777777777777778, facingMode: "user" },
+            });
             tracks.push(dataTrack);
             const room = await connect(token, {
                 ...TWILIO_VIDEO_CONFIG,
