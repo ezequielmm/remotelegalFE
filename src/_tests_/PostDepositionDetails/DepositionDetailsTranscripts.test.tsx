@@ -1,5 +1,6 @@
 import { waitForElement, waitForDomChange, fireEvent, act } from "@testing-library/react";
 import React from "react";
+import uploadService from "../../services/UploadService";
 import renderWithGlobalContext from "../utils/renderWithGlobalContext";
 import * as SIGN_UP_CONSTANTS from "../constants/signUp";
 import * as TEST_CONSTANTS from "../constants/depositionDetails";
@@ -12,27 +13,29 @@ import { wait } from "../../helpers/wait";
 import "mutationobserver-shim";
 import { rootReducer } from "../../state/GlobalState";
 
-const customDeps = getMockDeps();
-
 jest.mock("../../helpers/downloadFile", () => ({
     __esModule: true,
     default: jest.fn(),
 }));
+
+jest.mock("../../services/UploadService");
 
 jest.mock("react-router", () => ({
     ...jest.requireActual("react-router"),
     useParams: () => ({ depositionID: "depoId" }),
 }));
 
-jest.mock("../../services/UploadService", () => ({
-    __esModule: true,
-    default: jest.fn().mockImplementation((_, __, func) => {
+let customDeps;
+beforeEach(() => {
+    customDeps = getMockDeps();
+    const uploadServiceMock = uploadService as jest.Mock;
+    uploadServiceMock.mockImplementation((_, __, func) => {
         func({
             loaded: 1,
             total: 1,
         });
-    }),
-}));
+    });
+});
 
 describe("Deposition Details Transcripts", () => {
     it("show a title with CONSTANTS.DETAILS_TRANSCRIPT_TITLE constant", async () => {

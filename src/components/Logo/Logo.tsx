@@ -2,9 +2,8 @@ import React from "react";
 import { Image } from "antd";
 import { ImageProps } from "rc-image/lib/Image";
 import styled from "styled-components";
-
-const LogoDark = require("../../assets/layout/logo-dark.svg");
-const LogoLight = require("../../assets/layout/logo-light.svg");
+import LogoDark from "../../assets/layout/logo-dark.svg";
+import LogoLight from "../../assets/layout/logo-light.svg";
 
 const logoSrc = {
     dark: LogoDark,

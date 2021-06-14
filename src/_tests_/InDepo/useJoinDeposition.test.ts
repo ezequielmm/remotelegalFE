@@ -1,4 +1,5 @@
 import { act, renderHook } from "@testing-library/react-hooks";
+import useSound from "use-sound";
 import wrapper from "../mocks/wrapper";
 import state from "../mocks/state";
 import { useJoinDeposition } from "../../hooks/InDepo/depositionLifeTimeHooks";
@@ -24,10 +25,10 @@ jest.mock("react-router", () => ({
     useParams: () => ({ depositionID: "test1234" }),
 }));
 
-jest.mock("use-sound", () => {
-    return jest.fn().mockImplementation(() => [jest.fn()]);
-});
-import useSound from "use-sound";
+jest.mock("use-sound", () => ({
+    __esModule: true,
+    default: jest.fn(),
+}));
 
 jest.mock("../../helpers/configParticipantListeners", () => ({
     __esModule: true,
@@ -36,6 +37,9 @@ jest.mock("../../helpers/configParticipantListeners", () => ({
 
 test("It calls dispatch with proper actions", async () => {
     AUTH.VALID();
+    const playMock = jest.fn();
+    const useSoundMock = useSound as jest.Mock;
+    useSoundMock.mockImplementation(() => [playMock]);
     const { result } = renderHook(() => useJoinDeposition(), { wrapper });
     const [joinToRoom] = result.current;
 
@@ -70,8 +74,8 @@ test("It does not call audio play function if no participant were added", async 
 test("It calls audio play function when a participant is added", async () => {
     configParticipantListeners.mockImplementation((room, callback) => callback());
     const playMock = jest.fn();
-    useSound.mockImplementation((sound) => [playMock]);
-    const [play] = useSound("sound");
+    const useSoundMock = useSound as jest.Mock;
+    useSoundMock.mockImplementation(() => [playMock]);
     AUTH.VALID();
     const { result } = renderHook(() => useJoinDeposition(), { wrapper });
     const [joinToRoom] = result.current;
@@ -79,6 +83,6 @@ test("It calls audio play function when a participant is added", async () => {
     await act(async () => {
         await wait(200);
         await joinToRoom();
-        expect(play).toHaveBeenCalled();
+        expect(playMock).toHaveBeenCalled();
     });
 });

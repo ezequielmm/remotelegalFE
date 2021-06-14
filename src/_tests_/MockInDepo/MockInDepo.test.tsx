@@ -23,7 +23,7 @@ jest.mock("../../hooks/useSignalR", () => () => ({
     },
     sendMessage: jest.fn(),
 }));
-const customDeps = getMockDeps();
+let customDeps;
 const history = createMemoryHistory();
 
 const InDepo = () => <div>IN DEPO</div>;
@@ -115,6 +115,7 @@ jest.mock("twilio-video", () => ({
 }));
 
 beforeEach(() => {
+    customDeps = getMockDeps();
     AUTH.VALID();
     customDeps.apiService.joinDeposition = jest
         .fn()

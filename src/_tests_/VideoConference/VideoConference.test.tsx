@@ -18,6 +18,14 @@ jest.mock("../../hooks/InDepo/useParticipantStatus", () => ({
 }));
 
 test("Shows waiting for witness and participant identity", async () => {
+    useGetParticipantStatus.mockImplementation(() => ({
+        participantsStatus: {
+            "test@test.com": {
+                email: "test2@test.com",
+                isMuted: false,
+            },
+        },
+    }));
     const participant = getParticipant("test1", "Attorney");
     const { queryByTestId, queryByText } = renderWithGlobalContext(
         <VideoConference
@@ -33,6 +41,14 @@ test("Shows waiting for witness and participant identity", async () => {
 });
 
 test("Shows both participants´ identities", async () => {
+    useGetParticipantStatus.mockImplementation(() => ({
+        participantsStatus: {
+            "test@test.com": {
+                email: "test2@test.com",
+                isMuted: false,
+            },
+        },
+    }));
     const participant = getParticipant("test2", "Witness");
     const { queryByTestId, queryByText } = renderWithGlobalContext(
         <VideoConference

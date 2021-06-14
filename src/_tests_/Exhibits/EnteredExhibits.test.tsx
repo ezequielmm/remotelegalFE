@@ -1,5 +1,5 @@
 import "@testing-library/jest-dom";
-import { fireEvent, waitForElement, waitForDomChange } from "@testing-library/react";
+import { fireEvent, waitForElement, waitForDomChange, cleanup } from "@testing-library/react";
 import React from "react";
 import { ThemeProvider } from "styled-components";
 import * as CONSTANTS from "../../constants/exhibits";
@@ -18,8 +18,12 @@ jest.mock("react-router-dom", () => ({
     }),
 }));
 
-const customDeps = getMockDeps();
 describe("Entered Exhibits", () => {
+    let customDeps;
+    beforeEach(() => {
+        customDeps = getMockDeps();
+    });
+
     test("Should be display the Entered exhibits tab with an empty state when has no entered exhibits", () => {
         customDeps.apiService.getEnteredExhibits = jest.fn().mockResolvedValue([]);
         const { queryByText } = renderWithGlobalContext(

@@ -1,4 +1,4 @@
-import { waitForDomChange, waitForElement, fireEvent } from "@testing-library/react";
+import { waitForDomChange, waitForElement, fireEvent, waitFor } from "@testing-library/react";
 import { createMemoryHistory } from "history";
 import React from "react";
 import { Route } from "react-router-dom";
@@ -28,7 +28,7 @@ jest.mock("react-router-dom", () => ({
     }),
 }));
 
-const customDeps = getMockDeps();
+let customDeps;
 const history = createMemoryHistory();
 // TODO: Find a better way to mock Twilio (eg, adding it to DI system)
 
@@ -130,9 +130,9 @@ jest.mock("../../hooks/useSignalR", () => () => ({
     signalR: true,
 }));
 
-// jest.mock("../../hooks/breakrooms/hooks", () => ({
-//     useToggleLockRoom: jest.fn(),
-// }));
+beforeEach(() => {
+    customDeps = getMockDeps();
+});
 
 test("Error screen is shown when fetch fails", async () => {
     customDeps.apiService.joinBreakroom = jest.fn().mockRejectedValue({});
@@ -174,8 +174,9 @@ test("VideoConference is shown if fetch is successful", async () => {
     );
 
     history.push(TESTS_CONSTANTS.TEST_BREAKROOM_ROUTE);
-    await waitForDomChange();
-    expect(waitForElement(() => getByTestId("videoconference"))).toBeTruthy();
+    await waitFor(() => {
+        getByTestId("videoconference_breakroom");
+    });
 });
 
 test("Off the record is shown by default", async () => {

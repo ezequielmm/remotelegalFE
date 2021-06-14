@@ -18,9 +18,7 @@ import { useCheckUserStatus } from "../preJoinDepo/hooks";
 import { Roles } from "../../models/participant";
 import { useAuthentication } from "../auth";
 import stopAllTracks from "../../helpers/stopAllTracks";
-
-// TODO: Find the way to use import instead of using require
-const beep = require("../../assets/sounds/Select.mp3");
+import beep from "../../assets/sounds/Select.mp3";
 
 export const useKillDepo = () => {
     const { deps } = useContext(GlobalStateContext);
@@ -200,15 +198,8 @@ export const useJoinDeposition = () => {
             const dataTrack = new LocalDataTrack();
             const userStatus = await checkUserStatus(depositionID, currentEmail.current);
             dispatch(actions.setUserStatus(userStatus));
-            const {
-                isOnTheRecord,
-                timeZone,
-                token,
-                isSharing,
-                participants,
-                shouldSendToPreDepo,
-                jobNumber,
-            }: any = await generateToken();
+            const { isOnTheRecord, timeZone, token, isSharing, participants, shouldSendToPreDepo, jobNumber }: any =
+                await generateToken();
             dispatch(actions.setDepoStatus(shouldSendToPreDepo));
             dispatch(actions.setJobNumber(jobNumber));
 

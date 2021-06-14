@@ -2,7 +2,10 @@ import { renderHook } from "@testing-library/react-hooks";
 import useParticipantTracks from "../../hooks/InDepo/useParticipantTracks";
 import getParticipant from "../mocks/participant";
 
-const participant = getParticipant("test1");
+let participant;
+beforeEach(() => {
+    participant = getParticipant();
+});
 
 test("Tracks have the correct length", () => {
     const { result } = renderHook(() => useParticipantTracks(participant));
@@ -25,8 +28,10 @@ test("Attach method is called for video and audio track", () => {
 });
 
 test("Detach method is called for video and audio track", () => {
-    const { result, rerender } = renderHook(() => useParticipantTracks(participant));
+    const { result, rerender, waitFor } = renderHook(() => useParticipantTracks(participant));
     rerender();
-    expect(result.current.videoTracks[0].detach).toBeCalled();
-    expect(result.current.audioTracks[0].detach).toBeCalled();
+    waitFor(() => {
+        expect(result.current.videoTracks[0].detach).toBeCalled();
+        expect(result.current.audioTracks[0].detach).toBeCalled();
+    });
 });

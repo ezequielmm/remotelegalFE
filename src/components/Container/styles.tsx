@@ -1,8 +1,7 @@
 import styled from "styled-components";
 import { theme } from "../../constants/styles/theme";
 import { getREM } from "../../constants/styles/utils";
-
-const BgImage = require("../../assets/login/bg.jpg");
+import BgImage from "../../assets/login/bg.jpg";
 
 export const StyledContainer = styled.div`
     display: grid;

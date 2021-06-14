@@ -19,7 +19,10 @@ jest.mock("react-router", () => ({
     useParams: () => ({ depositionID: "test1234" }),
 }));
 
-const customDeps = getMockDeps();
+let customDeps;
+beforeEach(() => {
+    customDeps = getMockDeps();
+});
 
 describe("DepositionDetailsSummary -> RealTime", () => {
     it("shows spinner while transcriptions are being loaded", async () => {

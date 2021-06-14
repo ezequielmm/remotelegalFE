@@ -1,5 +1,5 @@
 import "@testing-library/jest-dom";
-import { fireEvent, waitForDomChange, act } from "@testing-library/react";
+import { fireEvent, waitForDomChange, act, cleanup } from "@testing-library/react";
 import React from "react";
 import { ThemeProvider } from "styled-components";
 import * as CONSTANTS from "../../constants/exhibits";
@@ -19,7 +19,11 @@ jest.mock("react-router-dom", () => ({
     }),
 }));
 
-const customDeps = getMockDeps();
+let customDeps;
+
+beforeEach(() => {
+    customDeps = getMockDeps();
+});
 
 test("Should display the close confirmation modal if the shared exhibit is not isPublic", async () => {
     customDeps.apiService.getEnteredExhibits = jest.fn().mockResolvedValue([]);

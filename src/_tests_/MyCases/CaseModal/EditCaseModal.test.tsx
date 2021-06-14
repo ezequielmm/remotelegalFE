@@ -4,19 +4,15 @@ import "mutationobserver-shim";
 import * as CONSTANTS from "../../constants/cases";
 import * as AUTH from "../../mocks/Auth";
 import renderWithGlobalContext from "../../utils/renderWithGlobalContext";
-import ENV from "../../../constants/env";
 import getMockDeps from "../../utils/getMockDeps";
 import EditCaseModal from "../../../routes/MyCases/CaseModal/EditCaseModal";
 
-const customDeps = getMockDeps();
+let customDeps;
 
 describe("CaseModel", () => {
     beforeEach(() => {
         jest.resetModules();
-        ENV.AUTH.REGION = "eu-east-1";
-        ENV.AUTH.USER_POOL_ID = "us-east-1_Testa1eI";
-        ENV.AUTH.USER_POOLWEBCLIENTID = "720vhm6a065testm1hsps6vgtr";
-        ENV.API.URL = "http://localhost:5000";
+        customDeps = getMockDeps();
     });
 
     it("should validate inputs on blur on empty field and the button should be disabled", async () => {
@@ -67,9 +63,8 @@ describe("CaseModel", () => {
             caseObj: { caseNumber: "test1", name: "test1" },
             id: "646661736466",
         });
-        await waitForDomChange();
-        expect(getByText(CONSTANTS.EDIT_CASE_SUCCESSFUL)).toBeInTheDocument();
 
+        expect(getByText(CONSTANTS.EDIT_CASE_SUCCESSFUL)).toBeInTheDocument();
         expect(fetchCases).toHaveBeenCalled();
         expect(handleClose).toHaveBeenCalled();
     });

@@ -2,6 +2,7 @@ import { fireEvent, waitForDomChange, waitForElement } from "@testing-library/re
 import React from "react";
 import userEvent from "@testing-library/user-event";
 import { Amplify, Auth } from "aws-amplify";
+import { Redirect } from "react-router";
 import * as CONSTANTS from "../../constants/preJoinDepo";
 import PreJoinDepo from "../../routes/PreJoinDepo";
 import * as AUTH from "../mocks/Auth";
@@ -14,8 +15,6 @@ import { AMPLIFY_CONFIG } from "../constants/login";
 Amplify.configure({
     Auth: AMPLIFY_CONFIG,
 });
-
-const deps = getMockDeps();
 
 const mockHistoryPush = jest.fn();
 
@@ -30,7 +29,9 @@ jest.mock("react-router", () => ({
 }));
 
 describe("it tests validations on the initial flow", () => {
+    let deps;
     beforeEach(() => {
+        deps = getMockDeps();
         AUTH.NOT_VALID();
     });
     test("should validate empty email input", async () => {
@@ -52,17 +53,19 @@ describe("it tests validations on the initial flow", () => {
 
     test("toast should appear if userDepoStatus fetch fails", async () => {
         deps.apiService.checkUserDepoStatus = jest.fn().mockRejectedValue(new Error("error"));
-        const { getByTestId, getByText } = renderWithGlobalContext(<PreJoinDepo />, deps);
+        const { getByTestId, getAllByText } = renderWithGlobalContext(<PreJoinDepo />, deps);
         await waitForDomChange();
         fireEvent.change(getByTestId(CONSTANTS.EMAIL_INPUT_ID), { target: { value: TEST_CONSTANTS.MOCKED_EMAIL } });
         userEvent.click(getByTestId(CONSTANTS.STEP_1_BUTTON_ID));
         await waitForDomChange();
-        await waitForElement(() => getByText(CONSTANTS.NETWORK_ERROR));
+        await waitForElement(() => getAllByText(CONSTANTS.NETWORK_ERROR));
     });
 });
 
 describe("It tests the non-registered and non-participant flow", () => {
+    let deps;
     beforeEach(() => {
+        deps = getMockDeps();
         AUTH.NOT_VALID();
         deps.apiService.checkUserDepoStatus = jest.fn().mockResolvedValue({ isUser: false, participant: null });
     });
@@ -225,7 +228,9 @@ describe("It tests the non-registered and non-participant flow", () => {
 });
 
 describe("It tests the non-registered and participant flow", () => {
+    let deps;
     beforeEach(() => {
+        deps = getMockDeps();
         AUTH.NOT_VALID();
         deps.apiService.checkUserDepoStatus = jest
             .fn()
@@ -298,7 +303,9 @@ describe("It tests the non-registered and participant flow", () => {
 });
 
 describe("It tests the registered and not logged in user and non-participant flow", () => {
+    let deps;
     beforeEach(() => {
+        deps = getMockDeps();
         AUTH.NOT_VALID();
         AUTH.SUCCESSFUL_SIGN_IN();
         deps.apiService.checkUserDepoStatus = jest.fn().mockResolvedValue({ isUser: true, participant: null });
@@ -322,11 +329,11 @@ describe("It tests the registered and not logged in user and non-participant flo
     });
     test("should show toast when checkUserDepoStatus fails", async () => {
         deps.apiService.checkUserDepoStatus = jest.fn().mockRejectedValue(Error(""));
-        const { getByTestId, getByText } = renderWithGlobalContext(<PreJoinDepo />, deps);
+        const { getByTestId, getAllByText } = renderWithGlobalContext(<PreJoinDepo />, deps);
         await waitForDomChange();
         fireEvent.change(getByTestId(CONSTANTS.EMAIL_INPUT_ID), { target: { value: TEST_CONSTANTS.MOCKED_EMAIL } });
         userEvent.click(getByTestId(CONSTANTS.STEP_1_BUTTON_ID));
-        await waitForElement(() => getByText(CONSTANTS.NETWORK_ERROR));
+        await waitForElement(() => getAllByText(CONSTANTS.NETWORK_ERROR));
     });
 
     test("should show error toast if Add Participant fetch fails", async () => {
@@ -345,7 +352,7 @@ describe("It tests the registered and not logged in user and non-participant flo
         });
         userEvent.click(getByTestId(CONSTANTS.STEP_2_BUTTON_ID));
         await waitForDomChange();
-        await waitForElement(() => getByText(CONSTANTS.NETWORK_ERROR));
+        await waitForElement(() => getAllByText(CONSTANTS.NETWORK_ERROR));
     });
     test("should display witness error message if addDepoParticipant endpoint returns a 400", async () => {
         deps.apiService.addDepoParticipant = jest.fn().mockRejectedValue(400);
@@ -436,7 +443,9 @@ describe("It tests the registered and not logged in user and non-participant flo
 });
 
 describe("It tests the registered and logged in user and non-participant flow", () => {
+    let deps;
     beforeEach(() => {
+        deps = getMockDeps();
         AUTH.VALID();
         deps.apiService.checkUserDepoStatus = jest.fn().mockResolvedValue({ isUser: true, participant: null });
     });
@@ -448,7 +457,7 @@ describe("It tests the registered and logged in user and non-participant flow", 
         const role = await waitForElement(() => getAllByText(TEST_CONSTANTS.ROLE));
         userEvent.click(role[1]);
         userEvent.click(getByTestId(CONSTANTS.STEP_2_BUTTON_ID));
-        await waitForElement(() => getByText(CONSTANTS.NETWORK_ERROR));
+        await waitForElement(() => getAllByText(CONSTANTS.NETWORK_ERROR));
     });
     test("should show spinner and show error screen if userStatus fetch fails", async () => {
         deps.apiService.checkUserDepoStatus = jest.fn().mockRejectedValue(Error("Error"));
@@ -502,11 +511,10 @@ describe("It tests the registered and logged in user and non-participant flow", 
 });
 
 describe("It tests the registered and logged in user and participant flow", () => {
+    let deps;
     beforeEach(() => {
+        deps = getMockDeps();
         AUTH.VALID();
-        deps.apiService.checkUserDepoStatus = jest
-            .fn()
-            .mockResolvedValue({ isUser: true, participant: { isAdmitted: true } });
     });
 
     test("should show spinner and show error screen if userStatus fetch fails", async () => {
@@ -523,14 +531,19 @@ describe("It tests the registered and logged in user and participant flow", () =
     });
 
     test("should redirect to deposition", async () => {
-        const { getByText } = renderWithGlobalContext(<PreJoinDepo />, deps);
+        deps.apiService.checkUserDepoStatus = jest
+            .fn()
+            .mockResolvedValue({ isUser: true, participant: { isAdmitted: true } });
+        renderWithGlobalContext(<PreJoinDepo />, deps);
         await waitForDomChange();
-        expect(getByText(`Redirected to ${CONSTANTS.DEPOSITION_ROUTE}${TEST_CONSTANTS.DEPO_ID}`)).toBeInTheDocument();
+        expect(Redirect).toHaveBeenCalledWith({ to: "/deposition/join/depoId" }, {});
     });
 });
 
 describe("It tests the registered and  not logged in user and participant flow", () => {
+    let deps;
     beforeEach(() => {
+        deps = getMockDeps();
         AUTH.NOT_VALID();
         AUTH.SUCCESSFUL_SIGN_IN();
         deps.apiService.checkUserDepoStatus = jest

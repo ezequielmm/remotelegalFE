@@ -5,18 +5,17 @@ import Modal from "../../../routes/MyCases/CaseModal";
 import * as CONSTANTS from "../../constants/cases";
 import * as AUTH from "../../mocks/Auth";
 import renderWithGlobalContext from "../../utils/renderWithGlobalContext";
-import ENV from "../../../constants/env";
 import getMockDeps from "../../utils/getMockDeps";
 
-const customDeps = getMockDeps();
+let customDeps;
+
+beforeEach(() => {
+    customDeps = getMockDeps();
+});
 
 describe("CaseModel", () => {
     beforeEach(() => {
         jest.resetModules();
-        ENV.AUTH.REGION = "eu-east-1";
-        ENV.AUTH.USER_POOL_ID = "us-east-1_Testa1eI";
-        ENV.AUTH.USER_POOLWEBCLIENTID = "720vhm6a065testm1hsps6vgtr";
-        ENV.API.URL = "http://localhost:5000";
     });
 
     it("should validate inputs on blur on the first load and the button should be disabled", async () => {
