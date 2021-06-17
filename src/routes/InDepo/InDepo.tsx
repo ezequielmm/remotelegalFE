@@ -237,52 +237,55 @@ const InDepo = () => {
             />
         );
     }
-
-    return currentRoom && dataTrack ? (
-        <ThemeProvider theme={inDepoTheme}>
-            <StyledInDepoContainer data-testid="videoconference">
-                {(!!currentUser?.isAdmin ||
-                    JSON.parse(currentRoom?.localParticipant?.identity || "{}").role === Roles.courtReporter) && (
-                    <GuestRequests depositionID={depositionID} />
-                )}
-                <StyledInDepoLayout>
-                    <RecordPill on={isRecording} />
-                    <Exhibits visible={exhibitsOpen} />
-                    <RealTime visible={realTimeOpen} timeZone={timeZone} transcriptions={transcriptions} />
-                    <VideoConference
-                        localParticipant={currentRoom.localParticipant}
-                        timeZone={timeZone}
-                        attendees={currentRoom.participants}
-                        layoutSize={videoLayoutSize}
-                        atendeesVisibility={atendeesVisibility}
-                        enableMuteUnmute
-                    />
-                </StyledInDepoLayout>
-                <StyledRoomFooter>
-                    <ControlsBar
-                        breakrooms={breakrooms}
-                        canJoinToLockedBreakroom={
-                            !!currentUser?.isAdmin ||
-                            JSON.parse(currentRoom?.localParticipant?.identity || "{}").role === Roles.courtReporter
-                        }
-                        handleJoinBreakroom={(breakroomId) => {
-                            history.push(`/deposition/join/${depositionID}/breakroom/${breakroomId}`);
-                        }}
-                        isRecording={isRecording}
-                        canEnd={permissions.includes("EndDeposition")}
-                        canRecord={permissions.includes("Recording")}
-                        realTimeOpen={realTimeOpen}
-                        togglerRealTime={togglerRealTime}
-                        exhibitsOpen={exhibitsOpen}
-                        togglerExhibits={togglerExhibits}
-                        localParticipant={currentRoom.localParticipant}
-                        initialAudioEnabled={initialAudioEnabled}
-                        jobNumber={jobNumber}
-                    />
-                </StyledRoomFooter>
-            </StyledInDepoContainer>
-        </ThemeProvider>
-    ) : null;
+    try {
+        return currentRoom && dataTrack ? (
+            <ThemeProvider theme={inDepoTheme}>
+                <StyledInDepoContainer data-testid="videoconference">
+                    {(!!currentUser?.isAdmin ||
+                        JSON.parse(currentRoom?.localParticipant?.identity || "{}").role === Roles.courtReporter) && (
+                        <GuestRequests depositionID={depositionID} />
+                    )}
+                    <StyledInDepoLayout>
+                        <RecordPill on={isRecording} />
+                        <Exhibits visible={exhibitsOpen} />
+                        <RealTime visible={realTimeOpen} timeZone={timeZone} transcriptions={transcriptions} />
+                        <VideoConference
+                            localParticipant={currentRoom.localParticipant}
+                            timeZone={timeZone}
+                            attendees={currentRoom.participants}
+                            layoutSize={videoLayoutSize}
+                            atendeesVisibility={atendeesVisibility}
+                            enableMuteUnmute
+                        />
+                    </StyledInDepoLayout>
+                    <StyledRoomFooter>
+                        <ControlsBar
+                            breakrooms={breakrooms}
+                            canJoinToLockedBreakroom={
+                                !!currentUser?.isAdmin ||
+                                JSON.parse(currentRoom?.localParticipant?.identity || "{}").role === Roles.courtReporter
+                            }
+                            handleJoinBreakroom={(breakroomId) => {
+                                history.push(`/deposition/join/${depositionID}/breakroom/${breakroomId}`);
+                            }}
+                            isRecording={isRecording}
+                            canEnd={permissions.includes("EndDeposition")}
+                            canRecord={permissions.includes("Recording")}
+                            realTimeOpen={realTimeOpen}
+                            togglerRealTime={togglerRealTime}
+                            exhibitsOpen={exhibitsOpen}
+                            togglerExhibits={togglerExhibits}
+                            localParticipant={currentRoom.localParticipant}
+                            initialAudioEnabled={initialAudioEnabled}
+                            jobNumber={jobNumber}
+                        />
+                    </StyledRoomFooter>
+                </StyledInDepoContainer>
+            </ThemeProvider>
+        ) : null;
+    } catch (runtimeError) {
+        console.error(runtimeError);
+    }
 };
 
 export default InDepo;
