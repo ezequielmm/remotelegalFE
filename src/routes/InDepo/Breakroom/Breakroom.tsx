@@ -172,36 +172,39 @@ const Breakroom = () => {
             />
         );
     }
-
-    return currentBreakroom && breakroomDataTrack ? (
-        <ThemeProvider theme={inDepoTheme}>
-            <StyledInDepoContainer data-testid="videoconference_breakroom">
-                <StyledInDepoLayout>
-                    <RecordPill on={false} />
-                    <Exhibits visible={exhibitsOpen} />
-                    <VideoConference
-                        isBreakroom
-                        localParticipant={currentBreakroom.localParticipant}
-                        timeZone={timeZone}
-                        attendees={currentBreakroom.participants}
-                        layoutSize={videoLayoutSize}
-                        atendeesVisibility={atendeesVisibility}
-                    />
-                </StyledInDepoLayout>
-                <StyledRoomFooter>
-                    <BreakroomControlsBar
-                        breakroomName={currentBreakroomData?.name || ""}
-                        localParticipant={currentBreakroom.localParticipant}
-                        exhibitsOpen={exhibitsOpen}
-                        togglerExhibits={togglerExhibits}
-                        rejoinDepo={handleRejoinDepo}
-                        lockRoom={(locked) => lockRoom(locked)}
-                        isLocked={isLocked}
-                    />
-                </StyledRoomFooter>
-            </StyledInDepoContainer>
-        </ThemeProvider>
-    ) : null;
+    try {
+        return currentBreakroom && breakroomDataTrack ? (
+            <ThemeProvider theme={inDepoTheme}>
+                <StyledInDepoContainer data-testid="videoconference_breakroom">
+                    <StyledInDepoLayout>
+                        <RecordPill on={false} />
+                        <Exhibits visible={exhibitsOpen} />
+                        <VideoConference
+                            isBreakroom
+                            localParticipant={currentBreakroom.localParticipant}
+                            timeZone={timeZone}
+                            attendees={currentBreakroom.participants}
+                            layoutSize={videoLayoutSize}
+                            atendeesVisibility={atendeesVisibility}
+                        />
+                    </StyledInDepoLayout>
+                    <StyledRoomFooter>
+                        <BreakroomControlsBar
+                            breakroomName={currentBreakroomData?.name || ""}
+                            localParticipant={currentBreakroom.localParticipant}
+                            exhibitsOpen={exhibitsOpen}
+                            togglerExhibits={togglerExhibits}
+                            rejoinDepo={handleRejoinDepo}
+                            lockRoom={(locked) => lockRoom(locked)}
+                            isLocked={isLocked}
+                        />
+                    </StyledRoomFooter>
+                </StyledInDepoContainer>
+            </ThemeProvider>
+        ) : null;
+    } catch (runtimeError) {
+        console.error(runtimeError);
+    }
 };
 
 export default Breakroom;
