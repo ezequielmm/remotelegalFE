@@ -112,12 +112,8 @@ export const useGetDocumentsUrlList = (): {
     const { deps } = useContext(GlobalStateContext);
     const { depositionID } = useParams<{ depositionID: string }>();
 
-    const [
-        getDocumentsUrlList,
-        pendingGetTranscriptsUrlList,
-        errorGetTranscriptsUrlList,
-        documentsUrlList,
-    ] = useAsyncCallback(async (documentIds) => deps.apiService.getDocumentsUrlList({ depositionID, documentIds }), []);
+    const [getDocumentsUrlList, pendingGetTranscriptsUrlList, errorGetTranscriptsUrlList, documentsUrlList] =
+        useAsyncCallback(async (documentIds) => deps.apiService.getDocumentsUrlList({ depositionID, documentIds }), []);
 
     return {
         getDocumentsUrlList,

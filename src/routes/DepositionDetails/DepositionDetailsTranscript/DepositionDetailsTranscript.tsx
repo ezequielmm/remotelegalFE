@@ -48,16 +48,18 @@ const DepositionDetailsTranscripts = () => {
             setSelectedRows(selection);
         },
     };
-    const isDownloadDisabled = !selectedRows.length;
     const [removeTranscript, removeTranscriptLoading, removeTranscriptError] = useRemoveTranscript();
     const toggleDeleteModal = () => setOpenDeleteModal(!openDeleteModal);
     const selectedRecord = useRef<TranscriptFile>(null);
-    const { getDocumentsUrlList, errorGetTranscriptsUrlList, documentsUrlList } = useGetDocumentsUrlList();
+    const { getDocumentsUrlList, errorGetTranscriptsUrlList, documentsUrlList, pendingGetTranscriptsUrlList } =
+        useGetDocumentsUrlList();
 
     const refreshList = () => {
         setShowProgressBar(false);
         handleFetchFiles();
     };
+
+    const isDownloadDisabled = !selectedRows.length || pendingGetTranscriptsUrlList;
 
     useEffect(() => {
         handleFetchFiles();
@@ -198,6 +200,7 @@ const DepositionDetailsTranscripts = () => {
                             icon={<Icon icon={DownloadIcon} size={9} />}
                             size="middle"
                             disabled={isDownloadDisabled}
+                            loading={pendingGetTranscriptsUrlList}
                             onClick={handleDownload}
                         >
                             {CONSTANTS.DETAILS_TRANSCRIPT_BUTTON_DOWNLOAD}
