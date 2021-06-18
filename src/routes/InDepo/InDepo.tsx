@@ -262,7 +262,6 @@ const InDepo = () => {
                         <ControlsBar
                             breakrooms={breakrooms}
                             canJoinToLockedBreakroom={
-                                !!currentUser?.isAdmin ||
                                 JSON.parse(currentRoom?.localParticipant?.identity || "{}").role === Roles.courtReporter
                             }
                             handleJoinBreakroom={(breakroomId) => {

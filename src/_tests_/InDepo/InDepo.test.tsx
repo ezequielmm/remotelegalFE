@@ -1,5 +1,6 @@
 import { fireEvent, waitForDomChange, waitForElement } from "@testing-library/react";
 import { createMemoryHistory } from "history";
+import AudioRecorder from "audio-recorder-polyfill";
 import React from "react";
 import { act } from "react-dom/test-utils";
 import { Route, Switch } from "react-router-dom";
@@ -35,21 +36,13 @@ jest.mock("@twilio/conversations", () => {
     }));
 });
 
-jest.mock("audio-recorder-polyfill", () => {
-    return jest.fn().mockImplementation(() => ({
-        start: jest.fn(),
-        addEventListener: jest.fn(),
-        removeEventListener: jest.fn(),
-        stop: jest.fn(),
-        stream: { getTracks: () => [{ stop: () => {} }] },
-    }));
-});
+jest.mock("audio-recorder-polyfill");
 
 (global.navigator as any).mediaDevices = {
     getUserMedia: jest.fn().mockResolvedValue(true),
 };
 
-const customDeps = getMockDeps();
+let customDeps;
 const history = createMemoryHistory();
 
 const PreDepoRoute = () => <div>PRE_DEPO</div>;
@@ -144,9 +137,18 @@ jest.mock("twilio-video", () => ({
 
 beforeEach(() => {
     AUTH.VALID();
-    // Mocking Canvas for PDFTron
+    const recorderMock = AudioRecorder as jest.Mock;
+    customDeps = getMockDeps();
+    recorderMock.mockImplementation(() => ({
+        start: jest.fn(),
+        addEventListener: jest.fn(),
+        removeEventListener: jest.fn(),
+        stop: jest.fn(),
+        stream: { getTracks: () => [{ stop: () => {} }] },
+    }));
     customDeps.apiService.joinDeposition = jest.fn().mockResolvedValue(TESTS_CONSTANTS.JOIN_DEPOSITION_MOCK);
     customDeps.apiService.checkUserDepoStatus = jest.fn().mockResolvedValue(getUserDepoStatusWithParticipantAdmitted());
+    // Mocking Canvas for PDFTron
     const createElement = document.createElement.bind(document);
     document.createElement = (tagName) => {
         if (tagName === "canvas") {

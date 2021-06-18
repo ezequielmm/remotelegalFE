@@ -209,6 +209,7 @@ const MyDepositions = () => {
                                 showSizeChanger: false,
                             }}
                             scroll
+                            hscroll={1200}
                             style={{ height: "100%" }}
                             locale={{
                                 emptyText: <MyDepositionsEmptyTable type={filterCriteria} />,

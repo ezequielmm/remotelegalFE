@@ -140,7 +140,6 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
             handleClose(false);
             setTimeout(() => fetchDeposition(), 200);
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [
         editedDeposition,
         fetchDeposition,
@@ -148,6 +147,8 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
         canceledDeposition,
         revertedCanceledDeposition,
         rescheduledDeposition,
+        isStatusConfirmed,
+        isStatusConfirmedAfterCanceled,
     ]);
 
     useEffect(() => {
@@ -172,13 +173,7 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
             (formStatus.endDate === null && deposition.endDate !== null) ||
             deposition.timeZone !== formStatus.timeZone;
 
-        if (isDepoConfirmedAndNowCanceled || isDepoReverted) {
-            return setStatusModal({
-                open: true,
-                modalContent: getModalTextContent(formStatus.status, deposition),
-            });
-        }
-        if (isDepoNowConfirmed) {
+        if (isDepoConfirmedAndNowCanceled || isDepoNowConfirmed || isDepoReverted) {
             return setStatusModal({
                 open: true,
                 modalContent: getModalTextContent(formStatus.status, deposition),
@@ -200,12 +195,12 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
         return editDeposition(deposition.id, bodyWithoutFile, file, deleteCaption);
     };
 
-    const disabledDate = (current: any) => {
+    const disabledDate = (current: dayjs.Dayjs) => {
         return dayjs(current).isBefore(dayjs()) || dayjs(current).isAfter(dayjs().add(1, "y"));
     };
 
-    const handleChangeDate = (current: any) => {
-        const currentDateAsDayJsObject = dayjs(current).tz(mapTimeZone[deposition.timeZone]);
+    const handleChangeDate = (current: dayjs.Dayjs) => {
+        const currentDateAsDayJsObject = dayjs(current).tz(mapTimeZone[deposition.timeZone], true);
         setFormStatus({ ...formStatus, calendarDate: currentDateAsDayJsObject });
         if (current && dayjs(current).isBefore(dayjs(new Date()).subtract(5, "m"))) {
             return setInvalidStartTime(true);
@@ -213,7 +208,7 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
         return setInvalidStartTime(false);
     };
 
-    const handleChangeStartTime = (current: any) => {
+    const handleChangeStartTime = (current: dayjs.Dayjs) => {
         setFormStatus({ ...formStatus, startDate: dayjs(current).tz(mapTimeZone[deposition.timeZone], true) });
         if (dayjs(current).isBefore(dayjs(new Date()).tz(mapTimeZone[deposition.timeZone], true).subtract(5, "m"))) {
             return setInvalidStartTime(true);
@@ -225,7 +220,7 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
         return setInvalidStartTime(false);
     };
 
-    const handleChangeEndTime = (current: any) => {
+    const handleChangeEndTime = (current: dayjs.Dayjs) => {
         if (!current) {
             setInvalidEndTime(false);
             return setFormStatus({ ...formStatus, endDate: null });
@@ -265,11 +260,10 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
     };
 
     const handleSubmitWithReschedule = () => {
-        // eslint-disable-next-line no-shadow
-        const { file, caption, calendarDate, deleteCaption, ...bodyWithoutFile }: any = formStatus;
+        const { ...bodyWithoutFile }: { startDate: dayjs.Dayjs | string; endDate: dayjs.Dayjs | string } = formStatus;
         setRescheduleModal({ ...openRescheduleModal, open: false });
         if (invalidFile) {
-            return;
+            return null;
         }
 
         bodyWithoutFile.startDate = formatToDateOffset(calendarDate, formStatus.startDate, formStatus.timeZone);
@@ -278,6 +272,8 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
 
         return rescheduleDeposition(deposition.id, bodyWithoutFile, file, deleteCaption);
     };
+
+    const generalLoading = editLoading || cancelLoading || revertCancelLoading || rescheduleDepositionLoading;
 
     return (
         <Modal
@@ -297,6 +293,20 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
                 onNegativeClick={() => setStatusModal({ ...openStatusModal, open: false })}
                 onPositiveClick={() => {
                     if (isStatusConfirmed) {
+                        const {
+                            ...bodyWithoutFile
+                        }: { startDate: dayjs.Dayjs | string; endDate: dayjs.Dayjs | string } = formStatus;
+                        bodyWithoutFile.startDate = formatToDateOffset(
+                            calendarDate,
+                            formStatus.startDate,
+                            formStatus.timeZone
+                        );
+
+                        bodyWithoutFile.endDate = formatToDateOffset(
+                            calendarDate,
+                            formStatus.endDate,
+                            formStatus.timeZone
+                        );
                         return editDeposition(deposition.id, bodyWithoutFile, file, deleteCaption);
                     }
                     return isStatusCanceled
@@ -611,12 +621,7 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
                                     data-testid={
                                         CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_CANCEL_BUTTON_TEST_ID
                                     }
-                                    disabled={
-                                        editLoading ||
-                                        cancelLoading ||
-                                        revertCancelLoading ||
-                                        rescheduleDepositionLoading
-                                    }
+                                    disabled={generalLoading}
                                     onClick={handleCloseModalAndResetFormStatus}
                                 >
                                     {CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_CANCEL_BUTTON_TEXT}
@@ -625,20 +630,8 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
                                     data-testid={
                                         CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_CONFIRM_BUTTON_TEST_ID
                                     }
-                                    disabled={
-                                        editLoading ||
-                                        cancelLoading ||
-                                        revertCancelLoading ||
-                                        invalidStartTime ||
-                                        invalidEndTime ||
-                                        rescheduleDepositionLoading
-                                    }
-                                    loading={
-                                        editLoading ||
-                                        cancelLoading ||
-                                        revertCancelLoading ||
-                                        rescheduleDepositionLoading
-                                    }
+                                    disabled={generalLoading || invalidStartTime || invalidEndTime}
+                                    loading={generalLoading}
                                     htmlType="submit"
                                     type="primary"
                                     onClick={handleSubmit}

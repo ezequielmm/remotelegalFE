@@ -4,8 +4,10 @@ import utc from "dayjs/plugin/utc";
 dayjs.extend(utc);
 
 export const EXPECTED_EDIT_DEPOSITION_BODY = {
+    caption: null,
+    deleteCaption: true,
     details: "test notes",
-    endDate: "2021-03-24T20:32:37.757Z",
+    endDate: "2021-04-24T20:32:37.757Z",
     isVideoRecordingNeeded: false,
     job: "test job 1234",
     startDate: dayjs(new Date()).add(30, "m").utc(),

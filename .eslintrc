@@ -1,5 +1,5 @@
 {
-    "extends": ["react-app", "airbnb", "plugin:jsx-a11y/recommended", "prettier", "prettier/react"],
+    "extends": ["react-app", "airbnb", "plugin:jsx-a11y/recommended", "plugin:prettier/recommended"],
     "plugins": ["jsx-a11y", "prettier"],
     "rules": {
         "semi": 0,
@@ -26,14 +26,25 @@
                 "tsx": "never"
             }
         ],
-        "react/jsx-props-no-spreading": "off"
+        "react/jsx-props-no-spreading": "off",
+        "no-use-before-define": "off",
+        "@typescript-eslint/no-use-before-define": ["error"],
+        "import/no-extraneous-dependencies": "off",
+        "no-unused-vars": "off",
+        "react/react-in-jsx-scope": "off",
+        "@typescript-eslint/no-unused-vars": "error",
+        "no-shadow": "off",
+        "react/require-default-props": "off",
+        "import/no-unresolved": "off"
     },
     "settings": {
         "import/resolver": {
             "node": {
-                "extensions": [".js", ".jsx", ".ts", ".tsx"],
-                "paths": ["src"]
+                "extensions": [".js", ".jsx", ".ts", ".tsx"]
             }
         }
+    },
+    "globals": {
+        "JSX": "writable"
     }
 }

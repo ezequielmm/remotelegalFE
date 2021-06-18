@@ -12,7 +12,10 @@ jest.mock("react-router", () => ({
     }),
 }));
 
-const deps = getMockDeps();
+let deps;
+beforeEach(() => {
+    deps = getMockDeps();
+});
 
 describe("useGetRecordingInfo", () => {
     test("recordingInfo data should not be null when getRecordingInfo get any record info data", async () => {

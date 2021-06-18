@@ -19,9 +19,14 @@ jest.mock("react-router", () => ({
     ...jest.requireActual("react-router"),
     useParams: () => ({ depositionID: "depoId" }),
 }));
-const customDeps = getMockDeps();
+
+let customDeps;
 
 describe("DepositionDetailsEnteredExhibits", () => {
+    beforeEach(() => {
+        customDeps = getMockDeps();
+        customDeps.apiService.getEnteredExhibits = jest.fn().mockResolvedValue(enteredExhibitsMock);
+    });
     it("show a title with DEPOSITION_DETAILS_ENTERED_EXHIBITS_TITLE constant", async () => {
         const { getByTestId } = renderWithGlobalContext(<DepositionDetailsEnteredExhibits />, customDeps);
         expect(await waitForElement(() => expect(getByTestId("entered_exhibits_title")))).toBeTruthy();

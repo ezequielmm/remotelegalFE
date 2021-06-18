@@ -71,7 +71,9 @@ const useParticipantTracks = (participant: LocalParticipant | RemoteParticipant)
         participant.on("trackEnabled", trackEnabled);
 
         // eslint-disable-next-line consistent-return
-        return () => participant?.removeAllListeners();
+        return () => {
+            participant?.removeAllListeners();
+        };
     }, [participant]);
 
     useEffect(() => {
@@ -83,7 +85,9 @@ const useParticipantTracks = (participant: LocalParticipant | RemoteParticipant)
             }
             videoTrack.attach(videoRef.current);
         }
-        return () => videoTrack?.detach();
+        return () => {
+            videoTrack?.detach();
+        };
     }, [videoTracks, participant]);
 
     useEffect(() => {
@@ -92,7 +96,9 @@ const useParticipantTracks = (participant: LocalParticipant | RemoteParticipant)
             audioTrack.attach(audioRef.current);
         }
 
-        return () => audioTrack?.detach();
+        return () => {
+            audioTrack?.detach();
+        };
     }, [audioTracks]);
     return { videoDisabled, videoRef, audioRef, dataTracks, audioTracks, videoTracks };
 };

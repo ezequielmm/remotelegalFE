@@ -10,7 +10,11 @@ import * as AUTH from "../mocks/Auth";
 import renderWithGlobalContext from "../utils/renderWithGlobalContext";
 import getMockDeps from "../utils/getMockDeps";
 
-const deps = getMockDeps();
+let deps;
+
+beforeEach(() => {
+    deps = getMockDeps();
+});
 
 describe("MyCases", () => {
     beforeEach(() => {

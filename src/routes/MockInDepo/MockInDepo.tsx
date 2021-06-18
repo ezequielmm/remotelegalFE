@@ -181,6 +181,7 @@ const InDepo = () => {
                         attendees={mockDepoRoom.participants}
                         layoutSize={videoLayoutSize}
                         atendeesVisibility={atendeesVisibility}
+                        enableMuteUnmute
                     />
                 </StyledInDepoLayout>
                 <StyledRoomFooter>

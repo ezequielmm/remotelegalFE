@@ -18,9 +18,7 @@ import { useCheckUserStatus } from "../preJoinDepo/hooks";
 import { Roles } from "../../models/participant";
 import { useAuthentication } from "../auth";
 import stopAllTracks from "../../helpers/stopAllTracks";
-
-// TODO: Find the way to use import instead of using require
-const beep = require("../../assets/sounds/Select.mp3");
+import beep from "../../assets/sounds/Select.mp3";
 
 export const useKillDepo = () => {
     const { deps } = useContext(GlobalStateContext);
@@ -228,7 +226,10 @@ export const useJoinDeposition = () => {
             if (isSharing) {
                 fetchExhibitFileInfo(depositionID);
             }
-            const tracks = await createLocalTracks({ audio: true, video: { aspectRatio: 1.777777777777778 } });
+            const tracks = await createLocalTracks({
+                audio: true,
+                video: { aspectRatio: 1.777777777777778, facingMode: "user" },
+            });
             tracks.push(dataTrack);
             const room = await connect(token, {
                 ...TWILIO_VIDEO_CONFIG,
