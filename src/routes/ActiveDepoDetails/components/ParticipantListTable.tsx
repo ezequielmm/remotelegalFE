@@ -21,7 +21,6 @@ import CardFetchError from "../../../components/CardFetchError";
 import { UserInfo } from "../../../models/user";
 import { Status } from "../../../components/StatusPill/StatusPill";
 import EditParticipantModal from "./EditParticipantModal";
-import removeWhiteSpace from "../../../helpers/removeWhitespace";
 import useFloatingAlertContext from "../../../hooks/useFloatingAlertContext";
 
 const ParticipantListTable = ({
@@ -45,21 +44,12 @@ const ParticipantListTable = ({
         sortField: "",
     });
     const selectedParticipant = useRef<UserInfo["participant"]>(null);
-    const [
-        removeParticipant,
-        removeParticipantLoading,
-        removeParticipantError,
-        removedParticipant,
-    ] = useRemoveParticipantFromExistingDepo();
+    const [removeParticipant, removeParticipantLoading, removeParticipantError, removedParticipant] =
+        useRemoveParticipantFromExistingDepo();
     const addAlert = useFloatingAlertContext();
 
     useEffect(() => {
         if (removedParticipant) {
-            const participantWasCourtReporter =
-                removeWhiteSpace(selectedParticipant.current.role) === Roles.courtReporter;
-            if (participantWasCourtReporter) {
-                isCourtReporterPresent.current = false;
-            }
             setOpenDeleteModal(false);
             addAlert({
                 message: CONSTANTS.DEPOSITION_DETAILS_REMOVE_PARTICIPANT_TOAST,
@@ -126,12 +116,12 @@ const ParticipantListTable = ({
 
     useEffect(() => {
         if (participants) {
+            isCourtReporterPresent.current = participants.some(
+                (participant) => participant.role === Roles.courtReporter
+            );
             const participantsArray = participants.map((participant: IParticipant) => {
                 const { email, id, name, phone, role, user } = participant;
                 const isCourtReporter = role === Roles.courtReporter;
-                if (isCourtReporter) {
-                    isCourtReporterPresent.current = true;
-                }
                 return {
                     user,
                     email,

@@ -1,4 +1,4 @@
-import { waitForDomChange, fireEvent, waitForElement, act } from "@testing-library/react";
+import { waitForDomChange, fireEvent, waitForElement, act, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import React from "react";
 import * as TEST_CONSTANTS from "../constants/activeDepositionDetails";
@@ -182,8 +182,32 @@ test("Court Reporter shouldn´t be an option if there is already one", async () 
         customDeps
     );
     userEvent.click(getByText(PARTICIPANT_MOCK.role));
-    const role = await waitForElement(() => queryAllByText("Court Reporter"));
+    const role = await waitFor(() => queryAllByText("Court Reporter"));
     expect(role).toHaveLength(0);
+});
+
+test("Court Reporter should be an option if there is no one", async () => {
+    const overridenParticipantMock = {
+        ...PARTICIPANT_MOCK,
+        user: null,
+    };
+    const handleClose = jest.fn();
+    const deposition = getDepositionWithOverrideValues();
+    const fetchParticipants = jest.fn();
+    const { getByText, queryAllByText } = renderWithGlobalContext(
+        <EditParticipantModal
+            isCourtReporterPresent={false}
+            handleClose={handleClose}
+            deposition={deposition}
+            fetchParticipants={fetchParticipants}
+            visible
+            currentParticipant={overridenParticipantMock}
+        />,
+        customDeps
+    );
+    userEvent.click(getByText(PARTICIPANT_MOCK.role));
+    const role = await waitFor(() => queryAllByText("Court Reporter"));
+    expect(role).toHaveLength(2);
 });
 
 test("Should validate phone and name fields", async () => {
