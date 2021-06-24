@@ -94,6 +94,12 @@
   "jest": {
     "transformIgnorePatterns": [
       "/node_modules/(?!antd|@ant-design|rc-.+?|@babel/runtime).+(js|jsx)$"
+    ],
+    "collectCoverageFrom": [
+      "**/*.{js,jsx,ts,tsx}",
+      "!**/stories/**",
+      "!**/assets/**",
+      "!**/constants/styles/**"
     ]
   },
   "devDependencies": {
