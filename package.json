@@ -99,6 +99,7 @@
       "**/*.{js,jsx,ts,tsx}",
       "!**/stories/**",
       "!**/assets/**",
+      "!**/_tests_/**",
       "!**/constants/styles/**"
     ]
   },
