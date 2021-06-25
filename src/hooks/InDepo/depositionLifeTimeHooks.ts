@@ -207,8 +207,15 @@ export const useJoinDeposition = () => {
             const dataTrack = new LocalDataTrack();
             const userStatus = await checkUserStatus(depositionID, currentEmail.current);
             dispatch(actions.setUserStatus(userStatus));
-            const { isOnTheRecord, timeZone, token, isSharing, participants, shouldSendToPreDepo, jobNumber }: any =
-                await generateToken();
+            const {
+                isOnTheRecord,
+                timeZone,
+                token,
+                isSharing,
+                participants,
+                shouldSendToPreDepo,
+                jobNumber,
+            }: any = await generateToken();
             dispatch(actions.setDepoStatus(shouldSendToPreDepo));
             dispatch(actions.setJobNumber(jobNumber));
 

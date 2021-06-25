@@ -646,17 +646,23 @@ it("shows validations when click on add witness button", async () => {
 });
 
 it("add a witness when click on add witness button and the required fields are filled", async () => {
-    const { getByLabelText, getAllByRole, getByPlaceholderText, getAllByPlaceholderText, getByTestId, getAllByTestId } =
-        renderWithGlobalContext(<CreateDeposition />, customDeps, {
-            ...rootReducer,
-            initialState: {
-                room: {
-                    ...rootReducer.initialState.room,
-                },
-                user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
-                signalR: { signalR: null },
+    const {
+        getByLabelText,
+        getAllByRole,
+        getByPlaceholderText,
+        getAllByPlaceholderText,
+        getByTestId,
+        getAllByTestId,
+    } = renderWithGlobalContext(<CreateDeposition />, customDeps, {
+        ...rootReducer,
+        initialState: {
+            room: {
+                ...rootReducer.initialState.room,
             },
-        });
+            user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+            signalR: { signalR: null },
+        },
+    });
     const { depositions } = TEST_CONSTANTS.getDepositions();
 
     // DATE FILL
