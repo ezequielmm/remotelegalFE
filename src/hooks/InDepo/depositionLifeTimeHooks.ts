@@ -68,11 +68,15 @@ export const useJoinBreakroom = () => {
 
     const joinBreakroomAsync = useAsyncCallback(
         async (breakroomID: string) => {
+            const devices = JSON.parse(localStorage.getItem("selectedDevices"));
             const dataTrack = new LocalDataTrack();
             const token: any = await generateBreakroomToken();
             if (!token) return "";
 
-            const tracks = await createLocalTracks({ audio: true, video: { aspectRatio: 1.777777777777778 } });
+            const tracks = await createLocalTracks({
+                audio: devices ? devices.audio : true,
+                video: devices ? devices.video : true,
+            });
             tracks.push(dataTrack);
             const room = await connect(token, {
                 ...TWILIO_VIDEO_CONFIG,
@@ -123,6 +127,7 @@ export const useJoinDepositionForMockRoom = () => {
 
     return useAsyncCallback(
         async (depositionID: string) => {
+            const devices = JSON.parse(localStorage.getItem("selectedDevices"));
             const dataTrack = new LocalDataTrack();
             const { token, participants, shouldSendToPreDepo, startDate, jobNumber }: any = await generateToken();
             const breakrooms = await getBreakrooms();
@@ -130,7 +135,10 @@ export const useJoinDepositionForMockRoom = () => {
                 history.push(`/deposition/join/${depositionID}`);
             }
 
-            const tracks = await createLocalTracks({ audio: true, video: { aspectRatio: 1.777777777777778 } });
+            const tracks = await createLocalTracks({
+                audio: devices ? devices.audio : true,
+                video: devices ? devices.video : true,
+            });
             tracks.push(dataTrack);
             const room = await connect(token, {
                 ...TWILIO_VIDEO_CONFIG,
@@ -195,6 +203,7 @@ export const useJoinDeposition = () => {
 
     return useAsyncCallback(
         async (depositionID: string) => {
+            const devices = JSON.parse(localStorage.getItem("selectedDevices"));
             const dataTrack = new LocalDataTrack();
             const userStatus = await checkUserStatus(depositionID, currentEmail.current);
             dispatch(actions.setUserStatus(userStatus));
@@ -220,8 +229,8 @@ export const useJoinDeposition = () => {
                 fetchExhibitFileInfo(depositionID);
             }
             const tracks = await createLocalTracks({
-                audio: true,
-                video: { aspectRatio: 1.777777777777778, facingMode: "user" },
+                audio: devices ? devices.audio : true,
+                video: devices ? devices.video : true,
             });
             tracks.push(dataTrack);
             const room = await connect(token, {

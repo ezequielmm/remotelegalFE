@@ -7,6 +7,7 @@ const spacing = {
     modalWidth: {
         default: baseUnit * 38,
         small: baseUnit * 25,
+        large: baseUnit * 53,
     },
     menuWith: {
         default: 23.5,

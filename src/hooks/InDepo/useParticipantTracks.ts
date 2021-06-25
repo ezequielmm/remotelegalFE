@@ -9,6 +9,7 @@ import {
     RemoteVideoTrack,
     VideoTrack,
 } from "twilio-video";
+import changeSpeakers from "../../helpers/changeSpeakers";
 import trackpubsToTracks from "../../helpers/trackPubsToTracks";
 
 const useParticipantTracks = (participant: LocalParticipant | RemoteParticipant) => {
@@ -92,8 +93,13 @@ const useParticipantTracks = (participant: LocalParticipant | RemoteParticipant)
 
     useEffect(() => {
         const audioTrack = audioTracks[0];
+        const speakers =
+            localStorage.getItem("selectedDevices") && JSON.parse(localStorage.getItem("selectedDevices")).speakers;
         if (audioTrack) {
             audioTrack.attach(audioRef.current);
+            if (speakers) {
+                changeSpeakers(audioRef.current, speakers);
+            }
         }
 
         return () => {

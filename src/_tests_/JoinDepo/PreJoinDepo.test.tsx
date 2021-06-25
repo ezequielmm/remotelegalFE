@@ -536,7 +536,7 @@ describe("It tests the registered and logged in user and participant flow", () =
             .mockResolvedValue({ isUser: true, participant: { isAdmitted: true } });
         renderWithGlobalContext(<PreJoinDepo />, deps);
         await waitForDomChange();
-        expect(Redirect).toHaveBeenCalledWith({ to: "/deposition/join/depoId" }, {});
+        expect(Redirect).toHaveBeenCalledWith({ to: "/deposition/pre-join/troubleshoot-devices/depoId" }, {});
     });
 });
 

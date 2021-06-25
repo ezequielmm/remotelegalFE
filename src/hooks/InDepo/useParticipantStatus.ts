@@ -12,6 +12,7 @@ export const useSendParticipantStatus = () => {
     return useAsyncCallback(async (muted) => {
         const participantStatus = await deps.apiService.setParticipantStatus({ depositionID, isMuted: muted });
         dispatch(actions.setIsMuted(participantStatus?.value?.isMuted));
+        return participantStatus;
     }, []);
 };
 

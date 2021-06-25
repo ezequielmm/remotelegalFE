@@ -65,7 +65,7 @@ const WaitingRoom = () => {
         return <Redirect to={`${CONSTANTS.DEPOSITION_PRE_ROUTE}${depositionID}`} />;
     }
     if (isAdmitted || userStatus?.participant?.isAdmitted) {
-        return <Redirect to={`${CONSTANTS.DEPOSITION_ROUTE}${depositionID}`} />;
+        return <Redirect to={`${CONSTANTS.DEPOSITION_WAITING_ROOM_REDIRECT_ROUTE}${depositionID}`} />;
     }
 
     return !userStatus?.participant || isAuthenticated === null || !generatedToken ? null : (

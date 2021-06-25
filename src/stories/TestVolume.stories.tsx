@@ -6,17 +6,17 @@ export default {
     title: "Test Volume",
     component: TestVolume,
     argTypes: {
-        percent: {
+        stream: {
             control: {
-                type: "text",
+                type: "MediaStream",
             },
         },
     },
 } as Meta;
 
-const Template: Story = ({ ...args }) => <TestVolume percent={args.percent} {...args} />;
+const Template: Story = ({ ...args }) => <TestVolume stream={args.stream} {...args} />;
 
 export const PRTestVolume = Template.bind({});
 PRTestVolume.args = {
-    percent: 30,
+    stream: null,
 };

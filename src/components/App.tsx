@@ -30,6 +30,7 @@ import ChangePassword from "../routes/ChangePassword";
 import WaitingRoom from "../routes/WaitingRoom";
 import Help from "../routes/Help";
 import { FloatingAlertContextProvider } from "../contexts/FloatingAlertContext";
+import TroubleShootUserDevices from "../routes/TroubleShootUserDevices/TroubleShootUserDevices";
 
 declare global {
     interface Window {
@@ -82,6 +83,11 @@ function App() {
                         <Route exact path="/sign-up" component={SignUp} />
                         <Route exact path="/deposition/pre-join/:depositionID" component={PreJoinDepo} />
                         <Authenticator routesWithGuestToken={ROUTES_WITH_GUEST_TOKEN}>
+                            <Route
+                                exact
+                                path="/deposition/pre-join/troubleshoot-devices/:depositionID"
+                                component={TroubleShootUserDevices}
+                            />
                             <RouteWithLayout exact path="/my-cases" component={MyCases} />
                             <RouteWithLayout exact path="/deposition/new" component={CreateDeposition} />
                             <RouteWithLayout exact path="/depositions" component={MyDepositions} />

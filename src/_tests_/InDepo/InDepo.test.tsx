@@ -1,4 +1,4 @@
-import { fireEvent, waitForDomChange, waitForElement } from "@testing-library/react";
+import { fireEvent, waitFor, waitForDomChange, waitForElement } from "@testing-library/react";
 import { createMemoryHistory } from "history";
 import AudioRecorder from "audio-recorder-polyfill";
 import React from "react";
@@ -50,14 +50,13 @@ const WaitingRoomRoute = () => <div>WAITING ROOM</div>;
 window.HTMLElement.prototype.scrollIntoView = jest.fn();
 
 // TODO: Find a better way to mock Twilio (eg, adding it to DI system)
+const mockTracks = jest.fn();
 jest.mock("twilio-video", () => ({
     ...jest.requireActual("twilio-video"),
     LocalDataTrack: function dataTrack() {
         return { send: jest.fn() };
     },
-
-    createLocalTracks: async () => [],
-
+    createLocalTracks: (args) => mockTracks(args),
     connect: async () => ({
         on: jest.fn(),
         off: jest.fn(),
@@ -136,7 +135,9 @@ jest.mock("twilio-video", () => ({
 }));
 
 beforeEach(() => {
+    localStorage.clear();
     AUTH.VALID();
+    mockTracks.mockResolvedValue([]);
     const recorderMock = AudioRecorder as jest.Mock;
     customDeps = getMockDeps();
     recorderMock.mockImplementation(() => ({
@@ -776,5 +777,58 @@ describe("inDepo -> Exhibits view with a shared exhibit", () => {
         await waitForDomChange();
 
         expect(queryByTestId("muted")).toBeInTheDocument();
+    });
+});
+it("calls createLocalTracks with the devices if they exist in localStorage", async () => {
+    customDeps.apiService.joinDeposition = jest.fn().mockResolvedValue(TESTS_CONSTANTS.JOIN_DEPOSITION_MOCK);
+    localStorage.setItem("selectedDevices", JSON.stringify(TESTS_CONSTANTS.DEVICES_MOCK));
+    renderWithGlobalContext(
+        <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,
+        customDeps,
+        {
+            ...rootReducer,
+            initialState: {
+                room: {
+                    ...rootReducer.initialState.room,
+                },
+                user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+                signalR: { signalR: null },
+            },
+        },
+        history
+    );
+
+    history.push(TESTS_CONSTANTS.TEST_ROUTE);
+    await waitFor(() => {
+        expect(mockTracks).toHaveBeenCalledWith({
+            audio: TESTS_CONSTANTS.DEVICES_MOCK.audio,
+            video: TESTS_CONSTANTS.DEVICES_MOCK.video,
+        });
+    });
+});
+it("calls createLocalTracks with true the devices don´t exist in localStorage", async () => {
+    customDeps.apiService.joinDeposition = jest.fn().mockResolvedValue(TESTS_CONSTANTS.JOIN_DEPOSITION_MOCK);
+    renderWithGlobalContext(
+        <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,
+        customDeps,
+        {
+            ...rootReducer,
+            initialState: {
+                room: {
+                    ...rootReducer.initialState.room,
+                },
+                user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+                signalR: { signalR: null },
+            },
+        },
+        history
+    );
+
+    history.push(TESTS_CONSTANTS.TEST_ROUTE);
+    await waitFor(() => {
+        expect(mockTracks).toHaveBeenCalledWith({
+            audio: true,
+            video: true,
+        });
     });
 });

@@ -105,7 +105,9 @@ export const getActionColumns = (history) => ({
                     disabled={status === Status.canceled}
                     onClick={(e) => {
                         e.stopPropagation();
-                        history.push(isCompleted ? `/deposition/post-depo-details/${id}` : `/deposition/join/${id}`);
+                        history.push(
+                            isCompleted ? `/deposition/post-depo-details/${id}` : `/deposition/pre-join/${id}`
+                        );
                     }}
                     type="primary"
                     size="small"

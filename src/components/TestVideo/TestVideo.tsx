@@ -16,7 +16,8 @@ import ColorStatus from "../../types/ColorStatus";
 export interface ITestVideoProps {
     isMuted?: boolean;
     isVideoOn?: boolean;
-    ref?: MutableRefObject<HTMLVideoElement>;
+    onClickMuted?: () => void;
+    onClickVideo?: () => void;
     hasError?: boolean;
     errorTitle?: string;
     errorText?: string;
@@ -34,10 +35,7 @@ const StyledTestVideo = styled.div<IStyledTestVideo>`
     position: relative;
     video {
         width: 100%;
-        height: 100%;
-        position: absolute;
-        top: 0;
-        left: 0;
+        display: block;
     }
 `;
 
@@ -45,8 +43,8 @@ const StyledVideoError = styled(Space)`
     top: 0;
     left: 0;
     text-align: center;
-    padding: ${getREM(theme.default.spaces[11] * 2)} ${getREM(theme.default.spaces[12] * 2)}
-        ${getREM(theme.default.spaces[11] * 3)};
+    padding: ${getREM(theme.default.spaces[9] * 2)} ${getREM(theme.default.spaces[12])}
+        ${getREM(theme.default.spaces[12] * 3)};
     min-height: ${getREM(theme.default.spaces[12] * 4)};
 `;
 
@@ -58,28 +56,37 @@ export const TestVideoControlsWrapper = styled(Space)`
 `;
 
 const TestVideo = React.forwardRef(
-    ({ isMuted, isVideoOn, ref, hasError, errorTitle, errorText, ...rest }: ITestVideoProps) => {
+    (
+        { isMuted, isVideoOn, hasError, errorTitle, errorText, onClickMuted, onClickVideo, ...rest }: ITestVideoProps,
+        ref: MutableRefObject<HTMLVideoElement>
+    ) => {
         return (
             <StyledTestVideo $hasError={hasError} {...rest}>
                 {hasError ? (
                     <StyledVideoError align="center" justify="center" direction="vertical">
-                        <Title level={4} color={ColorStatus.disabled}>
+                        <Title dataTestId="video_title" level={5} weight="regular" color={ColorStatus.disabled}>
                             {errorTitle}
                         </Title>
-                        <Text ellipsis={false}>{errorText}</Text>
+                        <Text dataTestId="video_subtitle" ellipsis={false}>
+                            {errorText}
+                        </Text>
                     </StyledVideoError>
                 ) : (
-                    <video ref={ref} autoPlay>
+                    <video data-testid="video" ref={ref} autoPlay>
                         <track kind="captions" />
                     </video>
                 )}
                 <TestVideoControlsWrapper justify="center">
                     <Control
+                        data-testid={`audio_on_toggle_${isMuted}`}
+                        onClick={onClickMuted}
                         type="circle"
                         isActive={!isMuted}
                         icon={<Icon icon={isMuted ? MuteIcon : UnmuteIcon} size="1.625rem" />}
                     />
                     <Control
+                        data-testid={`video_on_toggle_${isVideoOn}`}
+                        onClick={onClickVideo}
                         type="circle"
                         isActive={isVideoOn}
                         icon={<Icon icon={isVideoOn ? CameraOnIcon : CameraOffIcon} size="1.625rem" />}

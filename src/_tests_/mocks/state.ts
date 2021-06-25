@@ -4,6 +4,7 @@ const state = {
     dispatch: jest.fn(),
     state: {
         room: {
+            initialCameraStatus: null,
             dataTrack: dataTrackMock,
             currentRoom: {},
         },

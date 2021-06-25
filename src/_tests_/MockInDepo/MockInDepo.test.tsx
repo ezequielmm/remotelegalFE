@@ -1,4 +1,4 @@
-import { act, fireEvent, waitForDomChange, waitForElement } from "@testing-library/react";
+import { act, fireEvent, waitFor, waitForDomChange, waitForElement } from "@testing-library/react";
 import { createMemoryHistory } from "history";
 import React from "react";
 import { Route, Switch } from "react-router-dom";
@@ -28,14 +28,14 @@ const history = createMemoryHistory();
 
 const InDepo = () => <div>IN DEPO</div>;
 const WaitingRoom = () => <div>WAITING ROOM</div>;
-
+const mockTracks = jest.fn();
 jest.mock("twilio-video", () => ({
     ...jest.requireActual("twilio-video"),
     LocalDataTrack: function dataTrack() {
         return { send: jest.fn() };
     },
 
-    createLocalTracks: async () => [],
+    createLocalTracks: (args) => mockTracks(args),
 
     connect: async () => ({
         on: jest.fn(),
@@ -115,7 +115,9 @@ jest.mock("twilio-video", () => ({
 }));
 
 beforeEach(() => {
+    localStorage.clear();
     customDeps = getMockDeps();
+    mockTracks.mockResolvedValue([]);
     AUTH.VALID();
     customDeps.apiService.joinDeposition = jest
         .fn()
@@ -277,4 +279,35 @@ test("Redirects to Depo if shouldSendToPreDepo is false", async () => {
     history.push(TESTS_CONSTANTS.PRE_ROUTE);
     await waitForDomChange();
     expect(getByText("IN DEPO")).toBeInTheDocument();
+});
+test("CreateLocalTracks gets called with the proper devices if they exist in localStorage", async () => {
+    localStorage.setItem("selectedDevices", JSON.stringify(TESTS_CONSTANTS.DEVICES_MOCK));
+    renderWithGlobalContext(
+        <Route exact path={TESTS_CONSTANTS.PRE_ROUTE} component={MockInDepo} />,
+        customDeps,
+        undefined,
+        history
+    );
+    history.push(TESTS_CONSTANTS.PRE_ROUTE);
+    await waitFor(() => {
+        expect(mockTracks).toHaveBeenCalledWith({
+            audio: TESTS_CONSTANTS.DEVICES_MOCK.audio,
+            video: TESTS_CONSTANTS.DEVICES_MOCK.video,
+        });
+    });
+});
+test("CreateLocalTracks gets called with true if the devices don´t exist in localStorage", async () => {
+    renderWithGlobalContext(
+        <Route exact path={TESTS_CONSTANTS.PRE_ROUTE} component={MockInDepo} />,
+        customDeps,
+        undefined,
+        history
+    );
+    history.push(TESTS_CONSTANTS.PRE_ROUTE);
+    await waitFor(() => {
+        expect(mockTracks).toHaveBeenCalledWith({
+            audio: true,
+            video: true,
+        });
+    });
 });
