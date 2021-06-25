@@ -100,7 +100,8 @@
       "!**/stories/**",
       "!**/assets/**",
       "!**/_tests_/**",
-      "!**/constants/styles/**"
+      "!**/constants/styles/**",
+      "!src/*.{ts,tsx}"
     ]
   },
   "devDependencies": {
