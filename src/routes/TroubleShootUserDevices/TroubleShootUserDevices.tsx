@@ -3,6 +3,7 @@ import Row from "antd/lib/row";
 import { Form } from "antd";
 import { useRef, useEffect, useState, useContext } from "react";
 import { useHistory, useParams } from "react-router";
+import styled from "styled-components";
 import Modal from "../../components/Modal";
 import actions from "../../state/InDepo/InDepoActions";
 import { ModalSize } from "../../components/Modal/Modal";
@@ -25,6 +26,11 @@ import { useSendParticipantStatus } from "../../hooks/InDepo/useParticipantStatu
 import { GlobalStateContext } from "../../state/GlobalState";
 import useFloatingAlertContext from "../../hooks/useFloatingAlertContext";
 
+const StylesCol = styled(Col)`
+    > * {
+        z-index: 1;
+    }
+`;
 const TroubleShootUserDevices = () => {
     const {
         gettingTracks,
@@ -188,7 +194,7 @@ const TroubleShootUserDevices = () => {
                         </Space.Item>
                         <Space.Item fullWidth>
                             <Row gutter={24}>
-                                <Col span={13}>
+                                <StylesCol span={13}>
                                     <TestVideo
                                         hasError={cameraError}
                                         errorText={cameraErrorSubTitle}
@@ -215,7 +221,7 @@ const TroubleShootUserDevices = () => {
                                             </Button>
                                         </Space>
                                     </Space>
-                                </Col>
+                                </StylesCol>
                                 <Col span={11}>
                                     <Form.Item label="Microphone" htmlFor="microphone">
                                         <InputWrapper>
