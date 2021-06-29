@@ -105,7 +105,9 @@ export const getActionColumns = (history) => ({
                     disabled={status === Status.canceled}
                     onClick={(e) => {
                         e.stopPropagation();
-                        history.push(isCompleted ? `/deposition/post-depo-details/${id}` : `/deposition/join/${id}`);
+                        history.push(
+                            isCompleted ? `/deposition/post-depo-details/${id}` : `/deposition/pre-join/${id}`
+                        );
                     }}
                     type="primary"
                     size="small"
@@ -118,6 +120,7 @@ export const getActionColumns = (history) => ({
     },
     sorter: false,
     width: 90,
+    fixed: "right",
 });
 
 export const getDepositionColumns = (history: History, isAdmin?: boolean) =>

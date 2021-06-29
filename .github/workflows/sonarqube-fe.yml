@@ -4,19 +4,43 @@ on:
   push:
     branches:
       - develop
-      
+
 jobs:
   analyze:
     runs-on: ubuntu-latest
     steps:
-    - name: Checking out
-      uses: actions/checkout@v2
-      with:
-        fetch-depth: 0    
-    - name: Sonarqube Scan
-      uses: kitabisa/sonarqube-action@master
-      with:
-        host: "https://sonarqube.prdevelopment.net"
-        projectKey: "prp-fe"
-        projectName: "prp-fe"
-        login: ${{ secrets.SONAR_TOKEN }}
+      - name: Checking out
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Cache node modules
+        id: yarn-cache
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: "**/node_modules"
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+
+      - uses: webfactory/ssh-agent@v0.4.1
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - name: Install Dependencies
+        if: ${{ steps.yarn-cache.outputs.cache-hit != 'true' }}
+        run: yarn install
+
+      - name: Test
+        run: CI=true yarn test --coverage --watchAll=false
+
+      - name: Sonarqube Scan
+        uses: kitabisa/sonarqube-action@master
+        with:
+          host: "https://sonarqube.prdevelopment.net"
+          projectKey: "prp-fe"
+          projectName: "prp-fe"
+          login: ${{ secrets.SONAR_TOKEN }}

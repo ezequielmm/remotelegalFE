@@ -58,7 +58,7 @@ export const useLogin = (depositionID: string) => {
 
     useEffect(() => {
         if (addParticipantInfo) {
-            history.push(`/deposition/join/${depositionID}`);
+            history.push(`/deposition/pre-join/troubleshoot-devices/${depositionID}`);
         }
     }, [addParticipantInfo, history, depositionID]);
 

@@ -1,4 +1,4 @@
-import { waitForDomChange, fireEvent, waitForElement, act } from "@testing-library/react";
+import { waitForDomChange, fireEvent, waitForElement, act, waitFor } from "@testing-library/react";
 import { createMemoryHistory } from "history";
 import userEvent from "@testing-library/user-event";
 import React from "react";
@@ -29,10 +29,92 @@ dayjs.extend(Do);
 
 const history = createMemoryHistory();
 
-const customDeps = getMockDeps();
-jest.mock("../../helpers/downloadFile");
+let customDeps;
 
 const POST_DEPO_DETAILS = () => <div>POST-DEPO</div>;
+
+jest.mock("../../helpers/downloadFile");
+
+beforeEach(() => {
+    customDeps = getMockDeps();
+});
+
+test("Error toast should appear if remove participant endpoint fails", async () => {
+    customDeps.apiService.fetchParticipants = jest.fn().mockImplementation(async () => {
+        return [PARTICIPANT_MOCK];
+    });
+    customDeps.apiService.removeParticipantFromExistingDepo = jest.fn().mockRejectedValue(Error);
+
+    const deposition = getDepositionWithOverrideValues();
+    const { getByTestId, getByText } = renderWithGlobalContext(
+        <ParticipantListTable deposition={deposition} activeKey={CONSTANTS.DEPOSITION_DETAILS_TABS[1]} />,
+        customDeps
+    );
+    await waitForDomChange();
+    fireEvent.click(getByTestId(`${PARTICIPANT_MOCK_NAME}_delete_icon`));
+    fireEvent.click(getByText(CONSTANTS.DEPOSITION_DETAILS_DELETE_MODAL_CONFIRM_BUTTON_LABEL));
+    await waitForDomChange();
+    expect(getByText(CONSTANTS.NETWORK_ERROR));
+});
+
+test("Calls caption endpoint with proper params and helper function", async () => {
+    const fullDeposition = getDepositionWithOverrideValues();
+    customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
+        return fullDeposition;
+    });
+    const { getByText } = renderWithGlobalContext(<ActiveDepositionDetails />, customDeps);
+    await waitForDomChange();
+    fireEvent.click(getByText(fullDeposition.caption.displayName));
+    expect(customDeps.apiService.fetchCaption).toHaveBeenCalledWith(fullDeposition.id);
+    await wait(100);
+    expect(downloadFile).toHaveBeenCalledWith(CAPTION_MOCK.preSignedUrl);
+});
+
+test("Toast should appear when removing a participant", async () => {
+    customDeps.apiService.fetchParticipants = jest.fn().mockImplementation(async () => {
+        return [PARTICIPANT_MOCK];
+    });
+    customDeps.apiService.removeParticipantFromExistingDepo = jest.fn().mockImplementation(async () => {
+        return {};
+    });
+
+    const deposition = getDepositionWithOverrideValues();
+    const { getByTestId, getByText } = renderWithGlobalContext(
+        <ParticipantListTable deposition={deposition} activeKey={CONSTANTS.DEPOSITION_DETAILS_TABS[1]} />,
+        customDeps
+    );
+    await waitForDomChange();
+    fireEvent.click(getByTestId(`${PARTICIPANT_MOCK_NAME}_delete_icon`));
+    fireEvent.click(getByText(CONSTANTS.DEPOSITION_DETAILS_DELETE_MODAL_CONFIRM_BUTTON_LABEL));
+    await waitForDomChange();
+    expect(getByText(CONSTANTS.DEPOSITION_DETAILS_REMOVE_PARTICIPANT_TOAST));
+    expect(customDeps.apiService.removeParticipantFromExistingDepo).toHaveBeenCalledWith(
+        deposition.id,
+        PARTICIPANT_MOCK.id
+    );
+});
+
+test("Should close remove participant toast when clicking the cancel button", async () => {
+    customDeps.apiService.fetchParticipants = jest.fn().mockImplementation(async () => {
+        return [PARTICIPANT_MOCK];
+    });
+    const ModalTextsArray = [
+        CONSTANTS.DEPOSITION_DETAILS_DELETE_MODAL_TITLE,
+        CONSTANTS.DEPOSITION_DETAILS_DELETE_MODAL_SUBTITLE,
+        CONSTANTS.DEPOSITION_DETAILS_DELETE_MODAL_CONFIRM_BUTTON_LABEL,
+        CONSTANTS.DEPOSITION_DETAILS_DELETE_MODAL_CANCEL_BUTTON_LABEL,
+    ];
+    const deposition = getDepositionWithOverrideValues({ status: "Pending" });
+    const { getByTestId, getByText, queryByText } = renderWithGlobalContext(
+        <ParticipantListTable deposition={deposition} activeKey={CONSTANTS.DEPOSITION_DETAILS_TABS[1]} />,
+        customDeps
+    );
+    await waitForDomChange();
+    fireEvent.click(getByTestId(`${PARTICIPANT_MOCK_NAME}_delete_icon`));
+    ModalTextsArray.map((text) => expect(getByText(text)).toBeInTheDocument());
+    fireEvent.click(getByText(CONSTANTS.DEPOSITION_DETAILS_DELETE_MODAL_CANCEL_BUTTON_LABEL));
+    ModalTextsArray.map((text) => expect(queryByText(text)).toBeFalsy());
+});
 
 test("Should display error toast if add participant endpoint fails", async () => {
     customDeps.apiService.fetchParticipants = jest.fn().mockImplementation(async () => {
@@ -234,33 +316,19 @@ test("complete date is not shown if completed date is missing", async () => {
     ).toBeInTheDocument();
 });
 
-describe("Test caption behaviour", () => {
-    test("Calls caption endpoint with proper params and helper function", async () => {
-        const fullDeposition = getDepositionWithOverrideValues();
-        customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
-            return fullDeposition;
-        });
-        const { getByText } = renderWithGlobalContext(<ActiveDepositionDetails />, customDeps);
-        await waitForDomChange();
-        fireEvent.click(getByText(fullDeposition.caption.displayName));
-        expect(customDeps.apiService.fetchCaption).toHaveBeenCalledWith(fullDeposition.id);
-        await wait(100);
-        expect(downloadFile).toHaveBeenCalledWith(CAPTION_MOCK.preSignedUrl);
+test("Shows toast if caption endpoint fails", async () => {
+    const fullDeposition = getDepositionWithOverrideValues();
+    customDeps.apiService.fetchCaption = jest.fn().mockRejectedValue(async () => {
+        throw Error("Something wrong");
     });
-    test("Shows toast if caption endpoint fails", async () => {
-        const fullDeposition = getDepositionWithOverrideValues();
-        customDeps.apiService.fetchCaption = jest.fn().mockRejectedValue(async () => {
-            throw Error("Something wrong");
-        });
-        customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
-            return fullDeposition;
-        });
-        const { getByText } = renderWithGlobalContext(<ActiveDepositionDetails />, customDeps);
-        await waitForDomChange();
-        fireEvent.click(getByText(fullDeposition.caption.displayName));
-        await waitForDomChange();
-        expect(getByText(CONSTANTS.CAPTION_NETWORK_ERROR)).toBeInTheDocument();
+    customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
+        return fullDeposition;
     });
+    const { getByText } = renderWithGlobalContext(<ActiveDepositionDetails />, customDeps);
+    await waitForDomChange();
+    fireEvent.click(getByText(fullDeposition.caption.displayName));
+    await waitForDomChange();
+    expect(getByText(CONSTANTS.CAPTION_NETWORK_ERROR)).toBeInTheDocument();
 });
 
 test("Shows error when fetch fails", async () => {
@@ -394,69 +462,6 @@ test("Remove icon shows if participant is not a witness", async () => {
     await waitForDomChange();
     expect(getByTestId(`${PARTICIPANT_MOCK_NAME}_delete_icon`)).toBeInTheDocument();
 });
-test("Should close remove participant toast when clicking the cancel button", async () => {
-    customDeps.apiService.fetchParticipants = jest.fn().mockImplementation(async () => {
-        return [PARTICIPANT_MOCK];
-    });
-    const ModalTextsArray = [
-        CONSTANTS.DEPOSITION_DETAILS_DELETE_MODAL_TITLE,
-        CONSTANTS.DEPOSITION_DETAILS_DELETE_MODAL_SUBTITLE,
-        CONSTANTS.DEPOSITION_DETAILS_DELETE_MODAL_CONFIRM_BUTTON_LABEL,
-        CONSTANTS.DEPOSITION_DETAILS_DELETE_MODAL_CANCEL_BUTTON_LABEL,
-    ];
-    const deposition = getDepositionWithOverrideValues({ status: "Pending" });
-    const { getByTestId, getByText, queryByText } = renderWithGlobalContext(
-        <ParticipantListTable deposition={deposition} activeKey={CONSTANTS.DEPOSITION_DETAILS_TABS[1]} />,
-        customDeps
-    );
-    await waitForDomChange();
-    fireEvent.click(getByTestId(`${PARTICIPANT_MOCK_NAME}_delete_icon`));
-    ModalTextsArray.map((text) => expect(getByText(text)).toBeInTheDocument());
-    fireEvent.click(getByText(CONSTANTS.DEPOSITION_DETAILS_DELETE_MODAL_CANCEL_BUTTON_LABEL));
-    ModalTextsArray.map((text) => expect(queryByText(text)).toBeFalsy());
-});
-test("Toast should appear when removing a participant", async () => {
-    customDeps.apiService.fetchParticipants = jest.fn().mockImplementation(async () => {
-        return [PARTICIPANT_MOCK];
-    });
-    customDeps.apiService.removeParticipantFromExistingDepo = jest.fn().mockImplementation(async () => {
-        return {};
-    });
-
-    const deposition = getDepositionWithOverrideValues();
-    const { getByTestId, getByText } = renderWithGlobalContext(
-        <ParticipantListTable deposition={deposition} activeKey={CONSTANTS.DEPOSITION_DETAILS_TABS[1]} />,
-        customDeps
-    );
-    await waitForDomChange();
-    fireEvent.click(getByTestId(`${PARTICIPANT_MOCK_NAME}_delete_icon`));
-    fireEvent.click(getByText(CONSTANTS.DEPOSITION_DETAILS_DELETE_MODAL_CONFIRM_BUTTON_LABEL));
-    await waitForDomChange();
-    expect(getByText(CONSTANTS.DEPOSITION_DETAILS_REMOVE_PARTICIPANT_TOAST));
-    expect(customDeps.apiService.removeParticipantFromExistingDepo).toHaveBeenCalledWith(
-        deposition.id,
-        PARTICIPANT_MOCK.id
-    );
-});
-
-test("Error toast should appear if remove participant endpoint fails", async () => {
-    customDeps.apiService.fetchParticipants = jest.fn().mockImplementation(async () => {
-        return [PARTICIPANT_MOCK];
-    });
-    customDeps.apiService.removeParticipantFromExistingDepo = jest.fn().mockRejectedValue(Error);
-
-    const deposition = getDepositionWithOverrideValues();
-    const { getByTestId, getByText } = renderWithGlobalContext(
-        <ParticipantListTable deposition={deposition} activeKey={CONSTANTS.DEPOSITION_DETAILS_TABS[1]} />,
-        customDeps
-    );
-    await waitForDomChange();
-    fireEvent.click(getByTestId(`${PARTICIPANT_MOCK_NAME}_delete_icon`));
-    fireEvent.click(getByText(CONSTANTS.DEPOSITION_DETAILS_DELETE_MODAL_CONFIRM_BUTTON_LABEL));
-    await waitForDomChange();
-    expect(getByText(CONSTANTS.NETWORK_ERROR));
-});
-
 test("Should validate add participant form", async () => {
     customDeps.apiService.fetchParticipants = jest.fn().mockImplementation(async () => {
         return [PARTICIPANT_MOCK];
@@ -691,7 +696,7 @@ test("Shows toast when properly canceled and depo status is pending", async () =
     await wait(200);
     userEvent.click(getByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_CONFIRM_BUTTON_TEST_ID));
     await waitForDomChange();
-    await waitForElement(() => getByText(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_SUCCESS_TOAST));
+    await waitForElement(() => getAllByText(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_SUCCESS_TOAST));
     expect(customDeps.apiService.cancelDeposition).toHaveBeenCalledWith(fullDeposition.id);
 });
 test("Shows validation error message if start date is invalid", async () => {
@@ -775,7 +780,7 @@ test("Shows modal when canceling a confirmed depo and a toast if the cancel succ
     expect(getByText(modalText.title)).toBeInTheDocument();
     fireEvent.click(getByText(modalText.confirmButton));
     await waitForDomChange();
-    await waitForElement(() => getByText(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_SUCCESS_TOAST));
+    await waitForElement(() => getAllByText(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_SUCCESS_TOAST));
     expect(customDeps.apiService.cancelDeposition).toHaveBeenCalledWith(fullDeposition.id);
 });
 test("Shows modal when canceling a confirmed depo and a toast if the cancel endpoint fails", async () => {
@@ -808,7 +813,7 @@ test("Shows modal when canceling a confirmed depo and a toast if the cancel endp
     expect(getByText(modalText.title)).toBeInTheDocument();
     fireEvent.click(getByText(modalText.confirmButton));
     await waitForDomChange();
-    await waitForElement(() => getByText(CONSTANTS.NETWORK_ERROR));
+    await waitForElement(() => getAllByText(CONSTANTS.NETWORK_ERROR));
     expect(customDeps.apiService.cancelDeposition).toHaveBeenCalledWith(fullDeposition.id);
 });
 test("Shows modal when reverting a canceled depo and a toast if the revert fails", async () => {
@@ -841,7 +846,7 @@ test("Shows modal when reverting a canceled depo and a toast if the revert fails
     expect(getByText(modalText.title)).toBeInTheDocument();
     fireEvent.click(getByText(modalText.confirmButton));
     await waitForDomChange();
-    await waitForElement(() => getByText(CONSTANTS.NETWORK_ERROR));
+    await waitForElement(() => getAllByText(CONSTANTS.NETWORK_ERROR));
     expect(customDeps.apiService.revertCancelDeposition).toHaveBeenCalledWith(
         fullDeposition.id,
         {
@@ -883,7 +888,7 @@ test("Shows modal when reverting a canceled depo and a toast if the revert succe
     expect(getByText(modalText.title)).toBeInTheDocument();
     fireEvent.click(getByText(modalText.confirmButton));
     await waitForDomChange();
-    await waitForElement(() => getByText(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_SUCCESS_TOAST));
+    await waitForElement(() => getAllByText(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_SUCCESS_TOAST));
     expect(customDeps.apiService.revertCancelDeposition).toHaveBeenCalledWith(
         fullDeposition.id,
         {
@@ -924,8 +929,7 @@ test("Shows modal when reverting a canceled depo to confirmed and a toast if the
     expect(getByText(modalText.message)).toBeInTheDocument();
     expect(getByText(modalText.title)).toBeInTheDocument();
     fireEvent.click(getByText(modalText.confirmButton));
-    await waitForDomChange();
-    await waitForElement(() => getByText(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_SUCCESS_TOAST));
+    await waitFor(() => getByText(CONSTANTS.DEPOSITION_DETAILS_CHANGE_TO_CONFIRM_EMAIL_SENT_TO_ALL));
     expect(customDeps.apiService.revertCancelDeposition).toHaveBeenCalledWith(
         fullDeposition.id,
         {
@@ -972,7 +976,7 @@ test("Shows modal when reverting a canceled depo to confirmed and a toast if the
     expect(getByText(modalText.title)).toBeInTheDocument();
     fireEvent.click(getByText(modalText.confirmButton));
     await waitForDomChange();
-    await waitForElement(() => getByText(CONSTANTS.NETWORK_ERROR));
+    await waitForElement(() => getAllByText(CONSTANTS.NETWORK_ERROR));
     expect(customDeps.apiService.revertCancelDeposition).toHaveBeenCalledWith(
         fullDeposition.id,
         {
@@ -1021,7 +1025,6 @@ test("shouldn´t revert a depo if the file is invalid", async () => {
     await waitForDomChange();
     const editButton = getAllByTestId(CONSTANTS.DEPOSITION_CARD_DETAILS_EDIT_BUTTON_DATA_TEST_ID);
     fireEvent.click(editButton[0]);
-    await waitForDomChange();
     const options = getAllByText("Canceled");
     userEvent.click(options[2]);
     const confirmed = await waitForElement(() => getAllByText("Confirmed"));

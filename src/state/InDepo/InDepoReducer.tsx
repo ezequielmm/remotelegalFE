@@ -12,6 +12,7 @@ import { UserInfo } from "../../models/user";
 
 export interface IRoom {
     info?: object;
+    initialCameraStatus?: boolean;
     stamp?: Document;
     shouldSendToPreDepo?: boolean;
     userStatus?: UserInfo;
@@ -52,6 +53,7 @@ export const RoomReducerInitialState: IRoom = {
     stamp: null,
     mockDepoRoom: null,
     shouldSendToPreDepo: null,
+    initialCameraStatus: null,
     userStatus: null,
     currentRoom: null,
     dominantSpeaker: null,
@@ -260,6 +262,11 @@ const RoomReducer: Reducer<IRoom, IAction> = (state: IRoom, action: IAction): IR
             return {
                 ...state,
                 tracks: action.payload,
+            };
+        case ACTION_TYPE.SET_INITIAL_CAMERA_STATUS:
+            return {
+                ...state,
+                initialCameraStatus: action.payload,
             };
 
         default:

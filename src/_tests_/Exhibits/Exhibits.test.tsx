@@ -1,5 +1,5 @@
 import "@testing-library/jest-dom";
-import { act, fireEvent } from "@testing-library/react";
+import { act, cleanup, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import React from "react";
 import { ThemeProvider } from "styled-components";
@@ -11,8 +11,8 @@ import MyExhibits from "../../routes/InDepo/Exhibits/MyExhibits";
 import renderWithGlobalContext from "../utils/renderWithGlobalContext";
 import { rootReducer } from "../../state/GlobalState";
 import getMockDeps from "../utils/getMockDeps";
-
 import { useEnteredExhibit } from "../../hooks/useEnteredExhibits";
+
 jest.mock("../../hooks/useEnteredExhibits", () => ({
     useEnteredExhibit: jest.fn(),
 }));
@@ -51,7 +51,10 @@ jest.mock("react-router-dom", () => ({
     }),
 }));
 
+let customDeps;
+
 beforeEach(() => {
+    customDeps = getMockDeps();
     useUploadFile.mockImplementation(() => ({
         upload: jest.fn(),
     }));
@@ -318,7 +321,7 @@ describe("Exhibits", () => {
             <ThemeProvider theme={theme}>
                 <MyExhibits />
             </ThemeProvider>,
-            getMockDeps(),
+            customDeps,
             {
                 ...rootReducer,
                 initialState: {
@@ -347,7 +350,7 @@ describe("Exhibits", () => {
             <ThemeProvider theme={theme}>
                 <MyExhibits />
             </ThemeProvider>,
-            getMockDeps(),
+            customDeps,
             {
                 ...rootReducer,
                 initialState: {
@@ -372,7 +375,7 @@ describe("Exhibits", () => {
             <ThemeProvider theme={theme}>
                 <MyExhibits />
             </ThemeProvider>,
-            getMockDeps(),
+            customDeps,
             {
                 ...rootReducer,
                 initialState: {
@@ -398,7 +401,7 @@ describe("Exhibits", () => {
             <ThemeProvider theme={theme}>
                 <MyExhibits />
             </ThemeProvider>,
-            getMockDeps(),
+            customDeps,
             {
                 ...rootReducer,
                 initialState: {
@@ -429,7 +432,7 @@ describe("Exhibits", () => {
             <ThemeProvider theme={theme}>
                 <MyExhibits />
             </ThemeProvider>,
-            getMockDeps(),
+            customDeps,
             {
                 ...rootReducer,
                 initialState: {

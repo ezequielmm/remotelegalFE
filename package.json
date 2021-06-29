@@ -1,117 +1,126 @@
 {
-    "name": "prp-fe",
-    "version": "0.1.0",
-    "private": true,
-    "dependencies": {
-        "@ant-design/colors": "^5.0.0",
-        "@ant-design/icons": "^4.2.2",
-        "@babel/helper-skip-transparent-expression-wrappers": "^7.11.0",
-        "@craco/craco": "^5.7.0",
-        "@datadog/browser-logs": "^2.8.1",
-        "@hookform/resolvers": "^1.0.1",
-        "@microsoft/signalr": "^5.0.3",
-        "@pdftron/webviewer": "7.3.2",
-        "@pdftron/webviewer-video": "3.10.8",
-        "@testing-library/jest-dom": "^5.11.6",
-        "@testing-library/react": "^9.3.2",
-        "@testing-library/react-hooks": "^3.4.2",
-        "@testing-library/user-event": "^7.1.2",
-        "@twilio/conversations": "^1.1.0",
-        "@types/jest": "^24.0.0",
-        "@types/node": "^14.14.6",
-        "@types/react": "^16.9.55",
-        "@types/react-dom": "^16.9.9",
-        "@types/react-test-renderer": "^16.9.3",
-        "@types/styled-components": "^5.1.4",
-        "@types/twilio-video": "^2.7.3",
-        "@types/ua-parser-js": "^0.7.35",
-        "antd": "^4.8.2",
-        "audio-recorder-polyfill": "^0.4.1",
-        "aws-amplify": "^3.3.12",
-        "craco-less": "^1.17.0",
-        "dayjs": "^1.10.5",
-        "husky": "^4.3.0",
-        "prp-components-library": "ssh://git@github.com/PrecisionReporters/prp-components-library.git#develop",
-        "rc-queue-anim": "^1.8.5",
-        "react": "^16.14.0",
-        "react-dom": "^16.14.0",
-        "react-ga": "^3.3.0",
-        "react-gtm-module": "^2.0.11",
-        "react-hook-form": "^6.11.0",
-        "react-player": "^2.9.0",
-        "react-router": "^5.2.0",
-        "react-router-dom": "^5.2.0",
-        "react-scripts": "3.4.4",
-        "react-test-renderer": "^16.14.0",
-        "screenfull": "^5.1.0",
-        "source-map-explorer": "^2.5.2",
-        "styled-components": "^5.2.1",
-        "twilio-video": "^2.14.0",
-        "typescript": "~3.7.5",
-        "use-sound": "^2.0.2",
-        "yup": "^0.29.3"
-    },
-    "scripts": {
-        "analyze": "source-map-explorer 'build/static/js/*.js'",
-        "start": "node ./src/helpers/copyPDFTronAssets.js && craco start",
-        "build": "node ./src/helpers/copyPDFTronAssets.js && craco build",
-        "test": "craco test",
-        "eject": "react-scripts eject",
-        "lint": "eslint ./",
-        "storybook": "start-storybook -p 6006 -s public",
-        "build-storybook": "build-storybook -s public"
-    },
-    "eslintConfig": {
-        "extends": "react-app"
-    },
-    "husky": {
-        "hooks": {
-            "pre-commit": "lint-staged"
-        }
-    },
-    "lint-staged": {
-        "src/**/*.{js,jsx,ts,tsx,json,css,scss,less,md}": [
-            "prettier --tab-width 4 --trailing-comma es5 --print-width 120 --write"
-        ]
-    },
-    "browserslist": {
-        "production": [
-            ">0.2%",
-            "not dead",
-            "not op_mini all"
-        ],
-        "development": [
-            "last 1 chrome version",
-            "last 1 firefox version",
-            "last 1 safari version"
-        ]
-    },
-    "resolutions": {
-        "styled-components": "^5"
-    },
-    "jest": {
-        "transformIgnorePatterns": [
-            "/node_modules/(?!antd|@ant-design|rc-.+?|@babel/runtime).+(js|jsx)$"
-        ]
-    },
-    "devDependencies": {
-        "@babel/core": "^7.11.6",
-        "@storybook/addon-actions": "^6.0.26",
-        "@storybook/addon-essentials": "^6.0.28",
-        "@storybook/addon-links": "^6.1.9",
-        "@storybook/node-logger": "^6.0.26",
-        "@storybook/preset-ant-design": "^0.0.1",
-        "@storybook/preset-create-react-app": "^3.1.5",
-        "@storybook/react": "^6.0.28",
-        "@types/react-router-dom": "^5.1.6",
-        "babel-loader": "^8.1.0",
-        "eslint-config-airbnb": "^18.2.0",
-        "eslint-config-prettier": "^6.12.0",
-        "eslint-plugin-jsx-a11y": "^6.3.1",
-        "eslint-plugin-prettier": "^3.1.4",
-        "lint-staged": "^10.4.0",
-        "mutationobserver-shim": "^0.3.7",
-        "prettier": "^2.1.2",
-        "react-is": "^16.13.1"
+  "name": "prp-fe",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@ant-design/colors": "^5.0.0",
+    "@ant-design/icons": "^4.2.2",
+    "@babel/helper-skip-transparent-expression-wrappers": "^7.11.0",
+    "@craco/craco": "^6.1.2",
+    "@datadog/browser-logs": "^2.8.1",
+    "@hookform/resolvers": "^1.0.1",
+    "@microsoft/signalr": "^5.0.3",
+    "@pdftron/webviewer": "7.3.2",
+    "@pdftron/webviewer-video": "3.10.8",
+    "@testing-library/jest-dom": "^5.11.4",
+    "@testing-library/react": "^11.1.0",
+    "@testing-library/react-hooks": "^7.0.0",
+    "@testing-library/user-event": "^12.1.10",
+    "@twilio/conversations": "^1.1.0",
+    "@types/jest": "^26.0.15",
+    "@types/node": "^12.0.0",
+    "@types/react": "^17.0.0",
+    "@types/react-dom": "^17.0.0",
+    "@types/styled-components": "^5.1.9",
+    "@types/twilio-video": "^2.7.3",
+    "@types/ua-parser-js": "^0.7.35",
+    "antd": "^4.8.2",
+    "audio-recorder-polyfill": "^0.4.1",
+    "aws-amplify": "^3.3.12",
+    "craco-less": "^1.17.0",
+    "dayjs": "^1.10.5",
+    "husky": "^4.3.0",
+    "prp-components-library": "ssh://git@github.com/PrecisionReporters/prp-components-library.git#develop",
+    "rc-queue-anim": "^1.8.5",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-ga": "^3.3.0",
+    "react-gtm-module": "^2.0.11",
+    "react-hook-form": "^6.11.0",
+    "react-player": "^2.9.0",
+    "react-router": "^5.2.0",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "4.0.3",
+    "react-test-renderer": "^16.14.0",
+    "screenfull": "^5.1.0",
+    "source-map-explorer": "^2.5.2",
+    "styled-components": "^5.2.1",
+    "twilio-video": "^2.14.0",
+    "typescript": "^4.1.2",
+    "use-sound": "^2.0.2",
+    "yup": "^0.29.3"
+  },
+  "scripts": {
+    "analyze": "source-map-explorer 'build/static/js/*.js'",
+    "start": "node ./src/helpers/copyPDFTronAssets.js && craco start",
+    "build": "node ./src/helpers/copyPDFTronAssets.js && craco build",
+    "test": "craco test",
+    "eject": "react-scripts eject",
+    "lint": "eslint ./",
+    "storybook": "start-storybook -p 6006 -s public",
+    "build-storybook": "build-storybook -s public"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
     }
+  },
+  "lint-staged": {
+    "src/**/*.{js,jsx,ts,tsx,json,css,scss,less,md}": [
+      "prettier --tab-width 4 --trailing-comma es5 --print-width 120 --write"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "resolutions": {
+    "styled-components": "^5"
+  },
+  "jest": {
+    "transformIgnorePatterns": [
+      "/node_modules/(?!antd|@ant-design|rc-.+?|@babel/runtime).+(js|jsx)$"
+    ],
+    "collectCoverageFrom": [
+      "**/*.{js,jsx,ts,tsx}",
+      "!**/stories/**",
+      "!**/assets/**",
+      "!**/_tests_/**",
+      "!**/constants/styles/**",
+      "!src/*.{ts,tsx}"
+    ]
+  },
+  "devDependencies": {
+    "@babel/core": "^7.11.6",
+    "@storybook/addon-actions": "^6.0.26",
+    "@storybook/addon-essentials": "^6.0.28",
+    "@storybook/addon-links": "^6.1.9",
+    "@storybook/node-logger": "^6.0.26",
+    "@storybook/preset-ant-design": "^0.0.1",
+    "@storybook/preset-create-react-app": "^3.1.5",
+    "@storybook/react": "^6.0.28",
+    "@types/react-router-dom": "^5.1.6",
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-prettier": "^3.4.0",
+    "lint-staged": "^10.4.0",
+    "mutationobserver-shim": "^0.3.7",
+    "prettier": "^2.3.0",
+    "react-is": "^16.13.1"
+  }
 }

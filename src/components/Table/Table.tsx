@@ -20,7 +20,7 @@ const StyledTable = styled(Table)<
     ${({ theme, scroll, cursorPointer, parentBg, hscroll }) => {
         const { fontSizes, spaces, borderRadiusBase } = theme.default;
         const { neutrals, disabled, primary, inDepoBlue, inDepoNeutrals } = theme.colors;
-
+        const bgColor = parentBg || (theme.mode === ThemeMode.inDepo ? inDepoNeutrals[6] : neutrals[5]);
         const styles = `
             &.ant-table-wrapper {
                 ${scroll ? "height: 100%;" : ""}
@@ -126,9 +126,7 @@ const StyledTable = styled(Table)<
                                 content: "";
                                 width: ${getREM(theme.default.spaces[4])};
                                 position: absolute;
-                                background-color: ${
-                                    parentBg || (theme.mode === ThemeMode.inDepo ? inDepoNeutrals[6] : neutrals[5])
-                                };
+                                background-color: ${bgColor};
                                 top: ${getPX(theme.default.spaces[12] + theme.default.spaces[8])};
                                 bottom: ${getPX(theme.default.spaces[3])};
                                 right: ${getPX(theme.default.spaces[3])};
@@ -155,9 +153,7 @@ const StyledTable = styled(Table)<
                                     background: ${theme.colors.disabled[7]};
                                 }
                                 ::-webkit-scrollbar-corner{
-                                    background-color: ${
-                                        parentBg || (theme.mode === ThemeMode.inDepo ? inDepoNeutrals[6] : neutrals[5])
-                                    };
+                                    background-color: ${bgColor};
                                 }
                             `
                             : ""
@@ -235,9 +231,7 @@ const StyledTable = styled(Table)<
                                     }
                                 }
                                 &.ant-table-cell-fix-left, &.ant-table-cell-fix-right{
-                                    background-color: ${
-                                        parentBg || (theme.mode === ThemeMode.inDepo ? inDepoNeutrals[6] : neutrals[5])
-                                    };
+                                    background-color: ${bgColor};
                                 }
                             }
                         }
@@ -250,14 +244,32 @@ const StyledTable = styled(Table)<
 
                             &.ant-table-row.rowCanceled {
                                 background-color: ${theme.colors.error[0]};
+                                td.ant-table-cell-fix-left, td.ant-table-cell-fix-right{
+                                    &:before{
+                                        background-color: ${theme.colors.error[0]};
+                                    }
+                                }
+                                &:hover{
+                                    td{
+                                        background-color: transparent;
+                                        &.ant-table-cell-fix-left, &.ant-table-cell-fix-right{
+                                            background-color: ${bgColor};
+                                        }
+                                    }
+                                }
                             }
 
-                            &.ant-table-row:hover > td {
+                            &.ant-table-row:not(.rowCanceled):hover > td {
                                 background-color: ${
                                     theme.mode === ThemeMode.inDepo
                                         ? hexToRGBA(neutrals[1], 0.2)
                                         : hexToRGBA(neutrals[3], 0.3)
                                 };
+                                &.ant-table-cell-fix-left, &.ant-table-cell-fix-right{
+                                    &:before{
+                                        background-color: ${neutrals[5]};
+                                    }
+                                }
                             }
 
                             &.ant-table-row-selected > td {
@@ -345,9 +357,7 @@ const StyledTable = styled(Table)<
                     }
                 }
                 td.ant-table-cell-fix-left, td.ant-table-cell-fix-right{
-                    background-color: ${
-                        parentBg || (theme.mode === ThemeMode.inDepo ? inDepoNeutrals[6] : neutrals[5])
-                    };
+                    background-color: ${bgColor};
                     z-index: 3;
                     &:before{
                         content: "";
@@ -358,6 +368,7 @@ const StyledTable = styled(Table)<
                         left: 0;
                         display: block;
                         position: absolute;
+                        transition: all 0.4s;
                         background: ${
                             theme.mode === ThemeMode.inDepo ? parentBg || inDepoNeutrals[6] : theme.default.whiteColor
                         };

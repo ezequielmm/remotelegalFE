@@ -28,12 +28,8 @@ const PreJoinDepo = () => {
     const [witnessAlreadyExistsError, setWitnessAlreadyExistsError] = useState(false);
     // eslint-disable-next-line no-unused-vars
     const [links, setLinks] = useState({});
-    const [
-        registerParticipant,
-        registerParticipantLoading,
-        registerParticipantError,
-        registeredUser,
-    ] = useRegisterParticipant();
+    const [registerParticipant, registerParticipantLoading, registerParticipantError, registeredUser] =
+        useRegisterParticipant();
     const history = useHistory();
     const { getFrontEndContent, frontEndContent } = useFrontEndContent();
 
@@ -89,7 +85,7 @@ const PreJoinDepo = () => {
         if (registeredUser) {
             const { idToken } = registeredUser;
             localStorage.setItem(TEMP_TOKEN, idToken);
-            history.push(`/deposition/join/${depositionID}`);
+            history.push(`/deposition/pre-join/troubleshoot-devices/${depositionID}`);
         }
     }, [registeredUser, history, depositionID]);
 

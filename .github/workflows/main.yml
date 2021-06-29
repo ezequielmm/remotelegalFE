@@ -56,7 +56,7 @@ jobs:
                   target: .env
 
             - name: Build
-              run: yarn build
+              run: ESLINT_NO_DEV_ERRORS=true DISABLE_ESLINT_PLUGIN=true yarn build
             - name: Test
               run: CI=true yarn test
             - name: Upload publish to GitHub Store

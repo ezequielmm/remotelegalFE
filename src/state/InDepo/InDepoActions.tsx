@@ -9,6 +9,7 @@ import { ExhibitFile } from "../../types/ExhibitFile";
 export enum ACTION_TYPE {
     ADD_STAMP = "ADD_STAMP",
     SEND_MESSAGE = "SEND_MESSAGE",
+    SET_INITIAL_CAMERA_STATUS = "SET_INITIAL_CAMERA_STATUS",
     SET_DEPO_START_TIME = "SET_DEPO_START_TIME",
     IN_DEPO_JOIN_TO_ROOM = "IN_DEPO_JOIN_TO_ROOM",
     IN_DEPO_JOIN_TO_BREAKROOM = "IN_DEPO_JOIN_TO_BREAKROOM",
@@ -186,6 +187,10 @@ const actions = {
     }),
     setJobNumber: (payload) => ({
         type: ACTION_TYPE.IN_DEPO_SET_JOB_NUMBER,
+        payload,
+    }),
+    setInitialCameraStatus: (payload) => ({
+        type: ACTION_TYPE.SET_INITIAL_CAMERA_STATUS,
         payload,
     }),
 };

@@ -1,4 +1,4 @@
-import { waitForDomChange, fireEvent, waitForElement, act } from "@testing-library/react";
+import { fireEvent, act, waitFor } from "@testing-library/react";
 import React from "react";
 import userEvent from "@testing-library/user-event";
 import dayjs from "dayjs";
@@ -19,7 +19,7 @@ dayjs.extend(isSameOrAfter);
 const customDeps = getMockDeps();
 
 describe("Tests Edit Deposition Modal", () => {
-    test("Shows toast when submitting", async () => {
+    test("Shows toast when submitting from pending to confirm", async () => {
         const { startDate } = TEST_CONSTANTS.EXPECTED_DEPOSITION_BODY;
         const fullDeposition = getDepositionWithOverrideValues({ startDate, endDate: null, status: "Pending" });
         customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
@@ -33,12 +33,13 @@ describe("Tests Edit Deposition Modal", () => {
             <ActiveDepositionDetails />,
             customDeps
         );
-        await waitForDomChange();
-        const editButton = getAllByTestId(CONSTANTS.DEPOSITION_CARD_DETAILS_EDIT_BUTTON_DATA_TEST_ID);
-        fireEvent.click(editButton[0]);
+        await waitFor(() => {
+            const editButton = getAllByTestId(CONSTANTS.DEPOSITION_CARD_DETAILS_EDIT_BUTTON_DATA_TEST_ID);
+            fireEvent.click(editButton[0]);
+        });
         const options = getAllByText("Pending");
         userEvent.click(options[2]);
-        const confirmed = await waitForElement(() => getAllByText("Confirmed"));
+        const confirmed = await waitFor(() => getAllByText("Confirmed"));
         userEvent.click(confirmed[1]);
         fireEvent.click(getByTestId("false NO"));
         fireEvent.click(
@@ -62,24 +63,66 @@ describe("Tests Edit Deposition Modal", () => {
             target: { value: TEST_CONSTANTS.EXPECTED_EDIT_DEPOSITION_BODY.details },
         });
         userEvent.click(getByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_CONFIRM_BUTTON_TEST_ID));
-        await waitForDomChange();
-        expect(getByText(modalText.cancelButton)).toBeInTheDocument();
-        expect(getByText(modalText.confirmButton)).toBeInTheDocument();
-        expect(getByText(modalText.message)).toBeInTheDocument();
-        expect(getByText(modalText.title)).toBeInTheDocument();
+        await waitFor(() => {
+            expect(getByText(modalText.cancelButton)).toBeInTheDocument();
+            expect(getByText(modalText.confirmButton)).toBeInTheDocument();
+            expect(getByText(modalText.message)).toBeInTheDocument();
+            expect(getByText(modalText.title)).toBeInTheDocument();
+        });
         fireEvent.click(getByText(modalText.confirmButton));
-        await waitForDomChange();
-        await waitForElement(() => getAllByText(CONSTANTS.DEPOSITION_DETAILS_CHANGE_TO_CONFIRM_EMAIL_SENT_TO_ALL));
+        await waitFor(() => {
+            expect(getByText(CONSTANTS.DEPOSITION_DETAILS_CHANGE_TO_CONFIRM_EMAIL_SENT_TO_ALL)).toBeInTheDocument();
+        });
         expect(customDeps.apiService.editDeposition).toHaveBeenCalledWith(
             fullDeposition.id,
             {
                 ...TEST_CONSTANTS.EXPECTED_EDIT_DEPOSITION_BODY,
                 endDate: null,
-                startDate: dayjs(startDate).tz(mapTimeZone[TimeZones.ET]),
+                calendarDate: dayjs("2021-04-21T10:00:00.000Z").tz(mapTimeZone.ET),
+                file,
+                startDate: dayjs(startDate).tz(mapTimeZone.ET).format("YYYY-MM-DD[T]HH:mm:ss.SSSZ"),
+                timeZone: TimeZones.ET,
             },
             file,
             true
         );
+    });
+
+    test("Shows cancel message when submitting from confirm to cancel", async () => {
+        const { startDate } = TEST_CONSTANTS.EXPECTED_DEPOSITION_BODY;
+        const fullDeposition = getDepositionWithOverrideValues({ startDate, endDate: null, status: "Confirmed" });
+        customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
+            return fullDeposition;
+        });
+        customDeps.apiService.cancelDeposition = jest.fn().mockImplementation(async () => {
+            return {};
+        });
+        const modalText = getModalTextContent(Status.canceled, fullDeposition);
+        const { getAllByTestId, getAllByText, getByTestId, getByText } = renderWithGlobalContext(
+            <ActiveDepositionDetails />,
+            customDeps
+        );
+        await waitFor(() => {
+            const editButton = getAllByTestId(CONSTANTS.DEPOSITION_CARD_DETAILS_EDIT_BUTTON_DATA_TEST_ID);
+            fireEvent.click(editButton[0]);
+        });
+        const options = getAllByText("Confirmed");
+        userEvent.click(options[2]);
+        const canceled = await waitFor(() => getAllByText("Canceled"));
+        userEvent.click(canceled[0]);
+
+        userEvent.click(getByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_CONFIRM_BUTTON_TEST_ID));
+        await waitFor(() => {
+            expect(getByText(modalText.cancelButton)).toBeInTheDocument();
+            expect(getByText(modalText.confirmButton)).toBeInTheDocument();
+            expect(getByText(modalText.message)).toBeInTheDocument();
+            expect(getByText(modalText.title)).toBeInTheDocument();
+        });
+        fireEvent.click(getByText(modalText.confirmButton));
+        await waitFor(() => {
+            expect(getByText(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_SUCCESS_TOAST)).toBeInTheDocument();
+        });
+        expect(customDeps.apiService.cancelDeposition).toHaveBeenCalledWith(fullDeposition.id);
     });
     test("validates that file is a not a PDF file", async () => {
         const fullDeposition = getDepositionWithOverrideValues();
@@ -93,9 +136,10 @@ describe("Tests Edit Deposition Modal", () => {
             <ActiveDepositionDetails />,
             customDeps
         );
-        await waitForDomChange();
-        const editButton = getAllByTestId(CONSTANTS.DEPOSITION_CARD_DETAILS_EDIT_BUTTON_DATA_TEST_ID);
-        fireEvent.click(editButton[0]);
+        await waitFor(() => {
+            const editButton = getAllByTestId(CONSTANTS.DEPOSITION_CARD_DETAILS_EDIT_BUTTON_DATA_TEST_ID);
+            fireEvent.click(editButton[0]);
+        });
         fireEvent.click(
             getByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_CAPTION_BUTTON_REMOVE_FILE_TEST_ID)
         );
@@ -124,12 +168,12 @@ describe("Tests Edit Deposition Modal", () => {
             <ActiveDepositionDetails />,
             customDeps
         );
-        await waitForDomChange();
-        const editButton = getAllByTestId(CONSTANTS.DEPOSITION_CARD_DETAILS_EDIT_BUTTON_DATA_TEST_ID);
-        fireEvent.click(editButton[0]);
+        await waitFor(() => {
+            const editButton = getAllByTestId(CONSTANTS.DEPOSITION_CARD_DETAILS_EDIT_BUTTON_DATA_TEST_ID);
+            fireEvent.click(editButton[0]);
+        });
         userEvent.click(getByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_CONFIRM_BUTTON_TEST_ID));
-        await waitForDomChange();
-        await waitForElement(() => getAllByText(CONSTANTS.NETWORK_ERROR));
+        await waitFor(() => getAllByText(CONSTANTS.NETWORK_ERROR));
     });
     test("Show an invalid end time label when the end time is before start time", async () => {
         const startDate = new Date(new Date().getTime() + 30 * 60000);
@@ -143,9 +187,10 @@ describe("Tests Edit Deposition Modal", () => {
             <ActiveDepositionDetails />,
             customDeps
         );
-        await waitForDomChange();
-        const editButton = getAllByTestId(CONSTANTS.DEPOSITION_CARD_DETAILS_EDIT_BUTTON_DATA_TEST_ID);
-        fireEvent.click(editButton[0]);
+        await waitFor(() => {
+            const editButton = getAllByTestId(CONSTANTS.DEPOSITION_CARD_DETAILS_EDIT_BUTTON_DATA_TEST_ID);
+            fireEvent.click(editButton[0]);
+        });
         const startTimeInput = queryByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_START_TIME_TEST_ID);
         const endTimeInput = queryByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_END_TIME_TEST_ID);
         expect(startTimeInput).toBeInTheDocument();
@@ -177,9 +222,10 @@ describe("Tests Edit Deposition Modal", () => {
             <ActiveDepositionDetails />,
             customDeps
         );
-        await waitForDomChange();
-        const editButton = getAllByTestId(CONSTANTS.DEPOSITION_CARD_DETAILS_EDIT_BUTTON_DATA_TEST_ID);
-        fireEvent.click(editButton[0]);
+        await waitFor(() => {
+            const editButton = getAllByTestId(CONSTANTS.DEPOSITION_CARD_DETAILS_EDIT_BUTTON_DATA_TEST_ID);
+            fireEvent.click(editButton[0]);
+        });
         const startTimeInput = queryByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_START_TIME_TEST_ID);
         const endTimeInput = queryByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_END_TIME_TEST_ID);
         expect(startTimeInput).toBeInTheDocument();

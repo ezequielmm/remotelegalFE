@@ -12,10 +12,14 @@ jest.mock("../../hooks/endDepo/hooks", () => ({
 
 const customDeps = getMockDeps();
 
-test("End Depo Screen is shown with proper text when all the user info is loaded", async () => {
-    useEndDepoDownloadAssets.mockImplementation(() => ({
+beforeEach(() => {
+    const useEndDepoDownloadAssetsMock = useEndDepoDownloadAssets as jest.Mock;
+    useEndDepoDownloadAssetsMock.mockImplementation(() => ({
         downloadAssets: jest.fn(),
     }));
+});
+
+test("End Depo Screen is shown with proper text when all the user info is loaded", async () => {
     const { getByText, queryByTestId } = renderWithGlobalContext(<EndDepoScreen />, customDeps, {
         ...rootReducer,
         initialState: {
@@ -36,9 +40,6 @@ test("End Depo Screen is shown with proper text when all the user info is loaded
 });
 
 test("End Depo Screen user display name should be display well formatted", async () => {
-    useEndDepoDownloadAssets.mockImplementation(() => ({
-        downloadAssets: jest.fn(),
-    }));
     const { queryByText } = renderWithGlobalContext(<EndDepoScreen />, customDeps, {
         ...rootReducer,
         initialState: {

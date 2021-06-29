@@ -6,7 +6,10 @@ import DepositionDetailsVideoSection from "../../routes/DepositionDetails/Deposi
 import { RecordingStatus } from "../../models/recording";
 import "mutationobserver-shim";
 
-const customDeps = getMockDeps();
+let customDeps;
+beforeEach(() => {
+    customDeps = getMockDeps();
+});
 
 describe("DepositionDetailsVideoSection", () => {
     it("shows a total time control component with the text `00:00:00` when the totalTime's record info data is 0 seconds", () => {

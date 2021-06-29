@@ -1,9 +1,13 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { LocalAudioTrack, LocalVideoTrack } from "twilio-video";
+import { GlobalStateContext } from "../../state/GlobalState";
 
 const useVideoStatus = (audioTracks: LocalAudioTrack[], videoTracks: LocalVideoTrack[]) => {
+    const { state } = useContext(GlobalStateContext);
+    const { initialCameraStatus } = state.room;
+    const cameraStatus = initialCameraStatus !== null ? initialCameraStatus : true;
     const [isAudioEnabled, setAudioEnabled] = useState(true);
-    const [isCameraEnabled, setCameraEnabled] = useState(true);
+    const [isCameraEnabled, setCameraEnabled] = useState(cameraStatus);
 
     useEffect(() => {
         audioTracks.forEach((audioTrack) =>

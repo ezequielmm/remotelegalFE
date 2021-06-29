@@ -1,4 +1,5 @@
 import { LocalTrack, Room } from "twilio-video";
+import React from "react";
 import actions from "../state/InDepo/InDepoActions";
 import stopAllTracks from "./stopAllTracks";
 
@@ -15,6 +16,7 @@ const disconnectFromDepo = (
         stamp: null,
         startTime: "",
         mockDepoRoom: null,
+        initialCameraStatus: null,
         shouldSendToPreDepo: null,
         userStatus: null,
         currentRoom: null,

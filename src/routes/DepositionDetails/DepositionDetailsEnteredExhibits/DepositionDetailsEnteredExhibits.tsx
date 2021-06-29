@@ -15,7 +15,8 @@ import * as CONSTANTS from "../../../constants/depositionDetails";
 
 export default function DepositionDetailsEnteredExhibits() {
     const { handleFetchFiles, enteredExhibits, enteredExhibitsPending } = useEnteredExhibit();
-    const { getDocumentsUrlList, errorGetTranscriptsUrlList, documentsUrlList } = useGetDocumentsUrlList();
+    const { getDocumentsUrlList, errorGetTranscriptsUrlList, documentsUrlList, pendingGetTranscriptsUrlList } =
+        useGetDocumentsUrlList();
     const [selectedRows, setSelectedRows] = useState([]);
     const rowSelection = {
         type: "checkbox" as RowSelectionType,
@@ -23,7 +24,7 @@ export default function DepositionDetailsEnteredExhibits() {
             setSelectedRows(selection);
         },
     };
-    const isDownloadDisabled = !selectedRows.length;
+    const isDownloadDisabled = !selectedRows.length || pendingGetTranscriptsUrlList;
 
     useEffect(() => {
         handleFetchFiles();
@@ -63,6 +64,7 @@ export default function DepositionDetailsEnteredExhibits() {
                     icon={<Icon icon={DownloadIcon} size={8} />}
                     size="middle"
                     disabled={isDownloadDisabled}
+                    loading={pendingGetTranscriptsUrlList}
                     onClick={handleDownload}
                 >
                     {CONSTANTS.DETAILS_TRANSCRIPT_BUTTON_DOWNLOAD}

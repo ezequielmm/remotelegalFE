@@ -1,4 +1,4 @@
-import { waitForDomChange, waitForElement, fireEvent } from "@testing-library/react";
+import { waitForDomChange, waitForElement, fireEvent, waitFor } from "@testing-library/react";
 import { createMemoryHistory } from "history";
 import React from "react";
 import { Route } from "react-router-dom";
@@ -28,8 +28,9 @@ jest.mock("react-router-dom", () => ({
     }),
 }));
 
-const customDeps = getMockDeps();
+let customDeps;
 const history = createMemoryHistory();
+const mockTracks = jest.fn();
 // TODO: Find a better way to mock Twilio (eg, adding it to DI system)
 
 (global.navigator as any).mediaDevices = {
@@ -43,8 +44,7 @@ jest.mock("twilio-video", () => ({
         return { send: jest.fn() };
     },
 
-    createLocalTracks: async () => [],
-
+    createLocalTracks: (args) => mockTracks(args),
     connect: async (token) => {
         if (token === undefined) throw Error();
         return {
@@ -130,9 +130,11 @@ jest.mock("../../hooks/useSignalR", () => () => ({
     signalR: true,
 }));
 
-// jest.mock("../../hooks/breakrooms/hooks", () => ({
-//     useToggleLockRoom: jest.fn(),
-// }));
+beforeEach(() => {
+    localStorage.clear();
+    mockTracks.mockResolvedValue([]);
+    customDeps = getMockDeps();
+});
 
 test("Error screen is shown when fetch fails", async () => {
     customDeps.apiService.joinBreakroom = jest.fn().mockRejectedValue({});
@@ -174,8 +176,9 @@ test("VideoConference is shown if fetch is successful", async () => {
     );
 
     history.push(TESTS_CONSTANTS.TEST_BREAKROOM_ROUTE);
-    await waitForDomChange();
-    expect(waitForElement(() => getByTestId("videoconference"))).toBeTruthy();
+    await waitFor(() => {
+        getByTestId("videoconference_breakroom");
+    });
 });
 
 test("Off the record is shown by default", async () => {
@@ -307,4 +310,57 @@ test("Should display an error message when can't unlock a room", async () => {
     fireEvent.click(queryByTestId("lock_breakroom"));
     await waitForDomChange();
     expect(queryByText(CONSTANTS.BREAKROOM_LOCK_ERROR)).toBeInTheDocument();
+});
+
+test("CreateLocalTracks gets called with the proper devices if they exist in localStorage", async () => {
+    localStorage.setItem("selectedDevices", JSON.stringify(TESTS_CONSTANTS.DEVICES_MOCK));
+    renderWithGlobalContext(
+        <Route exact path={TESTS_CONSTANTS.BREAKROOM_ROUTE} component={Breakroom} />,
+        customDeps,
+        {
+            ...rootReducer,
+            initialState: {
+                room: {
+                    ...rootReducer.initialState.room,
+                    isRecording: true,
+                    currentExhibitTabName: "enteredExhibits",
+                    breakrooms: getBreakrooms(),
+                },
+            },
+        },
+        history
+    );
+    history.push(TESTS_CONSTANTS.TEST_BREAKROOM_ROUTE);
+    await waitFor(() => {
+        expect(mockTracks).toHaveBeenCalledWith({
+            audio: TESTS_CONSTANTS.DEVICES_MOCK.audio,
+            video: TESTS_CONSTANTS.DEVICES_MOCK.video,
+        });
+    });
+});
+
+test("CreateLocalTracks gets called with true if the devices don´t exist in localStorage", async () => {
+    renderWithGlobalContext(
+        <Route exact path={TESTS_CONSTANTS.BREAKROOM_ROUTE} component={Breakroom} />,
+        customDeps,
+        {
+            ...rootReducer,
+            initialState: {
+                room: {
+                    ...rootReducer.initialState.room,
+                    isRecording: true,
+                    currentExhibitTabName: "enteredExhibits",
+                    breakrooms: getBreakrooms(),
+                },
+            },
+        },
+        history
+    );
+    history.push(TESTS_CONSTANTS.TEST_BREAKROOM_ROUTE);
+    await waitFor(() => {
+        expect(mockTracks).toHaveBeenCalledWith({
+            audio: true,
+            video: true,
+        });
+    });
 });

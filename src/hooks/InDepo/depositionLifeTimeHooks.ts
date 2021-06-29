@@ -18,9 +18,7 @@ import { useCheckUserStatus } from "../preJoinDepo/hooks";
 import { Roles } from "../../models/participant";
 import { useAuthentication } from "../auth";
 import stopAllTracks from "../../helpers/stopAllTracks";
-
-// TODO: Find the way to use import instead of using require
-const beep = require("../../assets/sounds/Select.mp3");
+import beep from "../../assets/sounds/Select.mp3";
 
 export const useKillDepo = () => {
     const { deps } = useContext(GlobalStateContext);
@@ -70,11 +68,15 @@ export const useJoinBreakroom = () => {
 
     const joinBreakroomAsync = useAsyncCallback(
         async (breakroomID: string) => {
+            const devices = JSON.parse(localStorage.getItem("selectedDevices"));
             const dataTrack = new LocalDataTrack();
             const token: any = await generateBreakroomToken();
             if (!token) return "";
 
-            const tracks = await createLocalTracks({ audio: true, video: { aspectRatio: 1.777777777777778 } });
+            const tracks = await createLocalTracks({
+                audio: devices ? devices.audio : true,
+                video: devices ? devices.video : true,
+            });
             tracks.push(dataTrack);
             const room = await connect(token, {
                 ...TWILIO_VIDEO_CONFIG,
@@ -125,6 +127,7 @@ export const useJoinDepositionForMockRoom = () => {
 
     return useAsyncCallback(
         async (depositionID: string) => {
+            const devices = JSON.parse(localStorage.getItem("selectedDevices"));
             const dataTrack = new LocalDataTrack();
             const { token, participants, shouldSendToPreDepo, startDate, jobNumber }: any = await generateToken();
             const breakrooms = await getBreakrooms();
@@ -132,7 +135,10 @@ export const useJoinDepositionForMockRoom = () => {
                 history.push(`/deposition/join/${depositionID}`);
             }
 
-            const tracks = await createLocalTracks({ audio: true, video: { aspectRatio: 1.777777777777778 } });
+            const tracks = await createLocalTracks({
+                audio: devices ? devices.audio : true,
+                video: devices ? devices.video : true,
+            });
             tracks.push(dataTrack);
             const room = await connect(token, {
                 ...TWILIO_VIDEO_CONFIG,
@@ -197,18 +203,12 @@ export const useJoinDeposition = () => {
 
     return useAsyncCallback(
         async (depositionID: string) => {
+            const devices = JSON.parse(localStorage.getItem("selectedDevices"));
             const dataTrack = new LocalDataTrack();
             const userStatus = await checkUserStatus(depositionID, currentEmail.current);
             dispatch(actions.setUserStatus(userStatus));
-            const {
-                isOnTheRecord,
-                timeZone,
-                token,
-                isSharing,
-                participants,
-                shouldSendToPreDepo,
-                jobNumber,
-            }: any = await generateToken();
+            const { isOnTheRecord, timeZone, token, isSharing, participants, shouldSendToPreDepo, jobNumber }: any =
+                await generateToken();
             dispatch(actions.setDepoStatus(shouldSendToPreDepo));
             dispatch(actions.setJobNumber(jobNumber));
 
@@ -228,7 +228,10 @@ export const useJoinDeposition = () => {
             if (isSharing) {
                 fetchExhibitFileInfo(depositionID);
             }
-            const tracks = await createLocalTracks({ audio: true, video: { aspectRatio: 1.777777777777778 } });
+            const tracks = await createLocalTracks({
+                audio: devices ? devices.audio : true,
+                video: devices ? devices.video : true,
+            });
             tracks.push(dataTrack);
             const room = await connect(token, {
                 ...TWILIO_VIDEO_CONFIG,

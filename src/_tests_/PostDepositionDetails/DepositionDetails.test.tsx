@@ -37,10 +37,13 @@ jest.mock("audio-recorder-polyfill", () => {
     getUserMedia: jest.fn().mockResolvedValue(true),
 };
 
-const customDeps = getMockDeps();
 const history = createMemoryHistory();
+let customDeps;
 
 describe("DepositionDetails", () => {
+    beforeEach(() => {
+        customDeps = getMockDeps();
+    });
     test("Load Header with deposition details", async () => {
         customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
             return getDepositions()[0];

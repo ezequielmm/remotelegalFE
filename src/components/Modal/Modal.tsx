@@ -11,6 +11,7 @@ import Icon from "../Icon";
 export enum ModalSize {
     "default" = "default",
     "small" = "small",
+    "large" = "large",
 }
 
 export interface IModalProps extends ModalProps {

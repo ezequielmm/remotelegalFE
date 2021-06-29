@@ -15,13 +15,13 @@ import renderWithGlobalContext from "../utils/renderWithGlobalContext";
 import getMockDeps from "../utils/getMockDeps";
 import { getUserNotAdmin } from "../constants/signUp";
 import { rootReducer } from "../../state/GlobalState";
+import { wait } from "../../helpers/wait";
 
 global.MutationObserver = window.MutationObserver;
-const customDeps = getMockDeps();
+let customDeps;
 
 beforeEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    customDeps = getMockDeps();
 });
 
 it("Should show case selection validation if no case is selected", async () => {
@@ -581,7 +581,7 @@ it("create a deposition when click on submit button with all required fields fil
     expect(global.window.location.pathname).toBe("/");
 });
 
-it("shows error and try again button when get an error on fetch", async (done) => {
+it("shows error and try again button when get an error on fetch", async () => {
     customDeps.apiService.fetchCases = jest.fn().mockImplementation(() => Promise.reject(Error("")));
 
     const { getByText, getByTestId } = renderWithGlobalContext(<CreateDeposition />, customDeps, {
@@ -602,7 +602,6 @@ it("shows error and try again button when get an error on fetch", async (done) =
         await fireEvent.click(refreshButton);
     });
     expect(customDeps.apiService.fetchCases).toHaveBeenCalledTimes(2);
-    done();
 });
 
 it("shows error and try again button when current user is null", async () => {
@@ -647,23 +646,17 @@ it("shows validations when click on add witness button", async () => {
 });
 
 it("add a witness when click on add witness button and the required fields are filled", async () => {
-    const {
-        getByLabelText,
-        getAllByRole,
-        getByPlaceholderText,
-        getAllByPlaceholderText,
-        getByTestId,
-        getAllByTestId,
-    } = renderWithGlobalContext(<CreateDeposition />, customDeps, {
-        ...rootReducer,
-        initialState: {
-            room: {
-                ...rootReducer.initialState.room,
+    const { getByLabelText, getAllByRole, getByPlaceholderText, getAllByPlaceholderText, getByTestId, getAllByTestId } =
+        renderWithGlobalContext(<CreateDeposition />, customDeps, {
+            ...rootReducer,
+            initialState: {
+                room: {
+                    ...rootReducer.initialState.room,
+                },
+                user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+                signalR: { signalR: null },
             },
-            user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
-            signalR: { signalR: null },
-        },
-    });
+        });
     const { depositions } = TEST_CONSTANTS.getDepositions();
 
     // DATE FILL
@@ -1013,7 +1006,7 @@ it("RequesterSection must be hidden when user not admin", async () => {
 // TODO: improve the test in order to avoid using this timeout
 jest.setTimeout(50000);
 
-it(`add up to ${CONSTANTS.WITNESSES_LIMIT} witnesses and try to add another without success`, async (done) => {
+it(`add up to ${CONSTANTS.WITNESSES_LIMIT} witnesses and try to add another without success`, async () => {
     const { getAllByLabelText, getAllByRole, getAllByPlaceholderText, getByTestId } = renderWithGlobalContext(
         <CreateDeposition />,
         customDeps,
@@ -1031,39 +1024,43 @@ it(`add up to ${CONSTANTS.WITNESSES_LIMIT} witnesses and try to add another with
     const { depositions } = TEST_CONSTANTS.getDepositions();
 
     const addWitnessButton = await waitForElement(() => getByTestId("add_witness_button"));
-    for (let index = 0; index < CONSTANTS.WITNESSES_LIMIT - 1; index++) {
+
+    Array.from(Array(CONSTANTS.WITNESSES_LIMIT - 1).keys()).map(() => {
         // DATE FILL
-        const dateInput = getAllByPlaceholderText(CONSTANTS.DATE_PLACEHOLDER).pop();
-        await act(async () => {
-            await userEvent.click(dateInput);
-        });
-        await act(async () => {
-            await userEvent.click(dateInput);
-            await fireEvent.change(dateInput, {
-                target: { value: dayjs(depositions[0].date).format(CONSTANTS.DATE_FORMAT) },
+        return act(async () => {
+            const dateInput = getAllByPlaceholderText(CONSTANTS.DATE_PLACEHOLDER).pop();
+            await act(async () => {
+                await userEvent.click(dateInput);
             });
-            await fireEvent.keyDown(dateInput, { key: "enter", keyCode: 13 });
-        });
-        // TIMES FILL
-        const timeInputs = getAllByPlaceholderText(CONSTANTS.START_PLACEHOLDER);
-        const startInput = timeInputs[timeInputs.length - 2];
-        await act(async () => {
-            await userEvent.click(startInput);
-            await fireEvent.change(startInput, {
-                target: { value: dayjs(depositions[0].startTime).format(CONSTANTS.TIME_FORMAT) },
+            await act(async () => {
+                await userEvent.click(dateInput);
+                await fireEvent.change(dateInput, {
+                    target: { value: dayjs(depositions[0].date).format(CONSTANTS.DATE_FORMAT) },
+                });
+                await fireEvent.keyDown(dateInput, { key: "enter", keyCode: 13 });
             });
+            // TIMES FILL
+            const timeInputs = getAllByPlaceholderText(CONSTANTS.START_PLACEHOLDER);
+            const startInput = timeInputs[timeInputs.length - 2];
+            await act(async () => {
+                await userEvent.click(startInput);
+                await fireEvent.change(startInput, {
+                    target: { value: dayjs(depositions[0].startTime).format(CONSTANTS.TIME_FORMAT) },
+                });
+            });
+            await act(async () => {
+                const okButton = getAllByRole("button", { name: /ok/i }).pop();
+                await userEvent.click(okButton);
+            });
+            // RADIO BUTTON FILL
+            const radioButtonOption = getAllByLabelText("NO").pop();
+            await act(async () => {
+                await userEvent.click(radioButtonOption);
+            });
+            await act(async () => userEvent.click(addWitnessButton));
         });
-        await act(async () => {
-            const okButton = getAllByRole("button", { name: /ok/i }).pop();
-            await userEvent.click(okButton);
-        });
-        // RADIO BUTTON FILL
-        const radioButtonOption = getAllByLabelText("NO").pop();
-        await act(async () => {
-            await userEvent.click(radioButtonOption);
-        });
-        await act(async () => userEvent.click(addWitnessButton));
-    }
+    });
+
+    await wait(500);
     expect(addWitnessButton).toBeDisabled();
-    done();
 });

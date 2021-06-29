@@ -1,4 +1,4 @@
-import { act, fireEvent, waitForDomChange, waitForElement } from "@testing-library/react";
+import { act, fireEvent, waitFor, waitForDomChange, waitForElement } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { createMemoryHistory } from "history";
 import React from "react";
@@ -16,12 +16,11 @@ import renderWithGlobalContext from "../utils/renderWithGlobalContext";
 import { dateToUTCString } from "../../helpers/dateToUTCString";
 
 import { rootReducer } from "../../state/GlobalState";
+import { wait } from "../../helpers/wait";
 
 const MOCKED_DATE = "mocked_date";
 
-jest.mock("../../helpers/dateToUTCString", () => ({
-    dateToUTCString: jest.fn(() => MOCKED_DATE),
-}));
+jest.mock("../../helpers/dateToUTCString");
 
 const customDeps = getMockDeps();
 const history = createMemoryHistory();
@@ -38,6 +37,8 @@ jest.mock("react-router", () => ({
 describe("MyDepositions", () => {
     beforeEach(() => {
         AUTH.VALID();
+        const dateHelperMock = dateToUTCString as jest.Mock;
+        dateHelperMock.mockImplementation(() => MOCKED_DATE);
     });
 
     it("shows empty state screen when no upcoming depositions loaded and go to add deposition modal", async () => {
@@ -483,14 +484,17 @@ describe("MyDepositions", () => {
                 signalR: { signalR: null },
             },
         });
-        await waitForDomChange();
-        const startDateRangeInput = getByPlaceholderText("Start date");
-        await act(async () => {
-            await userEvent.click(startDateRangeInput);
+        await waitFor(async () => {
+            const startDateRangeInput = getByPlaceholderText("Start date");
+            await act(async () => {
+                userEvent.click(startDateRangeInput);
+                const todayDateRangeButton = queryByText("Today");
+                expect(todayDateRangeButton).toBeInTheDocument();
+                fireEvent.click(todayDateRangeButton);
+            });
         });
-        const todayDateRangeButton = queryByText("Today");
-        expect(todayDateRangeButton).toBeInTheDocument();
-        fireEvent.click(todayDateRangeButton);
+
+        await wait(500);
         expect(deps.apiService.fetchDepositions).toHaveBeenNthCalledWith(2, {
             page: 1,
             pageSize: 20,

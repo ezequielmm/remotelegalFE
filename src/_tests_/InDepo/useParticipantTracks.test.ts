@@ -1,8 +1,19 @@
 import { renderHook } from "@testing-library/react-hooks";
+import changeSpeakers from "../../helpers/changeSpeakers";
 import useParticipantTracks from "../../hooks/InDepo/useParticipantTracks";
 import getParticipant from "../mocks/participant";
+import * as TESTS_CONSTANTS from "../constants/InDepo";
 
-const participant = getParticipant("test1");
+jest.mock("../../helpers/changeSpeakers", () => ({
+    __esModule: true,
+    default: jest.fn(),
+}));
+
+let participant;
+beforeEach(() => {
+    localStorage.clear();
+    participant = getParticipant();
+});
 
 test("Tracks have the correct length", () => {
     const { result } = renderHook(() => useParticipantTracks(participant));
@@ -25,8 +36,27 @@ test("Attach method is called for video and audio track", () => {
 });
 
 test("Detach method is called for video and audio track", () => {
-    const { result, rerender } = renderHook(() => useParticipantTracks(participant));
+    const { result, rerender, waitFor } = renderHook(() => useParticipantTracks(participant));
     rerender();
-    expect(result.current.videoTracks[0].detach).toBeCalled();
-    expect(result.current.audioTracks[0].detach).toBeCalled();
+    waitFor(() => {
+        expect(result.current.videoTracks[0].detach).toBeCalled();
+        expect(result.current.audioTracks[0].detach).toBeCalled();
+    });
+});
+test("If speakers devices exist in localStorage, changeSpeakers is called", async () => {
+    const speakers = JSON.stringify(TESTS_CONSTANTS.DEVICES_MOCK);
+    localStorage.setItem("selectedDevices", speakers);
+    const { result, waitFor } = renderHook(() => useParticipantTracks(participant));
+    await waitFor(() => {
+        expect(changeSpeakers).toHaveBeenCalledWith(
+            result.current.audioRef.current,
+            TESTS_CONSTANTS.DEVICES_MOCK.speakers
+        );
+    });
+});
+test("change speakers doesn´t get called if devices don´t exist in localStorage", async () => {
+    const { waitFor } = renderHook(() => useParticipantTracks(participant));
+    await waitFor(() => {
+        expect(changeSpeakers).not.toHaveBeenCalled();
+    });
 });
