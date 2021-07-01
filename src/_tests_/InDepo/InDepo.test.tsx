@@ -50,13 +50,15 @@ const WaitingRoomRoute = () => <div>WAITING ROOM</div>;
 window.HTMLElement.prototype.scrollIntoView = jest.fn();
 
 // TODO: Find a better way to mock Twilio (eg, adding it to DI system)
-const mockTracks = jest.fn();
+const mockVideoTracks = jest.fn();
+const mockAudioTracks = jest.fn();
 jest.mock("twilio-video", () => ({
     ...jest.requireActual("twilio-video"),
     LocalDataTrack: function dataTrack() {
         return { send: jest.fn() };
     },
-    createLocalTracks: (args) => mockTracks(args),
+    createLocalVideoTrack: (args) => mockVideoTracks(args),
+    createLocalAudioTrack: (args) => mockAudioTracks(args),
     connect: async () => ({
         on: jest.fn(),
         off: jest.fn(),
@@ -137,7 +139,8 @@ jest.mock("twilio-video", () => ({
 beforeEach(() => {
     localStorage.clear();
     AUTH.VALID();
-    mockTracks.mockResolvedValue([]);
+    mockAudioTracks.mockResolvedValue({});
+    mockVideoTracks.mockResolvedValue({});
     const recorderMock = AudioRecorder as jest.Mock;
     customDeps = getMockDeps();
     recorderMock.mockImplementation(() => ({
@@ -800,13 +803,11 @@ it("calls createLocalTracks with the devices if they exist in localStorage", asy
 
     history.push(TESTS_CONSTANTS.TEST_ROUTE);
     await waitFor(() => {
-        expect(mockTracks).toHaveBeenCalledWith({
-            audio: TESTS_CONSTANTS.DEVICES_MOCK.audio,
-            video: TESTS_CONSTANTS.DEVICES_MOCK.video,
-        });
+        expect(mockAudioTracks).toHaveBeenCalledWith(TESTS_CONSTANTS.DEVICES_MOCK.audio);
+        expect(mockVideoTracks).toHaveBeenCalledWith(TESTS_CONSTANTS.DEVICES_MOCK.video);
     });
 });
-it("calls createLocalTracks with true the devices don´t exist in localStorage", async () => {
+it("calls create Tracks functions with null if the devices don´t exist in localStorage", async () => {
     customDeps.apiService.joinDeposition = jest.fn().mockResolvedValue(TESTS_CONSTANTS.JOIN_DEPOSITION_MOCK);
     renderWithGlobalContext(
         <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,
@@ -826,9 +827,7 @@ it("calls createLocalTracks with true the devices don´t exist in localStorage",
 
     history.push(TESTS_CONSTANTS.TEST_ROUTE);
     await waitFor(() => {
-        expect(mockTracks).toHaveBeenCalledWith({
-            audio: true,
-            video: true,
-        });
+        expect(mockAudioTracks).toHaveBeenCalledWith(null);
+        expect(mockVideoTracks).toHaveBeenCalledWith(null);
     });
 });

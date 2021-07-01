@@ -14,6 +14,7 @@ import Text from "../Typography/Text";
 import ColorStatus from "../../types/ColorStatus";
 
 export interface ITestVideoProps {
+    showButtons?: boolean;
     isMuted?: boolean;
     isVideoOn?: boolean;
     onClickMuted?: () => void;
@@ -57,7 +58,17 @@ export const TestVideoControlsWrapper = styled(Space)`
 
 const TestVideo = React.forwardRef(
     (
-        { isMuted, isVideoOn, hasError, errorTitle, errorText, onClickMuted, onClickVideo, ...rest }: ITestVideoProps,
+        {
+            isMuted,
+            isVideoOn,
+            showButtons = true,
+            hasError,
+            errorTitle,
+            errorText,
+            onClickMuted,
+            onClickVideo,
+            ...rest
+        }: ITestVideoProps,
         ref: MutableRefObject<HTMLVideoElement>
     ) => {
         return (
@@ -77,20 +88,24 @@ const TestVideo = React.forwardRef(
                     </video>
                 )}
                 <TestVideoControlsWrapper justify="center">
-                    <Control
-                        data-testid={`audio_on_toggle_${isMuted}`}
-                        onClick={onClickMuted}
-                        type="circle"
-                        isActive={!isMuted}
-                        icon={<Icon icon={isMuted ? MuteIcon : UnmuteIcon} size="1.625rem" />}
-                    />
-                    <Control
-                        data-testid={`video_on_toggle_${isVideoOn}`}
-                        onClick={onClickVideo}
-                        type="circle"
-                        isActive={isVideoOn}
-                        icon={<Icon icon={isVideoOn ? CameraOnIcon : CameraOffIcon} size="1.625rem" />}
-                    />
+                    {showButtons && (
+                        <>
+                            <Control
+                                data-testid={`audio_on_toggle_${isMuted}`}
+                                onClick={onClickMuted}
+                                type="circle"
+                                isActive={!isMuted}
+                                icon={<Icon icon={isMuted ? MuteIcon : UnmuteIcon} size="1.625rem" />}
+                            />
+                            <Control
+                                data-testid={`video_on_toggle_${isVideoOn}`}
+                                onClick={onClickVideo}
+                                type="circle"
+                                isActive={isVideoOn}
+                                icon={<Icon icon={isVideoOn ? CameraOnIcon : CameraOffIcon} size="1.625rem" />}
+                            />
+                        </>
+                    )}
                 </TestVideoControlsWrapper>
             </StyledTestVideo>
         );

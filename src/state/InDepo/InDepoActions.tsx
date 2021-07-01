@@ -8,6 +8,7 @@ import { ExhibitFile } from "../../types/ExhibitFile";
 
 export enum ACTION_TYPE {
     ADD_STAMP = "ADD_STAMP",
+    CHANGE_SPEAKER = "CHANGE_SPEAKER",
     SEND_MESSAGE = "SEND_MESSAGE",
     SET_INITIAL_CAMERA_STATUS = "SET_INITIAL_CAMERA_STATUS",
     SET_DEPO_START_TIME = "SET_DEPO_START_TIME",
@@ -191,6 +192,10 @@ const actions = {
     }),
     setInitialCameraStatus: (payload) => ({
         type: ACTION_TYPE.SET_INITIAL_CAMERA_STATUS,
+        payload,
+    }),
+    changeSpeaker: (payload) => ({
+        type: ACTION_TYPE.CHANGE_SPEAKER,
         payload,
     }),
 };

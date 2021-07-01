@@ -1,9 +1,10 @@
-import React, { ReactElement, useEffect, useState } from "react";
+import React, { ReactElement, useEffect, useState, useCallback } from "react";
 import { useHistory } from "react-router";
 import { ThemeProvider } from "styled-components";
 import { LocalAudioTrack, LocalParticipant, LocalVideoTrack } from "twilio-video";
 import { ReactComponent as ArrowIcon } from "../../assets/general/Arrow.svg";
 import { ReactComponent as ChatIcon } from "../../assets/icons/comment_icon.svg";
+import { ReactComponent as SettingsIcon } from "../../assets/in-depo/settings.svg";
 import { ReactComponent as BreakroomsIcon } from "../../assets/in-depo/Breakrooms.svg";
 import { ReactComponent as CameraOffIcon } from "../../assets/in-depo/Camera.off.svg";
 import { ReactComponent as CameraOnIcon } from "../../assets/in-depo/Camera.on.svg";
@@ -50,6 +51,7 @@ import EndDepoModal from "./components/EndDepoModal";
 import getLeaveModalTextContent from "./helpers/getLeaveModalTextContent";
 import { LockedMenuItem, StyledComposedIconContainer, StyledContainer, StyledLogo } from "./styles";
 import HelpModal from "./components/HelpModal";
+import TroubleShootDevicesModal from "../../routes/TroubleShootUserDevices/components/TroubleShootDevicesModal";
 
 interface IControlsBar {
     breakrooms?: BreakroomModel.Breakroom[];
@@ -97,6 +99,7 @@ export default function ControlsBar({
     );
     const { startPauseRecording, loadingStartPauseRecording } = useRecording(!isRecording);
     const [chatOpen, togglerChat] = useState(false);
+    const [showSettings, setSettings] = useState(false);
     const [unreadedChats, setUnreadedChats] = useState(0);
     const [summaryOpen, togglerSummary] = useState(false);
     const [moreOpen, togglerMore] = useState(false);
@@ -120,6 +123,8 @@ export default function ControlsBar({
     const toggleExhibits = () => togglerExhibits((prevState) => !prevState);
     const toggleRealTime = () => togglerRealTime((prevState) => !prevState);
     const toggleLeaveModal = () => setOpenLeaveModal((prevState) => !prevState);
+    const toggleSettingsModal = useCallback(() => setSettings((showSettings) => !showSettings), []);
+
     const { messages, sendMessage, loadClient, loadingClient, errorLoadingClient } = useChat({
         chatOpen,
         setUnreadedChats,
@@ -252,6 +257,7 @@ export default function ControlsBar({
 
     return (
         <StyledContainer pl={6} pr={3} align="center" data-testid="controls_container">
+            <TroubleShootDevicesModal onClose={toggleSettingsModal} isDepo visible={showSettings} />
             <Confirm
                 visible={breakroomModal}
                 title={CONSTANTS.BREAKROOM_ON_THE_RECORD_TITLE}
@@ -495,6 +501,16 @@ export default function ControlsBar({
                                                 <Icon icon={SupportIcon} size={8} color={ColorStatus.white} />
                                                 <Text state={ColorStatus.white} size="small">
                                                     {CONSTANTS.CONTROLS_BAR_SUPPORT_LABEL}
+                                                </Text>
+                                            </Space>
+                                        </Button>
+                                    </Menu.Item>
+                                    <Menu.Item key="1">
+                                        <Button data-testid="settings_button" type="link" onClick={toggleSettingsModal}>
+                                            <Space size="small" align="center">
+                                                <Icon icon={SettingsIcon} size={8} color={ColorStatus.white} />
+                                                <Text state={ColorStatus.white} size="small">
+                                                    {CONSTANTS.CONTROLS_BAR_SETTINGS_LABEL}
                                                 </Text>
                                             </Space>
                                         </Button>

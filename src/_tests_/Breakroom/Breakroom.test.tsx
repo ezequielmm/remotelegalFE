@@ -30,12 +30,15 @@ jest.mock("react-router-dom", () => ({
 
 let customDeps;
 const history = createMemoryHistory();
-const mockTracks = jest.fn();
+
 // TODO: Find a better way to mock Twilio (eg, adding it to DI system)
 
 (global.navigator as any).mediaDevices = {
     getUserMedia: jest.fn().mockResolvedValue(true),
 };
+
+const mockVideoTracks = jest.fn();
+const mockAudioTracks = jest.fn();
 
 // TODO: Find a better way to mock Twilio (eg, adding it to DI system)
 jest.mock("twilio-video", () => ({
@@ -44,7 +47,8 @@ jest.mock("twilio-video", () => ({
         return { send: jest.fn() };
     },
 
-    createLocalTracks: (args) => mockTracks(args),
+    createLocalVideoTrack: (args) => mockVideoTracks(args),
+    createLocalAudioTrack: (args) => mockAudioTracks(args),
     connect: async (token) => {
         if (token === undefined) throw Error();
         return {
@@ -132,7 +136,6 @@ jest.mock("../../hooks/useSignalR", () => () => ({
 
 beforeEach(() => {
     localStorage.clear();
-    mockTracks.mockResolvedValue([]);
     customDeps = getMockDeps();
 });
 
@@ -312,7 +315,7 @@ test("Should display an error message when can't unlock a room", async () => {
     expect(queryByText(CONSTANTS.BREAKROOM_LOCK_ERROR)).toBeInTheDocument();
 });
 
-test("CreateLocalTracks gets called with the proper devices if they exist in localStorage", async () => {
+test("Create track functions get called with the proper devices if they exist in localStorage", async () => {
     localStorage.setItem("selectedDevices", JSON.stringify(TESTS_CONSTANTS.DEVICES_MOCK));
     renderWithGlobalContext(
         <Route exact path={TESTS_CONSTANTS.BREAKROOM_ROUTE} component={Breakroom} />,
@@ -332,14 +335,12 @@ test("CreateLocalTracks gets called with the proper devices if they exist in loc
     );
     history.push(TESTS_CONSTANTS.TEST_BREAKROOM_ROUTE);
     await waitFor(() => {
-        expect(mockTracks).toHaveBeenCalledWith({
-            audio: TESTS_CONSTANTS.DEVICES_MOCK.audio,
-            video: TESTS_CONSTANTS.DEVICES_MOCK.video,
-        });
+        expect(mockAudioTracks).toHaveBeenCalledWith(TESTS_CONSTANTS.DEVICES_MOCK.audio);
+        expect(mockVideoTracks).toHaveBeenCalledWith(TESTS_CONSTANTS.DEVICES_MOCK.video);
     });
 });
 
-test("CreateLocalTracks gets called with true if the devices don´t exist in localStorage", async () => {
+test("Create track functions get called with null if the devices don´t exist in localStorage", async () => {
     renderWithGlobalContext(
         <Route exact path={TESTS_CONSTANTS.BREAKROOM_ROUTE} component={Breakroom} />,
         customDeps,
@@ -358,9 +359,7 @@ test("CreateLocalTracks gets called with true if the devices don´t exist in loc
     );
     history.push(TESTS_CONSTANTS.TEST_BREAKROOM_ROUTE);
     await waitFor(() => {
-        expect(mockTracks).toHaveBeenCalledWith({
-            audio: true,
-            video: true,
-        });
+        expect(mockAudioTracks).toHaveBeenCalledWith(null);
+        expect(mockVideoTracks).toHaveBeenCalledWith(null);
     });
 });

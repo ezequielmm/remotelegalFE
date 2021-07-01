@@ -8,6 +8,11 @@ import getMockDeps from "../utils/getMockDeps";
 import changeSpeakers from "../../helpers/changeSpeakers";
 import * as MODULE_CONSTANTS from "../../constants/TroubleShootUserDevices";
 import renderWithGlobalContext from "../utils/renderWithGlobalContext";
+import TroubleShootDevicesModal from "../../routes/TroubleShootUserDevices/components/TroubleShootDevicesModal";
+import { rootReducer } from "../../state/GlobalState";
+import getParticipant from "../mocks/participant";
+import trackpubsToTracks from "../../helpers/trackPubsToTracks";
+import createDevices from "../../routes/TroubleShootUserDevices/helpers/createDevices";
 
 const mockVolumeMeter = jest.fn();
 
@@ -32,6 +37,10 @@ const playAudioStub = jest.spyOn(window.HTMLAudioElement.prototype, "play").mock
 const InDepo = () => <div>IN DEPO</div>;
 
 beforeEach(() => {
+    Object.defineProperty(window, "location", {
+        writable: true,
+        value: { reload: jest.fn() },
+    });
     customDeps = getMockDeps();
     customDeps.apiService.setParticipantStatus = jest.fn().mockResolvedValue({});
     mockVolumeMeter.mockReturnValue({ volumeLevel: 10 });
@@ -193,7 +202,7 @@ test("it changes audio input", async () => {
     await waitFor(() => expect(screen.queryByTestId("overlay")).toBeFalsy());
     await act(async () => {
         userEvent.click(screen.getByText(TEST_CONSTANTS.DEVICES_LIST_MOCK[0].label));
-        const device = await waitFor(() => screen.getByTestId(TEST_CONSTANTS.DEVICES_LIST_MOCK[1].deviceId));
+        const device = await waitFor(() => screen.getByTestId(TEST_CONSTANTS.DEVICES_LIST_MOCK[1].label));
         userEvent.click(device);
     });
     expect(audioMock.getTracks()[0].stop).toHaveBeenCalled();
@@ -223,7 +232,7 @@ test("it changes video input", async () => {
     await waitFor(() => expect(screen.queryByTestId("overlay")).toBeFalsy());
     await act(async () => {
         userEvent.click(screen.getByText(TEST_CONSTANTS.DEVICES_LIST_MOCK[4].label));
-        const device = await waitFor(() => screen.getByTestId(TEST_CONSTANTS.DEVICES_LIST_MOCK[5].deviceId));
+        const device = await waitFor(() => screen.getByTestId(TEST_CONSTANTS.DEVICES_LIST_MOCK[5].label));
         userEvent.click(device);
     });
     expect(videoMock.getTracks()[0].stop).toHaveBeenCalled();
@@ -234,7 +243,7 @@ test("it calls change speakers with the proper params", async () => {
     await waitFor(() => expect(screen.queryByTestId("overlay")).toBeFalsy());
     await act(async () => {
         userEvent.click(screen.getByText(TEST_CONSTANTS.DEVICES_LIST_MOCK[2].label));
-        const device = await waitFor(() => screen.getByTestId(TEST_CONSTANTS.DEVICES_LIST_MOCK[3].deviceId));
+        const device = await waitFor(() => screen.getByTestId(TEST_CONSTANTS.DEVICES_LIST_MOCK[3].label));
         userEvent.click(device);
     });
     await waitFor(() => {
@@ -294,5 +303,94 @@ test("it calls setParticipantStatus with the right params and sets the devices i
     };
     await waitFor(() => {
         expect(JSON.parse(localStorage.getItem("selectedDevices"))).toEqual(LOCALSTORAGE_OBJECT);
+    });
+});
+
+test("it shows proper text when In Depo and no buttons", async () => {
+    renderWithGlobalContext(<TroubleShootDevicesModal visible isDepo />, customDeps);
+    await waitFor(() => {
+        expect(screen.getByText(MODULE_CONSTANTS.IN_DEPO_TITLE)).toBeInTheDocument();
+        expect(screen.queryByTestId(`audio_on_toggle_false`)).toBeFalsy();
+        expect(screen.queryByTestId(`audio_on_toggle_true`)).toBeFalsy();
+        expect(screen.queryByTestId(`video_on_toggle_false`)).toBeFalsy();
+        expect(screen.queryByTestId(`video_on_toggle_true`)).toBeFalsy();
+    });
+});
+
+test("it changes devices", async () => {
+    const onClose = jest.fn();
+    localStorage.setItem(
+        "selectedDevices",
+        JSON.stringify({
+            audio: false,
+            video: false,
+            speakers: false,
+        })
+    );
+    const expectedLocalStorageItem = JSON.stringify(
+        createDevices(
+            { video: false, audio: false },
+            {
+                videoinput: {
+                    kind: TEST_CONSTANTS.DEVICES_LIST_MOCK[5].kind as "videoinput",
+                    label: TEST_CONSTANTS.DEVICES_LIST_MOCK[5].label,
+                    value: TEST_CONSTANTS.DEVICES_LIST_MOCK[5].deviceId,
+                },
+                audioinput: {
+                    kind: TEST_CONSTANTS.DEVICES_LIST_MOCK[1].kind as "audioinput",
+                    value: TEST_CONSTANTS.DEVICES_LIST_MOCK[1].deviceId,
+                    label: TEST_CONSTANTS.DEVICES_LIST_MOCK[1].label,
+                },
+                audiooutput: {
+                    kind: TEST_CONSTANTS.DEVICES_LIST_MOCK[3].kind as "audiooutput",
+                    value: TEST_CONSTANTS.DEVICES_LIST_MOCK[3].deviceId,
+                    label: TEST_CONSTANTS.DEVICES_LIST_MOCK[3].label,
+                },
+            }
+        )
+    );
+    const participant = getParticipant();
+    const initialState = {
+        ...rootReducer,
+        initialState: {
+            user: { ...rootReducer.initialState.user },
+            postDepo: { ...rootReducer.initialState.postDepo },
+            signalR: { ...rootReducer.initialState.signalR },
+            generalUi: { ...rootReducer.initialState.generalUi },
+            room: {
+                ...rootReducer.initialState.room,
+                newSpeaker: null,
+                mockDepoRoom: {
+                    localParticipant: {
+                        videoTracks: participant.videoTracks,
+                        audioTracks: participant.audioTracks,
+                    },
+                } as any,
+            },
+        },
+    };
+    renderWithGlobalContext(<TroubleShootDevicesModal onClose={onClose} visible isDepo />, customDeps, initialState);
+    await waitFor(() => screen.getAllByText(TEST_CONSTANTS.DEVICES_LIST_MOCK[4].label));
+    await act(async () => {
+        userEvent.click(screen.getAllByText(TEST_CONSTANTS.DEVICES_LIST_MOCK[4].label)[0]);
+        const videoDevice = await waitFor(() => screen.getByTestId(TEST_CONSTANTS.DEVICES_LIST_MOCK[5].label));
+        userEvent.click(videoDevice);
+        userEvent.click(screen.getByText(TEST_CONSTANTS.DEVICES_LIST_MOCK[0].label));
+        const audioDevice = await waitFor(() => screen.getByTestId(TEST_CONSTANTS.DEVICES_LIST_MOCK[1].label));
+        userEvent.click(audioDevice);
+        userEvent.click(screen.getByText(TEST_CONSTANTS.DEVICES_LIST_MOCK[2].label));
+        const speakerDevice = await waitFor(() => screen.getByTestId(TEST_CONSTANTS.DEVICES_LIST_MOCK[3].label));
+        userEvent.click(speakerDevice);
+    });
+    fireEvent.click(screen.getByText(MODULE_CONSTANTS.CHANGE_DEVICES_LABEL));
+    await waitFor(() => {
+        expect(trackpubsToTracks(participant.videoTracks)[0].restart).toHaveBeenCalledWith({
+            deviceId: { exact: TEST_CONSTANTS.DEVICES_LIST_MOCK[5].deviceId },
+        });
+        expect(trackpubsToTracks(participant.audioTracks)[0].restart).toHaveBeenCalledWith({
+            deviceId: { exact: TEST_CONSTANTS.DEVICES_LIST_MOCK[1].deviceId },
+        });
+        expect(localStorage.getItem("selectedDevices")).toEqual(expectedLocalStorageItem);
+        expect(onClose).toHaveBeenCalled();
     });
 });

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import {
     AudioTrack,
     DataTrack,
@@ -11,8 +11,11 @@ import {
 } from "twilio-video";
 import changeSpeakers from "../../helpers/changeSpeakers";
 import trackpubsToTracks from "../../helpers/trackPubsToTracks";
+import { GlobalStateContext } from "../../state/GlobalState";
 
 const useParticipantTracks = (participant: LocalParticipant | RemoteParticipant) => {
+    const { state } = useContext(GlobalStateContext);
+    const { newSpeaker } = state.room;
     const [dataTracks, setDataTracks] = useState<DataTrack[]>([]);
     const [videoTracks, setVideoTracks] = useState<VideoTrack[]>([]);
     const [videoDisabled, setVideoDisabled] = useState<boolean>(false);
@@ -106,6 +109,12 @@ const useParticipantTracks = (participant: LocalParticipant | RemoteParticipant)
             audioTrack?.detach();
         };
     }, [audioTracks]);
+
+    useEffect(() => {
+        if (newSpeaker && audioRef.current) {
+            changeSpeakers(audioRef.current, newSpeaker);
+        }
+    }, [newSpeaker]);
     return { videoDisabled, videoRef, audioRef, dataTracks, audioTracks, videoTracks };
 };
 export default useParticipantTracks;
