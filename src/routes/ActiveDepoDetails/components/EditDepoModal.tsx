@@ -74,19 +74,11 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
     const [invalidFile, setInvalidFile] = useState(false);
     const [invalidCancelDate, setInvalidCancelDate] = useState(false);
     const [editDeposition, editLoading, editError, editedDeposition] = useEditDeposition();
-    const [
-        rescheduleDeposition,
-        rescheduleDepositionLoading,
-        rescheduleDepositionError,
-        rescheduledDeposition,
-    ] = useRescheduleDeposition();
+    const [rescheduleDeposition, rescheduleDepositionLoading, rescheduleDepositionError, rescheduledDeposition] =
+        useRescheduleDeposition();
     const [cancelDeposition, cancelLoading, cancelError, canceledDeposition] = useCancelDeposition();
-    const [
-        revertCancelDeposition,
-        revertCancelLoading,
-        revertCancelError,
-        revertedCanceledDeposition,
-    ] = useRevertCancelDeposition();
+    const [revertCancelDeposition, revertCancelLoading, revertCancelError, revertedCanceledDeposition] =
+        useRevertCancelDeposition();
     const [openStatusModal, setStatusModal] = useState({
         open: false,
         modalContent: {

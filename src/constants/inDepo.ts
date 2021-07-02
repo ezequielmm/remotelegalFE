@@ -22,6 +22,8 @@ export const TWILIO_VIDEO_CONFIG: ConnectOptions = {
     networkQuality: { local: 1, remote: 1 },
     dominantSpeaker: true,
 };
+export const CONNECTION_UNSTABLE = "Your connection is unstable";
+export const NETWORK_INDICATOR_TEST_ID = "NETWORK_INDICATOR";
 export const FETCH_ERROR_RESULT_TITLE = "Sorry! We couldn't connect to the deposition.";
 export const FETCH_ERROR_RESULT_BODY = "Something went wrong, please refresh the page to try again.";
 export const FETCH_ERROR_RESULT_BUTTON = "Refresh Page";

@@ -93,6 +93,7 @@ export const useJoinBreakroom = () => {
                 ...TWILIO_VIDEO_CONFIG,
                 name: breakroomID,
                 tracks,
+                networkQuality: { local: 3, remote: 3 },
             });
 
             dispatch(actions.addUserTracks(tracks));

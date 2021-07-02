@@ -40,9 +40,10 @@ const VideoConference = ({
     const [layoutClass, setLayoutClass] = useState<TLayoutClass>(null);
     const participantContainer = useRef<HTMLDivElement>(null);
     const videoConferenceContainer = useRef<HTMLDivElement>(null);
-    const participants = [localParticipant, ...Array.from(attendees.values())];
-    const witness = participants.find((participant) => JSON.parse(participant.identity).role === "Witness");
     const { participantsStatus } = useGetParticipantStatus();
+
+    const [participants, setParticipants] = useState([localParticipant, ...Array.from(attendees.values())]);
+    const witness = participants.find((participant) => JSON.parse(participant.identity).role === "Witness");
 
     useEffect(() => {
         switch (layoutSize) {
@@ -57,6 +58,19 @@ const VideoConference = ({
                 break;
         }
     }, [layoutSize]);
+
+    useEffect(() => {
+        if (!localParticipant) {
+            return;
+        }
+        localParticipant.on("networkQualityLevelChanged", () =>
+            setParticipants([localParticipant, ...Array.from(attendees.values())])
+        );
+        // eslint-disable-next-line consistent-return
+        return () => {
+            localParticipant?.removeAllListeners();
+        };
+    }, [localParticipant, attendees]);
 
     return (
         <StyledVideoConference
@@ -84,17 +98,23 @@ const VideoConference = ({
             >
                 {participants
                     .filter((participant) => isBreakroom || JSON.parse(participant.identity).role !== "Witness")
-                    .map((participant: RemoteParticipant, i) => (
-                        <StyledParticipantContainer key={participant.sid} ref={i === 0 ? participantContainer : null}>
-                            <Participant
-                                isMuted={
-                                    enableMuteUnmute &&
-                                    !!participantsStatus[JSON.parse(participant.identity)?.email]?.isMuted
-                                }
-                                participant={participant}
-                            />
-                        </StyledParticipantContainer>
-                    ))}
+                    .map((participant: RemoteParticipant, i) => {
+                        return (
+                            <StyledParticipantContainer
+                                key={participant.sid}
+                                ref={i === 0 ? participantContainer : null}
+                            >
+                                <Participant
+                                    networkLevel={participant.networkQualityLevel}
+                                    isMuted={
+                                        enableMuteUnmute &&
+                                        !!participantsStatus[JSON.parse(participant.identity)?.email]?.isMuted
+                                    }
+                                    participant={participant}
+                                />
+                            </StyledParticipantContainer>
+                        );
+                    })}
             </StyledAttendeesContainer>
         </StyledVideoConference>
     );
