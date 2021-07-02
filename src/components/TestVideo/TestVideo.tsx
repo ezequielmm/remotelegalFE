@@ -54,6 +54,12 @@ export const TestVideoControlsWrapper = styled(Space)`
     bottom: ${getREM(theme.default.spaces[6])};
     left: 0;
     width: 100%;
+
+    ${({ theme }) => `
+        @media (max-width: ${theme.default.breakpoints.sm}) {
+            bottom: ${getREM(theme.default.spaces[4])};
+        }
+    `};
 `;
 
 const TestVideo = React.forwardRef(

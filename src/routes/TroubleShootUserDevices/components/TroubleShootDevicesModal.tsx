@@ -26,6 +26,9 @@ import { GlobalStateContext } from "../../../state/GlobalState";
 import useFloatingAlertContext from "../../../hooks/useFloatingAlertContext";
 import createDevices, { Device } from "../helpers/createDevices";
 import trackpubsToTracks from "../../../helpers/trackPubsToTracks";
+import { theme } from "../../../constants/styles/theme";
+import { getREM } from "../../../constants/styles/utils";
+import { breakpoints } from "../../../constants/styles/breakpoints";
 
 interface TroubleShootDevicesModalProps {
     isDepo?: boolean;
@@ -36,6 +39,14 @@ interface TroubleShootDevicesModalProps {
 const StyledCol = styled(Col)`
     > * {
         z-index: 1;
+    }
+`;
+
+const StyledForm = styled(Form)`
+    @media (max-width: ${breakpoints.sm}) {
+        .ant-form-item {
+            margin-bottom: ${getREM(theme.default.spaces[6])};
+        }
     }
 `;
 
@@ -212,7 +223,7 @@ const TroubleShootDevicesModal = ({ isDepo, visible, onClose }: TroubleShootDevi
                 mask={!!isDepo}
                 size={ModalSize.large}
             >
-                <Form layout="vertical">
+                <StyledForm layout="vertical">
                     <Space direction="vertical" fullWidth>
                         <Space.Item fullWidth>
                             <Title
@@ -254,8 +265,8 @@ const TroubleShootDevicesModal = ({ isDepo, visible, onClose }: TroubleShootDevi
                                         </Space.Item>
                                     </Space>
                                 </StyledCol>
-                                <Col sm={11}>
-                                    <Form.Item label="Microphone" htmlFor="microphone">
+                                <Col sm={11} xs={24}>
+                                    <StyledForm.Item label="Microphone" htmlFor="microphone">
                                         <InputWrapper>
                                             <Select
                                                 onChange={handleDeviceChange}
@@ -274,8 +285,8 @@ const TroubleShootDevicesModal = ({ isDepo, visible, onClose }: TroubleShootDevi
                                                 ))}
                                             </Select>
                                         </InputWrapper>
-                                    </Form.Item>
-                                    <Form.Item label="Speaker" htmlFor="speaker">
+                                    </StyledForm.Item>
+                                    <StyledForm.Item label="Speaker" htmlFor="speaker">
                                         <InputWrapper>
                                             <Select
                                                 onChange={handleDeviceChange}
@@ -294,8 +305,8 @@ const TroubleShootDevicesModal = ({ isDepo, visible, onClose }: TroubleShootDevi
                                                 ))}
                                             </Select>
                                         </InputWrapper>
-                                    </Form.Item>
-                                    <Form.Item label="Camera" htmlFor="camera">
+                                    </StyledForm.Item>
+                                    <StyledForm.Item label="Camera" htmlFor="camera">
                                         <InputWrapper>
                                             <Select
                                                 onChange={handleDeviceChange}
@@ -314,7 +325,7 @@ const TroubleShootDevicesModal = ({ isDepo, visible, onClose }: TroubleShootDevi
                                                 ))}
                                             </Select>
                                         </InputWrapper>
-                                    </Form.Item>
+                                    </StyledForm.Item>
                                 </Col>
                             </Row>
                         </Space.Item>
@@ -330,7 +341,7 @@ const TroubleShootDevicesModal = ({ isDepo, visible, onClose }: TroubleShootDevi
                             </Button>
                         </Space>
                     </Space>
-                </Form>
+                </StyledForm>
             </Modal>
         </>
     );

@@ -38,6 +38,19 @@ const GlobalStyle = createGlobalStyle`
     .ant-checkbox-inner {
         border-radius: 2px;
     }
+    .ant-checkbox-wrapper {
+        display: inline-flex;
+        align-items: flex-start;
+        .ant-table-cell &{
+            display: inline-block;
+        }
+    }
+    .ant-checkbox {
+        margin-top: 4px;
+        .ant-table-cell &{
+            margin-top: 0;
+        }
+    }
 
     .ant-layout-header {
         line-height: unset;
@@ -56,6 +69,8 @@ const GlobalStyle = createGlobalStyle`
             font-size: ${({ theme }) => getREM(theme.default.spaces[6] * 6)};        
         }
     }
+
+    
     ${({ theme }) => `
         .ant-notification-notice-message{
             margin-bottom: 0;

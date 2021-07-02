@@ -26,6 +26,7 @@ export const StyledInDepoLayout = styled.div`
 export const StyledRoomFooter = styled.div`
     width: 100%;
     height: ${({ theme }) => getREM(theme.default.spaces[9] * 3)};
+    position: relative;
 `;
 
 export interface ContainerProps {

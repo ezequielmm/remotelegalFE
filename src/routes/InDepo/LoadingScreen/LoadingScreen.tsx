@@ -8,10 +8,13 @@ import Logo from "../../../components/Logo";
 import { LOADING_DEPOSITION_TITLE, LOADING_DEPOSITION_SUBTITLE } from "../../../constants/preJoinDepo";
 import { GlobalStateContext } from "../../../state/GlobalState";
 import getUserNameString from "../../../helpers/getUserNameString";
+import useWindowSize from "../../../hooks/useWindowSize";
+import { theme } from "../../../constants/styles/theme";
 
 const LoadingScreen = () => {
     const { state } = useContext(GlobalStateContext);
     const { userStatus } = state.room;
+    const [windowWidth] = useWindowSize();
 
     return (
         <div
@@ -35,7 +38,7 @@ const LoadingScreen = () => {
                         <Title
                             textAlign="center"
                             ellipsis={false}
-                            level={4}
+                            level={windowWidth < parseInt(theme.default.breakpoints.sm, 10) ? 5 : 4}
                             weight="light"
                             dataTestId="deposition_loading_screen_header"
                         >
