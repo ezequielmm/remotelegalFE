@@ -25,7 +25,9 @@ const useParticipantTracks = (participant: LocalParticipant | RemoteParticipant)
 
     const trackSubscribed = (track: AudioTrack | VideoTrack | LocalDataTrack | RemoteDataTrack) => {
         if (track.kind === "video") {
-            videoRef.current.style.display = "block";
+            if (videoRef.current) {
+                videoRef.current.style.display = "block";
+            }
             return setVideoTracks((video) => [...video, track]);
         }
         if (track.kind === "audio") {
@@ -38,7 +40,9 @@ const useParticipantTracks = (participant: LocalParticipant | RemoteParticipant)
         track: AudioTrack | LocalDataTrack | RemoteDataTrack | VideoTrack | RemoteVideoTrack
     ) => {
         if (track.kind === "video") {
-            videoRef.current.style.display = track.name === videoRef.current.name ? "none" : "block";
+            if (videoRef.current) {
+                videoRef.current.style.display = track.name === videoRef.current.name ? "none" : "block";
+            }
             return setVideoTracks((video) => video.filter((v) => v !== track));
         }
         if (track.kind === "audio") {
