@@ -1,16 +1,16 @@
 import React, { useContext, useEffect, useState } from "react";
 import { LocalParticipant, RemoteParticipant } from "twilio-video";
-import { datadogLogs } from "@datadog/browser-logs";
+// import { datadogLogs } from "@datadog/browser-logs";
 import useDataTrack from "../../../hooks/InDepo/useDataTrack";
 import useParticipantTracks from "../../../hooks/InDepo/useParticipantTracks";
 import { TimeZones } from "../../../models/general";
 import Clock from "../../../components/Clock";
 import Text from "../../../components/Typography/Text";
-import * as CONSTANTS from "../../../constants/inDepo";
+// import * as CONSTANTS from "../../../constants/inDepo";
 
 import {
     StyledIdentityBox,
-    StyledNetworkQuality,
+    // StyledNetworkQuality,
     StyledParticipantMask,
     StyledParticipantMicContainer,
     StyledTimeBox,
@@ -59,17 +59,17 @@ const Participant = ({
         return () => participant && setHasBorder(false);
     }, [dominantSpeaker, participant]);
 
-    useEffect(() => {
-        if (networkLevel <= 2 && networkLevel !== null) {
-            datadogLogs.logger.info("Network quality low", { networkLevel, user: identity });
-            const args = {
-                message: CONSTANTS.CONNECTION_UNSTABLE,
-                type: "info",
-                duration: 3,
-            };
-            addFloatingAlert(args);
-        }
-    }, [networkLevel, addFloatingAlert, identity]);
+    // useEffect(() => {
+    //     if (networkLevel <= 2 && networkLevel !== null) {
+    //         datadogLogs.logger.info("Network quality low", { networkLevel, user: identity });
+    //         const args = {
+    //             message: CONSTANTS.CONNECTION_UNSTABLE,
+    //             type: "info",
+    //             duration: 3,
+    //         };
+    //         addFloatingAlert(args);
+    //     }
+    // }, [networkLevel, addFloatingAlert, identity]);
 
     return (
         <StyledParticipantMask highlight={hasBorder}>
@@ -127,7 +127,7 @@ const Participant = ({
                                 : identity?.role}
                         </Text>
                     </Space>
-                    <div style={{ marginLeft: "auto" }}>
+                    {/* <div style={{ marginLeft: "auto" }}>
                         <StyledParticipantMicContainer style={{ color: "white" }}>
                             <StyledNetworkQuality
                                 data-testid={CONSTANTS.NETWORK_INDICATOR_TEST_ID}
@@ -139,7 +139,7 @@ const Participant = ({
                                 strokeWidth={theme.default.spaces[3] * theme.default.baseUnit}
                             />
                         </StyledParticipantMicContainer>
-                    </div>
+                    </div> */}
                 </Space>
             </StyledIdentityBox>
         </StyledParticipantMask>

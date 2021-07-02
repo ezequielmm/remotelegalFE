@@ -53,14 +53,14 @@ test("Expect muted microphone icon when the witness is muted", async () => {
     expect(queryByTestId("participant_muted")).toBeTruthy();
 });
 
-test("Expect toast message when the network level is less than 3", async () => {
-    const participant = getParticipant("test1", "Witness");
-    renderWithGlobalContext(<Participant participant={participant} isMuted networkLevel={2} />);
-    await waitFor(() => expect(screen.queryAllByText(CONSTANTS.CONNECTION_UNSTABLE)[0]).toBeInTheDocument());
-});
+// test("Expect toast message when the network level is less than 3", async () => {
+//     const participant = getParticipant("test1", "Witness");
+//     renderWithGlobalContext(<Participant participant={participant} isMuted networkLevel={2} />);
+//     await waitFor(() => expect(screen.queryAllByText(CONSTANTS.CONNECTION_UNSTABLE)[0]).toBeInTheDocument());
+// });
 
-test("Expect show network indicator", async () => {
-    const participant = getParticipant("test1", "Witness");
-    renderWithGlobalContext(<Participant participant={participant} isMuted networkLevel={5} />);
-    await waitFor(() => expect(screen.queryByTestId(CONSTANTS.NETWORK_INDICATOR_TEST_ID)).toBeTruthy());
-});
+// test("Expect show network indicator", async () => {
+//     const participant = getParticipant("test1", "Witness");
+//     renderWithGlobalContext(<Participant participant={participant} isMuted networkLevel={5} />);
+//     await waitFor(() => expect(screen.queryByTestId(CONSTANTS.NETWORK_INDICATOR_TEST_ID)).toBeTruthy());
+// });
