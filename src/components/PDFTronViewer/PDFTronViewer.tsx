@@ -20,7 +20,7 @@ export type AnnotationPayload = {
 };
 export interface PdfTronViewerProps {
     setShowSpinner?: Dispatch<SetStateAction<boolean>>;
-    document?: string | Blob | File;
+    document?: string;
     filename?: string;
     activeKey?: string;
     showSpinner?: boolean;
@@ -338,7 +338,7 @@ const PDFTronViewer = ({
             if (filename.toLowerCase().includes(".mp4")) {
                 loadPDFTronVideo(PDFTron, document);
             } else {
-                PDFTron.loadDocument(document, { filename });
+                PDFTron.loadDocument(document, { filename: filename.replace(/\.\w{3,4}($)/gim, ".pdf") });
             }
         }
         return () => {
