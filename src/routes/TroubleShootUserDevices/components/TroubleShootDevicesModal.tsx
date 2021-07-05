@@ -50,7 +50,7 @@ const StyledForm = styled(Form)`
     }
 `;
 
-const TroubleShootDevicesModal = ({ isDepo, visible, onClose }: TroubleShootDevicesModalProps) => {
+const TroubleShootDevicesModal = ({ isDepo, visible = true, onClose }: TroubleShootDevicesModalProps) => {
     const {
         gettingTracks,
         options,
@@ -68,8 +68,8 @@ const TroubleShootDevicesModal = ({ isDepo, visible, onClose }: TroubleShootDevi
     const availableRoom = currentRoom || mockDepoRoom;
     const { depositionID } = useParams<{ depositionID: string }>();
     const [isVideoOff, setVideoOff] = useState(true);
+    const [audioRef, setAudioRef] = useState<HTMLMediaElement>(null);
     const videoRef = useRef<HTMLVideoElement>(null);
-    const audioRef = useRef<HTMLMediaElement>(null);
     const [sendMutedStatus, sendMutedLoading, sendMutedError, sendMutedResponse] = useSendParticipantStatus();
     const addAlert = useFloatingAlertContext();
 
@@ -127,6 +127,13 @@ const TroubleShootDevicesModal = ({ isDepo, visible, onClose }: TroubleShootDevi
         setMuted(!activeStreams.audioinput.stream);
     }, [activeStreams.audioinput.stream]);
 
+    useEffect(() => {
+        const devices = localStorage.getItem("selectedDevices") && JSON.parse(localStorage.getItem("selectedDevices"));
+        if (devices?.speakers && audioRef && visible) {
+            changeSpeakers(audioRef, devices.speakers);
+        }
+    }, [audioRef, visible]);
+
     const onClickTestIcons = (audio?: boolean) => {
         if (audio === true) {
             if (activeStreams.audioinput.stream) {
@@ -143,9 +150,9 @@ const TroubleShootDevicesModal = ({ isDepo, visible, onClose }: TroubleShootDevi
     };
 
     const handleSpeakerTest = () => {
-        if (audioRef.current) {
-            audioRef.current.currentTime = 0;
-            audioRef.current.play();
+        if (audioRef) {
+            audioRef.currentTime = 0;
+            audioRef.play();
         }
     };
 
@@ -161,7 +168,7 @@ const TroubleShootDevicesModal = ({ isDepo, visible, onClose }: TroubleShootDevi
             if (parsedDevice.kind !== "audiooutput") {
                 stopOldTrackAndSetNewTrack(parsedDevice);
             } else {
-                changeSpeakers(audioRef.current, parsedDevice.value);
+                changeSpeakers(audioRef, parsedDevice.value);
             }
             setSelectedOptions({ ...selectedOptions, [parsedDevice.kind]: parsedDevice });
         }
@@ -251,7 +258,11 @@ const TroubleShootDevicesModal = ({ isDepo, visible, onClose }: TroubleShootDevi
                                     <Space size="large" fullWidth my={9} justify="space-between">
                                         <TestVolume stream={isMuted ? null : activeStreams.audioinput.stream} />
                                         <Space.Item>
-                                            <audio data-testid="audio_file" src={SpeakerTestAudio} ref={audioRef}>
+                                            <audio
+                                                ref={(newRef) => setAudioRef(newRef)}
+                                                data-testid="audio_file"
+                                                src={SpeakerTestAudio}
+                                            >
                                                 <track kind="captions" />
                                             </audio>
                                             <Button

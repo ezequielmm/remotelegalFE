@@ -394,3 +394,13 @@ test("it changes devices", async () => {
         expect(onClose).toHaveBeenCalled();
     });
 });
+test("it calls change speakers if old speakers were selected", async () => {
+    localStorage.setItem("selectedDevices", JSON.stringify({ speakers: TEST_CONSTANTS.DEVICES_LIST_MOCK[3].deviceId }));
+    renderWithGlobalContext(<TroubleShootUserDevices />, customDeps);
+    await waitFor(() => {
+        expect(changeSpeakers).toHaveBeenCalledWith(
+            screen.getByTestId("audio_file"),
+            TEST_CONSTANTS.DEVICES_LIST_MOCK[3].deviceId
+        );
+    });
+});
