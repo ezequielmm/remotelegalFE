@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { LocalParticipant, RemoteParticipant, Room } from "twilio-video";
 import { useGetParticipantStatus } from "../../../hooks/InDepo/useParticipantStatus";
 import { TimeZones } from "../../../models/general";
@@ -41,9 +41,7 @@ const VideoConference = ({
     const participantContainer = useRef<HTMLDivElement>(null);
     const videoConferenceContainer = useRef<HTMLDivElement>(null);
     const { participantsStatus } = useGetParticipantStatus();
-
     const participants = [localParticipant, ...Array.from(attendees.values())];
-    // const [participants, setParticipants] = useState([localParticipant, ...Array.from(attendees.values())]);
     const witness = participants.find((participant) => JSON.parse(participant.identity).role === "Witness");
 
     useEffect(() => {
@@ -60,19 +58,6 @@ const VideoConference = ({
         }
     }, [layoutSize]);
 
-    // useEffect(() => {
-    //     if (!localParticipant) {
-    //         return;
-    //     }
-    //     localParticipant.on("networkQualityLevelChanged", () =>
-    //         setParticipants([localParticipant, ...Array.from(attendees.values())])
-    //     );
-    //     // eslint-disable-next-line consistent-return
-    //     return () => {
-    //         localParticipant?.removeAllListeners();
-    //     };
-    // }, [localParticipant, attendees]);
-
     return (
         <StyledVideoConference
             className={`${layoutClass} ${isBreakroom && "breakrooms"}`}
@@ -82,6 +67,11 @@ const VideoConference = ({
             {!isBreakroom && (
                 <StyledDeponentContainer isUnique={isBreakroom && participants.length === 1}>
                     <Participant
+                        isLocal={
+                            isBreakroom
+                                ? participants[1]?.sid === localParticipant.sid
+                                : witness?.sid === localParticipant.sid
+                        }
                         timeZone={timeZone}
                         participant={isBreakroom ? participants[1] : witness}
                         isWitness
@@ -102,6 +92,7 @@ const VideoConference = ({
                     .map((participant: RemoteParticipant, i) => (
                         <StyledParticipantContainer key={participant.sid} ref={i === 0 ? participantContainer : null}>
                             <Participant
+                                isLocal={participant?.sid === localParticipant?.sid}
                                 isMuted={
                                     enableMuteUnmute &&
                                     !!participantsStatus[JSON.parse(participant.identity)?.email]?.isMuted

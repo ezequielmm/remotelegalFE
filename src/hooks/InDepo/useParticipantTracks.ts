@@ -20,6 +20,7 @@ const useParticipantTracks = (participant: LocalParticipant | RemoteParticipant)
     const [videoTracks, setVideoTracks] = useState<VideoTrack[]>([]);
     const [videoDisabled, setVideoDisabled] = useState<boolean>(false);
     const [audioTracks, setAudioTracks] = useState<AudioTrack[]>([]);
+    const [netWorkLevel, setNetWorkLevel] = useState<number>(null);
     const audioRef = useRef<HTMLAudioElement & AudioTrack>();
     const videoRef = useRef<HTMLVideoElement & VideoTrack>();
 
@@ -74,6 +75,7 @@ const useParticipantTracks = (participant: LocalParticipant | RemoteParticipant)
         setAudioTracks(trackpubsToTracks(participant.audioTracks));
         setDataTracks(trackpubsToTracks(participant.dataTracks));
         participant.on("trackSubscribed", trackSubscribed);
+        participant.on("networkQualityLevelChanged", setNetWorkLevel);
         participant.on("trackUnsubscribed", trackUnsubscribed);
         participant.on("trackDisabled", trackDisabled);
         participant.on("trackEnabled", trackEnabled);
@@ -119,6 +121,6 @@ const useParticipantTracks = (participant: LocalParticipant | RemoteParticipant)
             changeSpeakers(audioRef.current, newSpeaker);
         }
     }, [newSpeaker]);
-    return { videoDisabled, videoRef, audioRef, dataTracks, audioTracks, videoTracks };
+    return { videoDisabled, videoRef, audioRef, dataTracks, audioTracks, videoTracks, netWorkLevel };
 };
 export default useParticipantTracks;
