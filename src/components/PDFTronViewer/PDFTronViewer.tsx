@@ -59,7 +59,6 @@ const PDFTronViewer = ({
     const [PDFTron, setPDFTron] = useState<WebViewerInstance>(null);
     const shouldToastAppear = useRef(true);
     const [documentLoaded, setDocumentLoaded] = useState(false);
-    const [annotationsLoaded, setAnnotationsLoaded] = useState(false);
     const { getAllLatestAnnotations, savedAnnotations } = useExhibitGetAnnotations();
     const { realTimeAnnotation } = useExhibitRealTimeAnnotations();
 
@@ -200,10 +199,7 @@ const PDFTronViewer = ({
         const { FitMode } = PDFTron;
         PDFTron.setFitMode(FitMode.FitWidth);
         setDocumentLoaded(true);
-    };
-
-    const onAnnotationsLoaded = () => {
-        setAnnotationsLoaded(true);
+        setShowSpinner(false);
     };
 
     const onPageNumberUpdated = (page) => {
@@ -211,23 +207,23 @@ const PDFTronViewer = ({
     };
 
     useEffect(() => {
-        if (documentLoaded && annotationsLoaded && shouldGetAnnotations) {
+        if (documentLoaded && shouldGetAnnotations) {
             getAllLatestAnnotations();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [documentLoaded, annotationsLoaded, shouldGetAnnotations]);
+    }, [documentLoaded, shouldGetAnnotations]);
 
     useEffect(() => {
-        if (documentLoaded && annotationsLoaded && shouldGetAnnotations && currentExhibitPage !== "-1") {
+        if (documentLoaded && shouldGetAnnotations && currentExhibitPage !== "-1") {
             PDFTron?.docViewer?.setCurrentPage(currentExhibitPage);
             setTimeout(() => {
                 PDFTron?.docViewer?.setCurrentPage(currentExhibitPage);
             }, 1000);
         }
-    }, [documentLoaded, annotationsLoaded, currentExhibitPage, shouldGetAnnotations, PDFTron]);
+    }, [documentLoaded, currentExhibitPage, shouldGetAnnotations, PDFTron]);
 
     useEffect(() => {
-        if (documentLoaded && annotationsLoaded) {
+        if (documentLoaded) {
             if (shouldGetAnnotations) {
                 if (savedAnnotations) {
                     onDocumentReadyToDisplay();
@@ -237,7 +233,7 @@ const PDFTronViewer = ({
             }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [documentLoaded, annotationsLoaded, savedAnnotations]);
+    }, [documentLoaded, savedAnnotations]);
 
     useEffect(() => {
         if (realTimeAnnotations) {
@@ -332,7 +328,6 @@ const PDFTronViewer = ({
             PDFTron.iframeWindow.addEventListener("loaderror", alertError);
             PDFTron.annotManager.on("annotationChanged", onAnnotationChangeHandler);
             PDFTron.docViewer.on("documentLoaded", onDocumentLoadedHandler);
-            PDFTron.docViewer.on("annotationsLoaded", onAnnotationsLoaded);
             PDFTron.docViewer.on("pageNumberUpdated", onPageNumberUpdated);
             PDFTron.setToolbarGroup("toolbarGroup-View", true);
             if (filename.toLowerCase().includes(".mp4")) {
@@ -376,7 +371,7 @@ const PDFTronViewer = ({
                 handleClose={setStampModal}
             />
             <StyledPDFTronViewerContainer
-                style={{ visibility: documentLoaded && annotationsLoaded ? "visible" : "hidden" }}
+                style={{ visibility: documentLoaded ? "visible" : "hidden" }}
                 ref={viewerRef}
             />
         </>
