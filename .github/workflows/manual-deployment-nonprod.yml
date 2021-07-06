@@ -89,4 +89,17 @@ jobs:
             - name: Upload publish to S3
               run: |
                   aws s3 sync ./build s3://$BUCKET --metadata-directive REPLACE --cache-control 'max-age=86400,must-revalidate,public' --delete
+
+                  arr=(`ls *.br.*`)
+                  for ((i=0; i < ${#arr[@]}; i++)); do
+                  aws s3 cp ${arr[$i]} s3://$BUCKET/webviewer/lib/core/pdf/lean/ --content-encoding br --metadata-directive REPLACE --cache-control 'max-age=86400,must-revalidate,public'
+                    echo "${arr[$i]}"
+                  done
+
+                  arr=(`ls *.gz.*`)
+                  for ((i=0; i < ${#arr[@]}; i++)); do
+                    aws s3 cp ${arr[$i]} s3://$BUCKET/webviewer/lib/core/pdf/lean/ --content-encoding gz --metadata-directive REPLACE --cache-control 'max-age=86400,must-revalidate,public'
+                    echo "${arr[$i]}"
+                  done
+
                   aws cloudfront create-invalidation --distribution-id $DISTRIBUTION --paths "/*"
