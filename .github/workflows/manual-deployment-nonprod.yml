@@ -90,7 +90,7 @@ jobs:
               run: |
                   aws s3 sync ./build s3://$BUCKET --metadata-directive REPLACE --cache-control 'max-age=86400,must-revalidate,public' --delete
 
-                  cd public/webviewer/lib/core/pdf/lean/
+                  cd build/webviewer/lib/core/pdf/lean
 
                   arr=(`ls *.br.*`)
                   for ((i=0; i < ${#arr[@]}; i++)); do
