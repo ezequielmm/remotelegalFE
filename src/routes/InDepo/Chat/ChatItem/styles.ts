@@ -1,6 +1,6 @@
 import styled from "styled-components";
+import Text from "prp-components-library/src/components/Text";
 import { getREM } from "../../../../constants/styles/utils";
-import Text from "../../../../components/Typography/Text";
 
 export const StyledItem = styled.div<{ isCurrentUser: boolean; isSameAuthor: boolean }>`
     ${({ isCurrentUser, isSameAuthor, theme }) => {

@@ -2,9 +2,9 @@ import React from "react";
 // also exported from '@storybook/react' if you can deal with breaking changes in 6.1
 import { Story, Meta } from "@storybook/react/types-6-0";
 import { UserOutlined } from "@ant-design/icons";
-import Alert from "../components/Alert";
-import { IAlertProps } from "../components/Alert/Alert";
-import Button from "../components/Button";
+import Button from "prp-components-library/src/components/Button";
+import Alert from "prp-components-library/src/components/Alert";
+import { IAlertProps } from "prp-components-library/src/components/Alert/Alert";
 import useFloatingAlertContext from "../hooks/useFloatingAlertContext";
 
 export default {

@@ -1,10 +1,9 @@
-import React from "react";
 import { useFormContext } from "react-hook-form";
-import RHFTextArea from "../../../components/RHFTextArea";
-import Space from "../../../components/Space";
-import Card from "../../../components/Card";
-import Title from "../../../components/Typography/Title";
-import Text from "../../../components/Typography/Text";
+import Card from "prp-components-library/src/components/Card";
+import RHFTextArea from "prp-components-library/src/components/RHF/RHFTextArea";
+import Space from "prp-components-library/src/components/Space";
+import Text from "prp-components-library/src/components/Text";
+import Title from "prp-components-library/src/components/Title";
 import * as CONSTANTS from "../../../constants/createDeposition";
 import ColorStatus from "../../../types/ColorStatus";
 

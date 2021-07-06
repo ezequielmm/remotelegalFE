@@ -1,4 +1,4 @@
-import { Status } from "../../../components/StatusPill/StatusPill";
+import { Status } from "prp-components-library/src/components/StatusPill/StatusPill";
 import * as CONSTANTS from "../../../constants/activeDepositionDetails";
 import { DepositionModel } from "../../../models";
 

@@ -1,10 +1,10 @@
 import React from "react";
 import { Row, Col } from "antd";
 import { useFormContext } from "react-hook-form";
-import Space from "../../../components/Space";
-import RHFInput from "../../../components/RHFInput";
-import Card from "../../../components/Card";
-import Title from "../../../components/Typography/Title";
+import Card from "prp-components-library/src/components/Card";
+import RHFInput from "prp-components-library/src/components/RHF/RHFInput";
+import Space from "prp-components-library/src/components/Space";
+import Title from "prp-components-library/src/components/Title";
 import * as CONSTANTS from "../../../constants/createDeposition";
 import { theme } from "../../../constants/styles/theme";
 

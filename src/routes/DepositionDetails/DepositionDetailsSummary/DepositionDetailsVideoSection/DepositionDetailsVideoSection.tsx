@@ -1,4 +1,7 @@
-import React, { ReactElement } from "react";
+import { ReactElement } from "react";
+import Icon from "prp-components-library/src/components/Icon";
+import Space from "prp-components-library/src/components/Space";
+import Spinner from "prp-components-library/src/components/Spinner";
 import VideoPlayer from "../../../../components/VideoPlayer";
 import { ReactComponent as TimeIcon } from "../../../../assets/icons/time.svg";
 import { ReactComponent as RecordOnIcon } from "../../../../assets/in-depo/Record.on.svg";
@@ -9,12 +12,10 @@ import RecordingInfo from "./RecordingInfo/RecordingInfo";
 import * as CONSTANTS from "../../../../constants/depositionDetails";
 import IRecording, { RecordingStatus } from "../../../../models/recording";
 import { secondsTohhmmss } from "../../../../helpers/secondsTohhmmss";
-import Space from "../../../../components/Space";
 
 import VideoPlaceholder from "../../../../components/VideoPlaceholder";
-import Icon from "../../../../components/Icon";
-import Spinner from "../../../../components/Spinner";
 import { isAudioFromUrl } from "../../../../helpers/isAudioFromUrl";
+
 interface IDepositionDetailsVideoSection {
     recordingInfo?: IRecording;
 }

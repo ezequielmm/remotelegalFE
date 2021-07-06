@@ -1,6 +1,6 @@
 import React, { ReactElement } from "react";
-import Confirm from "../../../../../components/Confirm";
-import { IConfirmProps } from "../../../../../components/Confirm/Confirm";
+import Confirm from "prp-components-library/src/components/Confirm";
+import { IConfirmProps } from "prp-components-library/src/components/Confirm/Confirm";
 import * as CONSTANTS from "../../../../../constants/exhibits";
 import { ExhibitFile } from "../../../../../types/ExhibitFile";
 
@@ -65,7 +65,7 @@ const ExhibitClosingModal = ({
                 positiveLoading={isStamped ? loading : false}
                 negativeLoading={!isStamped ? loading : false}
                 {...props}
-            ></Confirm>
+            />
         </div>
     );
 };

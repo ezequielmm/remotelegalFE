@@ -1,17 +1,17 @@
 import React, { useState } from "react";
 import { Redirect, Link } from "react-router-dom";
 import { Col, Row, Form } from "antd";
-import { InputWrapper } from "../../components/Input/styles";
-import Space from "../../components/Space";
+import Button from "prp-components-library/src/components/Button";
+import Alert from "prp-components-library/src/components/Alert";
+import Input from "prp-components-library/src/components/Input";
+import Space from "prp-components-library/src/components/Space";
+import Text from "prp-components-library/src/components/Text";
+import Title from "prp-components-library/src/components/Title";
+import { InputWrapper } from "prp-components-library/src/components/Input/styles";
 import Container from "../../components/Container";
-import Alert from "../../components/Alert";
-import Button from "../../components/Button";
-import Title from "../../components/Typography/Title";
-import Text from "../../components/Typography/Text";
 import * as CONSTANTS from "../../constants/login";
 import isInvalidEMail from "../../helpers/isInvalidEmail";
 import { useSignIn, useVerifyToken } from "../../hooks/auth";
-import Input from "../../components/Input";
 import ColorStatus from "../../types/ColorStatus";
 
 interface LoginProps {

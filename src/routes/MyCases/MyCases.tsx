@@ -1,18 +1,18 @@
-import React, { useCallback, useRef } from "react";
+import { useCallback, useRef, useState } from "react";
 import { Row, Tooltip } from "antd";
+import Button from "prp-components-library/src/components/Button";
+import CardResult from "prp-components-library/src/components/CardResult";
+import Icon from "prp-components-library/src/components/Icon";
+import { CustomStatus } from "prp-components-library/src/components/Result/Result";
+import Space from "prp-components-library/src/components/Space";
+import Table from "prp-components-library/src/components/Table";
+import Text from "prp-components-library/src/components/Text";
+import Title from "prp-components-library/src/components/Title";
 import styled from "styled-components";
-import Table from "../../components/Table";
-import Button from "../../components/Button";
 import CaseModal from "./CaseModal";
-import Icon from "../../components/Icon";
-import Title from "../../components/Typography/Title";
-import Text from "../../components/Typography/Text";
-import Space from "../../components/Space";
 import { useFetchCases } from "../../hooks/cases/hooks";
 import * as CONSTANTS from "../../constants/cases";
 import CardFetchError from "../../components/CardFetchError";
-import CardResult from "../../components/CardResult/CardResult";
-import { CustomStatus } from "../../components/Result/Result";
 import ColorStatus from "../../types/ColorStatus";
 import { ReactComponent as EditIcon } from "../../assets/icons/edit.svg";
 import EditCaseModal from "./CaseModal/EditCaseModal";
@@ -27,13 +27,13 @@ const StyledSpace = styled(Space)`
 
 const MyCases = () => {
     const selectedCase = useRef<any>(null);
-    const [openCaseModal, setOpenCaseModal] = React.useState(false);
-    const [openEditModal, setOpenEditModal] = React.useState(false);
+    const [openCaseModal, setOpenCaseModal] = useState(false);
+    const [openEditModal, setOpenEditModal] = useState(false);
     const toggleEditModal = useCallback(() => setOpenEditModal(false), []);
     const { handleListChange, sortedField, sortDirection, error, data, loading, refreshList } = useFetchCases();
     const handleClose = useCallback(() => setOpenCaseModal(false), []);
 
-    const getCaseColumns = React.useCallback(
+    const getCaseColumns = useCallback(
         () => [
             {
                 title: CONSTANTS.CASE_COLUMNS_TITLES[0],

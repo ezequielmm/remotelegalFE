@@ -1,10 +1,10 @@
-import React, { useContext, useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { useHistory } from "react-router";
+import Space from "prp-components-library/src/components/Space";
 import Spinner from "prp-components-library/src/components/Spinner";
+import { Status } from "prp-components-library/src/components/StatusPill/StatusPill";
+import Title from "prp-components-library/src/components/Title";
 import CardFetchError from "../../components/CardFetchError";
-import Space from "../../components/Space";
-import { Status } from "../../components/StatusPill/StatusPill";
-import Title from "../../components/Typography/Title";
 import { DEPOSITON_DETAILS_TITLE } from "../../constants/depositionDetails";
 import { useFetchDeposition } from "../../hooks/depositions/hooks";
 import { GlobalStateContext } from "../../state/GlobalState";

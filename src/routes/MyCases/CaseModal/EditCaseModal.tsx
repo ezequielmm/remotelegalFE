@@ -1,26 +1,23 @@
-import React, { Dispatch, SetStateAction, useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Row, Form } from "antd";
-import { InputWrapper } from "../../../components/Input/styles";
-import Space from "../../../components/Space";
-import Input from "../../../components/Input";
-import Title from "../../../components/Typography/Title";
-import Text from "../../../components/Typography/Text";
-import Modal from "../../../components/Modal";
-import Button from "../../../components/Button";
+import Button from "prp-components-library/src/components/Button";
+import Alert from "prp-components-library/src/components/Alert";
+import Input from "prp-components-library/src/components/Input";
+import { InputWrapper } from "prp-components-library/src/components/Input/styles";
+import Modal from "prp-components-library/src/components/Modal";
+import Space from "prp-components-library/src/components/Space";
+import Text from "prp-components-library/src/components/Text";
+import Title from "prp-components-library/src/components/Title";
 import ColorStatus from "../../../types/ColorStatus";
 import * as CONSTANTS from "../../../constants/cases";
 import { useEditCase } from "../../../hooks/cases/hooks";
 import useFloatingAlertContext from "../../../hooks/useFloatingAlertContext";
-import Alert from "../../../components/Alert";
 
 interface IModalProps {
     open: boolean;
     handleClose: () => void;
-    noStep2?: boolean;
-    setCase?: Dispatch<SetStateAction<string>>;
     currentCase: { name: string; caseNumber: string; id: string };
     fetchCases: () => void;
-    data?: any;
 }
 
 const EditCaseModal = ({ open, handleClose, currentCase, fetchCases }: IModalProps) => {

@@ -1,12 +1,12 @@
 import { IconComponentProps } from "@ant-design/icons/lib/components/Icon";
 import React from "react";
-import Icon from "../../../../components/Icon";
-import Space from "../../../../components/Space";
-import Text from "../../../../components/Typography/Text";
+import Icon from "prp-components-library/src/components/Icon";
+import Space from "prp-components-library/src/components/Space";
+import Text from "prp-components-library/src/components/Text";
+import { Tooltip } from "antd";
 import ColorStatus from "../../../../types/ColorStatus";
 import { ExhibitTabContainer, ExhibitTabContainerText, ExhibitTabsContainer, Stick } from "./styles";
 import { EXHIBIT_TAB } from "../../../../constants/exhibits";
-import { Tooltip } from "antd";
 
 export interface ExhibitTabData {
     tabId: string;

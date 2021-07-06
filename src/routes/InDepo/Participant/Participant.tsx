@@ -1,13 +1,14 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { LocalParticipant, RemoteParticipant } from "twilio-video";
 import { datadogLogs } from "@datadog/browser-logs";
+import Icon from "prp-components-library/src/components/Icon";
+import Space from "prp-components-library/src/components/Space";
+import Text from "prp-components-library/src/components/Text";
 import useDataTrack from "../../../hooks/InDepo/useDataTrack";
 import useParticipantTracks from "../../../hooks/InDepo/useParticipantTracks";
 import { TimeZones } from "../../../models/general";
 import Clock from "../../../components/Clock";
-import Text from "../../../components/Typography/Text";
 import * as CONSTANTS from "../../../constants/inDepo";
-
 import {
     StyledIdentityBox,
     StyledNetworkQuality,
@@ -20,8 +21,6 @@ import { theme } from "../../../constants/styles/theme";
 import { GlobalStateContext } from "../../../state/GlobalState";
 import { ReactComponent as MuteIcon } from "../../../assets/in-depo/Participant.muted.svg";
 
-import Icon from "../../../components/Icon";
-import Space from "../../../components/Space";
 import normalizedRoles from "../../../constants/roles";
 import useFloatingAlertContext from "../../../hooks/useFloatingAlertContext";
 

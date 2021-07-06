@@ -1,8 +1,7 @@
-import React from "react";
 import styled from "styled-components";
+import Result, { IResultProps } from "prp-components-library/src/components/Result/Result";
 import { theme } from "../../constants/styles/theme";
 import { getREM } from "../../constants/styles/utils";
-import Result, { IResultProps } from "../Result/Result";
 
 const StyledVideoPlaceholder = styled(Result)<IResultProps>`
     width: 100%;

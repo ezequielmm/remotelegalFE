@@ -1,12 +1,13 @@
 import React from "react";
 // also exported from '@storybook/react' if you can deal with breaking changes in 6.1
 import { Story, Meta } from "@storybook/react/types-6-0";
-import CardIcon from "../components/CardIcon";
+import CardIcon from "prp-components-library/src/components/CardIcon";
+import { ICardIconProps } from "prp-components-library/src/components/CardIcon/CardIcon";
+import Text from "prp-components-library/src/components/Text";
+import Title from "prp-components-library/src/components/Title";
 import { ReactComponent as CasesIcon } from "../assets/layout/Cases.svg";
-import Title from "../components/Typography/Title";
-import Text from "../components/Typography/Text";
 import ColorStatus from "../types/ColorStatus";
-import { ICardIconProps } from "../components/CardIcon/CardIcon";
+
 import { ContainerSmall } from "./Decorators";
 
 export default {

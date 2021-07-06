@@ -1,9 +1,9 @@
 import { waitForDomChange, fireEvent, waitForElement, act, waitFor } from "@testing-library/react";
 import { createMemoryHistory } from "history";
 import userEvent from "@testing-library/user-event";
-import React from "react";
 import { Route, Switch } from "react-router";
 import dayjs from "dayjs";
+import { Status } from "prp-components-library/src/components/StatusPill/StatusPill";
 import timezone from "dayjs/plugin/timezone";
 import Do from "dayjs/plugin/advancedFormat";
 import { wait } from "../../helpers/wait";
@@ -20,7 +20,6 @@ import ParticipantListTable from "../../routes/ActiveDepoDetails/components/Part
 import DEPO_PARTICIPANT_MOCK, { getDepoParticipantWithOverrideValues } from "../mocks/depoParticipant";
 import { Roles } from "../../models/participant";
 import getModalTextContent from "../../routes/ActiveDepoDetails/helpers/getModalTextContent";
-import { Status } from "../../components/StatusPill/StatusPill";
 import { PARTICIPANT_MOCK, PARTICIPANT_MOCK_NAME } from "../constants/preJoinDepo";
 import { mapTimeZone, TimeZones } from "../../models/general";
 

@@ -1,7 +1,6 @@
 import "antd/dist/antd.less";
 import Amplify from "aws-amplify";
 import { createBrowserHistory } from "history";
-import React from "react";
 import ReactGA from "react-ga";
 import TagManager from "react-gtm-module";
 import "@datadog/browser-logs/bundle/datadog-logs";

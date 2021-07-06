@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import ExhibitTabs from "./ExhibitTabs";
 import { TabPane, Tabs, ExhibitTabPaneContainer } from "./ExhibitTabs/styles";
 import { StyledLayoutCotainer, StyledLayoutContent, ContainerProps } from "../styles";

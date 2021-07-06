@@ -1,6 +1,6 @@
 import React from "react";
 import { Story, Meta } from "@storybook/react/types-6-0";
-import StatusPill from "../components/StatusPill";
+import StatusPill from "prp-components-library/src/components/StatusPill";
 
 export default {
     title: "Status Pill",

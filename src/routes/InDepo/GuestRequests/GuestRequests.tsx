@@ -1,13 +1,13 @@
 import { notification, Tooltip } from "antd";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import Button from "prp-components-library/src/components/Button";
+import Confirm from "prp-components-library/src/components/Confirm";
+import Space from "prp-components-library/src/components/Space";
+import Text from "prp-components-library/src/components/Text";
 import { ThemeProvider } from "styled-components";
 import { theme } from "../../../constants/styles/theme";
 import { ThemeMode } from "../../../types/ThemeType";
-import Confirm from "../../../components/Confirm";
 import Message from "../../../components/Message";
-import Space from "../../../components/Space";
-import Button from "../../../components/Button";
-import Text from "../../../components/Typography/Text";
 import * as CONSTANTS from "../../../constants/inDepo";
 import useJoinResponse from "../../../hooks/InDepo/useJoinResponse";
 import useWaitingRoomParticipants from "../../../hooks/InDepo/useWaitingRoomParticipants";

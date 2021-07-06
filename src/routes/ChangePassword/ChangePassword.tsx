@@ -1,23 +1,27 @@
-import React, { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { Col, Form, Row } from "antd";
+import Alert from "prp-components-library/src/components/Alert";
+import Button from "prp-components-library/src/components/Button";
+import { InputWrapper } from "prp-components-library/src/components/Input/styles";
+import Space from "prp-components-library/src/components/Space";
+import Spinner from "prp-components-library/src/components/Spinner";
+import Text from "prp-components-library/src/components/Text";
+import Title from "prp-components-library/src/components/Title";
 import { Redirect, useHistory } from "react-router-dom";
 import useInput from "../../hooks/useInput";
-import Space from "../../components/Space";
 import Container from "../../components/Container";
-import Alert from "../../components/Alert";
-import Button from "../../components/Button";
 import * as CONSTANTS from "../../constants/changePassword";
 import { useChangePassword, useVerifyChangePasswordToken } from "../../hooks/auth";
 import isPasswordInvalid from "../../helpers/isPasswordInvalid";
-import Title from "../../components/Typography/Title";
-import Text from "../../components/Typography/Text";
-import { InputWrapper } from "../../components/Input/styles";
 import ColorStatus from "../../types/ColorStatus";
-import Spinner from "../../components/Spinner";
 
 const ChangePassword = () => {
     const history = useHistory();
-    const { inputValue: passwordValue, input: passwordInput, invalid: passwordInvalid } = useInput(isPasswordInvalid, {
+    const {
+        inputValue: passwordValue,
+        input: passwordInput,
+        invalid: passwordInvalid,
+    } = useInput(isPasswordInvalid, {
         name: "password",
         placeholder: CONSTANTS.PASSWORD_PLACEHOLDER,
         type: "password",
@@ -47,11 +51,11 @@ const ChangePassword = () => {
         changePassword(passwordValue, verificationHash);
     }, [changePassword, passwordValue, verificationHash]);
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (changedPassword) history.push("/", { changedPassword: true });
     }, [history, changedPassword]);
 
-    React.useEffect(() => {
+    useEffect(() => {
         const passwordsMatch = passwordValue === confirmPasswordValue;
         if (confirmPasswordTouched && passwordsMatch) {
             setConfirmPasswordInvalid(false);
@@ -60,7 +64,7 @@ const ChangePassword = () => {
         }
     }, [confirmPasswordTouched, passwordValue, confirmPasswordValue, setConfirmPasswordInvalid]);
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (!verificationHash || verifyChangePasswordError) history.push("/", { changedPassword: false });
     }, [history, verificationHash, verifyChangePasswordError]);
 

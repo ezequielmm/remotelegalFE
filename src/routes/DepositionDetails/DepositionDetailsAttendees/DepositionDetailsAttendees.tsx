@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
+import Space from "prp-components-library/src/components/Space";
+import Table from "prp-components-library/src/components/Table";
+import Title from "prp-components-library/src/components/Title";
 import CardFetchError from "../../../components/CardFetchError";
-import Space from "../../../components/Space";
-import Table from "../../../components/Table";
-import Title from "../../../components/Typography/Title";
 import {
     DEPOSITION_DETAILS_ATTENDEES_TITLE,
     DEPOSITION_DETAILS_ATTENDEES_COLUMNS,
@@ -23,7 +23,7 @@ export default function DepositionDetailsAttendees({
 }) {
     const [fetchAttendees, loading, error, attendees] = useFetchParticipants();
     const [mappedParticipants, setMappedAttendees] = useState([]);
-    const { state } = React.useContext(GlobalStateContext);
+    const { state } = useContext(GlobalStateContext);
     const { currentUser } = state?.user;
 
     useEffect(() => {

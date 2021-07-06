@@ -1,18 +1,18 @@
 import { Row, Col } from "antd";
 import dayjs from "dayjs";
-import React, { useState } from "react";
+import { useState, useMemo, useContext } from "react";
 import styled from "styled-components";
 import { useHistory } from "react-router";
 import localeData from "dayjs/plugin/localeData";
 import weekday from "dayjs/plugin/weekday";
 import utc from "dayjs/plugin/utc";
+import DatePicker from "prp-components-library/src/components/DatePicker";
+import Space from "prp-components-library/src/components/Space";
+import Table from "prp-components-library/src/components/Table";
+import { Status } from "prp-components-library/src/components/StatusPill/StatusPill";
+import Tabs from "prp-components-library/src/components/Tabs";
+import Title from "prp-components-library/src/components/Title";
 import CardFetchError from "../../components/CardFetchError";
-import { Status } from "../../components/StatusPill/StatusPill";
-import Table from "../../components/Table";
-import Space from "../../components/Space";
-import Tabs from "../../components/Tabs";
-import DatePicker from "../../components/DatePicker";
-import Title from "../../components/Typography/Title";
 import * as CONSTANTS from "../../constants/depositions";
 import { dateToUTCString } from "../../helpers/dateToUTCString";
 import { useFetchDepositions } from "../../hooks/depositions/hooks";
@@ -72,11 +72,11 @@ const MyDepositions = () => {
     const [sorting, setSorting] = useState(null);
     const [filterCriteria, setFilterCriteria] = useState<FilterCriteria>(FilterCriteria.UPCOMING);
 
-    const { state } = React.useContext(GlobalStateContext);
+    const { state } = useContext(GlobalStateContext);
     const { currentUser } = state?.user;
     const [getCurrentUser] = useCurrentUser();
 
-    const mappedDepositions = React.useMemo(
+    const mappedDepositions = useMemo(
         () =>
             depositions?.map(({ id, details, status, requester, witness, participants, job, ...depositionsData }) => {
                 const courtReporter = participants.find((participant) => participant.role === Roles.courtReporter);
@@ -108,7 +108,7 @@ const MyDepositions = () => {
 
     const history = useHistory();
 
-    const depositionColumns = React.useMemo(
+    const depositionColumns = useMemo(
         () =>
             CONSTANTS.getDepositionColumns(history, !!currentUser?.isAdmin).map(
                 ({ sorter = true, field, ...column }: CONSTANTS.TableColumn) => ({

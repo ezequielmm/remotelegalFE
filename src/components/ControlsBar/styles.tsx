@@ -1,9 +1,9 @@
 import styled from "styled-components";
 import { Drawer } from "antd";
+import Menu from "prp-components-library/src/components/Menu";
+import Button from "prp-components-library/src/components/Button";
+import Space from "prp-components-library/src/components/Space";
 import { getREM } from "../../constants/styles/utils";
-import Space from "../Space";
-import Menu from "../Menu";
-import Button from "../Button";
 import { ThemeMode } from "../../types/ThemeType";
 
 const flexAlignCenter = `

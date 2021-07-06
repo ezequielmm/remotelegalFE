@@ -1,16 +1,16 @@
-import React, { MutableRefObject } from "react";
+import { MutableRefObject, forwardRef } from "react";
 import styled from "styled-components";
+import Icon from "prp-components-library/src/components/Icon";
+import Space from "prp-components-library/src/components/Space";
+import Text from "prp-components-library/src/components/Text";
+import Title from "prp-components-library/src/components/Title";
 import { theme } from "../../constants/styles/theme";
 import { getREM } from "../../constants/styles/utils";
-import Space from "../Space";
 import Control from "../Control/Control";
 import { ReactComponent as MuteIcon } from "../../assets/in-depo/Mute.svg";
 import { ReactComponent as UnmuteIcon } from "../../assets/in-depo/Unmute.svg";
 import { ReactComponent as CameraOnIcon } from "../../assets/in-depo/Camera.on.svg";
 import { ReactComponent as CameraOffIcon } from "../../assets/in-depo/Camera.off.svg";
-import Icon from "../Icon";
-import Title from "../Typography/Title";
-import Text from "../Typography/Text";
 import ColorStatus from "../../types/ColorStatus";
 
 export interface ITestVideoProps {
@@ -62,7 +62,7 @@ export const TestVideoControlsWrapper = styled(Space)`
     `};
 `;
 
-const TestVideo = React.forwardRef(
+const TestVideo = forwardRef(
     (
         {
             isMuted,

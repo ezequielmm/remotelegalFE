@@ -1,10 +1,10 @@
 import React from "react";
 import { Row } from "antd";
-import Card from "../../../components/Card";
-import Space from "../../../components/Space";
-import Title from "../../../components/Typography/Title";
-import Button from "../../../components/Button";
-import Icon from "../../../components/Icon";
+import Button from "prp-components-library/src/components/Button";
+import Card from "prp-components-library/src/components/Card";
+import Icon from "prp-components-library/src/components/Icon";
+import Space from "prp-components-library/src/components/Space";
+import Title from "prp-components-library/src/components/Title";
 import * as CONSTANTS from "../../../constants/activeDepositionDetails";
 import { ReactComponent as EditIcon } from "../../../assets/icons/edit.svg";
 

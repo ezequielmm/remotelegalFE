@@ -3,8 +3,9 @@ import React, { useCallback, useContext, useEffect, useRef, useState } from "rea
 import ReactPlayer, { ReactPlayerProps } from "react-player";
 import screenfull from "screenfull";
 import styled from "styled-components";
-import Space from "../Space";
-import Icon from "../Icon";
+import Icon from "prp-components-library/src/components/Icon";
+import Space from "prp-components-library/src/components/Space";
+import Text from "prp-components-library/src/components/Text";
 import { ReactComponent as ExpandIcon } from "../../assets/icons/fullscreen-button.svg";
 import { ReactComponent as PauseIcon } from "../../assets/icons/Pause.svg";
 import { ReactComponent as PlayIcon } from "../../assets/icons/Play.svg";
@@ -15,7 +16,6 @@ import { ReactComponent as VolumeOffIcon } from "../../assets/icons/volume-off.s
 import Duration from "./Duration";
 import { getREM, hexToRGBA } from "../../constants/styles/utils";
 import { theme } from "../../constants/styles/theme";
-import Text from "../Typography/Text";
 import actions from "../../state/PostDepo/PostDepoActions";
 import { GlobalStateContext } from "../../state/GlobalState";
 

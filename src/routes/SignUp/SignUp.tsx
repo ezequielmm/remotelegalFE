@@ -1,12 +1,15 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Checkbox, Col, Form, Row } from "antd";
+import Alert from "prp-components-library/src/components/Alert";
 import { Redirect, Link } from "react-router-dom";
+import Button from "prp-components-library/src/components/Button";
+import Space from "prp-components-library/src/components/Space";
+import Text from "prp-components-library/src/components/Text";
+import Title from "prp-components-library/src/components/Title";
+import { InputWrapper } from "prp-components-library/src/components/Input/styles";
 import useInput from "../../hooks/useInput";
 import { useFrontEndContent } from "../../hooks/frontEndContent/useFrontEndContent";
-import Space from "../../components/Space";
 import Container from "../../components/Container";
-import Alert from "../../components/Alert";
-import Button from "../../components/Button";
 import * as ERRORS from "../../constants/signUp";
 import { useAuthentication, useSignUp, useVerifyEmail } from "../../hooks/auth";
 import isInputEmpty from "../../helpers/isInputEmpty";
@@ -14,9 +17,6 @@ import isInvalidEMail from "../../helpers/isInvalidEmail";
 import isPasswordInvalid from "../../helpers/isPasswordInvalid";
 import isPhoneInvalid from "../../helpers/isPhoneInvalid";
 import CodeSent from "../CodeSent/CodeSent";
-import Title from "../../components/Typography/Title";
-import Text from "../../components/Typography/Text";
-import { InputWrapper } from "../../components/Input/styles";
 import ColorStatus from "../../types/ColorStatus";
 import * as CONSTANTS from "../../constants/preJoinDepo";
 
@@ -24,46 +24,66 @@ const SignUp = ({ location }) => {
     const { isAuthenticated } = useAuthentication();
     const { getFrontEndContent, frontEndContent } = useFrontEndContent();
     const [checked, setChecked] = useState(false);
-    const { inputValue: nameValue, input: nameInput, invalid: nameInvalid } = useInput(isInputEmpty, {
+    const {
+        inputValue: nameValue,
+        input: nameInput,
+        invalid: nameInvalid,
+    } = useInput(isInputEmpty, {
         name: "firstname",
         placeholder: "Enter your name",
         maxLength: 50,
     });
-    const { inputValue: lastNameValue, input: lastNameInput, invalid: lastNameInvalid } = useInput(isInputEmpty, {
+    const {
+        inputValue: lastNameValue,
+        input: lastNameInput,
+        invalid: lastNameInvalid,
+    } = useInput(isInputEmpty, {
         name: "lastname",
         placeholder: "Enter last name",
         maxLength: 50,
     });
-    const { inputValue: emailValue, input: emailInput, invalid: emailInvalid, setValue: setEmailValue } = useInput(
-        isInvalidEMail,
-        {
-            name: "email",
-            placeholder: "Enter your email",
-        }
-    );
-    const { input: companyNameInput, invalid: companyNameInvalid, inputValue: companyNameValue } = useInput(
-        isInputEmpty,
-        {
-            name: "companyname",
-            placeholder: "Enter your company name",
-            maxLength: 50,
-        }
-    );
-    const { input: companyAddressInput, invalid: companyAddressInvalid, inputValue: companyAddressValue } = useInput(
-        isInputEmpty,
-        {
-            name: "companyaddress",
-            placeholder: "Enter your company address",
-            maxLength: 150,
-        }
-    );
-    const { input: phoneInput, invalid: phoneInvalid, inputValue: phoneValue } = useInput(isPhoneInvalid, {
+    const {
+        inputValue: emailValue,
+        input: emailInput,
+        invalid: emailInvalid,
+        setValue: setEmailValue,
+    } = useInput(isInvalidEMail, {
+        name: "email",
+        placeholder: "Enter your email",
+    });
+    const {
+        input: companyNameInput,
+        invalid: companyNameInvalid,
+        inputValue: companyNameValue,
+    } = useInput(isInputEmpty, {
+        name: "companyname",
+        placeholder: "Enter your company name",
+        maxLength: 50,
+    });
+    const {
+        input: companyAddressInput,
+        invalid: companyAddressInvalid,
+        inputValue: companyAddressValue,
+    } = useInput(isInputEmpty, {
+        name: "companyaddress",
+        placeholder: "Enter your company address",
+        maxLength: 150,
+    });
+    const {
+        input: phoneInput,
+        invalid: phoneInvalid,
+        inputValue: phoneValue,
+    } = useInput(isPhoneInvalid, {
         name: "phone",
         placeholder: "Enter your company phone number",
         type: "tel",
     });
 
-    const { inputValue: passwordValue, input: passwordInput, invalid: passwordInvalid } = useInput(isPasswordInvalid, {
+    const {
+        inputValue: passwordValue,
+        input: passwordInput,
+        invalid: passwordInvalid,
+    } = useInput(isPasswordInvalid, {
         name: "password",
         placeholder: "Enter your password",
         type: "password",
@@ -95,7 +115,7 @@ const SignUp = ({ location }) => {
         }
     }, [frontEndContent]);
 
-    React.useEffect(() => {
+    useEffect(() => {
         const passwordsMatch = passwordValue === confirmPasswordValue;
         if (confirmPasswordTouched && passwordsMatch) {
             setConfirmPasswordInvalid(false);
@@ -104,7 +124,7 @@ const SignUp = ({ location }) => {
         }
     }, [confirmPasswordTouched, passwordValue, confirmPasswordValue, setConfirmPasswordInvalid]);
 
-    React.useEffect(() => {
+    useEffect(() => {
         setEmailValue(location?.state?.email || "");
     }, [location, setEmailValue]);
 

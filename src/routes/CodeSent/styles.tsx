@@ -1,6 +1,6 @@
 import styled from "styled-components";
-import Button from "../../components/Button";
-import { IButtonProps } from "../../components/Button/Button";
+import Button from "prp-components-library/src/components/Button";
+import { IButtonProps } from "prp-components-library/src/components/Button/Button";
 import { theme } from "../../constants/styles/theme";
 import { getREM } from "../../constants/styles/utils";
 

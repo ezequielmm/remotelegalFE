@@ -1,10 +1,10 @@
 import { Form, Checkbox } from "antd";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import Button from "prp-components-library/src/components/Button";
+import Text from "prp-components-library/src/components/Text";
+import Wizard from "prp-components-library/src/components/Wizard";
 import styled from "styled-components";
 import UserInfoPanel from "./UserInfoPanel";
-import Text from "../../../components/Typography/Text";
-import Button from "../../../components/Button";
-import Wizard from "../../../components/Wizard";
 import isInputEmpty from "../../../helpers/isInputEmpty";
 import ColorStatus from "../../../types/ColorStatus";
 import * as CONSTANTS from "../../../constants/preJoinDepo";

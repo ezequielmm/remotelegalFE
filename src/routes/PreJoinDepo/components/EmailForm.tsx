@@ -1,13 +1,13 @@
 import { Form } from "antd";
-import React, { useState } from "react";
-import { InputWrapper } from "../../../components/Input/styles";
+import { useState } from "react";
+import Button from "prp-components-library/src/components/Button";
+import Input from "prp-components-library/src/components/Input";
+import Text from "prp-components-library/src/components/Text";
+import { InputWrapper } from "prp-components-library/src/components/Input/styles";
+import Wizard from "prp-components-library/src/components/Wizard";
 import isInvalidEmail from "../../../helpers/isInvalidEmail";
-import Input from "../../../components/Input";
 import ColorStatus from "../../../types/ColorStatus";
-import Text from "../../../components/Typography/Text";
-import Wizard from "../../../components/Wizard";
 import * as CONSTANTS from "../../../constants/preJoinDepo";
-import Button from "../../../components/Button";
 
 interface IEmailForm {
     loading: boolean;

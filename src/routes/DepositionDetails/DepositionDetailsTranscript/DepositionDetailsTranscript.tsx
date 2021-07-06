@@ -1,6 +1,13 @@
-import React, { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { RowSelectionType } from "antd/lib/table/interface.d";
+import Button from "prp-components-library/src/components/Button";
+import Confirm from "prp-components-library/src/components/Confirm";
+import Icon from "prp-components-library/src/components/Icon";
+import Table from "prp-components-library/src/components/Table";
+import ProgressBar from "prp-components-library/src/components/ProgressBar";
+import Space from "prp-components-library/src/components/Space";
+import Title from "prp-components-library/src/components/Title";
 import {
     useTranscriptFileList,
     useUploadFile,
@@ -8,21 +15,14 @@ import {
     useGetDocumentsUrlList,
     useNotifyParties,
 } from "../../../hooks/transcripts/hooks";
-import Table from "../../../components/Table";
-import Space from "../../../components/Space";
-import Title from "../../../components/Typography/Title";
-import Button from "../../../components/Button";
-import Icon from "../../../components/Icon";
 import { ReactComponent as UploadIcon } from "../../../assets/icons/upload.svg";
 import { ReactComponent as DownloadIcon } from "../../../assets/icons/download.svg";
 import { ReactComponent as MessageIcon } from "../../../assets/icons/Messages.svg";
 import * as CONSTANTS from "../../../constants/depositionDetails";
 import UploadButton from "./UploadButton";
-import ProgressBar from "../../../components/ProgressBar";
 import downloadFile from "../../../helpers/downloadFile";
 import { ReactComponent as DeleteIcon } from "../../../assets/icons/delete.svg";
 import ColorStatus from "../../../types/ColorStatus";
-import Confirm from "../../../components/Confirm";
 import { TranscriptFile } from "../../../types/TranscriptFile";
 import Message from "../../../components/Message";
 import { GlobalStateContext } from "../../../state/GlobalState";
@@ -30,16 +30,16 @@ import useFloatingAlertContext from "../../../hooks/useFloatingAlertContext";
 
 const DepositionDetailsTranscripts = () => {
     const emptyFile = { percent: 0, status: "", size: 0 };
-    const [file, setFile] = React.useState(emptyFile);
-    const [showProgressBar, setShowProgressBar] = React.useState(false);
+    const [file, setFile] = useState(emptyFile);
+    const [showProgressBar, setShowProgressBar] = useState(false);
     const [openDeleteModal, setOpenDeleteModal] = useState(false);
-    const tableRef = React.useRef(null);
+    const tableRef = useRef(null);
 
     const { depositionID } = useParams<{ depositionID: string }>();
     const { upload } = useUploadFile(depositionID);
     const { handleFetchFiles, transcriptFileList, loading } = useTranscriptFileList(depositionID);
     const [notifyParties, notifyPartiesLoading, notifyPartiesError, notified] = useNotifyParties();
-    const { state } = React.useContext(GlobalStateContext);
+    const { state } = useContext(GlobalStateContext);
     const { currentUser } = state?.user;
     const [selectedRows, setSelectedRows] = useState([]);
     const rowSelection = {

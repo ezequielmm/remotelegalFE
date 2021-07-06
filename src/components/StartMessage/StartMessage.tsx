@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import Icon from "prp-components-library/src/components/Icon";
+import Space from "prp-components-library/src/components/Space";
+import Text from "prp-components-library/src/components/Text";
 import { getREM, hexToRGBA } from "../../constants/styles/utils";
-import Space from "../Space";
-import Icon from "../Icon";
-import Text from "../Typography/Text";
 import { theme } from "../../constants/styles/theme";
 import ColorStatus from "../../types/ColorStatus";
 import { ReactComponent as CalendarIcon } from "../../assets/icons/close.svg";

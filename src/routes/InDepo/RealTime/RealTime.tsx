@@ -1,11 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import dayjs from "dayjs";
+import Alert from "prp-components-library/src/components/Alert";
+import Icon from "prp-components-library/src/components/Icon";
+import Space from "prp-components-library/src/components/Space";
+import Text from "prp-components-library/src/components/Text";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
-import Space from "../../../components/Space";
-import Text from "../../../components/Typography/Text";
-import Alert from "../../../components/Alert";
-import Icon from "../../../components/Icon";
 import { ReactComponent as TimeIcon } from "../../../assets/icons/time.svg";
 import { ReactComponent as InfoIcon } from "../../../assets/icons/information.svg";
 import { ContainerProps, StyledLayoutContent, StyledLayoutCotainer } from "../styles";

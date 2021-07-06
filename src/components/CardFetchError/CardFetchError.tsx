@@ -1,8 +1,8 @@
 import React from "react";
+import Button from "prp-components-library/src/components/Button";
+import CardResult from "prp-components-library/src/components/CardResult";
+import { CustomStatus } from "prp-components-library/src/components/Result/Result";
 import * as ERRORS_CONSTANTS from "../../constants/errors";
-import Button from "../Button";
-import CardResult from "../CardResult";
-import { CustomStatus } from "../Result/Result";
 
 export default function CardError({ onClick, width }: { onClick: (ev: React.MouseEvent) => void; width?: string }) {
     return (

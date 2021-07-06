@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import Button from "../Button";
+import Button from "prp-components-library/src/components/Button";
+
 import { getREM, hexToRGBA } from "../../constants/styles/utils";
 
 const circleButton = ({ isActive, ...props }) => <Button shape="circle" type="default" {...props} />;

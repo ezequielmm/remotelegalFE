@@ -1,10 +1,9 @@
 import React from "react";
 import styled from "styled-components";
-
-import Space from "../Space";
-import Modal from "../Modal";
-import Title from "../Typography/Title";
-import Text from "../Typography/Text";
+import Modal from "prp-components-library/src/components/Modal";
+import Space from "prp-components-library/src/components/Space";
+import Text from "prp-components-library/src/components/Text";
+import Title from "prp-components-library/src/components/Title";
 import ColorStatus from "../../types/ColorStatus";
 
 export interface IWizard {
@@ -16,10 +15,6 @@ export interface IWizard {
     alertComponent?: React.ReactNode;
 }
 
-interface IWizardStepProps {
-    stepNumber: number;
-    children: React.ReactNode;
-}
 interface IWizardActionsProps {
     children: React.ReactNode;
 }

@@ -4,10 +4,13 @@ import { Story, Meta } from "@storybook/react/types-6-0";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import dayjs from "dayjs";
+import DatePicker from "prp-components-library/src/components/DatePicker";
 import localeData from "dayjs/plugin/localeData";
 import weekday from "dayjs/plugin/weekday";
-import DatePicker from "../components/DatePicker";
-import { DatePickerProps, RangePickerProps } from "../components/GenerateDatePicker/interfaces/interfaces";
+import {
+    DatePickerProps,
+    RangePickerProps,
+} from "prp-components-library/src/components/GenerateDatePicker/interfaces/interfaces";
 import { ContainerSmall } from "./Decorators";
 
 dayjs.extend(weekday);

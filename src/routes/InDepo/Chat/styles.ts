@@ -1,8 +1,8 @@
 import { Input } from "antd";
 import styled from "styled-components";
-import Button from "../../../components/Button";
-import Card from "../../../components/Card";
-import Icon from "../../../components/Icon";
+import Button from "prp-components-library/src/components/Button";
+import Card from "prp-components-library/src/components/Card";
+import Icon from "prp-components-library/src/components/Icon";
 import { getPX, getREM } from "../../../constants/styles/utils";
 
 const { TextArea } = Input;

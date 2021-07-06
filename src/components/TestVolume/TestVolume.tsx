@@ -1,8 +1,8 @@
 import React from "react";
 import { Progress } from "antd";
 import styled from "styled-components";
-import Space from "../Space";
-import Icon from "../Icon";
+import Icon from "prp-components-library/src/components/Icon";
+import Space from "prp-components-library/src/components/Space";
 import { ReactComponent as MicrophoneIcon } from "../../assets/in-depo/microphone.svg";
 import { theme } from "../../constants/styles/theme";
 import { getREM } from "../../constants/styles/utils";

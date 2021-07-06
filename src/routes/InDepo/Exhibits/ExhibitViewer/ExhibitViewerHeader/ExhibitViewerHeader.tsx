@@ -1,9 +1,10 @@
-import React, { ReactElement, useContext, useState } from "react";
+import { ReactElement, useContext, useState } from "react";
 import { Tooltip } from "antd";
+import Button from "prp-components-library/src/components/Button";
+import Icon from "prp-components-library/src/components/Icon";
+import Space from "prp-components-library/src/components/Space";
+import Text from "prp-components-library/src/components/Text";
 import { StyledExhibitViewerHeader } from "../styles";
-import Text from "../../../../../components/Typography/Text";
-import Button from "../../../../../components/Button";
-import Icon from "../../../../../components/Icon";
 import { ReactComponent as backIcon } from "../../../../../assets/in-depo/back.svg";
 import ExhibitSharingModal from "../ExhibitSharingModal";
 import { ExhibitFile } from "../../../../../types/ExhibitFile";
@@ -13,7 +14,6 @@ import { GlobalStateContext } from "../../../../../state/GlobalState";
 import { StyledCloseButton } from "./styles";
 import ExhibitClosingModal from "../ExhibitClosingModal";
 import * as CONSTANTS from "../../../../../constants/exhibits";
-import Space from "../../../../../components/Space";
 
 interface Props {
     file: ExhibitFile;

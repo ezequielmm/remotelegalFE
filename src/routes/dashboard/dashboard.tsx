@@ -1,10 +1,10 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
 import { Col, Row } from "antd";
-import Card from "../../components/Card";
-import Result from "../../components/Result";
-import Button from "../../components/Button";
-import { CustomStatus } from "../../components/Result/Result";
+import Button from "prp-components-library/src/components/Button";
+import Card from "prp-components-library/src/components/Card";
+import Result from "prp-components-library/src/components/Result";
+import { CustomStatus } from "prp-components-library/src/components/Result/Result";
 
 const Dashboard = () => {
     const history = useHistory();

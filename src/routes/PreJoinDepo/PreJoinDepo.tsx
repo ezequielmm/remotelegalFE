@@ -1,19 +1,19 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams, Redirect, useHistory } from "react-router";
+import Alert from "prp-components-library/src/components/Alert";
+import Spinner from "prp-components-library/src/components/Spinner";
+import Wizard from "prp-components-library/src/components/Wizard";
 import { useAuthentication } from "../../hooks/auth";
 import backgroundImage from "../../assets/pre-depo/bg.png";
 import { useCheckUserStatus, useRegisterParticipant, useLogin } from "../../hooks/preJoinDepo/hooks";
 import { useFrontEndContent } from "../../hooks/frontEndContent/useFrontEndContent";
 import { DepositionID } from "../../state/types";
 import EmailForm from "./components/EmailForm";
-import Spinner from "../../components/Spinner";
 import Message from "../../components/Message";
 import ParticipantInfoForm from "./components/ParticipantInfoForm";
-import Wizard from "../../components/Wizard";
 import TEMP_TOKEN from "../../constants/ApiService";
 import * as CONSTANTS from "../../constants/preJoinDepo";
 import ErrorScreen from "../../components/ErrorScreen";
-import Alert from "../../components/Alert";
 import normalizedRoles from "../../constants/roles";
 import removeWhiteSpace from "../../helpers/removeWhitespace";
 

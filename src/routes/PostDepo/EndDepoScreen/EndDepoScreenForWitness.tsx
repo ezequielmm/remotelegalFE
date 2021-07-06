@@ -1,13 +1,13 @@
 import React from "react";
 import { Row, Col } from "antd";
+import Card from "prp-components-library/src/components/Card";
+import Result from "prp-components-library/src/components/Result";
+import Space from "prp-components-library/src/components/Space";
 import styled from "styled-components";
-import Space from "../../../components/Space";
-import Card from "../../../components/Card";
 import Logo from "../../../components/Logo";
 import { theme } from "../../../constants/styles/theme";
 import { getREM } from "../../../constants/styles/utils";
 import * as CONSTANTS from "../../../_tests_/constants/postDepo";
-import Result from "../../../components/Result";
 
 const StyledRow = styled(Row)`
     height: 100vh;

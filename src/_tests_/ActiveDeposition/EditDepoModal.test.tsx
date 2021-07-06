@@ -1,9 +1,9 @@
 import { fireEvent, act, waitFor } from "@testing-library/react";
-import React from "react";
 import userEvent from "@testing-library/user-event";
 import dayjs from "dayjs";
 import timezone from "dayjs/plugin/timezone";
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
+import { Status } from "prp-components-library/src/components/StatusPill/StatusPill";
 import * as CONSTANTS from "../../constants/activeDepositionDetails";
 import * as TEST_CONSTANTS from "../constants/activeDepositionDetails";
 import { getDepositionWithOverrideValues } from "../constants/depositions";
@@ -12,7 +12,6 @@ import renderWithGlobalContext from "../utils/renderWithGlobalContext";
 import ActiveDepositionDetails from "../../routes/ActiveDepoDetails";
 import { TimeZones, mapTimeZone } from "../../models/general";
 import getModalTextContent from "../../routes/ActiveDepoDetails/helpers/getModalTextContent";
-import { Status } from "../../components/StatusPill/StatusPill";
 
 dayjs.extend(timezone);
 dayjs.extend(isSameOrAfter);

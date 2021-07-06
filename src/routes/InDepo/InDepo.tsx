@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useContext, useRef } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 import { Participant } from "twilio-video";
+import Spinner from "prp-components-library/src/components/Spinner";
 import Exhibits from "./Exhibits";
 import RealTime from "./RealTime";
 import VideoConference from "./VideoConference";
@@ -24,7 +25,6 @@ import useSignalR from "../../hooks/useSignalR";
 import GuestRequests from "./GuestRequests";
 import { Roles } from "../../models/participant";
 import { useAuthentication } from "../../hooks/auth";
-import Spinner from "../../components/Spinner";
 import LoadingScreen from "./LoadingScreen";
 import { NotificationEntityType } from "../../types/Notification";
 import stopAllTracks from "../../helpers/stopAllTracks";

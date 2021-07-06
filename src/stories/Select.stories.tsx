@@ -1,9 +1,7 @@
-import React from "react";
 // also exported from '@storybook/react' if you can deal with breaking changes in 6.1
 import { Story, Meta } from "@storybook/react/types-6-0";
-
-import Select from "../components/Select";
-import { ISelectProps } from "../components/Select/Select";
+import Select from "prp-components-library/src/components/Select";
+import { ISelectProps } from "prp-components-library/src/components/Select/Select";
 import { ContainerSmall } from "./Decorators";
 
 export default {

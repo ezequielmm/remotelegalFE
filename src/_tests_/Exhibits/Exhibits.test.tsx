@@ -1,7 +1,6 @@
 import "@testing-library/jest-dom";
-import { act, cleanup, fireEvent } from "@testing-library/react";
+import { act, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import React from "react";
 import { ThemeProvider } from "styled-components";
 import * as CONSTANTS from "../../constants/exhibits";
 import { theme } from "../../constants/styles/theme";
@@ -12,10 +11,6 @@ import renderWithGlobalContext from "../utils/renderWithGlobalContext";
 import { rootReducer } from "../../state/GlobalState";
 import getMockDeps from "../utils/getMockDeps";
 import { useEnteredExhibit } from "../../hooks/useEnteredExhibits";
-
-jest.mock("../../hooks/useEnteredExhibits", () => ({
-    useEnteredExhibit: jest.fn(),
-}));
 
 import {
     useUploadFile,
@@ -29,6 +24,10 @@ import {
     useBringAllToMe,
     useCloseSharedExhibit,
 } from "../../hooks/exhibits/hooks";
+
+jest.mock("../../hooks/useEnteredExhibits", () => ({
+    useEnteredExhibit: jest.fn(),
+}));
 
 jest.mock("../../hooks/exhibits/hooks", () => ({
     useUploadFile: jest.fn(),

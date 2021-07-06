@@ -1,15 +1,16 @@
 import React, { useContext, useState } from "react";
 import { Tooltip } from "antd";
+import FileIcon from "prp-components-library/src/components/FileIcon";
 import Column from "antd/lib/table/Column";
 import timezone from "dayjs/plugin/timezone";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
+import Button from "prp-components-library/src/components/Button";
+import Table from "prp-components-library/src/components/Table";
+import Text from "prp-components-library/src/components/Text";
+import { ITableProps } from "prp-components-library/src/components/Table/Table";
 import { theme as GlobalTheme } from "../../../../../constants/styles/theme";
 import { getREM } from "../../../../../constants/styles/utils";
-import Button from "../../../../../components/Button";
-import Table from "../../../../../components/Table";
-import Text from "../../../../../components/Typography/Text";
-import FileIcon from "../../../../../components/FileIcon";
 import { ExhibitFile } from "../../../../../types/ExhibitFile";
 import { StyledFileNameCell } from "./styles";
 import ColorStatus from "../../../../../types/ColorStatus";
@@ -17,7 +18,6 @@ import { GlobalStateContext } from "../../../../../state/GlobalState";
 import { mapTimeZone } from "../../../../../models/general";
 import ExhibitSharingModal from "../../ExhibitViewer/ExhibitSharingModal";
 import { useShareExhibitFile } from "../../../../../hooks/exhibits/hooks";
-import { ITableProps } from "../../../../../components/Table/Table";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);

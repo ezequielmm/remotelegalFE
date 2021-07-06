@@ -1,14 +1,14 @@
-import React, { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction } from "react";
 import { Form } from "antd";
 import { Link } from "react-router-dom";
-import { InputWrapper } from "../../../components/Input/styles";
-import Text from "../../../components/Typography/Text";
-import Select from "../../../components/Select";
-import Input from "../../../components/Input";
+import Button from "prp-components-library/src/components/Button";
+import Input from "prp-components-library/src/components/Input";
+import { InputWrapper } from "prp-components-library/src/components/Input/styles";
+import Select from "prp-components-library/src/components/Select";
+import Text from "prp-components-library/src/components/Text";
 import * as CONSTANTS from "../../../constants/preJoinDepo";
 import ColorStatus from "../../../types/ColorStatus";
 import { InputState } from "../../../types/PreJoinDepo";
-import Button from "../../../components/Button";
 
 interface IUserInfoPanelProps {
     nameInput: boolean;

@@ -1,10 +1,10 @@
+import React from "react";
+import Text from "prp-components-library/src/components/Text";
 import { formatBytes } from "../helpers/formatBytes";
 import DepositionDetailsSummary from "../routes/DepositionDetails/DepositionDetailsSummary";
 import DepositionDetailsEnteredExhibits from "../routes/DepositionDetails/DepositionDetailsEnteredExhibits";
 import DepositionDetailsTranscript from "../routes/DepositionDetails/DepositionDetailsTranscript";
 import DepositionDetailsAttendees from "../routes/DepositionDetails/DepositionDetailsAttendees";
-import Text from "../components/Typography/Text";
-import React from "react";
 
 export enum DEPOSITION_DETAILS_TABS {
     summary = "summary",
