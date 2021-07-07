@@ -14,6 +14,11 @@ import { GlobalStateContext } from "../../../../../state/GlobalState";
 import { StyledCloseButton } from "./styles";
 import ExhibitClosingModal from "../ExhibitClosingModal";
 import * as CONSTANTS from "../../../../../constants/exhibits";
+import styled from "styled-components";
+
+const StyledSpaceItem = styled(Space.Item)`
+    overflow: hidden;
+`;
 
 interface Props {
     file: ExhibitFile;
@@ -79,7 +84,7 @@ export default function ExhibitViewerHeader({
                         </Text>
                     </Space.Item>
                 )}
-                <Space.Item flex="1">
+                <StyledSpaceItem flex="1">
                     <Tooltip title={file?.displayName}>
                         <Text
                             size="large"
@@ -90,7 +95,7 @@ export default function ExhibitViewerHeader({
                             {file?.displayName}
                         </Text>
                     </Tooltip>
-                </Space.Item>
+                </StyledSpaceItem>
                 <Space>
                     {showBringAllToMeButton && (
                         <Button type="ghost" size="small" data-testid="bring_all_to_me_button" onClick={onBringAllToMe}>
