@@ -92,6 +92,7 @@ const WitnessItem = ({ deposition, removeWitness, witnessNumber }: WitnessItemPr
                             name={`depositions[${witnessNumber}].witness.name`}
                             label={CONSTANTS.OPTIONAL_NAME_LABEL}
                             placeholder={CONSTANTS.WITNESS_NAME_PLACEHOLDER}
+                            maxLength={50}
                         />
                     </Col>
                     <Col xs={6}>

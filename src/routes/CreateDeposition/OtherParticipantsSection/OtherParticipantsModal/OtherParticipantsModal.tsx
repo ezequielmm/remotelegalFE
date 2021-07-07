@@ -111,6 +111,7 @@ export default function OtherParticipantsModal({
                                 label={CONSTANTS.OPTIONAL_NAME_LABEL}
                                 placeholder={CONSTANTS.NAME_PLACEHOLDER}
                                 noMargin
+                                maxLength={50}
                             />
                             <RHFInput
                                 control={control}
