@@ -1,5 +1,4 @@
-import { fireEvent, waitForDomChange, waitForElement } from "@testing-library/react";
-import React from "react";
+import { fireEvent, waitFor, waitForDomChange, waitForElement } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Amplify, Auth } from "aws-amplify";
 import { Redirect } from "react-router";
@@ -495,18 +494,18 @@ describe("It tests the registered and logged in user and non-participant flow", 
     test("should call add participant and history with the right parameters", async () => {
         deps.apiService.addDepoParticipant = jest.fn().mockResolvedValue(true);
         const { getByText, getAllByText, getByTestId } = renderWithGlobalContext(<PreJoinDepo />, deps);
-        await waitForDomChange();
+        await waitFor(() => getByText(CONSTANTS.ROLE_INPUT));
         userEvent.click(getByText(CONSTANTS.ROLE_INPUT));
-        const role = await waitForElement(() => getAllByText(TEST_CONSTANTS.ROLE));
+        const role = await waitFor(() => getAllByText(TEST_CONSTANTS.ROLE));
         userEvent.click(role[1]);
-        await waitForDomChange();
         userEvent.click(getByTestId(CONSTANTS.STEP_2_BUTTON_ID));
-        await waitForDomChange();
-        expect(deps.apiService.addDepoParticipant).toHaveBeenCalledWith(TEST_CONSTANTS.DEPO_ID, {
-            emailAddress: TEST_CONSTANTS.LOGGED_USER_EMAIL,
-            participantType: TEST_CONSTANTS.ROLE,
+        await waitFor(() => {
+            expect(deps.apiService.addDepoParticipant).toHaveBeenCalledWith(TEST_CONSTANTS.DEPO_ID, {
+                emailAddress: TEST_CONSTANTS.LOGGED_USER_EMAIL,
+                participantType: TEST_CONSTANTS.ROLE,
+            });
+            expect(mockHistoryPush).toHaveBeenCalledWith(`${CONSTANTS.DEPOSITION_ROUTE}${TEST_CONSTANTS.DEPO_ID}`);
         });
-        expect(mockHistoryPush).toHaveBeenCalledWith(`${CONSTANTS.DEPOSITION_ROUTE}${TEST_CONSTANTS.DEPO_ID}`);
     });
 });
 
@@ -590,7 +589,7 @@ describe("It tests the registered and  not logged in user and participant flow",
     });
     test("should show error toast if login service fails", async () => {
         AUTH.REJECTED_SIGN_IN();
-        const { getByText, getByTestId } = renderWithGlobalContext(<PreJoinDepo />, deps);
+        const { getAllByText, getByTestId } = renderWithGlobalContext(<PreJoinDepo />, deps);
         await waitForDomChange();
         fireEvent.change(getByTestId(CONSTANTS.EMAIL_INPUT_ID), { target: { value: TEST_CONSTANTS.MOCKED_EMAIL } });
         userEvent.click(getByTestId(CONSTANTS.STEP_1_BUTTON_ID));
@@ -600,6 +599,6 @@ describe("It tests the registered and  not logged in user and participant flow",
         });
         userEvent.click(getByTestId(CONSTANTS.STEP_2_BUTTON_ID));
         await waitForDomChange();
-        await waitForElement(() => getByText(TEST_CONSTANTS.SIGN_IN_ERROR));
+        await waitForElement(() => getAllByText(TEST_CONSTANTS.SIGN_IN_ERROR));
     });
 });
