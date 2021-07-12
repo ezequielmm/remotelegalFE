@@ -8,6 +8,7 @@ import {
     StyledDeponentContainer,
     StyledAttendeesContainer,
     StyledParticipantContainer,
+    StyledVideoConferenceWrapper,
 } from "./styles";
 
 enum LayoutSize {
@@ -59,50 +60,55 @@ const VideoConference = ({
     }, [layoutSize]);
 
     return (
-        <StyledVideoConference
-            className={`${layoutClass} ${isBreakroom && "breakrooms"}`}
-            ref={videoConferenceContainer}
-            show={atendeesVisibility}
-        >
-            {!isBreakroom && (
-                <StyledDeponentContainer isUnique={isBreakroom && participants.length === 1}>
-                    <Participant
-                        isLocal={
-                            isBreakroom
-                                ? participants[1]?.sid === localParticipant.sid
-                                : witness?.sid === localParticipant.sid
-                        }
-                        timeZone={timeZone}
-                        participant={isBreakroom ? participants[1] : witness}
-                        isWitness
-                        isMuted={
-                            enableMuteUnmute &&
-                            !!(witness && participantsStatus[JSON.parse(witness?.identity)?.email]?.isMuted)
-                        }
-                    />
-                </StyledDeponentContainer>
-            )}
-            <StyledAttendeesContainer
-                participantsLength={
-                    participants.filter((participant) => JSON.parse(participant.identity).role !== "Witness").length
-                }
+        <StyledVideoConferenceWrapper>
+            <StyledVideoConference
+                className={`${layoutClass} ${isBreakroom && "breakrooms"}`}
+                ref={videoConferenceContainer}
+                show={atendeesVisibility}
             >
-                {participants
-                    .filter((participant) => isBreakroom || JSON.parse(participant.identity).role !== "Witness")
-                    .map((participant: RemoteParticipant, i) => (
-                        <StyledParticipantContainer key={participant.sid} ref={i === 0 ? participantContainer : null}>
-                            <Participant
-                                isLocal={participant?.sid === localParticipant?.sid}
-                                isMuted={
-                                    enableMuteUnmute &&
-                                    !!participantsStatus[JSON.parse(participant.identity)?.email]?.isMuted
-                                }
-                                participant={participant}
-                            />
-                        </StyledParticipantContainer>
-                    ))}
-            </StyledAttendeesContainer>
-        </StyledVideoConference>
+                {!isBreakroom && (
+                    <StyledDeponentContainer isUnique={isBreakroom && participants.length === 1}>
+                        <Participant
+                            isLocal={
+                                isBreakroom
+                                    ? participants[1]?.sid === localParticipant.sid
+                                    : witness?.sid === localParticipant.sid
+                            }
+                            timeZone={timeZone}
+                            participant={isBreakroom ? participants[1] : witness}
+                            isWitness
+                            isMuted={
+                                enableMuteUnmute &&
+                                !!(witness && participantsStatus[JSON.parse(witness?.identity)?.email]?.isMuted)
+                            }
+                        />
+                    </StyledDeponentContainer>
+                )}
+                <StyledAttendeesContainer
+                    participantsLength={
+                        participants.filter((participant) => JSON.parse(participant.identity).role !== "Witness").length
+                    }
+                >
+                    {participants
+                        .filter((participant) => isBreakroom || JSON.parse(participant.identity).role !== "Witness")
+                        .map((participant: RemoteParticipant, i) => (
+                            <StyledParticipantContainer
+                                key={participant.sid}
+                                ref={i === 0 ? participantContainer : null}
+                            >
+                                <Participant
+                                    isLocal={participant?.sid === localParticipant?.sid}
+                                    isMuted={
+                                        enableMuteUnmute &&
+                                        !!participantsStatus[JSON.parse(participant.identity)?.email]?.isMuted
+                                    }
+                                    participant={participant}
+                                />
+                            </StyledParticipantContainer>
+                        ))}
+                </StyledAttendeesContainer>
+            </StyledVideoConference>
+        </StyledVideoConferenceWrapper>
     );
 };
 
