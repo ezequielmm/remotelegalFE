@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, useCallback } from "react";
+import React, { createContext, useState, useContext, useCallback, useRef, useEffect } from "react";
 import styled, { ThemeProvider } from "styled-components";
 import Alert from "../components/Alert";
 import { theme } from "../constants/styles/theme";
@@ -42,8 +42,19 @@ export const FloatingAlertContextProvider = ({ children, parentThemeMode }: IFlo
     const globalContext = useContext(GlobalStateContext);
     const contextTheme = globalContext ? globalContext.state.generalUi.theme : ThemeMode.default;
     const currentTheme = parentThemeMode ?? contextTheme;
+    const showAlert = useRef(true);
+
+    const alertsRef = useRef(alerts);
+
+    useEffect(() => {
+        alertsRef.current = alerts;
+    }, [alerts]);
 
     const addFloatingAlert = useCallback((props) => {
+        const lastAlert = alertsRef.current[alertsRef.current.length - 1];
+        const isLastAlertTheSameAsIncomming = props?.message === lastAlert?.message;
+        if (!showAlert.current && isLastAlertTheSameAsIncomming) return;
+        showAlert.current = false;
         setAlerts((oldAlerts) => [...oldAlerts, props]);
     }, []);
 
@@ -62,6 +73,9 @@ export const FloatingAlertContextProvider = ({ children, parentThemeMode }: IFlo
                                     data-testid={alert.dataTestId}
                                     key={`${messageId}${indexval}`}
                                     fullWidth={false}
+                                    onClose={() => {
+                                        showAlert.current = true;
+                                    }}
                                     {...alert}
                                 />
                             );
