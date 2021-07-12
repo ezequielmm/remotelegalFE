@@ -14,5 +14,5 @@ export type TranscriptFile = {
     addedBy?: AddedBy;
     sharedAt?: string;
     stampLabel: string;
-    documentType: string;
+    documentType: "Transcription" | "DraftTranscriptionWord" | "DraftTranscription";
 };

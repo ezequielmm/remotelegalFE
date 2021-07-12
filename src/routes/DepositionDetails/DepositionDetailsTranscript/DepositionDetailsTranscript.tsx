@@ -31,10 +31,10 @@ import useFloatingAlertContext from "../../../hooks/useFloatingAlertContext";
 const DepositionDetailsTranscripts = () => {
     const emptyFile = { percent: 0, status: "", size: 0 };
     const [file, setFile] = useState(emptyFile);
+    const [disableNotifyButton, setDisableNotifyButton] = useState(true);
     const [showProgressBar, setShowProgressBar] = useState(false);
     const [openDeleteModal, setOpenDeleteModal] = useState(false);
     const tableRef = useRef(null);
-
     const { depositionID } = useParams<{ depositionID: string }>();
     const { upload } = useUploadFile(depositionID);
     const { handleFetchFiles, transcriptFileList, loading } = useTranscriptFileList(depositionID);
@@ -68,6 +68,19 @@ const DepositionDetailsTranscripts = () => {
     const handleUploadChange = (currentFile: any) => {
         setFile(currentFile);
     };
+
+    useEffect(() => {
+        if (transcriptFileList) {
+            const hasNoRegularTranscript = !transcriptFileList?.find(
+                (transcript: TranscriptFile) => transcript.documentType === "Transcription"
+            );
+            if (hasNoRegularTranscript) {
+                setDisableNotifyButton(true);
+            } else {
+                setDisableNotifyButton(false);
+            }
+        }
+    }, [transcriptFileList]);
 
     useEffect(() => {
         if (file && file.status === "uploading") {
@@ -184,7 +197,7 @@ const DepositionDetailsTranscripts = () => {
                             <Button
                                 data-testid={CONSTANTS.DETAILS_TRANSCRIPT_NOTIFY_BUTTON_TEST_ID}
                                 type="text"
-                                disabled={transcriptFileList?.length < 2}
+                                disabled={disableNotifyButton}
                                 icon={<Icon icon={MessageIcon} size={9} />}
                                 size="middle"
                                 onClick={handleNotifyParties}

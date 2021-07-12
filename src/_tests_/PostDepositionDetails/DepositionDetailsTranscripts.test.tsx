@@ -192,7 +192,7 @@ describe("Deposition Details Transcripts", () => {
     });
     it("show Notify Parties button if user is admin", async () => {
         customDeps.apiService.currentUser = jest.fn().mockResolvedValue(SIGN_UP_CONSTANTS.getUser1());
-        const { queryByTestId } = renderWithGlobalContext(<DepositionDetailsTranscript />, customDeps, {
+        const { getByTestId } = renderWithGlobalContext(<DepositionDetailsTranscript />, customDeps, {
             ...rootReducer,
             initialState: {
                 room: {
@@ -203,9 +203,14 @@ describe("Deposition Details Transcripts", () => {
             },
         });
         await waitForDomChange();
-        expect(queryByTestId(CONSTANTS.DETAILS_TRANSCRIPT_NOTIFY_BUTTON_TEST_ID)).toBeTruthy();
+        expect(getByTestId(CONSTANTS.DETAILS_TRANSCRIPT_NOTIFY_BUTTON_TEST_ID)).toBeTruthy();
+        expect(getByTestId(CONSTANTS.DETAILS_TRANSCRIPT_NOTIFY_BUTTON_TEST_ID)).toBeEnabled();
     });
-    it("The notify parties button shouldn't be disabled when only one record is in the list", async () => {
+    it("The notify parties button should be disabled if no regular transcript is on the list", async () => {
+        const nonRegularTranscripts = getTranscriptFileList().filter(
+            (transcript) => transcript.documentType !== "Transcription"
+        );
+        customDeps.apiService.fetchTranscriptsFiles.mockImplementation(() => nonRegularTranscripts);
         const { queryByTestId } = renderWithGlobalContext(<DepositionDetailsTranscript />, customDeps, {
             ...rootReducer,
             initialState: {
@@ -218,7 +223,7 @@ describe("Deposition Details Transcripts", () => {
         });
         await waitForDomChange();
         const notifyButton = queryByTestId(CONSTANTS.DETAILS_TRANSCRIPT_NOTIFY_BUTTON_TEST_ID);
-        expect(notifyButton).not.toBeDisabled();
+        expect(notifyButton).toBeDisabled();
     });
     it("calls download file with the proper params when clicking download", async () => {
         const { getByTestId } = renderWithGlobalContext(<DepositionDetailsTranscript />, customDeps, {
