@@ -30,7 +30,7 @@ const TestVolume = ({ stream }: TestVolumeProps) => {
                 showInfo={false}
                 strokeColor={theme.default.successColor}
                 trailColor={theme.colors.disabled[6]}
-                percent={stream ? Math.round(volumeLevel) : 0}
+                percent={stream ? volumeLevel : 0}
                 strokeWidth={theme.default.spaces[3] * theme.default.baseUnit}
             />
         </Space>

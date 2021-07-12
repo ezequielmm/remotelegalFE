@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import {
     AudioTrack,
     DataTrack,
@@ -11,18 +11,24 @@ import {
 } from "twilio-video";
 import changeSpeakers from "../../helpers/changeSpeakers";
 import trackpubsToTracks from "../../helpers/trackPubsToTracks";
+import { GlobalStateContext } from "../../state/GlobalState";
 
 const useParticipantTracks = (participant: LocalParticipant | RemoteParticipant) => {
+    const { state } = useContext(GlobalStateContext);
+    const { newSpeaker } = state.room;
     const [dataTracks, setDataTracks] = useState<DataTrack[]>([]);
     const [videoTracks, setVideoTracks] = useState<VideoTrack[]>([]);
     const [videoDisabled, setVideoDisabled] = useState<boolean>(false);
     const [audioTracks, setAudioTracks] = useState<AudioTrack[]>([]);
+    const [netWorkLevel, setNetWorkLevel] = useState<number>(null);
     const audioRef = useRef<HTMLAudioElement & AudioTrack>();
     const videoRef = useRef<HTMLVideoElement & VideoTrack>();
 
     const trackSubscribed = (track: AudioTrack | VideoTrack | LocalDataTrack | RemoteDataTrack) => {
         if (track.kind === "video") {
-            videoRef.current.style.display = "block";
+            if (videoRef.current) {
+                videoRef.current.style.display = "block";
+            }
             return setVideoTracks((video) => [...video, track]);
         }
         if (track.kind === "audio") {
@@ -35,7 +41,9 @@ const useParticipantTracks = (participant: LocalParticipant | RemoteParticipant)
         track: AudioTrack | LocalDataTrack | RemoteDataTrack | VideoTrack | RemoteVideoTrack
     ) => {
         if (track.kind === "video") {
-            videoRef.current.style.display = track.name === videoRef.current.name ? "none" : "block";
+            if (videoRef.current) {
+                videoRef.current.style.display = track.name === videoRef.current.name ? "none" : "block";
+            }
             return setVideoTracks((video) => video.filter((v) => v !== track));
         }
         if (track.kind === "audio") {
@@ -67,6 +75,7 @@ const useParticipantTracks = (participant: LocalParticipant | RemoteParticipant)
         setAudioTracks(trackpubsToTracks(participant.audioTracks));
         setDataTracks(trackpubsToTracks(participant.dataTracks));
         participant.on("trackSubscribed", trackSubscribed);
+        participant.on("networkQualityLevelChanged", setNetWorkLevel);
         participant.on("trackUnsubscribed", trackUnsubscribed);
         participant.on("trackDisabled", trackDisabled);
         participant.on("trackEnabled", trackEnabled);
@@ -106,6 +115,12 @@ const useParticipantTracks = (participant: LocalParticipant | RemoteParticipant)
             audioTrack?.detach();
         };
     }, [audioTracks]);
-    return { videoDisabled, videoRef, audioRef, dataTracks, audioTracks, videoTracks };
+
+    useEffect(() => {
+        if (newSpeaker && audioRef.current) {
+            changeSpeakers(audioRef.current, newSpeaker);
+        }
+    }, [newSpeaker]);
+    return { videoDisabled, videoRef, audioRef, dataTracks, audioTracks, videoTracks, netWorkLevel };
 };
 export default useParticipantTracks;

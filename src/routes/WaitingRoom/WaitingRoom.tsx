@@ -18,6 +18,8 @@ import Spinner from "../../components/Spinner";
 import ErrorScreen from "../../components/ErrorScreen";
 import { NotificationEntityType } from "../../types/Notification";
 import getUserNameString from "../../helpers/getUserNameString";
+import useWindowSize from "../../hooks/useWindowSize";
+import { theme } from "../../constants/styles/theme";
 
 const WaitingRoom = () => {
     const [isAdmitted, setIsAdmitted] = useState<boolean>(undefined);
@@ -27,6 +29,7 @@ const WaitingRoom = () => {
     const { currentEmail, isAuthenticated } = useAuthentication();
     const [generateToken, generateTokenLoading, generateTokenError, generatedToken] = useGenerateDepositionToken();
     const [checkUserStatus, userStatusLoading, userStatusError, userStatus] = useCheckUserStatus();
+    const [windowWidth] = useWindowSize();
 
     useEffect(() => {
         if (isAuthenticated !== null) {
@@ -116,7 +119,7 @@ const WaitingRoom = () => {
                                 dataTestId={CONSTANTS.WAITING_ROOM_SUBTITLE}
                                 textAlign="center"
                                 ellipsis={false}
-                                level={4}
+                                level={windowWidth < parseInt(theme.default.breakpoints.sm, 10) ? 5 : 4}
                                 weight="light"
                             >
                                 {CONSTANTS.WAITING_ROOM_SUBTITLE}

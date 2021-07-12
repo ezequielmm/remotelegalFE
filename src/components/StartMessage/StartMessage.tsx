@@ -7,6 +7,7 @@ import Text from "../Typography/Text";
 import { theme } from "../../constants/styles/theme";
 import ColorStatus from "../../types/ColorStatus";
 import { ReactComponent as CalendarIcon } from "../../assets/icons/close.svg";
+import useWindowSize from "../../hooks/useWindowSize";
 
 export interface IStartMessageProps {
     title?: string;
@@ -21,9 +22,12 @@ const StyledStartMessage = styled.div`
     right: ${getREM(theme.default.spaces[4])};
     background-color: ${hexToRGBA("#000000", 0.57)};
     padding: ${getREM(theme.default.spaces[9])};
-    padding-right: ${getREM(theme.default.spaces[10] + theme.default.spaces[12])};
     border-radius: ${getREM(theme.default.spaces[4])};
+    width: calc(100% - ${getREM(theme.default.spaces[8])});
     max-width: ${getREM(35)};
+    @media (min-width: ${theme.default.breakpoints.sm}) {
+        padding-right: ${getREM(theme.default.spaces[10] + theme.default.spaces[12])};
+    }
 `;
 
 const StyledCloseIcon = styled(Icon)`
@@ -40,6 +44,7 @@ const StyledCloseIcon = styled(Icon)`
 
 const StartMessage = ({ title, description, icon, open = true, ...rest }: IStartMessageProps) => {
     const [isOpen, setIsOpen] = useState<boolean>(open);
+    const [windowWidth] = useWindowSize();
 
     const closeMessage = () => {
         setIsOpen(false);
@@ -50,21 +55,47 @@ const StartMessage = ({ title, description, icon, open = true, ...rest }: IStart
             {isOpen && (
                 <StyledStartMessage {...rest}>
                     <StyledCloseIcon onClick={closeMessage} icon={CalendarIcon} size={9} />
-                    <Space>
-                        <Space.Item>
-                            <Icon size={9} color={theme.default.primaryColor} icon={icon} />
-                        </Space.Item>
-                        <Space.Item>
-                            <Space direction="vertical" size={2}>
-                                <Text block size="large" state={ColorStatus.primary} weight="bold">
-                                    {title}
-                                </Text>
-                                <Text block ellipsis={false} state={ColorStatus.white}>
-                                    {description}
-                                </Text>
+                    {windowWidth < parseInt(theme.default.breakpoints.sm, 10) ? (
+                        <>
+                            <Space>
+                                <Space.Item>
+                                    <Icon size={9} color={theme.default.primaryColor} icon={icon} />
+                                </Space.Item>
+                                <Space.Item>
+                                    <Space direction="vertical" size={2}>
+                                        <Text
+                                            block
+                                            ellipsis={false}
+                                            size="small"
+                                            state={ColorStatus.primary}
+                                            weight="bold"
+                                        >
+                                            {title}
+                                        </Text>
+                                    </Space>
+                                </Space.Item>
                             </Space>
-                        </Space.Item>
-                    </Space>
+                            <Text block size="small" ellipsis={false} state={ColorStatus.white}>
+                                {description}
+                            </Text>
+                        </>
+                    ) : (
+                        <Space>
+                            <Space.Item>
+                                <Icon size={9} color={theme.default.primaryColor} icon={icon} />
+                            </Space.Item>
+                            <Space.Item>
+                                <Space direction="vertical" size={2}>
+                                    <Text block ellipsis={false} state={ColorStatus.primary} size="large" weight="bold">
+                                        {title}
+                                    </Text>
+                                    <Text block ellipsis={false} state={ColorStatus.white}>
+                                        {description}
+                                    </Text>
+                                </Space>
+                            </Space.Item>
+                        </Space>
+                    )}
                 </StyledStartMessage>
             )}
         </>

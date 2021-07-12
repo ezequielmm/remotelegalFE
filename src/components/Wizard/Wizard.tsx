@@ -50,7 +50,9 @@ const Wizard = ({ children, step = 0, totalSteps, title, text, alertComponent }:
                     <Title level={4} weight="light">
                         {title}
                     </Title>
-                    <Text state={ColorStatus.disabled}>{text}</Text>
+                    <Text state={ColorStatus.disabled} ellipsis={false}>
+                        {text}
+                    </Text>
                 </Space.Item>
                 {alertComponent}
                 <Space.Item fullWidth>{children}</Space.Item>

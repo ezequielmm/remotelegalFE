@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { Progress } from "antd";
 import { getPX, getREM } from "../../../constants/styles/utils";
 import { Theme } from "../../../types/ThemeType";
 
@@ -83,4 +84,31 @@ export const StyledParticipantMicContainer = styled.div`
             margin-right: ${getREM(theme.default.spaces[1])};
         }
     `}
+`;
+
+export const StyledNetworkQuality = styled(Progress)`
+    .ant-progress-steps-outer {
+        align-items: flex-end;
+        .ant-progress-steps-item:first-child {
+            height: 4px !important;
+        }
+        .ant-progress-steps-item:nth-child(2) {
+            height: 6px !important;
+        }
+        .ant-progress-steps-item:nth-child(3) {
+            height: 8px !important;
+        }
+        .ant-progress-steps-item:nth-child(4) {
+            height: 10px !important;
+        }
+        .ant-progress-steps-item:last-child {
+            height: 12px !important;
+        }
+        .ant-progress-steps-item {
+            border-radius: ${({ theme }) => getREM(theme.default.spaces[2])};
+            margin-right: ${({ theme }) => getREM(theme.default.spaces[2])};
+            width: 2px !important;
+            margin-right: 0.12rem;
+        }
+    }
 `;

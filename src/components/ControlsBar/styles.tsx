@@ -1,7 +1,9 @@
 import styled from "styled-components";
+import { Drawer } from "antd";
 import { getREM } from "../../constants/styles/utils";
 import Space from "../Space";
 import Menu from "../Menu";
+import Button from "../Button";
 import { ThemeMode } from "../../types/ThemeType";
 
 const flexAlignCenter = `
@@ -49,6 +51,49 @@ export const LockedMenuItem = styled(Menu.Item)`
         }
         .ant-btn-link .anticon{
             margin-right: 0;
+        }
+    `}
+`;
+
+export const StyledMoreWrapper = styled.div`
+    position: absolute;
+    bottom: 0;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    ${({ theme }) => `
+        right: ${getREM(theme.default.spaces[6])};
+    `}
+`;
+
+export const StyledDrawer = styled(Drawer)`
+    ${({ theme }) => `
+        .ant-drawer-content {
+            background-color: ${theme.colors.inDepoNeutrals[3]};
+            border-radius: ${getREM(theme.default.spaces[6])} ${getREM(theme.default.spaces[6])} 0 0;
+        }
+        .ant-drawer-footer{
+            border-top: 0;
+            padding-top: 0;
+        }
+    `}
+`;
+
+export const StyledDrawerSpace = styled(Space)`
+    .ant-btn {
+        margin: auto;
+    }
+`;
+
+export const StyledEndButton = styled(Button)`
+    width: 100%;
+    justify-content: center;
+    ${({ theme }) => `
+        background-color: ${theme.default.errorColor};
+        border-color: ${theme.default.errorColor};
+        color: ${theme.default.whiteColor};
+        path {
+            fill: ${theme.default.whiteColor};
         }
     `}
 `;

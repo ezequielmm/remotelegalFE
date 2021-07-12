@@ -50,6 +50,7 @@ const StyledModal = styled(modalDefault)<IModalProps>`
                 : "";
 
         const styles = `
+            max-width: calc(100% - 32px);
             ${stylesOnlyBody}
             ${sizeStyles}
             `;

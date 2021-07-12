@@ -1,7 +1,8 @@
-import { act, fireEvent, waitFor, waitForDomChange, waitForElement } from "@testing-library/react";
-import React from "react";
+import { act, fireEvent, waitFor, waitForDomChange, screen } from "@testing-library/react";
 import Amplify from "aws-amplify";
 import { LocalParticipant } from "twilio-video/tsdef/LocalParticipant";
+import Client from "@twilio/conversations";
+import userEvent from "@testing-library/user-event";
 import ControlsBar from "../../components/ControlsBar";
 import { getBreakrooms } from "../mocks/breakroom";
 import * as CONSTANTS from "../../constants/inDepo";
@@ -14,10 +15,9 @@ import * as AUTH from "../mocks/Auth";
 import { AMPLIFY_CONFIG } from "../constants/login";
 import getLeaveModalTextContent from "../../components/ControlsBar/helpers/getLeaveModalTextContent";
 import { wait } from "../../helpers/wait";
-import { MESSAGE, MESSAGE_CURRENT_USER } from "../mocks/messages";
+import { MESSAGE } from "../mocks/messages";
 import { rootReducer } from "../../state/GlobalState";
 import { TimeZones } from "../../models/general";
-import Client from "@twilio/conversations";
 
 const customReducer = {
     ...rootReducer,
@@ -64,6 +64,13 @@ jest.mock("react-router", () => ({
 }));
 
 beforeEach(() => {
+    Object.defineProperty(global.navigator, "mediaDevices", {
+        writable: true,
+        value: {
+            getUserMedia: jest.fn().mockResolvedValue([]),
+            enumerateDevices: jest.fn().mockResolvedValue([]),
+        },
+    });
     Client.create = jest.fn().mockResolvedValue({
         getConversationByUniqueName: jest.fn().mockResolvedValue({
             sendMessage: jest.fn(),
@@ -426,7 +433,7 @@ test("Show popup and close by time", async () => {
 });
 
 test("Show popup and close by close button", async () => {
-    const { queryByTestId, container, findByTestId } = renderWithGlobalContext(
+    const { container, findByTestId } = renderWithGlobalContext(
         <ControlsBar {...props} disableChat={false} />,
         undefined,
         customReducer
@@ -444,4 +451,25 @@ test("Show popup and close by close button", async () => {
         fireEvent.click(await findByTestId("close-button"));
         expect(container.getElementsByClassName("ant-popover-hidden").length).toBe(1);
     }, 2000);
+});
+
+test("Should display Settings modal", async () => {
+    AUTH.VALID();
+    renderWithGlobalContext(
+        <ControlsBar
+            {...props}
+            localParticipant={getParticipant("test", "Witness")}
+            isRecording
+            canJoinToLockedBreakroom
+        />
+    );
+    await waitFor(() => screen.getByTestId("more_dropdown"));
+
+    await act(async () => {
+        fireEvent.click(screen.getByTestId("more_dropdown").children[0].firstChild);
+    });
+    userEvent.click(screen.getByTestId("settings_button"));
+    await waitFor(() => {
+        expect(screen.getByTestId("setting_in_depo")).toBeInTheDocument();
+    });
 });

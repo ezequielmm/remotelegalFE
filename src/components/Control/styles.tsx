@@ -31,6 +31,15 @@ export const StyledCircleControl = styled(circleButton)`
     & > :first-child {
         line-height: 0;
     }
+
+    ${({ theme }) => `
+        @media (max-width: ${theme.default.breakpoints.sm}) {
+            && {
+                min-width: ${getREM(theme.default.spaces[8] * 2)};
+                height: ${getREM(theme.default.spaces[8] * 2)};
+            }
+        }
+    `};
 `;
 
 export const StyledRoundedControl = styled(roundButton)`

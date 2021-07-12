@@ -45,7 +45,7 @@ export type ActiveStreamsState = {
     };
 };
 
-const useUserTracks = () => {
+const useUserTracks = (getTracks: boolean = true) => {
     const [gettingTracks, setGettingTracks] = useState(true);
     const [activeStreams, setActiveStreams] = useState<ActiveStreamsState>({
         audioinput: {
@@ -114,6 +114,11 @@ const useUserTracks = () => {
     }, []);
 
     useEffect(() => {
+        const previouslySelectedDevices =
+            localStorage.getItem("selectedDevices") && JSON.parse(localStorage.getItem("selectedDevices"));
+        const wasVideoSelected = previouslySelectedDevices?.video;
+        const wasAudioSelected = previouslySelectedDevices?.audio;
+        const wasSpeakersSelected = previouslySelectedDevices?.speakers;
         const initialOptions: Options = {
             videoinput: ["-"],
             audioinput: ["-"],
@@ -138,14 +143,24 @@ const useUserTracks = () => {
                     ]);
                 }
             };
-            await getInitialStream("videoinput", {
-                video: { ...MediaStreamConstraints.videoinput },
-            });
-            await getInitialStream("audioinput", {
-                audio: {
-                    ...MediaStreamConstraints.audioinput,
-                },
-            });
+            await getInitialStream(
+                "videoinput",
+                wasVideoSelected
+                    ? { video: wasVideoSelected }
+                    : {
+                          video: { ...MediaStreamConstraints.videoinput },
+                      }
+            );
+            await getInitialStream(
+                "audioinput",
+                wasAudioSelected
+                    ? { audio: wasAudioSelected }
+                    : {
+                          audio: {
+                              ...MediaStreamConstraints.audioinput,
+                          },
+                      }
+            );
             const availableStreams = await navigator.mediaDevices.enumerateDevices();
             availableStreams.forEach((currentStream) => {
                 const firstStream = initialOptions[currentStream.kind][0];
@@ -177,19 +192,34 @@ const useUserTracks = () => {
                     },
                 ];
             }
+            const videoInputArray = initialOptions.videoinput as StreamOption[];
+            const audioInputArray = initialOptions.audioinput as StreamOption[];
+            const speakerArray = initialOptions.audiooutput as StreamOption[];
+            const previouslySelectedVideo = videoInputArray.find(
+                (input) => input?.value === wasVideoSelected?.deviceId?.exact
+            );
+            const previouslySelectedAudio = audioInputArray.find(
+                (input) => input?.value === wasAudioSelected?.deviceId?.exact
+            );
+            const previouslySelectedSpeaker = speakerArray.find((input) => input?.value === wasSpeakersSelected);
             setOptions(initialOptions);
             setSelectedOptions({
-                videoinput: initialOptions.videoinput[0],
-                audioinput: initialOptions.audioinput[0],
-                audiooutput: initialOptions.audiooutput[0],
+                videoinput: previouslySelectedVideo || initialOptions.videoinput[0],
+                audioinput: previouslySelectedAudio || initialOptions.audioinput[0],
+                audiooutput: previouslySelectedSpeaker || initialOptions.audiooutput[0],
             });
             setGettingTracks(false);
         };
-        getUserStreams();
+        if (getTracks) {
+            getUserStreams();
+        }
         return () => {
-            Object.values(activeStreamsRef.current).forEach((track) => stopAllTracks(track.stream?.getTracks()));
+            if (getTracks) {
+                Object.values(activeStreamsRef.current).forEach((track) => stopAllTracks(track.stream?.getTracks()));
+                setErrors([]);
+            }
         };
-    }, []);
+    }, [getTracks]);
 
     return {
         errors,

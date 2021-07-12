@@ -1,4 +1,4 @@
-import React from "react";
+import { waitFor, screen } from "@testing-library/react";
 import Participant from "../../routes/InDepo/Participant";
 import * as CONSTANTS from "../constants/InDepo";
 import getParticipant from "../mocks/participant";
@@ -51,4 +51,22 @@ test("Expect muted microphone icon when the witness is muted", async () => {
     const participant = getParticipant("test1", "Witness");
     const { queryByTestId } = renderWithGlobalContext(<Participant participant={participant} isMuted />);
     expect(queryByTestId("participant_muted")).toBeTruthy();
+});
+
+test("Expect toast message when the network level is less than 3", async () => {
+    const participant = getParticipant("test1", "Witness");
+    participant.on.mockImplementation((arg, func) => {
+        if (arg === "networkQualityLevelChanged") {
+            return func(2);
+        }
+        return jest.fn();
+    });
+    renderWithGlobalContext(<Participant participant={participant} isMuted isLocal />);
+    await waitFor(() => expect(screen.getByText(CONSTANTS.CONNECTION_UNSTABLE)).toBeInTheDocument());
+});
+
+test("Expect show network indicator", async () => {
+    const participant = getParticipant("test1", "Witness");
+    renderWithGlobalContext(<Participant participant={participant} isMuted />);
+    await waitFor(() => expect(screen.getByTestId(CONSTANTS.NETWORK_INDICATOR_TEST_ID)).toBeInTheDocument());
 });

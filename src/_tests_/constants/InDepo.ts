@@ -69,3 +69,5 @@ export const DEVICES_MOCK = {
     video: "test1235",
     speakers: "test124345",
 };
+export const CONNECTION_UNSTABLE = "Your connection is unstable";
+export const NETWORK_INDICATOR_TEST_ID = "NETWORK_INDICATOR";

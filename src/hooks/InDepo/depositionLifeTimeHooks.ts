@@ -1,5 +1,5 @@
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
-import { connect, createLocalTracks, LocalDataTrack, Room } from "twilio-video";
+import { connect, createLocalAudioTrack, createLocalVideoTrack, LocalDataTrack, Room } from "twilio-video";
 import { useHistory, useParams } from "react-router";
 import useSound from "use-sound";
 import { GlobalStateContext } from "../../state/GlobalState";
@@ -70,18 +70,30 @@ export const useJoinBreakroom = () => {
         async (breakroomID: string) => {
             const devices = JSON.parse(localStorage.getItem("selectedDevices"));
             const dataTrack = new LocalDataTrack();
+            const tracks = [];
             const token: any = await generateBreakroomToken();
             if (!token) return "";
 
-            const tracks = await createLocalTracks({
-                audio: devices ? devices.audio : true,
-                video: devices ? devices.video : true,
-            });
+            try {
+                const audioTrack = await createLocalAudioTrack(devices?.audio ? devices.audio : null);
+                tracks.push(audioTrack);
+            } catch (error) {
+                console.error(error);
+            }
+
+            try {
+                const videoTrack = await createLocalVideoTrack(devices?.video ? devices.video : null);
+                tracks.push(videoTrack);
+            } catch (error) {
+                console.error(error);
+            }
+
             tracks.push(dataTrack);
             const room = await connect(token, {
                 ...TWILIO_VIDEO_CONFIG,
                 name: breakroomID,
                 tracks,
+                networkQuality: { local: 3, remote: 3 },
             });
 
             dispatch(actions.addUserTracks(tracks));
@@ -129,16 +141,26 @@ export const useJoinDepositionForMockRoom = () => {
         async (depositionID: string) => {
             const devices = JSON.parse(localStorage.getItem("selectedDevices"));
             const dataTrack = new LocalDataTrack();
+            const tracks = [];
             const { token, participants, shouldSendToPreDepo, startDate, jobNumber }: any = await generateToken();
             const breakrooms = await getBreakrooms();
             if (!shouldSendToPreDepo) {
                 history.push(`/deposition/join/${depositionID}`);
             }
+            try {
+                const audioTrack = await createLocalAudioTrack(devices?.audio ? devices.audio : null);
+                tracks.push(audioTrack);
+            } catch (error) {
+                console.error(error);
+            }
 
-            const tracks = await createLocalTracks({
-                audio: devices ? devices.audio : true,
-                video: devices ? devices.video : true,
-            });
+            try {
+                const videoTrack = await createLocalVideoTrack(devices?.video ? devices.video : null);
+                tracks.push(videoTrack);
+            } catch (error) {
+                console.log(error);
+            }
+
             tracks.push(dataTrack);
             const room = await connect(token, {
                 ...TWILIO_VIDEO_CONFIG,
@@ -224,14 +246,25 @@ export const useJoinDeposition = () => {
             const transcriptions = await getTranscriptions();
             const breakrooms = await getBreakrooms();
             const events = await getDepositionEvents(depositionID);
-
+            const tracks = [];
             if (isSharing) {
                 fetchExhibitFileInfo(depositionID);
             }
-            const tracks = await createLocalTracks({
-                audio: devices ? devices.audio : true,
-                video: devices ? devices.video : true,
-            });
+
+            try {
+                const audioTrack = await createLocalAudioTrack(devices?.audio ? devices.audio : null);
+                tracks.push(audioTrack);
+            } catch (error) {
+                console.error(error);
+            }
+
+            try {
+                const videoTrack = await createLocalVideoTrack(devices?.video ? devices.video : null);
+                tracks.push(videoTrack);
+            } catch (error) {
+                console.error(error);
+            }
+
             tracks.push(dataTrack);
             const room = await connect(token, {
                 ...TWILIO_VIDEO_CONFIG,

@@ -28,15 +28,17 @@ const history = createMemoryHistory();
 
 const InDepo = () => <div>IN DEPO</div>;
 const WaitingRoom = () => <div>WAITING ROOM</div>;
-const mockTracks = jest.fn();
+const mockVideoTracks = jest.fn();
+const mockAudioTracks = jest.fn();
+
 jest.mock("twilio-video", () => ({
     ...jest.requireActual("twilio-video"),
     LocalDataTrack: function dataTrack() {
         return { send: jest.fn() };
     },
 
-    createLocalTracks: (args) => mockTracks(args),
-
+    createLocalVideoTrack: (args) => mockVideoTracks(args),
+    createLocalAudioTrack: (args) => mockAudioTracks(args),
     connect: async () => ({
         on: jest.fn(),
         off: jest.fn(),
@@ -117,7 +119,6 @@ jest.mock("twilio-video", () => ({
 beforeEach(() => {
     localStorage.clear();
     customDeps = getMockDeps();
-    mockTracks.mockResolvedValue([]);
     AUTH.VALID();
     customDeps.apiService.joinDeposition = jest
         .fn()
@@ -280,7 +281,7 @@ test("Redirects to Depo if shouldSendToPreDepo is false", async () => {
     await waitForDomChange();
     expect(getByText("IN DEPO")).toBeInTheDocument();
 });
-test("CreateLocalTracks gets called with the proper devices if they exist in localStorage", async () => {
+test("CreateTrack functions get called with the proper devices if they exist in localStorage", async () => {
     localStorage.setItem("selectedDevices", JSON.stringify(TESTS_CONSTANTS.DEVICES_MOCK));
     renderWithGlobalContext(
         <Route exact path={TESTS_CONSTANTS.PRE_ROUTE} component={MockInDepo} />,
@@ -290,10 +291,8 @@ test("CreateLocalTracks gets called with the proper devices if they exist in loc
     );
     history.push(TESTS_CONSTANTS.PRE_ROUTE);
     await waitFor(() => {
-        expect(mockTracks).toHaveBeenCalledWith({
-            audio: TESTS_CONSTANTS.DEVICES_MOCK.audio,
-            video: TESTS_CONSTANTS.DEVICES_MOCK.video,
-        });
+        expect(mockAudioTracks).toHaveBeenCalledWith(TESTS_CONSTANTS.DEVICES_MOCK.audio);
+        expect(mockVideoTracks).toHaveBeenCalledWith(TESTS_CONSTANTS.DEVICES_MOCK.video);
     });
 });
 test("CreateLocalTracks gets called with true if the devices don´t exist in localStorage", async () => {
@@ -305,9 +304,7 @@ test("CreateLocalTracks gets called with true if the devices don´t exist in loc
     );
     history.push(TESTS_CONSTANTS.PRE_ROUTE);
     await waitFor(() => {
-        expect(mockTracks).toHaveBeenCalledWith({
-            audio: true,
-            video: true,
-        });
+        expect(mockAudioTracks).toHaveBeenCalledWith(null);
+        expect(mockVideoTracks).toHaveBeenCalledWith(null);
     });
 });

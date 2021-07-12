@@ -33,10 +33,11 @@ const useVolumeLevel = (stream?: MediaStream) => {
                     volumeSum += volume;
                     return volume;
                 });
-                const averageVolume = volumeSum / volumes.length;
-                if (averageVolume > 10) {
-                    setVolumeLevel(averageVolume);
+                const averageVolume = volumeSum / 100;
+                if (averageVolume > 40) {
+                    return setVolumeLevel(averageVolume);
                 }
+                return setVolumeLevel(0);
             };
         }
         if (volumeCallback) {
