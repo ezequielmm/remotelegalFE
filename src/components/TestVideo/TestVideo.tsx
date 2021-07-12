@@ -89,7 +89,7 @@ const TestVideo = forwardRef(
                         </Text>
                     </StyledVideoError>
                 ) : (
-                    <video data-testid="video" ref={ref} autoPlay>
+                    <video playsInline data-testid="video" ref={ref} autoPlay>
                         <track kind="captions" />
                     </video>
                 )}
