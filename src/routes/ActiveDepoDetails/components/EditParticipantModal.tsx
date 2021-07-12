@@ -118,9 +118,9 @@ const EditParticipantModal = ({
 
     const handleSubmitParticipant = () => {
         const body = {
-            name: formState.name.value,
-            email: formState.email.value,
-            phone: formState.phone.value,
+            name: formState.name.value?.trim(),
+            email: formState.email.value?.trim(),
+            phone: formState.phone.value?.trim(),
             id: currentParticipant.id,
             role: removeWhiteSpace(formState.role.value),
         };
