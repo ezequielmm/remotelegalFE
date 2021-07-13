@@ -43,15 +43,15 @@ const RealTime = ({
     useEffect(() => {
         const highlightTranscript = () => {
             const lastTranscription = transcriptionsWithoutEvents[transcriptionsWithoutEvents.length - 1];
-            if (playedSeconds >= lastTranscription.transcriptionVideoTime) {
-                return setCurrentTranscript(lastTranscription.id);
+            if (playedSeconds >= lastTranscription?.transcriptionVideoTime) {
+                return setCurrentTranscript(lastTranscription?.id);
             }
             const currentTranscriptTranscription = transcriptionsWithoutEvents.find(
                 (transcription, index) =>
                     playedSeconds <=
-                    transcription.transcriptionVideoTime +
-                        transcriptionsWithoutEvents[index + 1].transcriptionVideoTime -
-                        transcription.transcriptionVideoTime
+                    transcription?.transcriptionVideoTime +
+                        transcriptionsWithoutEvents[index + 1]?.transcriptionVideoTime -
+                        transcription?.transcriptionVideoTime
             );
 
             return setCurrentTranscript(currentTranscriptTranscription?.id);
@@ -67,16 +67,16 @@ const RealTime = ({
     const sortedTranscriptions = !scrollToHighlighted
         ? transcriptions
               ?.slice(transcriptionSlicingLength)
-              .sort((a, b) => new Date(a.transcriptDateTime).getTime() - new Date(b.transcriptDateTime).getTime())
+              .sort((a, b) => new Date(a?.transcriptDateTime)?.getTime() - new Date(b?.transcriptDateTime)?.getTime())
         : [];
 
     const transcriptionsWithoutDuplicates = !scrollToHighlighted
-        ? [].concat(transcriptions.slice(0, transcriptionSlicingLength), sortedTranscriptions)
+        ? [].concat(transcriptions?.slice(0, transcriptionSlicingLength), sortedTranscriptions)
         : transcriptions;
 
     useEffect(() => {
         if (!scrollToHighlighted && transcriptionsWithoutDuplicates?.length) {
-            setCurrentTranscript(transcriptionsWithoutDuplicates[transcriptionsWithoutDuplicates.length - 1]?.id);
+            setCurrentTranscript(transcriptionsWithoutDuplicates[transcriptionsWithoutDuplicates?.length - 1]?.id);
         }
     }, [scrollToHighlighted, transcriptionsWithoutDuplicates]);
 
