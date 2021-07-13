@@ -54,7 +54,12 @@ const StartMessage = ({ title, description, icon, open = true, ...rest }: IStart
         <>
             {isOpen && (
                 <StyledStartMessage {...rest}>
-                    <StyledCloseIcon onClick={closeMessage} icon={CalendarIcon} size={9} />
+                    <StyledCloseIcon
+                        data-testid="message_close_button"
+                        onClick={closeMessage}
+                        icon={CalendarIcon}
+                        size={9}
+                    />
                     {windowWidth < parseInt(theme.default.breakpoints.sm, 10) ? (
                         <>
                             <Space>
