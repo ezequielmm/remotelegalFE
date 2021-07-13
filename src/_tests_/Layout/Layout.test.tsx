@@ -7,6 +7,11 @@ import { theme } from "../../constants/styles/theme";
 import Layout from "../../components/Layout";
 import getMockDeps from "../utils/getMockDeps";
 import { rootReducer } from "../../state/GlobalState";
+import state from "../mocks/state";
+import actions from "../../state/Depositions/DepositionsListActions";
+import { fireEvent, waitFor } from "@testing-library/react";
+
+const { dispatch } = state;
 
 const Deposition = () => {
     return <div>DEPOSITION</div>;
@@ -119,4 +124,60 @@ test("should not display current user first and last name text when it is null",
         }
     );
     expect(queryByText("First Name Last Name")).not.toBeInTheDocument();
+});
+
+test("should call to clear deposition list filters when click on the my depositions menu item", async () => {
+    const { findByTestId } = renderWithGlobalContext(
+        <ThemeProvider theme={theme}>
+            <BrowserRouter>
+                <Switch>
+                    <Layout>
+                        <Route exact path="/deposition/new" component={NewDeposition} />
+                    </Layout>
+                </Switch>
+            </BrowserRouter>
+        </ThemeProvider>,
+        customDeps,
+        {
+            ...rootReducer,
+            initialState: {
+                generalUi: { isSiderCollapsed: false },
+                user: { currentUser: null },
+            },
+        }
+    );
+    const myDepoListMenuItem = await findByTestId("my_depositions");
+    expect(myDepoListMenuItem).toBeInTheDocument();
+    fireEvent.click(myDepoListMenuItem);
+    waitFor(() => {
+        expect(dispatch).toHaveBeenCalledWith(actions.clear());
+    });
+});
+
+test("should not call to clear deposition list filters when click on the my depositions menu item", async () => {
+    const { findByTestId } = renderWithGlobalContext(
+        <ThemeProvider theme={theme}>
+            <BrowserRouter>
+                <Switch>
+                    <Layout>
+                        <Route exact path="/deposition/new" component={NewDeposition} />
+                    </Layout>
+                </Switch>
+            </BrowserRouter>
+        </ThemeProvider>,
+        customDeps,
+        {
+            ...rootReducer,
+            initialState: {
+                generalUi: { isSiderCollapsed: false },
+                user: { currentUser: null },
+            },
+        }
+    );
+    const myDepoListMenuItem = await findByTestId("my_cases");
+    expect(myDepoListMenuItem).toBeInTheDocument();
+    fireEvent.click(myDepoListMenuItem);
+    waitFor(() => {
+        expect(dispatch).not.toHaveBeenCalledWith(actions.clear());
+    });
 });

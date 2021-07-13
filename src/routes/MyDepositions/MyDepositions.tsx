@@ -68,8 +68,8 @@ const MyDepositions = () => {
         loading,
         refreshList,
         page,
+        filter,
     } = useFetchDepositions();
-    const [sorting, setSorting] = useState(null);
     const [filterCriteria, setFilterCriteria] = useState<FilterCriteria>(FilterCriteria.UPCOMING);
 
     const { state } = useContext(GlobalStateContext);
@@ -127,7 +127,7 @@ const MyDepositions = () => {
 
     const onDepositionTabChange = (key: FilterCriteria) => {
         setFilterCriteria(key);
-        handleListChange({ current: 1 }, getFilterParam(key), sorting);
+        handleListChange({ current: 1 }, getFilterParam(key));
     };
 
     const onFilterByDateChange = (dateRange) => {
@@ -136,7 +136,7 @@ const MyDepositions = () => {
             MinDate: minDate ? dateToUTCString(minDate?.startOf("day")) : undefined,
             MaxDate: maxDate ? dateToUTCString(maxDate?.endOf("day")) : undefined,
         };
-        handleListChange({ current: 1 }, dateRangeFilter, sorting);
+        handleListChange({ current: 1 }, dateRangeFilter);
     };
 
     return (
@@ -151,7 +151,10 @@ const MyDepositions = () => {
                         </Row>
                     </Space.Item>
                     <StyledSpaceItem fullWidth>
-                        <Tabs defaultActiveKey="1" onChange={onDepositionTabChange}>
+                        <Tabs
+                            defaultActiveKey={filter?.PastDepositions ? FilterCriteria.PAST : FilterCriteria.UPCOMING}
+                            onChange={onDepositionTabChange}
+                        >
                             <Tabs.TabPane
                                 tab={`${CONSTANTS.UPCOMING_DEPOSITION_TAB_TITLE} (${totalUpcoming || 0})`}
                                 key={FilterCriteria.UPCOMING}
@@ -173,6 +176,10 @@ const MyDepositions = () => {
                                         "This Month": [dayjs().startOf("month"), dayjs().endOf("month")],
                                     }}
                                     onChange={(dateRange) => onFilterByDateChange(dateRange)}
+                                    defaultValue={[
+                                        filter?.MinDate ? dayjs(filter?.MinDate) : null,
+                                        filter?.MaxDate ? dayjs(filter?.MaxDate) : null,
+                                    ]}
                                 />
                             </Col>
                         </Row>
@@ -197,15 +204,14 @@ const MyDepositions = () => {
                             dataSource={mappedDepositions || []}
                             columns={depositionColumns}
                             onChange={(newPage, _, sorter) => {
-                                setSorting(sorter);
-                                handleListChange(newPage, getFilterParam(filterCriteria), sorter);
+                                handleListChange(newPage, null, sorter);
                             }}
                             sortDirections={["descend", "ascend"]}
                             pagination={{
                                 current: page,
                                 position: ["bottomRight"],
                                 pageSize: DEPOSITIONS_COUNT_PER_PAGE,
-                                total: filterCriteria === FilterCriteria.UPCOMING ? totalUpcoming : totalPast,
+                                total: filter?.PastDepositions === true ? totalPast : totalUpcoming,
                                 showSizeChanger: false,
                             }}
                             scroll

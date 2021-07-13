@@ -1,4 +1,4 @@
-import { act, fireEvent, waitFor, waitForDomChange, waitForElement } from "@testing-library/react";
+import { act, fireEvent, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { createMemoryHistory } from "history";
 import React from "react";
@@ -43,7 +43,7 @@ describe("MyDepositions", () => {
 
     it("shows empty state screen when no upcoming depositions loaded and go to add deposition modal", async () => {
         customDeps.apiService.fetchDepositions = jest.fn().mockResolvedValue({ depositions: [] });
-        const { getByText } = renderWithGlobalContext(<MyDepositions />, customDeps, {
+        const { findByText } = renderWithGlobalContext(<MyDepositions />, customDeps, {
             ...rootReducer,
             initialState: {
                 room: {
@@ -51,6 +51,9 @@ describe("MyDepositions", () => {
                 },
                 user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
                 signalR: { signalR: null },
+                depositionsList: {
+                    pageNumber: 1,
+                },
             },
         });
         expect(customDeps.apiService.fetchDepositions).toHaveBeenCalledWith({
@@ -58,9 +61,7 @@ describe("MyDepositions", () => {
             pageSize: 20,
         });
 
-        const emptyStateTitle = await waitForElement(() =>
-            getByText(COMPONENTS_CONSTANTS.EMPTY_UPCOMING_DEPOSITIONS_TITLE)
-        );
+        const emptyStateTitle = await findByText(COMPONENTS_CONSTANTS.EMPTY_UPCOMING_DEPOSITIONS_TITLE);
         expect(emptyStateTitle).toBeTruthy();
     });
 
@@ -71,7 +72,7 @@ describe("MyDepositions", () => {
             .fn()
             .mockResolvedValue({ depositions: [], totalUpcoming, totalPast });
         customDeps.apiService.currentUser = jest.fn().mockResolvedValue(SIGN_UP_CONSTANTS.getUser1());
-        const { queryByText, getByText, deps } = renderWithGlobalContext(<MyDepositions />, customDeps, {
+        const { findByText } = renderWithGlobalContext(<MyDepositions />, customDeps, {
             ...rootReducer,
             initialState: {
                 room: {
@@ -79,17 +80,17 @@ describe("MyDepositions", () => {
                 },
                 user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
                 signalR: { signalR: null },
+                depositionsList: {
+                    pageNumber: 1,
+                },
             },
         });
-        await waitForDomChange();
-        const pastTab = queryByText(`${PAST_DEPOSITION_TAB_TITLE} (${totalPast})`);
+        const pastTab = await findByText(`${PAST_DEPOSITION_TAB_TITLE} (${totalPast})`);
         expect(pastTab).toHaveAttribute("aria-selected", "false");
         fireEvent.click(pastTab);
         expect(pastTab).toBeInTheDocument();
         expect(pastTab).toHaveAttribute("aria-selected", "true");
-        const emptyStateTitle = await waitForElement(() =>
-            getByText(COMPONENTS_CONSTANTS.EMPTY_PAST_DEPOSITIONS_TITLE)
-        );
+        const emptyStateTitle = await findByText(COMPONENTS_CONSTANTS.EMPTY_PAST_DEPOSITIONS_TITLE);
         expect(emptyStateTitle).toBeTruthy();
     });
 
@@ -97,7 +98,7 @@ describe("MyDepositions", () => {
         customDeps.apiService.fetchDepositions = jest
             .fn()
             .mockResolvedValue({ depositions: CONSTANTS.getDepositions() });
-        const { getAllByText } = renderWithGlobalContext(<MyDepositions />, customDeps, {
+        const { findAllByText } = renderWithGlobalContext(<MyDepositions />, customDeps, {
             ...rootReducer,
             initialState: {
                 room: {
@@ -105,6 +106,9 @@ describe("MyDepositions", () => {
                 },
                 user: { currentUser: { firstName: "First Name", lastName: "Last Name", isAdmin: true } },
                 signalR: { signalR: null },
+                depositionsList: {
+                    pageNumber: 1,
+                },
             },
         });
         expect(customDeps.apiService.fetchDepositions).toHaveBeenCalledWith({
@@ -112,7 +116,7 @@ describe("MyDepositions", () => {
             pageSize: 20,
         });
 
-        const courtReporter = await waitForElement(() => getAllByText(CONSTANTS.PARTICIPANT_NAME));
+        const courtReporter = await findAllByText(CONSTANTS.PARTICIPANT_NAME);
         expect(courtReporter.length).toBe(1);
     });
 
@@ -122,7 +126,7 @@ describe("MyDepositions", () => {
             .filter(({ title }) => title)
             .map((column) => [column.title, column])
     )("should sort %s tab  when clicks on it", async (title, { field }: COMPONENTS_CONSTANTS.TableColumn) => {
-        const { getByText, deps } = renderWithGlobalContext(<MyDepositions />, customDeps, {
+        const { findByText, deps } = renderWithGlobalContext(<MyDepositions />, customDeps, {
             ...rootReducer,
             initialState: {
                 room: {
@@ -130,33 +134,38 @@ describe("MyDepositions", () => {
                 },
                 user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
                 signalR: { signalR: null },
+                depositionsList: {
+                    pageNumber: 1,
+                },
             },
         });
-        expect(deps.apiService.fetchDepositions).toHaveBeenCalledWith({
-            page: 1,
-            pageSize: 20,
-        });
-        await waitForDomChange();
-        const sortButton = getByText(title);
-        userEvent.click(sortButton);
 
-        await waitForDomChange();
-        expect(deps.apiService.fetchDepositions).toHaveBeenCalledWith({
-            sortDirection: "descend",
-            sortedField: field,
-            page: 1,
-            pageSize: 20,
-            PastDepositions: false,
+        const sortButton = await findByText(title);
+        act(() => {
+            userEvent.click(sortButton);
         });
 
-        userEvent.click(sortButton);
-        await waitForDomChange();
-        expect(deps.apiService.fetchDepositions).toHaveBeenCalledWith({
-            sortDirection: "ascend",
-            sortedField: field,
-            page: 1,
-            pageSize: 20,
-            PastDepositions: false,
+        act(() => {
+            userEvent.click(sortButton);
+        });
+
+        await waitFor(() => {
+            expect(deps.apiService.fetchDepositions).toHaveBeenNthCalledWith(1, {
+                page: 1,
+                pageSize: 20,
+            });
+            expect(deps.apiService.fetchDepositions).toHaveBeenNthCalledWith(2, {
+                sortDirection: "descend",
+                sortedField: field,
+                page: 1,
+                pageSize: 20,
+            });
+            expect(deps.apiService.fetchDepositions).toHaveBeenNthCalledWith(3, {
+                sortDirection: "ascend",
+                sortedField: field,
+                page: 1,
+                pageSize: 20,
+            });
         });
     });
 
@@ -171,26 +180,29 @@ describe("MyDepositions", () => {
                 },
                 user: { currentUser: { firstName: "First Name", lastName: "Last Name", isAdmin: false } },
                 signalR: { signalR: null },
+                depositionsList: {
+                    pageNumber: 1,
+                },
             },
         });
 
-        await waitForDomChange();
+        await waitFor(() => {
+            expect(queryByText(COMPONENTS_CONSTANTS.STATUS_COLUMN.title)).toBeTruthy();
+            expect(queryByText(COMPONENTS_CONSTANTS.CASE_COLUMN.title)).toBeTruthy();
+            expect(queryByText(COMPONENTS_CONSTANTS.WITNESS_COLUMN.title)).toBeTruthy();
+            expect(queryByText(COMPONENTS_CONSTANTS.DATE_COLUMN.title)).toBeTruthy();
+            expect(queryByText(COMPONENTS_CONSTANTS.JOB_COLUMN.title)).toBeTruthy();
 
-        expect(queryByText(COMPONENTS_CONSTANTS.STATUS_COLUMN.title)).toBeTruthy();
-        expect(queryByText(COMPONENTS_CONSTANTS.CASE_COLUMN.title)).toBeTruthy();
-        expect(queryByText(COMPONENTS_CONSTANTS.WITNESS_COLUMN.title)).toBeTruthy();
-        expect(queryByText(COMPONENTS_CONSTANTS.DATE_COLUMN.title)).toBeTruthy();
-        expect(queryByText(COMPONENTS_CONSTANTS.JOB_COLUMN.title)).toBeTruthy();
+            expect(queryByText(COMPONENTS_CONSTANTS.LAW_COLUMN.title)).toBeFalsy();
+            expect(queryByText(COMPONENTS_CONSTANTS.REQUESTER_BY_COLUMN.title)).toBeFalsy();
+            expect(queryByText(COMPONENTS_CONSTANTS.COURT_REPORTER_COLUMN.title)).toBeFalsy();
 
-        expect(queryByText(COMPONENTS_CONSTANTS.LAW_COLUMN.title)).toBeFalsy();
-        expect(queryByText(COMPONENTS_CONSTANTS.REQUESTER_BY_COLUMN.title)).toBeFalsy();
-        expect(queryByText(COMPONENTS_CONSTANTS.COURT_REPORTER_COLUMN.title)).toBeFalsy();
-
-        COMPONENTS_CONSTANTS.getDepositionColumns(undefined, false);
+            COMPONENTS_CONSTANTS.getDepositionColumns(undefined, false);
+        });
     });
 
     it("shows error and try again button when get an error getting if user is admin", async () => {
-        const { getByText, getByTestId } = renderWithGlobalContext(<MyDepositions />, customDeps, {
+        const { findByText, findByTestId } = renderWithGlobalContext(<MyDepositions />, customDeps, {
             ...rootReducer,
             initialState: {
                 room: {
@@ -198,19 +210,25 @@ describe("MyDepositions", () => {
                 },
                 user: { currentUser: null },
                 signalR: { signalR: null },
+                depositionsList: {
+                    pageNumber: 1,
+                },
             },
         });
 
-        await waitForElement(() => getByText(ERRORS_CONSTANTS.FETCH_ERROR_MODAL_TITLE));
-        const refreshButton = getByTestId("error_modal_button");
+        await findByText(ERRORS_CONSTANTS.FETCH_ERROR_MODAL_TITLE);
+        const refreshButton = await findByTestId("error_modal_button");
         expect(customDeps.apiService.fetchDepositions).toHaveBeenCalledWith({ page: 1, pageSize: 20 });
-        fireEvent.click(refreshButton);
-        await waitForDomChange();
-        expect(customDeps.apiService.fetchDepositions).toHaveBeenCalledWith({ page: 1, pageSize: 20 });
+        act(() => {
+            fireEvent.click(refreshButton);
+        });
+        await waitFor(() => {
+            expect(customDeps.apiService.fetchDepositions).toHaveBeenCalledWith({ page: 1, pageSize: 20 });
+        });
     });
 
     it("shows error and try again button when current user is null", async () => {
-        const { getByText, getByTestId } = renderWithGlobalContext(<MyDepositions />, customDeps, {
+        const { findByText, findByTestId } = renderWithGlobalContext(<MyDepositions />, customDeps, {
             ...rootReducer,
             initialState: {
                 room: {
@@ -218,27 +236,31 @@ describe("MyDepositions", () => {
                 },
                 user: { currentUser: null },
                 signalR: { signalR: null },
+                depositionsList: {
+                    pageNumber: 1,
+                },
             },
         });
 
-        await waitForElement(() => getByText(ERRORS_CONSTANTS.FETCH_ERROR_MODAL_TITLE));
-        const refreshButton = getByTestId("error_modal_button");
+        await findByText(ERRORS_CONSTANTS.FETCH_ERROR_MODAL_TITLE);
+        const refreshButton = await findByTestId("error_modal_button");
         fireEvent.click(refreshButton);
-        await waitForDomChange();
-        expect(customDeps.apiService.currentUser).toBeCalled();
+        waitFor(() => {
+            expect(customDeps.apiService.currentUser).toBeCalled();
+        });
     });
 
     it("shows error and try again button when get an error on fetch", async () => {
         customDeps.apiService.fetchDepositions = jest.fn().mockRejectedValue("Error");
 
-        const { getByText, getByTestId } = renderWithGlobalContext(<MyDepositions />, customDeps);
-
-        await waitForElement(() => getByText(ERRORS_CONSTANTS.FETCH_ERROR_MODAL_TITLE));
-        const refreshButton = getByTestId("error_modal_button");
+        const { findByText, findByTestId } = renderWithGlobalContext(<MyDepositions />, customDeps);
+        await findByText(ERRORS_CONSTANTS.FETCH_ERROR_MODAL_TITLE);
+        const refreshButton = await findByTestId("error_modal_button");
         expect(customDeps.apiService.fetchDepositions).toHaveBeenCalledWith({ page: 1, pageSize: 20 });
         fireEvent.click(refreshButton);
-        await waitForDomChange();
-        expect(customDeps.apiService.fetchDepositions).toHaveBeenCalledWith({ page: 1, pageSize: 20 });
+        waitFor(() => {
+            expect(customDeps.apiService.fetchDepositions).toHaveBeenCalledWith({ page: 1, pageSize: 20 });
+        });
     });
 
     it("doesn´t redirect if user is not an admin", async () => {
@@ -255,11 +277,15 @@ describe("MyDepositions", () => {
                 },
                 user: { currentUser: { isAdmin: false } },
                 signalR: { signalR: null },
+                depositionsList: {
+                    pageNumber: 1,
+                },
             },
         });
-        await waitForDomChange();
-        fireEvent.click(getByText(depositions[0].witness.name));
-        expect(mockHistoryPush).not.toHaveBeenCalled();
+        await waitFor(() => {
+            fireEvent.click(getByText(depositions[0].witness.name));
+            expect(mockHistoryPush).not.toHaveBeenCalled();
+        });
     });
     it("redirects to active deposition details if the user is an admin and status is not completed", async () => {
         const depositions = CONSTANTS.getDepositions();
@@ -275,13 +301,17 @@ describe("MyDepositions", () => {
                 },
                 user: { currentUser: { firstName: "First Name", lastName: "Last Name", isAdmin: true } },
                 signalR: { signalR: null },
+                depositionsList: {
+                    pageNumber: 1,
+                },
             },
         });
-        await waitForDomChange();
-        fireEvent.click(getByText(depositions[0].participants[0].name));
-        expect(mockHistoryPush).toHaveBeenCalledWith(
-            `${COMPONENTS_CONSTANTS.DEPOSITION_DETAILS_ROUTE}${depositions[0].id}`
-        );
+        await waitFor(() => {
+            fireEvent.click(getByText(depositions[0].participants[0].name));
+            expect(mockHistoryPush).toHaveBeenCalledWith(
+                `${COMPONENTS_CONSTANTS.DEPOSITION_DETAILS_ROUTE}${depositions[0].id}`
+            );
+        });
     });
 
     it("redirects to past deposition details if the user is an admin and status is not completed", async () => {
@@ -298,13 +328,17 @@ describe("MyDepositions", () => {
                 },
                 user: { currentUser: { firstName: "First Name", lastName: "Last Name", isAdmin: true } },
                 signalR: { signalR: null },
+                depositionsList: {
+                    pageNumber: 1,
+                },
             },
         });
-        await waitForDomChange();
-        fireEvent.click(getByText(deposition.participants[0].name));
-        expect(mockHistoryPush).toHaveBeenCalledWith(
-            `${COMPONENTS_CONSTANTS.DEPOSITION_POST_DEPO_ROUTE}${deposition.id}`
-        );
+        await waitFor(() => {
+            fireEvent.click(getByText(deposition.participants[0].name));
+            expect(mockHistoryPush).toHaveBeenCalledWith(
+                `${COMPONENTS_CONSTANTS.DEPOSITION_POST_DEPO_ROUTE}${deposition.id}`
+            );
+        });
     });
 
     it("should filter depositions by upcoming depositions by default", async () => {
@@ -314,7 +348,7 @@ describe("MyDepositions", () => {
         const totalPast = 0;
         customDeps.apiService.fetchDepositions = jest.fn().mockResolvedValue({ depositions, totalUpcoming, totalPast });
         customDeps.apiService.currentUser = jest.fn().mockResolvedValue(SIGN_UP_CONSTANTS.getUser1());
-        const { queryByText, deps } = renderWithGlobalContext(<MyDepositions />, customDeps, {
+        const { deps, findByText } = renderWithGlobalContext(<MyDepositions />, customDeps, {
             ...rootReducer,
             initialState: {
                 room: {
@@ -322,15 +356,19 @@ describe("MyDepositions", () => {
                 },
                 user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
                 signalR: { signalR: null },
+                depositionsList: {
+                    pageNumber: 1,
+                },
             },
         });
-        await waitForDomChange();
-        const upcomingTab = queryByText(`${UPCOMING_DEPOSITION_TAB_TITLE} (${totalUpcoming})`);
-        expect(upcomingTab).toBeInTheDocument();
-        expect(upcomingTab).toHaveAttribute("aria-selected", "true");
-        expect(deps.apiService.fetchDepositions).toHaveBeenCalledWith({
-            page: 1,
-            pageSize: 20,
+        const upcomingTab = await findByText(`${UPCOMING_DEPOSITION_TAB_TITLE} (${totalUpcoming})`);
+        await waitFor(() => {
+            expect(upcomingTab).toBeInTheDocument();
+            expect(upcomingTab).toHaveAttribute("aria-selected", "true");
+            expect(deps.apiService.fetchDepositions).toHaveBeenCalledWith({
+                page: 1,
+                pageSize: 20,
+            });
         });
     });
 
@@ -341,7 +379,7 @@ describe("MyDepositions", () => {
         const totalPast = 1;
         customDeps.apiService.fetchDepositions = jest.fn().mockResolvedValue({ depositions, totalUpcoming, totalPast });
         customDeps.apiService.currentUser = jest.fn().mockResolvedValue(SIGN_UP_CONSTANTS.getUser1());
-        const { queryByText, deps } = renderWithGlobalContext(<MyDepositions />, customDeps, {
+        const { deps, findByText } = renderWithGlobalContext(<MyDepositions />, customDeps, {
             ...rootReducer,
             initialState: {
                 room: {
@@ -349,19 +387,22 @@ describe("MyDepositions", () => {
                 },
                 user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
                 signalR: { signalR: null },
+                depositionsList: {
+                    pageNumber: 1,
+                },
             },
         });
-        await waitForDomChange();
-        const pastTab = queryByText(`${PAST_DEPOSITION_TAB_TITLE} (${totalPast})`);
+        const pastTab = await findByText(`${PAST_DEPOSITION_TAB_TITLE} (${totalPast})`);
         expect(pastTab).toHaveAttribute("aria-selected", "false");
         fireEvent.click(pastTab);
         expect(pastTab).toBeInTheDocument();
         expect(pastTab).toHaveAttribute("aria-selected", "true");
-        await waitForDomChange();
-        expect(deps.apiService.fetchDepositions).toHaveBeenCalledWith({
-            PastDepositions: true,
-            page: 1,
-            pageSize: 20,
+        await waitFor(() => {
+            expect(deps.apiService.fetchDepositions).toHaveBeenCalledWith({
+                PastDepositions: true,
+                page: 1,
+                pageSize: 20,
+            });
         });
     });
     it("should filter depositions by upcoming depositions and sorting by status", async () => {
@@ -371,7 +412,7 @@ describe("MyDepositions", () => {
         const depositions = [deposition];
         customDeps.apiService.fetchDepositions = jest.fn().mockResolvedValue({ depositions, totalUpcoming, totalPast });
         customDeps.apiService.currentUser = jest.fn().mockResolvedValue(SIGN_UP_CONSTANTS.getUser1());
-        const { queryByText, deps, getByText } = renderWithGlobalContext(<MyDepositions />, customDeps, {
+        const { deps, findByText } = renderWithGlobalContext(<MyDepositions />, customDeps, {
             ...rootReducer,
             initialState: {
                 room: {
@@ -379,26 +420,28 @@ describe("MyDepositions", () => {
                 },
                 user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
                 signalR: { signalR: null },
+                depositionsList: {
+                    pageNumber: 1,
+                },
             },
         });
-        await waitForDomChange();
-        const upcomingTab = queryByText(`${UPCOMING_DEPOSITION_TAB_TITLE} (${totalUpcoming})`);
+        const upcomingTab = await findByText(`${UPCOMING_DEPOSITION_TAB_TITLE} (${totalUpcoming})`);
         fireEvent.click(upcomingTab);
         expect(deps.apiService.fetchDepositions).toHaveBeenCalledWith({
             page: 1,
             pageSize: 20,
             PastDepositions: false,
         });
-        await waitForDomChange();
-        const sortButton = getByText("STATUS");
+        const sortButton = await findByText("STATUS");
         userEvent.click(sortButton);
-        await waitForDomChange();
-        expect(deps.apiService.fetchDepositions).toHaveBeenCalledWith({
-            sortDirection: "descend",
-            sortedField: "status",
-            page: 1,
-            pageSize: 20,
-            PastDepositions: false,
+        await waitFor(() => {
+            expect(deps.apiService.fetchDepositions).toHaveBeenCalledWith({
+                sortDirection: "descend",
+                sortedField: "status",
+                page: 1,
+                pageSize: 20,
+                PastDepositions: false,
+            });
         });
     });
 
@@ -409,7 +452,7 @@ describe("MyDepositions", () => {
         const totalPast = 0;
         customDeps.apiService.fetchDepositions = jest.fn().mockResolvedValue({ depositions, totalUpcoming, totalPast });
         customDeps.apiService.currentUser = jest.fn().mockResolvedValue(SIGN_UP_CONSTANTS.getUser1());
-        const { queryByText } = renderWithGlobalContext(<MyDepositions />, customDeps, {
+        const { findByText } = renderWithGlobalContext(<MyDepositions />, customDeps, {
             ...rootReducer,
             initialState: {
                 room: {
@@ -417,10 +460,12 @@ describe("MyDepositions", () => {
                 },
                 user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
                 signalR: { signalR: null },
+                depositionsList: {
+                    pageNumber: 1,
+                },
             },
         });
-        await waitForDomChange();
-        const upcomingTab = queryByText(`${UPCOMING_DEPOSITION_TAB_TITLE} (${totalUpcoming})`);
+        const upcomingTab = await findByText(`${UPCOMING_DEPOSITION_TAB_TITLE} (${totalUpcoming})`);
         expect(upcomingTab).toBeInTheDocument();
     });
 
@@ -431,7 +476,7 @@ describe("MyDepositions", () => {
         const totalPast = 1;
         customDeps.apiService.fetchDepositions = jest.fn().mockResolvedValue({ depositions, totalUpcoming, totalPast });
         customDeps.apiService.currentUser = jest.fn().mockResolvedValue(SIGN_UP_CONSTANTS.getUser1());
-        const { queryByText } = renderWithGlobalContext(<MyDepositions />, customDeps, {
+        const { findByText } = renderWithGlobalContext(<MyDepositions />, customDeps, {
             ...rootReducer,
             initialState: {
                 room: {
@@ -439,10 +484,12 @@ describe("MyDepositions", () => {
                 },
                 user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
                 signalR: { signalR: null },
+                depositionsList: {
+                    pageNumber: 1,
+                },
             },
         });
-        await waitForDomChange();
-        const pastTab = queryByText(`${PAST_DEPOSITION_TAB_TITLE} (${totalPast})`);
+        const pastTab = await findByText(`${PAST_DEPOSITION_TAB_TITLE} (${totalPast})`);
         expect(pastTab).toBeInTheDocument();
     });
 
@@ -453,7 +500,7 @@ describe("MyDepositions", () => {
         const totalPast = 1;
         customDeps.apiService.fetchDepositions = jest.fn().mockResolvedValue({ depositions, totalUpcoming, totalPast });
         customDeps.apiService.currentUser = jest.fn().mockResolvedValue(SIGN_UP_CONSTANTS.getUser1());
-        const { queryByTestId } = renderWithGlobalContext(<MyDepositions />, customDeps, {
+        const { findByTestId } = renderWithGlobalContext(<MyDepositions />, customDeps, {
             ...rootReducer,
             initialState: {
                 room: {
@@ -461,10 +508,12 @@ describe("MyDepositions", () => {
                 },
                 user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
                 signalR: { signalR: null },
+                depositionsList: {
+                    pageNumber: 1,
+                },
             },
         });
-        await waitForDomChange();
-        expect(queryByTestId("depositions_date_range")).toBeInTheDocument();
+        expect(await findByTestId("depositions_date_range")).toBeInTheDocument();
     });
 
     it("should call the fetchDepositions with the minDate and maxDate with today date values after clicks on today button", async () => {
@@ -482,6 +531,9 @@ describe("MyDepositions", () => {
                 },
                 user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
                 signalR: { signalR: null },
+                depositionsList: {
+                    pageNumber: 1,
+                },
             },
         });
         await waitFor(async () => {
@@ -510,7 +562,7 @@ describe("MyDepositions", () => {
         const totalPast = 1;
         customDeps.apiService.fetchDepositions = jest.fn().mockResolvedValue({ depositions, totalUpcoming, totalPast });
         customDeps.apiService.currentUser = jest.fn().mockResolvedValue(SIGN_UP_CONSTANTS.getUser1());
-        const { getByPlaceholderText, queryByText, deps } = renderWithGlobalContext(<MyDepositions />, customDeps, {
+        const { deps, findByPlaceholderText, findByText } = renderWithGlobalContext(<MyDepositions />, customDeps, {
             ...rootReducer,
             initialState: {
                 room: {
@@ -518,14 +570,15 @@ describe("MyDepositions", () => {
                 },
                 user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
                 signalR: { signalR: null },
+                depositionsList: {
+                    pageNumber: 1,
+                },
             },
         });
-        await waitForDomChange();
-        const startDateRangeInput = getByPlaceholderText("Start date");
-        await act(async () => {
-            await userEvent.click(startDateRangeInput);
-        });
-        const todayDateRangeButton = queryByText("This Week");
+
+        const startDateRangeInput = await findByPlaceholderText("Start date");
+        userEvent.click(startDateRangeInput);
+        const todayDateRangeButton = await findByText("This Week");
         expect(todayDateRangeButton).toBeInTheDocument();
         fireEvent.click(todayDateRangeButton);
         expect(deps.apiService.fetchDepositions).toHaveBeenNthCalledWith(2, {
@@ -543,7 +596,7 @@ describe("MyDepositions", () => {
         const totalPast = 1;
         customDeps.apiService.fetchDepositions = jest.fn().mockResolvedValue({ depositions, totalUpcoming, totalPast });
         customDeps.apiService.currentUser = jest.fn().mockResolvedValue(SIGN_UP_CONSTANTS.getUser1());
-        const { getByPlaceholderText, queryByText, deps } = renderWithGlobalContext(<MyDepositions />, customDeps, {
+        const { findByPlaceholderText, findByText, deps } = renderWithGlobalContext(<MyDepositions />, customDeps, {
             ...rootReducer,
             initialState: {
                 room: {
@@ -551,14 +604,14 @@ describe("MyDepositions", () => {
                 },
                 user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
                 signalR: { signalR: null },
+                depositionsList: {
+                    pageNumber: 1,
+                },
             },
         });
-        await waitForDomChange();
-        const startDateRangeInput = getByPlaceholderText("Start date");
-        await act(async () => {
-            await userEvent.click(startDateRangeInput);
-        });
-        const todayDateRangeButton = queryByText("This Month");
+        const startDateRangeInput = await findByPlaceholderText("Start date");
+        userEvent.click(startDateRangeInput);
+        const todayDateRangeButton = await findByText("This Month");
         expect(todayDateRangeButton).toBeInTheDocument();
         fireEvent.click(todayDateRangeButton);
         expect(deps.apiService.fetchDepositions).toHaveBeenNthCalledWith(2, {
@@ -587,18 +640,26 @@ describe("MyDepositions", () => {
                 },
                 user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
                 signalR: { signalR: null },
+                depositionsList: {
+                    pageNumber: 1,
+                },
             },
         });
-        await waitForDomChange();
-        expect(document.querySelector(".ant-table-pagination")).toBeInTheDocument();
-        expect(queryByText("2")).toBeInTheDocument();
+
+        await waitFor(() => {
+            expect(document.querySelector(".ant-table-pagination")).toBeInTheDocument();
+            expect(queryByText("2")).toBeInTheDocument();
+        });
         await act(async () => {
             await fireEvent.click(queryByText("2"));
+        });
+        expect(deps.apiService.fetchDepositions).toHaveBeenNthCalledWith(1, {
+            page: 1,
+            pageSize: 20,
         });
         expect(deps.apiService.fetchDepositions).toHaveBeenNthCalledWith(2, {
             page: 2,
             pageSize: 20,
-            PastDepositions: false,
         });
     });
 
@@ -609,7 +670,7 @@ describe("MyDepositions", () => {
         const totalPast = 1;
         customDeps.apiService.fetchDepositions = jest.fn().mockResolvedValue({ depositions, totalUpcoming, totalPast });
         customDeps.apiService.currentUser = jest.fn().mockResolvedValue(SIGN_UP_CONSTANTS.getUser1());
-        const { getByPlaceholderText, queryAllByText, deps } = renderWithGlobalContext(<MyDepositions />, customDeps, {
+        const { queryAllByText, deps, findByPlaceholderText } = renderWithGlobalContext(<MyDepositions />, customDeps, {
             ...rootReducer,
             initialState: {
                 room: {
@@ -617,13 +678,13 @@ describe("MyDepositions", () => {
                 },
                 user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
                 signalR: { signalR: null },
+                depositionsList: {
+                    pageNumber: 1,
+                },
             },
         });
-        await waitForDomChange();
-        const startDateRangeInput = getByPlaceholderText("Start date");
-        await act(async () => {
-            await userEvent.click(startDateRangeInput);
-        });
+        const startDateRangeInput = await findByPlaceholderText("Start date");
+        userEvent.click(startDateRangeInput);
 
         const minMaxDate = dayjs();
 
@@ -647,7 +708,7 @@ describe("MyDepositions", () => {
         const totalPast = 1;
         customDeps.apiService.fetchDepositions = jest.fn().mockResolvedValue({ depositions, totalUpcoming, totalPast });
         customDeps.apiService.currentUser = jest.fn().mockResolvedValue(SIGN_UP_CONSTANTS.getUser1());
-        const { getByPlaceholderText, queryAllByTitle } = renderWithGlobalContext(<MyDepositions />, customDeps, {
+        const { queryAllByTitle, findByPlaceholderText } = renderWithGlobalContext(<MyDepositions />, customDeps, {
             ...rootReducer,
             initialState: {
                 room: {
@@ -655,10 +716,12 @@ describe("MyDepositions", () => {
                 },
                 user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
                 signalR: { signalR: null },
+                depositionsList: {
+                    pageNumber: 1,
+                },
             },
         });
-        await waitForDomChange();
-        const startDateRangeInput = getByPlaceholderText("End date");
+        const startDateRangeInput = await findByPlaceholderText("End date");
         const disabledNextYearAndMonthDate = dayjs().add(365, "day");
         await act(async () => {
             await userEvent.click(startDateRangeInput);
@@ -680,22 +743,20 @@ describe("MyDepositions", () => {
         const totalPast = 1;
         customDeps.apiService.fetchDepositions = jest.fn().mockResolvedValue({ depositions, totalUpcoming, totalPast });
         customDeps.apiService.currentUser = jest.fn().mockResolvedValue(SIGN_UP_CONSTANTS.getUser1());
-        const { getByPlaceholderText, queryByTitle, queryAllByTitle } = renderWithGlobalContext(
-            <MyDepositions />,
-            customDeps,
-            {
-                ...rootReducer,
-                initialState: {
-                    room: {
-                        ...rootReducer.initialState.room,
-                    },
-                    user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
-                    signalR: { signalR: null },
+        const { queryAllByTitle, findByPlaceholderText } = renderWithGlobalContext(<MyDepositions />, customDeps, {
+            ...rootReducer,
+            initialState: {
+                room: {
+                    ...rootReducer.initialState.room,
                 },
-            }
-        );
-        await waitForDomChange();
-        const startDateRangeInput = getByPlaceholderText("End date");
+                user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+                signalR: { signalR: null },
+                depositionsList: {
+                    pageNumber: 1,
+                },
+            },
+        });
+        const startDateRangeInput = await findByPlaceholderText("End date");
         const nextYearAndMonthDate = dayjs().add(364, "day");
         const disabledNextYearAndMonthDate = dayjs().add(365, "day");
         await act(async () => {

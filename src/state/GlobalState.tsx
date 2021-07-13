@@ -6,6 +6,7 @@ import GeneralReducer, { GeneralUiReducerInitialState } from "./GeneralUi/Genera
 import PostDepoReducer, { PostDepoReducerInitialState } from "./PostDepo/PostDepoReducer";
 import SignalRReducer, { SignalRReducerInitialState } from "./SignalR/SignalRReducer";
 import UserReducer, { UserReducerInitialState } from "./User/UserReducer";
+import DepositionsListReducer, { DepositionsListReducerInitialState } from "./Depositions/DepositionsListReducer";
 
 export const initialState: IGlobalState = {
     room: RoomReducerInitialState,
@@ -13,6 +14,7 @@ export const initialState: IGlobalState = {
     postDepo: PostDepoReducerInitialState,
     signalR: SignalRReducerInitialState,
     user: UserReducerInitialState,
+    depositionsList: DepositionsListReducerInitialState,
 };
 
 export const combinedReducer = combineReducers<IGlobalState>({
@@ -21,6 +23,7 @@ export const combinedReducer = combineReducers<IGlobalState>({
     postDepo: PostDepoReducer,
     signalR: SignalRReducer,
     user: UserReducer,
+    depositionsList: DepositionsListReducer,
 });
 
 export const rootReducer = {

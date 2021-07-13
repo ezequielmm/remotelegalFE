@@ -17,6 +17,7 @@ import ColorStatus from "../../types/ColorStatus";
 import { ReactComponent as AddIcon } from "../../assets/general/Add.svg";
 import { GlobalStateContext } from "../../state/GlobalState";
 import { useToggleSider } from "../../hooks/generalUi/useGeneralUi";
+import actions from "../../state/Depositions/DepositionsListActions";
 
 const { Header } = Layout;
 
@@ -34,6 +35,7 @@ const AppLayout = ({ children }: DashboardProps) => {
             generalUi: { isSiderCollapsed },
             user: { currentUser },
         },
+        dispatch,
     } = useContext(GlobalStateContext);
 
     const signOut = async () => {
@@ -99,7 +101,12 @@ const AppLayout = ({ children }: DashboardProps) => {
                         <Menu
                             theme="dark"
                             defaultSelectedKeys={[pathname]}
-                            onSelect={(item) => history.push(`${item.key}`)}
+                            onSelect={(item) => {
+                                if (item?.key === "/depositions") {
+                                    dispatch(actions.clear());
+                                }
+                                history.push(`${item.key}`);
+                            }}
                         >
                             {CONSTANTS.menuRoutes.map((group) => (
                                 <Menu.ItemGroup

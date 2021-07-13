@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useParams } from "react-router";
 import { DEPOSITIONS_COUNT_PER_PAGE } from "../../constants/depositions";
 import { DepositionModel } from "../../models";
 import { IDeposition } from "../../models/deposition";
+import actions from "../../state/Depositions/DepositionsListActions";
 import { GlobalStateContext } from "../../state/GlobalState";
 import useAsyncCallback from "../useAsyncCallback";
 
@@ -32,10 +33,8 @@ export const useFetchDeposition = () => {
 };
 
 export const useFetchDepositions = () => {
-    const [sortedField, setSortedField] = React.useState();
-    const [sortDirection, setSortDirection] = React.useState();
-    const [pageNumber, setPageNumber] = React.useState(1);
-    const [currentFilter, setCurrentFilter] = React.useState({});
+    const { state, dispatch } = useContext(GlobalStateContext);
+    const { sorting, pageNumber, filter } = state.depositionsList;
 
     const { deps } = React.useContext(GlobalStateContext);
     const [fetchDepositions, loading, error, data] = useAsyncCallback<
@@ -51,26 +50,29 @@ export const useFetchDepositions = () => {
     }, []);
 
     const handleListChange = React.useCallback(
-        (pagination, filter = undefined, sorter = undefined) => {
+        (pagination, currentFilter = undefined, sorter = undefined) => {
             const page = pagination?.current;
-            const newFilter = { ...currentFilter, ...filter };
-            if (filter) {
-                setCurrentFilter(newFilter);
+            const newFilter = { ...filter, ...currentFilter };
+
+            if (currentFilter) {
+                dispatch(actions.setFilter(newFilter));
             }
 
-            setSortedField(sorter?.field || undefined);
-            setSortDirection(sorter?.order || undefined);
+            let sortParams = {};
+            if (sorter) {
+                dispatch(actions.setSorting(sorter));
+                sortParams = !sorter?.order
+                    ? {}
+                    : {
+                          sortedField: sorter?.field,
+                          sortDirection: sorter?.order,
+                      };
+            }
 
             if (page) {
-                setPageNumber(page);
+                dispatch(actions.setPageNumber(page));
             }
 
-            const sortParams = !sorter?.order
-                ? {}
-                : {
-                      sortedField: sorter?.field,
-                      sortDirection: sorter?.order,
-                  };
             const pageParams = { page: page ?? pageNumber };
 
             fetchDepositions({
@@ -79,7 +81,7 @@ export const useFetchDepositions = () => {
                 ...pageParams,
             });
         },
-        [fetchDepositions, setPageNumber, pageNumber, currentFilter]
+        [fetchDepositions, pageNumber, filter, dispatch]
     );
 
     const refreshList = React.useCallback(() => {
@@ -87,14 +89,15 @@ export const useFetchDepositions = () => {
     }, [handleListChange]);
 
     React.useEffect(() => {
-        fetchDepositions({});
-    }, [fetchDepositions]);
+        handleListChange({ current: pageNumber }, filter, sorting);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     return React.useMemo(
         () => ({
             handleListChange,
-            sortedField,
-            sortDirection,
+            sortedField: sorting?.field,
+            sortDirection: sorting?.order,
             error,
             depositions: data?.depositions,
             totalPast: data?.totalPast,
@@ -103,7 +106,8 @@ export const useFetchDepositions = () => {
             numberOfPages: data?.numberOfPages,
             loading,
             refreshList,
+            filter,
         }),
-        [data, error, handleListChange, loading, refreshList, sortDirection, sortedField]
+        [data, error, handleListChange, loading, refreshList, sorting, filter]
     );
 };
