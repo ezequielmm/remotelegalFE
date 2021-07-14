@@ -50,7 +50,6 @@ const WaitingRoom = () => {
     if (userStatusLoading || generateTokenLoading) {
         return <Spinner />;
     }
-
     if (userStatusError || generateTokenError) {
         return (
             <ErrorScreen
@@ -88,13 +87,20 @@ const WaitingRoom = () => {
                         </Title>
                         <Text
                             state={ColorStatus.disabled}
-                            size="large"
                             ellipsis={false}
                             dataTestId="waiting_room_access_denied_details"
                         >
-                            {`${CONSTANTS.ACCESS_DENIED_DETAILS_START}${CONSTANTS.ACCESS_DENIED_DETAILS_EMAIL}${CONSTANTS.ACCESS_DENIED_DETAILS_MIDDLE}${CONSTANTS.ACCESS_DENIED_DETAILS_NUMBER}`}
+                            <>
+                                {`${CONSTANTS.ACCESS_DENIED_DETAILS_START}`}
+                                <Text state={ColorStatus.disabled} ellipsis={false} weight="bold">
+                                    {CONSTANTS.ACCESS_DENIED_DETAILS_EMAIL}
+                                </Text>
+                                {`${CONSTANTS.ACCESS_DENIED_DETAILS_MIDDLE}`}
+                                <Text state={ColorStatus.disabled} ellipsis={false} weight="bold">
+                                    {CONSTANTS.ACCESS_DENIED_DETAILS_NUMBER}
+                                </Text>
+                            </>
                         </Text>
-
                         <Space justify="flex-end" fullWidth>
                             <Button
                                 data-testid={CONSTANTS.ACCESS_DENIED_BUTTON_TEST_ID}
