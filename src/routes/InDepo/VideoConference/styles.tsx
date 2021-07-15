@@ -34,7 +34,11 @@ export const StyledVideoConference = styled.div<IVideoConferenceProps>`
             left: 50%;
             transform: translate(-50%, -50%);
 
-            ${StyledParticipantContainer} {
+            &.breakrooms {
+                aspect-ratio: 16 / 9;
+            }
+
+            &:not(.breakrooms) ${StyledParticipantContainer} {
                 &:nth-child(odd) {
                     justify-content: flex-end;
                     &:last-child {
@@ -158,6 +162,13 @@ export const StyledAttendeesContainer = styled.div<IAtendeesContainerProps>`
                     }
                 }
 
+                ${StyledVideoConference}.breakrooms & {
+                    ${StyledParticipantContainer} {
+                        flex: 0 0 30%;
+                        height: calc(33% - ${getREM(theme.default.spaces[6])});
+                    }
+                }
+
                 ${scroll}
             `;
         }
@@ -174,6 +185,13 @@ export const StyledAttendeesContainer = styled.div<IAtendeesContainerProps>`
                 ${StyledVideoConference}.vertical & {
                     ${StyledParticipantContainer} {
                         height: calc(25% - ${getREM(theme.default.spaces[6])});
+                    }
+                }
+
+                ${StyledVideoConference}.breakrooms & {
+                    ${StyledParticipantContainer} {
+                        flex: 0 0 30%;
+                        height: calc(33% - ${getREM(theme.default.spaces[6])});
                     }
                 }
 
@@ -197,11 +215,18 @@ export const StyledAttendeesContainer = styled.div<IAtendeesContainerProps>`
                         height: calc(25% - ${getREM(theme.default.spaces[6])});
                     }
                 }
+
+                ${StyledVideoConference}.breakrooms & {
+                    ${StyledParticipantContainer} {
+                        flex: 0 0 30%;
+                        height: calc(33% - ${getREM(theme.default.spaces[6])});
+                    }
+                }
             `;
         }
         if (participantsLength > 1) {
             return `
-                ${StyledVideoConference}:not(.vertical):not(.grid) & {
+                ${StyledVideoConference}.default & {
                     flex: 6;
                     
                     ${StyledParticipantContainer} {
@@ -214,11 +239,18 @@ export const StyledAttendeesContainer = styled.div<IAtendeesContainerProps>`
                         margin-left: ${getREM(theme.default.spaces[3])};
                     }
                 }
+                
+                ${StyledVideoConference}.breakrooms & {
+                    ${StyledParticipantContainer} {
+                        flex: 0 0 45%;
+                        height: calc(50% - ${getREM(theme.default.spaces[6])});
+                    }
+                }
             `;
         }
         if (participantsLength < 2) {
             return `
-                ${StyledVideoConference}:not(.vertical):not(.grid) & {
+                ${StyledVideoConference}:not(.vertical):not(.grid):not(.breakrooms) & {
                     flex: 6;
                     ${StyledParticipantContainer} {
                         height: auto;
@@ -236,6 +268,13 @@ export const StyledAttendeesContainer = styled.div<IAtendeesContainerProps>`
                 ${StyledVideoConference}.vertical & {
                     ${StyledParticipantContainer} {
                         margin-left: ${getREM(theme.default.spaces[3])};
+                    }
+                }
+
+                ${StyledVideoConference}.breakrooms & {
+                    ${StyledParticipantContainer} {
+                        flex: 0 0 45%;
+                        height: calc(50% - ${getREM(theme.default.spaces[6])});
                     }
                 }
             `;
@@ -258,8 +297,7 @@ export const StyledAttendeesContainer = styled.div<IAtendeesContainerProps>`
     }
     ${StyledVideoConference}.breakrooms & {
         margin-left: 0;
-        grid-template-columns: repeat(auto-fit, minmax(30%, 1fr));
-        grid-auto-rows: minmax(calc(33% - ${({ theme }) => getREM(theme.default.spaces[2])}), 1fr);
+        justify-content: center;
     }
     ${StyledVideoConference}.breakrooms.grid & {
         margin-top: 0;
