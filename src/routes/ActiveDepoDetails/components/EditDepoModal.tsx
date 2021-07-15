@@ -188,24 +188,35 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
     };
 
     const disabledDate = (current: dayjs.Dayjs) => {
-        return dayjs(current).isBefore(dayjs()) || dayjs(current).isAfter(dayjs().add(1, "y"));
+        return dayjs(current.hour(23).minute(59)).isBefore(dayjs()) || dayjs(current).isAfter(dayjs().add(1, "y"));
     };
 
     const handleChangeDate = (current: dayjs.Dayjs) => {
         const currentDateAsDayJsObject = dayjs(current).tz(mapTimeZone[deposition.timeZone], true);
         setFormStatus({ ...formStatus, calendarDate: currentDateAsDayJsObject });
-        if (current && dayjs(current).isBefore(dayjs(new Date()).subtract(5, "m"))) {
+        if (
+            current &&
+            dayjs(current.hour(formStatus.startDate.hour()).minute(formStatus.startDate.minute())).isBefore(
+                dayjs(new Date()).subtract(5, "m")
+            )
+        ) {
             return setInvalidStartTime(true);
         }
         return setInvalidStartTime(false);
     };
 
     const handleChangeStartTime = (current: dayjs.Dayjs) => {
-        setFormStatus({ ...formStatus, startDate: dayjs(current).tz(mapTimeZone[deposition.timeZone], true) });
-        if (dayjs(current).isBefore(dayjs(new Date()).tz(mapTimeZone[deposition.timeZone], true).subtract(5, "m"))) {
+        const concatenatedDate = formStatus.calendarDate.hour(current.hour()).minute(current.minute());
+        setFormStatus({ ...formStatus, startDate: dayjs(concatenatedDate).tz(mapTimeZone[deposition.timeZone], true) });
+        if (
+            dayjs(concatenatedDate).isBefore(
+                dayjs(new Date()).tz(mapTimeZone[deposition.timeZone], true).subtract(5, "m")
+            )
+        ) {
             return setInvalidStartTime(true);
         }
-        if (current && formStatus.endDate && dayjs(current).isSameOrAfter(formStatus.endDate)) {
+
+        if (concatenatedDate && formStatus.endDate && dayjs(concatenatedDate).isSameOrAfter(formStatus.endDate)) {
             return setInvalidEndTime(true);
         }
         setInvalidEndTime(false);
@@ -217,7 +228,9 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
             setInvalidEndTime(false);
             return setFormStatus({ ...formStatus, endDate: null });
         }
-        setFormStatus({ ...formStatus, endDate: dayjs(current).tz(mapTimeZone[deposition.timeZone], true) });
+        const concatenatedDate = formStatus.calendarDate.hour(current.hour()).minute(current.minute());
+
+        setFormStatus({ ...formStatus, endDate: dayjs(concatenatedDate).tz(mapTimeZone[deposition.timeZone], true) });
         const isEndTimeSameOrBeforeStartTime =
             current &&
             dayjs(formStatus.startDate.tz(mapTimeZone[formStatus.timeZone], true))

@@ -1,7 +1,10 @@
-import { fireEvent, act, waitFor } from "@testing-library/react";
+import { fireEvent, act, waitFor, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import dayjs from "dayjs";
 import timezone from "dayjs/plugin/timezone";
+import localeData from "dayjs/plugin/localeData";
+import weekday from "dayjs/plugin/weekday";
+import utc from "dayjs/plugin/utc";
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
 import { Status } from "prp-components-library/src/components/StatusPill/StatusPill";
 import * as CONSTANTS from "../../constants/activeDepositionDetails";
@@ -12,6 +15,10 @@ import renderWithGlobalContext from "../utils/renderWithGlobalContext";
 import ActiveDepositionDetails from "../../routes/ActiveDepoDetails";
 import { TimeZones, mapTimeZone } from "../../models/general";
 import getModalTextContent from "../../routes/ActiveDepoDetails/helpers/getModalTextContent";
+
+dayjs.extend(weekday);
+dayjs.extend(localeData);
+dayjs.extend(utc);
 
 dayjs.extend(timezone);
 dayjs.extend(isSameOrAfter);
@@ -252,8 +259,61 @@ describe("Tests Edit Deposition Modal", () => {
             userEvent.click(okButtonEndTimeInput);
             fireEvent.blur(endTimeInput);
         });
+        expect(queryByTestId(CONSTANTS.DEPOSITIONS_DETAILS_EDIT_MODAL_INVALID_START_TIME_TEST_ID)).toBeInTheDocument();
+    });
+
+    test("Show an invalid start time label when the time is previous than today's time", async () => {
+        const startDate = dayjs();
+        const dateInTheFuture = dayjs(startDate).tz(mapTimeZone[TimeZones.ET]).add(1, "d").format();
+
+        const startTimeBefore = dayjs(startDate).subtract(6, "m").format(CONSTANTS.TIME_FORMAT);
+        const fullDeposition = getDepositionWithOverrideValues({ startDate });
+        customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
+            return fullDeposition;
+        });
+        renderWithGlobalContext(<ActiveDepositionDetails />, customDeps);
+        await waitFor(() => {
+            const editButton = screen.getAllByTestId(CONSTANTS.DEPOSITION_CARD_DETAILS_EDIT_BUTTON_DATA_TEST_ID);
+            fireEvent.click(editButton[0]);
+        });
+        const startTimeInput = screen.getByTestId(
+            CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_START_TIME_TEST_ID
+        );
+        expect(startTimeInput).toBeInTheDocument();
+
+        const startDateInput = screen.getByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_DATA_TEST_ID_DATE);
+
+        expect(startDateInput).toBeInTheDocument();
+
+        await act(async () => {
+            userEvent.click(startDateInput);
+            await fireEvent.change(startDateInput, {
+                target: { value: dateInTheFuture },
+            });
+        });
+
+        await act(async () => {
+            userEvent.click(startTimeInput);
+            await fireEvent.change(startTimeInput, {
+                target: { value: startTimeBefore },
+            });
+        });
+
+        await act(async () => {
+            const okButtonStartTimeInput = screen.getAllByRole("button", { name: /ok/i })[0];
+            userEvent.click(okButtonStartTimeInput);
+            fireEvent.blur(startTimeInput);
+        });
+
+        await act(async () => {
+            userEvent.click(startDateInput);
+            await fireEvent.change(startDateInput, {
+                target: { value: startDate },
+            });
+        });
+
         expect(
-            queryByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_START_TIME_TEST_ID)
+            screen.getByTestId(CONSTANTS.DEPOSITIONS_DETAILS_EDIT_MODAL_INVALID_START_TIME_TEST_ID)
         ).toBeInTheDocument();
     });
 });
