@@ -8,16 +8,16 @@ export default (isAudioEnabled: boolean, audioTracks, doNotConnectToSocket = fal
     const { state } = useContext(GlobalStateContext);
     const { isRecording } = state.room;
     const [sampleRate, setSampleRate] = useState<number>(undefined);
-    const [stopAudio, transcriptAudio] = useTranscriptAudio(doNotConnectToSocket);
+    const transcriptAudio = useTranscriptAudio(doNotConnectToSocket);
     const recorderRef = useRef(null);
     const stopMicrophone = useCallback(async () => {
         if (recorder) {
             recorder.stop();
             if (sampleRate) {
-                stopAudio(sampleRate);
+                transcriptAudio("", sampleRate);
             }
         }
-    }, [stopAudio, sampleRate, recorder]);
+    }, [transcriptAudio, sampleRate, recorder]);
 
     useEffect(() => {
         const innerRef = recorderRef;
@@ -44,11 +44,11 @@ export default (isAudioEnabled: boolean, audioTracks, doNotConnectToSocket = fal
                     const buffer: ArrayBuffer =
                         typeof event.target.result !== "string" ? event.target.result : new ArrayBuffer(0);
                     const newSampleRate = new Int32Array(buffer.slice(24, 28))[0];
-                    const reconnect = newSampleRate !== sampleRate;
-                    if (reconnect) {
+                    const isSampleRateDifferent = newSampleRate !== sampleRate;
+                    if (isSampleRateDifferent) {
                         setSampleRate(newSampleRate);
                     }
-                    transcriptAudio(buffer, newSampleRate, reconnect);
+                    transcriptAudio(buffer, newSampleRate);
                 };
                 fileReader.readAsArrayBuffer(e.data);
             };

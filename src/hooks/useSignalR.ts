@@ -1,5 +1,6 @@
-import { HttpTransportType, HubConnection, HubConnectionBuilder } from "@microsoft/signalr";
+import { HttpTransportType, HubConnection, HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import React, { useCallback, useEffect, useState } from "react";
+import { MessagePackHubProtocol } from "@microsoft/signalr-protocol-msgpack";
 import ENV from "../constants/env";
 import { GlobalStateContext } from "../state/GlobalState";
 import actions from "../state/SignalR/SignalRActions";
@@ -9,7 +10,8 @@ const useSignalR = (
     url: string,
     baseUrl?: string,
     setNewSignalRInstance?: boolean,
-    doNotConnectToSocket?: boolean
+    doNotConnectToSocket?: boolean,
+    useMessageProtocol?: boolean
 ): any => {
     const { state, dispatch, deps } = React.useContext(GlobalStateContext);
     const { signalR }: { signalR: HubConnection } = state.signalR;
@@ -24,14 +26,20 @@ const useSignalR = (
             return newSignalRInstance || signalR;
         }
         const token = await deps.apiService.getTokenSet();
-        const newSignalR: HubConnection = new HubConnectionBuilder()
+        let newSignalR: HubConnection = null;
+        const baseSignalRConfig = new HubConnectionBuilder()
             .withUrl(`${baseUrl ?? ENV.API.URL}${url}`, {
                 accessTokenFactory: () => token,
                 skipNegotiation: true,
                 transport: HttpTransportType.WebSockets,
             })
             .withAutomaticReconnect([0, 200, 10000, 30000, 60000, 120000])
-            .build();
+            .configureLogging(LogLevel.Information);
+
+        newSignalR = useMessageProtocol
+            ? baseSignalRConfig.withHubProtocol(new MessagePackHubProtocol()).build()
+            : baseSignalRConfig.build();
+
         await newSignalR.start();
         if (setNewSignalRInstance) {
             setNewSignalR(newSignalR);
