@@ -18,6 +18,7 @@ import { theme } from "../../../../constants/styles/theme";
 import { ExhibitFile } from "../../../../types/ExhibitFile";
 import ColorStatus from "../../../../types/ColorStatus";
 import { GlobalStateContext } from "../../../../state/GlobalState";
+import { getREM } from "../../../../constants/styles/utils";
 
 export default function MyExhibits({ activeKey }: { activeKey: string }) {
     const { depositionID } = useParams<{ depositionID: string }>();
@@ -40,7 +41,7 @@ export default function MyExhibits({ activeKey }: { activeKey: string }) {
                         <Text size="large" state={ColorStatus.white}>
                             My Exhibits
                         </Text>
-                        <Badge count={files?.length || 0} />
+                        <Badge style={{ lineHeight: getREM(1.72) }} count={files?.length || 0} />
                     </Space>
                     <ScrollTableContainer direction="vertical" size="large">
                         <UploadButton onUpload={upload} onUploadCompleted={refreshList} />
