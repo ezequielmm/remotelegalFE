@@ -510,13 +510,9 @@ export default function ControlsBar({
                                 onVisibleChange={toggleMore}
                                 visible={moreOpen}
                                 overlay={
-                                    <Menu>
-                                        <Menu.Item key="0">
-                                            <Button
-                                                data-testid="support_button"
-                                                type="link"
-                                                onClick={() => setHelpModal(true)}
-                                            >
+                                    <Menu selectable={false}>
+                                        <Menu.Item key="0" onClick={() => setHelpModal(true)}>
+                                            <Button data-testid="support_button" type="link">
                                                 <Space size="small" align="center">
                                                     <Icon icon={SupportIcon} size={8} color={ColorStatus.white} />
                                                     <Text state={ColorStatus.white} size="small">
@@ -525,8 +521,8 @@ export default function ControlsBar({
                                                 </Space>
                                             </Button>
                                         </Menu.Item>
-                                        <Menu.Item key="1">
-                                            <Button data-testid="settings_button" type="link" onClick={toggleSettingsModal}>
+                                        <Menu.Item key="1" onClick={toggleSettingsModal}>
+                                            <Button data-testid="settings_button" type="link">
                                                 <Space size="small" align="center">
                                                     <Icon icon={SettingsIcon} size={8} color={ColorStatus.white} />
                                                     <Text state={ColorStatus.white} size="small">
