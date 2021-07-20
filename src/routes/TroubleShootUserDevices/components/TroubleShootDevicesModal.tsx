@@ -21,7 +21,6 @@ import TestVideo from "../../../components/TestVideo";
 import SpeakerTestAudio from "../../../assets/sounds/SpeakerTestAudio.mp3";
 import { ReactComponent as VolumeOnIcon } from "../../../assets/icons/volume-on.svg";
 import changeSpeakers from "../../../helpers/changeSpeakers";
-import { useSendParticipantStatus } from "../../../hooks/InDepo/useParticipantStatus";
 import { GlobalStateContext } from "../../../state/GlobalState";
 import useFloatingAlertContext from "../../../hooks/useFloatingAlertContext";
 import createDevices, { Device } from "../helpers/createDevices";
@@ -29,6 +28,7 @@ import trackpubsToTracks from "../../../helpers/trackPubsToTracks";
 import { theme } from "../../../constants/styles/theme";
 import { getREM } from "../../../constants/styles/utils";
 import { breakpoints } from "../../../constants/styles/breakpoints";
+import useNotifyParticipantPresence from "../../../hooks/InDepo/useNotifyParticipantPresence";
 
 interface TroubleShootDevicesModalProps {
     isDepo?: boolean;
@@ -70,7 +70,8 @@ const TroubleShootDevicesModal = ({ isDepo, visible = true, onClose }: TroubleSh
     const [isVideoOff, setVideoOff] = useState(true);
     const [audioRef, setAudioRef] = useState<HTMLMediaElement>(null);
     const videoRef = useRef<HTMLVideoElement>(null);
-    const [sendMutedStatus, sendMutedLoading, sendMutedError, sendMutedResponse] = useSendParticipantStatus();
+    const [sendUserPresence, userPresenceLoading, userPresenceError, userPresenceResponse] =
+        useNotifyParticipantPresence();
     const addAlert = useFloatingAlertContext();
 
     const cameraError = errors.length && errors.filter((error) => error?.videoinput)[0];
@@ -91,12 +92,12 @@ const TroubleShootDevicesModal = ({ isDepo, visible = true, onClose }: TroubleSh
             history.push(`/deposition/join/${depositionID}`);
         };
 
-        if (sendMutedResponse) {
+        if (userPresenceResponse) {
             sendToDepo();
         }
     }, [
         history,
-        sendMutedResponse,
+        userPresenceResponse,
         dispatch,
         isVideoOff,
         selectedOptions,
@@ -107,14 +108,14 @@ const TroubleShootDevicesModal = ({ isDepo, visible = true, onClose }: TroubleSh
     ]);
 
     useEffect(() => {
-        if (sendMutedError) {
+        if (userPresenceError) {
             addAlert({
                 message: CONSTANTS.NETWORK_ERROR,
                 type: "error",
                 duration: 3,
             });
         }
-    }, [sendMutedError, addAlert]);
+    }, [userPresenceError, addAlert]);
 
     useEffect(() => {
         if (videoRef.current && activeStreams.videoinput.stream) {
@@ -175,7 +176,7 @@ const TroubleShootDevicesModal = ({ isDepo, visible = true, onClose }: TroubleSh
     };
 
     const sendMutedStatusToServer = () => {
-        sendMutedStatus(isMuted);
+        sendUserPresence(isMuted);
     };
 
     const setNewDevices = async () => {
@@ -344,8 +345,8 @@ const TroubleShootDevicesModal = ({ isDepo, visible = true, onClose }: TroubleSh
                             <Button
                                 data-testid={isDepo ? "submit_new_devices_button" : "join_deposition_button"}
                                 onClick={isDepo ? setNewDevices : sendMutedStatusToServer}
-                                loading={sendMutedLoading}
-                                disabled={sendMutedLoading}
+                                loading={userPresenceLoading}
+                                disabled={userPresenceLoading}
                                 type="primary"
                             >
                                 {isDepo ? CONSTANTS.CHANGE_DEVICES_LABEL : CONSTANTS.JOIN_BUTTON_LABEL}

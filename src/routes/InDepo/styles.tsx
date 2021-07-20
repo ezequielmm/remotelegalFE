@@ -14,7 +14,12 @@ export const StyledInDepoLayout = styled.div`
     position: relative;
     display: flex;
     justify-content: center;
-    background: #000d16;
+    background: linear-gradient(
+        to bottom,
+        ${({ theme }) => theme.colors.inDepoNeutrals[2]} 0%,
+        ${({ theme }) => theme.colors.inDepoNeutrals[2]} 60%,
+        ${({ theme }) => theme.colors.inDepoNeutrals[5]} 100%
+    );
     padding: ${({ theme }) => getREM(theme.default.spaces[3])};
 `;
 
@@ -49,7 +54,7 @@ export const StyledLayoutCotainer = styled.div<StyledLayoutCotainerProps>`
         return visible
             ? `
                 width: unset;
-                flex: 1 0 40%;
+                flex: 1;
                 opacity: 1;
                 padding: ${noBackground ? getREM(theme.default.spaces[1]) : getREM(theme.default.spaces[6])};
                 margin-right: ${getREM(theme.default.spaces[3])};

@@ -3,33 +3,15 @@ import { Progress } from "antd";
 import { getPX, getREM } from "../../../constants/styles/utils";
 import { Theme } from "../../../types/ThemeType";
 
-export const StyledParticipantMask = styled.div<{ highlight?: boolean; isWitness?: boolean }>`
+export const StyledParticipantMask = styled.div<{ highlight?: boolean }>`
     border-radius: ${({ theme }) => getPX(theme.default.borderRadiusBase, theme.default.baseUnit)};
     overflow: hidden;
     transform: translateZ(0); // Fix Safari stacking context problem
-    width: max-content;
+    width: 100%;
     height: 100%;
     background: ${({ theme }) => theme.colors.inDepoNeutrals[6]};
     position: relative;
     border: ${({ theme, highlight }) => (highlight ? `3px solid ${theme.default.successColor}` : "unset")};
-
-    ${({ isWitness }) =>
-        isWitness
-            ? `
-        width: 100%;
-        height: max-content;
-
-        img {
-        max-height: 100%;
-        width: 100%;
-    }
-    `
-            : ""}
-
-    img {
-        height: 100%;
-        max-width: 100%;
-    }
 
     video {
         width: 100%;

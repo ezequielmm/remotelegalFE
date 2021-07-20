@@ -325,6 +325,15 @@ export class ApiService {
         });
     };
 
+    notifyParticipantPresence = async ({ depositionID, isMuted }): Promise<boolean> => {
+        return this.request<boolean>({
+            path: `/api/Depositions/${depositionID}/notifyParticipantPresence`,
+            payload: { isMuted },
+            withToken: true,
+            method: HTTP_METHOD.PUT,
+        });
+    };
+
     waitingRoomParticipants = async (depositionID: string): Promise<ParticipantModel.IParticipant[]> => {
         return this.request({
             path: `/api/Depositions/${depositionID}/waitingRoomParticipants`,

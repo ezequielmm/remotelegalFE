@@ -20,8 +20,6 @@ import ColorStatus from "../../../types/ColorStatus";
 import { theme } from "../../../constants/styles/theme";
 import { GlobalStateContext } from "../../../state/GlobalState";
 import { ReactComponent as MuteIcon } from "../../../assets/in-depo/Participant.muted.svg";
-import AspectRatio from "../../../assets/in-depo/aspect-ratio-16-9.svg";
-
 import normalizedRoles from "../../../constants/roles";
 import useFloatingAlertContext from "../../../hooks/useFloatingAlertContext";
 
@@ -72,14 +70,13 @@ const Participant = ({
     }, [netWorkLevel, addFloatingAlert, identity, isLocal]);
 
     return (
-        <StyledParticipantMask highlight={hasBorder} isWitness={isWitness}>
+        <StyledParticipantMask highlight={hasBorder}>
             <video ref={videoRef} autoPlay>
                 <track kind="captions" />
             </video>
             <audio ref={audioRef} autoPlay>
                 <track kind="captions" />
             </audio>
-            <img src={AspectRatio} alt="16/9" />
             {timeZone && (
                 <StyledTimeBox>
                     <Clock timeZone={timeZone} />
