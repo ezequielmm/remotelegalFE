@@ -86,7 +86,7 @@ const MyDepositions = () => {
                     company: requester?.companyName,
                     requester: `${requester.firstName} ${requester.lastName}`,
                     caseName: `${depositionsData.caseName} ${depositionsData.caseNumber}`,
-                    startDate: parseDate(depositionsData),
+                    startDate: parseDate({ startDate: depositionsData?.startDate, endDate: depositionsData?.endDate }),
                     witness: witness?.user?.firstName
                         ? `${witness?.user?.firstName} ${witness?.user?.lastName}`
                         : witness?.name,
@@ -199,6 +199,7 @@ const MyDepositions = () => {
                                     },
                                 };
                             }}
+                            shouldUpdateHeightAfterTime={100}
                             rowKey="id"
                             loading={loading}
                             dataSource={mappedDepositions || []}

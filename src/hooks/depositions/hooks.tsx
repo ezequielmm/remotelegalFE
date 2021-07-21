@@ -1,4 +1,5 @@
 import React, { useContext } from "react";
+import { useQuery } from "react-query";
 import { useParams } from "react-router";
 import { DEPOSITIONS_COUNT_PER_PAGE } from "../../constants/depositions";
 import { DepositionModel } from "../../models";
@@ -35,19 +36,21 @@ export const useFetchDeposition = () => {
 export const useFetchDepositions = () => {
     const { state, dispatch } = useContext(GlobalStateContext);
     const { sorting, pageNumber, filter } = state.depositionsList;
-
     const { deps } = React.useContext(GlobalStateContext);
-    const [fetchDepositions, loading, error, data] = useAsyncCallback<
-        any,
-        { depositions: IDeposition[]; totalPast: number; totalUpcoming: number; page: number; numberOfPages: number }
-    >(async (payload) => {
-        const response: IDeposition[] = await deps.apiService.fetchDepositions({
-            pageSize: DEPOSITIONS_COUNT_PER_PAGE,
-            page: pageNumber,
-            ...payload,
-        });
-        return response;
-    }, []);
+
+    const { data, ...queryResult } = useQuery(
+        ["getDepositions", pageNumber, sorting?.field, sorting?.order, filter],
+        () => {
+            return deps.apiService.fetchDepositions({
+                pageSize: DEPOSITIONS_COUNT_PER_PAGE,
+                page: pageNumber,
+                sortedField: !sorting?.order ? undefined : sorting?.field,
+                sortDirection: !sorting?.order ? undefined : sorting?.order,
+                ...filter,
+            });
+        },
+        { refetchOnWindowFocus: false }
+    );
 
     const handleListChange = React.useCallback(
         (pagination, currentFilter = undefined, sorter = undefined) => {
@@ -58,30 +61,15 @@ export const useFetchDepositions = () => {
                 dispatch(actions.setFilter(newFilter));
             }
 
-            let sortParams = {};
             if (sorter) {
                 dispatch(actions.setSorting(sorter));
-                sortParams = !sorter?.order
-                    ? {}
-                    : {
-                          sortedField: sorter?.field,
-                          sortDirection: sorter?.order,
-                      };
             }
 
             if (page) {
                 dispatch(actions.setPageNumber(page));
             }
-
-            const pageParams = { page: page ?? pageNumber };
-
-            fetchDepositions({
-                ...sortParams,
-                ...newFilter,
-                ...pageParams,
-            });
         },
-        [fetchDepositions, pageNumber, filter, dispatch]
+        [filter, dispatch]
     );
 
     const refreshList = React.useCallback(() => {
@@ -98,16 +86,16 @@ export const useFetchDepositions = () => {
             handleListChange,
             sortedField: sorting?.field,
             sortDirection: sorting?.order,
-            error,
+            error: queryResult?.error,
             depositions: data?.depositions,
             totalPast: data?.totalPast,
             totalUpcoming: data?.totalUpcoming,
             page: data?.page || 1,
             numberOfPages: data?.numberOfPages,
-            loading,
+            loading: queryResult?.isLoading,
             refreshList,
             filter,
         }),
-        [data, error, handleListChange, loading, refreshList, sorting, filter]
+        [data, queryResult, handleListChange, refreshList, sorting, filter]
     );
 };
