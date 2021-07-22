@@ -7,17 +7,48 @@ export default (isAudioEnabled: boolean, audioTracks, doNotConnectToSocket = fal
     const [recorder, setRecorder] = useState(null);
     const { state } = useContext(GlobalStateContext);
     const { isRecording } = state.room;
-    const [sampleRate, setSampleRate] = useState<number>(undefined);
     const transcriptAudio = useTranscriptAudio(doNotConnectToSocket);
     const recorderRef = useRef(null);
+
     const stopMicrophone = useCallback(async () => {
         if (recorder) {
             recorder.stop();
-            if (sampleRate) {
-                transcriptAudio("", sampleRate);
-            }
         }
-    }, [transcriptAudio, sampleRate, recorder]);
+    }, [recorder]);
+
+    useEffect(() => {
+        let interval;
+        const AvailableAudioContext =
+            window.AudioContext || // Default
+            (window as any).webkitAudioContext; // Safari and old versions of Chrome
+        const audioCtx = AvailableAudioContext && new AvailableAudioContext();
+        let noise;
+        if (isRecording && !isAudioEnabled && AvailableAudioContext) {
+            const createNoise = () => {
+                const channels = 2;
+                const frameCount = audioCtx.sampleRate * 2.0;
+                const myArrayBuffer = audioCtx.createBuffer(2, frameCount, audioCtx.sampleRate);
+                let nowBuffering;
+                // eslint-disable-next-line no-plusplus
+                for (let channel = 0; channel < channels; channel++) {
+                    nowBuffering = myArrayBuffer.getChannelData(channel);
+                    // eslint-disable-next-line no-plusplus
+                    for (let i = 0; i < frameCount; i++) {
+                        nowBuffering[i] = Math.random() * 2 - 1;
+                    }
+                }
+                return nowBuffering;
+            };
+            noise = createNoise();
+        }
+        if (noise) {
+            interval = setInterval(() => transcriptAudio(noise), 1500);
+        }
+        return () => {
+            clearInterval(interval);
+            audioCtx?.close();
+        };
+    }, [isRecording, isAudioEnabled, transcriptAudio]);
 
     useEffect(() => {
         const innerRef = recorderRef;
@@ -43,12 +74,8 @@ export default (isAudioEnabled: boolean, audioTracks, doNotConnectToSocket = fal
                 fileReader.onload = (event) => {
                     const buffer: ArrayBuffer =
                         typeof event.target.result !== "string" ? event.target.result : new ArrayBuffer(0);
-                    const newSampleRate = new Int32Array(buffer.slice(24, 28))[0];
-                    const isSampleRateDifferent = newSampleRate !== sampleRate;
-                    if (isSampleRateDifferent) {
-                        setSampleRate(newSampleRate);
-                    }
-                    transcriptAudio(buffer, newSampleRate);
+
+                    transcriptAudio(buffer);
                 };
                 fileReader.readAsArrayBuffer(e.data);
             };
@@ -59,7 +86,7 @@ export default (isAudioEnabled: boolean, audioTracks, doNotConnectToSocket = fal
                 recorder.removeEventListener("dataavailable", dataAvailableHandler);
             }
         };
-    }, [sampleRate, recorder, transcriptAudio, isRecording, isAudioEnabled]);
+    }, [recorder, transcriptAudio, isRecording, isAudioEnabled]);
 
     const getMicrophone = () => {
         if (recorder) {

@@ -61,11 +61,11 @@ const useTranscriptAudio = (doNotConnectToSocket = false) => {
     }, [signalR, subscribeToGroup, dispatch, unsubscribeMethodFromGroup]);
 
     const [transcriptAudio] = useAsyncCallback(
-        async (audio: ArrayBuffer | string, newSampleRate: number) => {
+        async (audio: ArrayBuffer) => {
             sendMessage("UploadTranscription", {
                 depositionId: depositionID,
-                sampleRate: newSampleRate,
-                audio: typeof audio === "string" ? new Uint8Array() : new Uint8Array(audio),
+                sampleRate: 48000, // TODO: This is a hardcoded value, but is the recommended value for high quality audio (48Khz) Same for the url in line #15
+                audio: new Uint8Array(audio),
             });
         },
         [isRecording, sendMessage]
