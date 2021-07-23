@@ -39,6 +39,7 @@ const useTranscriptAudio = (doNotConnectToSocket = false) => {
     useEffect(() => {
         if (sendMessage && signalR) {
             sendMessage("ChangeTranscriptionStatus", {
+                depositionId: depositionID,
                 offRecord: !isRecording,
             });
         }
