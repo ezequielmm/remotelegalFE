@@ -50,7 +50,15 @@ const useTranscriptAudio = (doNotConnectToSocket = false) => {
             manageReceiveNotification = (message) => {
                 const { id, transcriptDateTime, text, userName } = message.content;
                 if (!text) return;
-                const parsedTranscription = { id, text, userName, transcriptDateTime };
+                const parsedTranscription = {
+                    id,
+                    text,
+                    userName,
+                    transcriptDateTime:
+                        Array.isArray(transcriptDateTime) && transcriptDateTime.length > 0
+                            ? new Date(transcriptDateTime[0])
+                            : transcriptDateTime,
+                };
                 dispatch(actions.addTranscription(parsedTranscription));
             };
             subscribeToGroup("ReceiveNotification", manageReceiveNotification);
