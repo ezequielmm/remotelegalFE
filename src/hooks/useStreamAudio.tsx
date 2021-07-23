@@ -11,9 +11,7 @@ export default (isAudioEnabled: boolean, audioTracks, doNotConnectToSocket = fal
     const recorderRef = useRef(null);
 
     const stopMicrophone = useCallback(async () => {
-        if (recorder) {
-            recorder.stop();
-        }
+        recorder?.stop();
     }, [recorder]);
 
     useEffect(() => {

@@ -68,7 +68,7 @@ const useTranscriptAudio = (doNotConnectToSocket = false) => {
                 audio: new Uint8Array(audio),
             });
         },
-        [isRecording, sendMessage]
+        [sendMessage]
     );
 
     return transcriptAudio;
