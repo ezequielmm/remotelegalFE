@@ -1,5 +1,4 @@
 import { renderHook, act } from "@testing-library/react-hooks";
-import { waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import state from "../mocks/state";
 import getMockDeps from "../utils/getMockDeps";
@@ -34,7 +33,7 @@ test("should call fetchDepositions after mount the hook", async () => {
     renderHook(() => useFetchDepositions(), {
         wrapper: customWrapper(depositionsListMock, deps),
     });
-    await act(async () => {
+    act(() => {
         expect(deps.apiService.fetchDepositions).toBeCalledWith({ page: 1, pageSize: 20 });
     });
 });
@@ -47,17 +46,20 @@ test("should call fetchDepositions with page 2", async () => {
         },
     };
 
-    const { result } = renderHook(() => useFetchDepositions(), {
+    deps.apiService.fetchDepositions = jest.fn().mockResolvedValue({ page: 2 });
+
+    const { result, waitFor } = renderHook(() => useFetchDepositions(), {
         wrapper: customWrapper(depositionsListMock, deps),
     });
-    await act(async () => {
+
+    act(() => {
         result.current.handleListChange({ current: 2 });
     });
 
+    expect(state.dispatch).toHaveBeenCalledWith(actions.setPageNumber(2));
+
     await waitFor(() => {
-        setTimeout(() => {
-            expect(deps.apiService.fetchDepositions).toBeCalledWith({ page: 2, pageSize: 20 });
-        }, 100);
+        expect(result.current.page).toEqual(2);
     });
 });
 
@@ -66,15 +68,25 @@ test("should call fetchDepositions with a new sorting info", async () => {
     const depositionsListMock = {
         depositionsList: {
             pageNumber: 1,
+            sorting: {
+                field: "status",
+                order: "ascend",
+            },
         },
     };
 
-    const { result } = renderHook(() => useFetchDepositions(), { wrapper: customWrapper(depositionsListMock, deps) });
-    await act(async () => {
+    deps.apiService.fetchDepositions = jest.fn().mockResolvedValue({ page: 2 });
+
+    const { result, waitFor, waitForNextUpdate } = renderHook(() => useFetchDepositions(), {
+        wrapper: customWrapper(depositionsListMock, deps),
+    });
+    act(() => {
         result.current.handleListChange({ current: 2 }, null, { field: "status", order: "descend" });
     });
 
-    await act(() => {
+    await waitForNextUpdate();
+
+    await waitFor(() => {
         setTimeout(() => {
             expect(deps.apiService.fetchDepositions).toBeCalledWith({
                 page: 2,
@@ -82,7 +94,8 @@ test("should call fetchDepositions with a new sorting info", async () => {
                 sortDirection: "descend",
                 pageSize: 20,
             });
-        }, 100);
+            expect(result.current.sortDirection).toEqual("descend");
+        }, 300);
     });
     expect(state.dispatch).toHaveBeenCalledWith(actions.setSorting({ field: "status", order: "descend" }));
 });
@@ -96,8 +109,10 @@ test("should call fetchDepositions with a new sorting info from store", async ()
         },
     };
 
-    const { result } = renderHook(() => useFetchDepositions(), { wrapper: customWrapper(depositionsListMock, deps) });
-    await act(async () => {
+    const { result, waitFor } = renderHook(() => useFetchDepositions(), {
+        wrapper: customWrapper(depositionsListMock, deps),
+    });
+    act(() => {
         expect(deps.apiService.fetchDepositions).toHaveBeenLastCalledWith({
             page: 1,
             sortedField: "status",
@@ -121,8 +136,10 @@ test("should call fetchDepositions with a new filter PastDepositions on true", a
         },
     };
 
-    const { result } = renderHook(() => useFetchDepositions(), { wrapper: customWrapper(depositionsListMock, deps) });
-    await act(async () => {
+    const { result, waitFor } = renderHook(() => useFetchDepositions(), {
+        wrapper: customWrapper(depositionsListMock, deps),
+    });
+    act(() => {
         result.current.handleListChange({ current: 2 }, { PastDepositions: true });
     });
     await waitFor(() => {
@@ -148,8 +165,10 @@ test("should call fetchDepositions with a changed filter PastDepositions to fals
         },
     };
 
-    const { result } = renderHook(() => useFetchDepositions(), { wrapper: customWrapper(depositionsListMock, deps) });
-    await act(async () => {
+    const { result, waitFor } = renderHook(() => useFetchDepositions(), {
+        wrapper: customWrapper(depositionsListMock, deps),
+    });
+    act(() => {
         result.current.handleListChange({ current: 2 }, { PastDepositions: false });
     });
     await waitFor(() => {
@@ -176,7 +195,7 @@ test("should call fetchDepositions with a filter PastDepositions from the store"
     };
 
     renderHook(() => useFetchDepositions(), { wrapper: customWrapper(depositionsListMock, deps) });
-    await act(async () => {
+    act(() => {
         setTimeout(() => {
             expect(deps.apiService.fetchDepositions).toBeCalledWith({
                 page: 1,
@@ -198,8 +217,10 @@ test("should call fetchDepositions with a filter PastDepositions from the store 
             },
         },
     };
-    const { result } = renderHook(() => useFetchDepositions(), { wrapper: customWrapper(depositionsListMock, deps) });
-    await act(async () => {
+    const { result, waitFor } = renderHook(() => useFetchDepositions(), {
+        wrapper: customWrapper(depositionsListMock, deps),
+    });
+    act(() => {
         result.current.handleListChange({ current: 2 }, { MinDate: "min-date", MaxDate: "max-date" });
     });
     await waitFor(() => {
