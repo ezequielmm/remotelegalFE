@@ -40,7 +40,23 @@ const useSignalR = (
             ? baseSignalRConfig.withHubProtocol(new MessagePackHubProtocol()).build()
             : baseSignalRConfig.build();
 
-        await newSignalR.start();
+        newSignalR.onclose = () => {
+            console.error("SignalR onClose");
+        };
+
+        newSignalR.onreconnecting = (error) => {
+            console.error("SignalR Reconnecting", error);
+        };
+
+        newSignalR.onreconnected = (connectionId) => {
+            console.error("SignalR Reconnected", connectionId);
+        };
+
+        try {
+            await newSignalR.start();
+        } catch (error) {
+            console.error("SignalR start error", error);
+        }
         if (setNewSignalRInstance) {
             setNewSignalR(newSignalR);
             return newSignalRInstance;
