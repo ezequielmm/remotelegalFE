@@ -25,7 +25,11 @@ export default (isAudioEnabled: boolean, audioTracks, doNotConnectToSocket = fal
             (window as any).webkitAudioContext; // Safari and old versions of Chrome
         const audioCtx = AvailableAudioContext && new AvailableAudioContext();
         let noise;
-        if (isRecording && !isAudioEnabled && AvailableAudioContext) {
+        if (isRecording && !isAudioEnabled && AvailableAudioContext && sendMessage && depositionID) {
+            sendMessage("InitializeRecognition", {
+                depositionId: depositionID,
+                sampleRate: 48000, // Hardcoded value just to reset
+            });
             const createNoise = () => {
                 const channels = 2;
                 const frameCount = audioCtx.sampleRate * 2.0;
@@ -41,6 +45,7 @@ export default (isAudioEnabled: boolean, audioTracks, doNotConnectToSocket = fal
                 }
                 return nowBuffering;
             };
+            setSampleRate(undefined);
             noise = createNoise();
         }
         if (noise) {
@@ -50,7 +55,7 @@ export default (isAudioEnabled: boolean, audioTracks, doNotConnectToSocket = fal
             clearInterval(interval);
             audioCtx?.close();
         };
-    }, [isRecording, isAudioEnabled, transcriptAudio]);
+    }, [isRecording, isAudioEnabled, transcriptAudio, sendMessage, depositionID]);
 
     useEffect(() => {
         const innerRef = recorderRef;
