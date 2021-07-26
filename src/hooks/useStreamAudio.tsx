@@ -1,13 +1,17 @@
 import AudioRecorder from "audio-recorder-polyfill";
 import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { useParams } from "react-router";
 import { GlobalStateContext } from "../state/GlobalState";
+import { DepositionID } from "../state/types";
 import useTranscriptAudio from "./InDepo/useTranscriptAudio";
 
 export default (isAudioEnabled: boolean, audioTracks, doNotConnectToSocket = false) => {
     const [recorder, setRecorder] = useState(null);
+    const [sampleRate, setSampleRate] = useState<number>(undefined);
     const { state } = useContext(GlobalStateContext);
     const { isRecording } = state.room;
-    const transcriptAudio = useTranscriptAudio(doNotConnectToSocket);
+    const { depositionID } = useParams<DepositionID>();
+    const { transcriptAudio, sendMessage } = useTranscriptAudio(doNotConnectToSocket, sampleRate);
     const recorderRef = useRef(null);
 
     const stopMicrophone = useCallback(async () => {
@@ -72,7 +76,15 @@ export default (isAudioEnabled: boolean, audioTracks, doNotConnectToSocket = fal
                 fileReader.onload = (event) => {
                     const buffer: ArrayBuffer =
                         typeof event.target.result !== "string" ? event.target.result : new ArrayBuffer(0);
-
+                    const newSampleRate = new Int32Array(buffer.slice(24, 28))[0];
+                    const isSampleRateDifferent = newSampleRate !== sampleRate;
+                    if (isSampleRateDifferent) {
+                        sendMessage("InitializeRecognition", {
+                            depositionId: depositionID,
+                            sampleRate: newSampleRate,
+                        });
+                        setSampleRate(newSampleRate);
+                    }
                     transcriptAudio(buffer);
                 };
                 fileReader.readAsArrayBuffer(e.data);
@@ -84,7 +96,7 @@ export default (isAudioEnabled: boolean, audioTracks, doNotConnectToSocket = fal
                 recorder.removeEventListener("dataavailable", dataAvailableHandler);
             }
         };
-    }, [recorder, transcriptAudio, isRecording, isAudioEnabled]);
+    }, [recorder, transcriptAudio, isRecording, isAudioEnabled, sampleRate, sendMessage, depositionID]);
 
     const getMicrophone = () => {
         if (recorder) {

@@ -7,12 +7,12 @@ import useAsyncCallback from "../useAsyncCallback";
 import useSignalR from "../useSignalR";
 import ENV from "../../constants/env";
 
-const useTranscriptAudio = (doNotConnectToSocket = false) => {
+const useTranscriptAudio = (doNotConnectToSocket = false, sampleRate: number) => {
     const { dispatch, state } = useContext(GlobalStateContext);
     const { isRecording } = state.room;
     const { depositionID } = useParams<DepositionID>();
     const { TRANSCRIPT_URL } = ENV.API;
-    const transcriptHubUrl = `/transcriptionHub?depositionId=${depositionID}&sampleRate=48000`;
+    const transcriptHubUrl = `/transcriptionHub?depositionId=${depositionID}`;
     const { sendMessage, unsubscribeMethodFromGroup, subscribeToGroup, signalR } = useSignalR(
         transcriptHubUrl,
         TRANSCRIPT_URL,
@@ -37,13 +37,14 @@ const useTranscriptAudio = (doNotConnectToSocket = false) => {
     }, [signalR]);
 
     useEffect(() => {
-        if (sendMessage && signalR) {
+        if (sendMessage && signalR && sampleRate) {
             sendMessage("ChangeTranscriptionStatus", {
+                sampleRate,
                 depositionId: depositionID,
                 offRecord: !isRecording,
             });
         }
-    }, [sendMessage, isRecording, signalR]);
+    }, [sendMessage, isRecording, signalR, depositionID, sampleRate]);
 
     useEffect(() => {
         let manageReceiveNotification;
@@ -73,14 +74,13 @@ const useTranscriptAudio = (doNotConnectToSocket = false) => {
         async (audio: ArrayBuffer) => {
             sendMessage("UploadTranscription", {
                 depositionId: depositionID,
-                sampleRate: 48000, // TODO: This is a hardcoded value, but is the recommended value for high quality audio (48Khz) Same for the url in line #15
                 audio: new Uint8Array(audio),
             });
         },
         [sendMessage]
     );
 
-    return transcriptAudio;
+    return { transcriptAudio, sendMessage };
 };
 
 export default useTranscriptAudio;
