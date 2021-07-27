@@ -31,7 +31,10 @@ const PostDepoReducer: Reducer<IPostDepo, IAction> = (state: IPostDepo, action: 
             return {
                 ...state,
                 transcriptions: setTranscriptionMessages(action.payload.transcriptions, action.payload.events, true),
-                transcriptionsWithoutEvents: action.payload.transcriptions,
+                transcriptionsWithoutEvents: action.payload?.transcriptions?.map((transcription) => ({
+                    ...transcription,
+                    transcriptionVideoTime: transcription.transcriptionVideoTime / 1000,
+                })),
             };
         case ACTION_TYPE.SET_DEPOSITION:
             return {
