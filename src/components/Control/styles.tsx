@@ -51,7 +51,6 @@ export const StyledRoundedControl = styled(roundButton)`
     padding: ${({ theme }) => `0 ${getREM(theme.default.spaces[5])}`};
     border: ${({ isActive, theme }) => (isActive ? `1px solid ${theme.default.primaryColor}` : "none")};
     text-transform: capitalize;
-
     &,
     &:focus {
         background-color: ${({ isActive, theme }) =>
@@ -66,6 +65,14 @@ export const StyledRoundedControl = styled(roundButton)`
     &:active {
         background-color: ${({ isActive, theme }) =>
             isActive ? theme.colors.inDepoNeutrals[5] : theme.colors.inDepoBlue[6]};
+    }
+    &:disabled,
+    &:disabled:hover {
+        background-color: ${({ theme }) => theme.colors.inDepoNeutrals[5]};
+        border-color: ${({ theme }) => theme.colors.inDepoNeutrals[5]};
+        span {
+            color: ${({ theme }) => theme.colors.disabled[9]};
+        }
     }
 
     ${({ color, theme }) =>
@@ -87,7 +94,8 @@ export const StyledRoundedControl = styled(roundButton)`
             : ""}
 
     path {
-        fill: ${({ isActive, theme }) => (isActive ? theme.default.primaryColor : theme.default.whiteColor)};
+        fill: ${({ isActive, disabled, theme }) =>
+            !disabled && (isActive ? theme.default.primaryColor : theme.default.whiteColor)};
     }
 
     & > :first-child {
