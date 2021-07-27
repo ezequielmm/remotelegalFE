@@ -82,18 +82,16 @@ const Participant = ({
                     <Clock timeZone={timeZone} />
                 </StyledTimeBox>
             )}
-            <StyledIdentityBox showMicStatus={isMuted}>
+            <StyledIdentityBox>
                 <Space align="center">
-                    {isMuted && (
-                        <StyledParticipantMicContainer>
-                            <Icon
-                                data-testid="participant_muted"
-                                color={theme.default.whiteColor}
-                                icon={MuteIcon}
-                                size={9}
-                            />
-                        </StyledParticipantMicContainer>
-                    )}
+                    <StyledParticipantMicContainer showMicStatus={isMuted}>
+                        <Icon
+                            data-testid="participant_muted"
+                            color={theme.default.whiteColor}
+                            icon={MuteIcon}
+                            size={9}
+                        />
+                    </StyledParticipantMicContainer>
                     <Space direction="vertical" size="0">
                         {isWitness && (
                             <Text
