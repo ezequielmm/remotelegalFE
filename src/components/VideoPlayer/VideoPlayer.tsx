@@ -157,7 +157,7 @@ const VideoPlayer = ({ fullScreen, fallback, isOnlyAudio, ...rest }: IVideoPlaye
 
     useEffect(() => {
         if (player && player.current && changeTime.time !== undefined) {
-            handleSliderChange(changeTime.time);
+            handleSliderChange(changeTime.time / 1000);
         }
     }, [handleSliderChange, changeTime, styledPlayerRef]);
 
