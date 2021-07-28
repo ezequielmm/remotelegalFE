@@ -25,7 +25,7 @@ const RealTime = ({
     visible,
     timeZone,
     transcriptions,
-    playedSeconds,
+    playedTimeValue,
     scrollToHighlighted,
     transcriptionsWithoutEvents,
 }: ContainerProps & {
@@ -34,7 +34,7 @@ const RealTime = ({
     timeZone: TimeZones;
     transcriptions?: (TranscriptionModel.Transcription & TranscriptionModel.TranscriptionPause)[];
     transcriptionsWithoutEvents?: TranscriptionModel.Transcription[];
-    playedSeconds?: number;
+    playedTimeValue?: number;
     scrollToHighlighted?: boolean;
 }) => {
     const scrollableRef = useRef(null);
@@ -43,12 +43,12 @@ const RealTime = ({
     useEffect(() => {
         const highlightTranscript = () => {
             const lastTranscription = transcriptionsWithoutEvents[transcriptionsWithoutEvents.length - 1];
-            if (playedSeconds >= lastTranscription?.transcriptionVideoTime) {
+            if (playedTimeValue >= lastTranscription?.transcriptionVideoTime) {
                 return setCurrentTranscript(lastTranscription?.id);
             }
             const currentTranscriptTranscription = transcriptionsWithoutEvents.find(
                 (transcription, index) =>
-                    playedSeconds <=
+                    playedTimeValue <=
                     transcription?.transcriptionVideoTime +
                         transcriptionsWithoutEvents[index + 1]?.transcriptionVideoTime -
                         transcription?.transcriptionVideoTime
@@ -57,10 +57,10 @@ const RealTime = ({
             return setCurrentTranscript(currentTranscriptTranscription?.id);
         };
 
-        if (transcriptionsWithoutEvents?.length && playedSeconds) {
+        if (transcriptionsWithoutEvents?.length && playedTimeValue) {
             highlightTranscript();
         }
-    }, [playedSeconds, transcriptionsWithoutEvents]);
+    }, [playedTimeValue, transcriptionsWithoutEvents]);
 
     const transcriptionSlicingLength = transcriptions?.length > 20 ? transcriptions?.length - 20 : 0;
 
@@ -113,9 +113,9 @@ const RealTime = ({
                                             />
                                         ) : (
                                             <Space direction="vertical" key={transcription.id}>
-                                                {playedSeconds !== undefined &&
-                                                    (i === 0 || playedSeconds - transcription.prevEndTime >= 0) &&
-                                                    playedSeconds - transcription.transcriptionVideoTime < 0 && (
+                                                {playedTimeValue !== undefined &&
+                                                    (i === 0 || playedTimeValue - transcription.prevEndTime >= 0) &&
+                                                    playedTimeValue - transcription.transcriptionVideoTime < 0 && (
                                                         <HiddenRef />
                                                     )}
                                                 <Text

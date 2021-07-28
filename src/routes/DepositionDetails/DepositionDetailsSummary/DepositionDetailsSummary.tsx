@@ -236,7 +236,7 @@ export default function DepositionDetailsSummary({ setActiveKey, deposition }: I
                                         transcriptions={transcriptions}
                                         visible
                                         timeZone={deposition?.timeZone}
-                                        playedSeconds={currentTime}
+                                        playedTimeValue={currentTime * 1000}
                                         scrollToHighlighted
                                     />
                                 </ThemeProvider>
