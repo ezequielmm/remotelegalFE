@@ -17,25 +17,23 @@ export interface ILogoProps extends Omit<ImageProps, "preview"> {
 const StyledImage = styled(Image)`
     max-width: 100%;
     max-height: 100%;
-
-    img {
-        display: block;
-        ${({ height }) => {
-            return height
-                ? `
-                    width: auto;
-                    height: 100%;            
-                `
-                : `
-                    width: 100%;
-                    height: auto;
-                `;
-        }}
-    }
+    display: block;
+    width: auto;
+    ${({ height }) => {
+        return height
+            ? `
+                width: auto;
+                height: 100%;            
+            `
+            : `
+                width: 100%;
+                height: auto;
+            `;
+    }}
 `;
 
-const logo = ({ alt = "Remote Legal logo", version = "dark", ...rest }: ILogoProps) => {
+const Logo = ({ alt = "Remote Legal logo", version = "dark", ...rest }: ILogoProps) => {
     return <StyledImage preview={false} src={logoSrc[version]} alt={alt} {...rest} />;
 };
 
-export default logo;
+export default Logo;

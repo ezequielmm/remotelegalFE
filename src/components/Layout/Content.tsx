@@ -13,7 +13,7 @@ const StyledContent = styled(Content)`
     ${({ theme }) => {
         const styles = `
             padding: ${getREM(theme.default.spaces[6] * 2)};
-
+            overflow: auto;
             // Fix Firefox bug
             @-moz-document url-prefix() {
                 & > :last-child {
