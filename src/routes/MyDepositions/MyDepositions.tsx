@@ -1,18 +1,18 @@
 import { Row, Col } from "antd";
 import dayjs from "dayjs";
-import React, { useState } from "react";
+import { useState, useMemo, useContext } from "react";
 import styled from "styled-components";
 import { useHistory } from "react-router";
 import localeData from "dayjs/plugin/localeData";
 import weekday from "dayjs/plugin/weekday";
 import utc from "dayjs/plugin/utc";
+import DatePicker from "prp-components-library/src/components/DatePicker";
+import Space from "prp-components-library/src/components/Space";
+import Table from "prp-components-library/src/components/Table";
+import { Status } from "prp-components-library/src/components/StatusPill/StatusPill";
+import Tabs from "prp-components-library/src/components/Tabs";
+import Title from "prp-components-library/src/components/Title";
 import CardFetchError from "../../components/CardFetchError";
-import { Status } from "../../components/StatusPill/StatusPill";
-import Table from "../../components/Table";
-import Space from "../../components/Space";
-import Tabs from "../../components/Tabs";
-import DatePicker from "../../components/DatePicker";
-import Title from "../../components/Typography/Title";
 import * as CONSTANTS from "../../constants/depositions";
 import { dateToUTCString } from "../../helpers/dateToUTCString";
 import { useFetchDepositions } from "../../hooks/depositions/hooks";
@@ -68,15 +68,15 @@ const MyDepositions = () => {
         loading,
         refreshList,
         page,
+        filter,
     } = useFetchDepositions();
-    const [sorting, setSorting] = useState(null);
     const [filterCriteria, setFilterCriteria] = useState<FilterCriteria>(FilterCriteria.UPCOMING);
 
-    const { state } = React.useContext(GlobalStateContext);
+    const { state } = useContext(GlobalStateContext);
     const { currentUser } = state?.user;
     const [getCurrentUser] = useCurrentUser();
 
-    const mappedDepositions = React.useMemo(
+    const mappedDepositions = useMemo(
         () =>
             depositions?.map(({ id, details, status, requester, witness, participants, job, ...depositionsData }) => {
                 const courtReporter = participants.find((participant) => participant.role === Roles.courtReporter);
@@ -86,7 +86,7 @@ const MyDepositions = () => {
                     company: requester?.companyName,
                     requester: `${requester.firstName} ${requester.lastName}`,
                     caseName: `${depositionsData.caseName} ${depositionsData.caseNumber}`,
-                    startDate: parseDate(depositionsData),
+                    startDate: parseDate({ startDate: depositionsData?.startDate, endDate: depositionsData?.endDate }),
                     witness: witness?.user?.firstName
                         ? `${witness?.user?.firstName} ${witness?.user?.lastName}`
                         : witness?.name,
@@ -108,7 +108,7 @@ const MyDepositions = () => {
 
     const history = useHistory();
 
-    const depositionColumns = React.useMemo(
+    const depositionColumns = useMemo(
         () =>
             CONSTANTS.getDepositionColumns(history, !!currentUser?.isAdmin).map(
                 ({ sorter = true, field, ...column }: CONSTANTS.TableColumn) => ({
@@ -127,7 +127,7 @@ const MyDepositions = () => {
 
     const onDepositionTabChange = (key: FilterCriteria) => {
         setFilterCriteria(key);
-        handleListChange({ current: 1 }, getFilterParam(key), sorting);
+        handleListChange({ current: 1 }, getFilterParam(key));
     };
 
     const onFilterByDateChange = (dateRange) => {
@@ -136,7 +136,7 @@ const MyDepositions = () => {
             MinDate: minDate ? dateToUTCString(minDate?.startOf("day")) : undefined,
             MaxDate: maxDate ? dateToUTCString(maxDate?.endOf("day")) : undefined,
         };
-        handleListChange({ current: 1 }, dateRangeFilter, sorting);
+        handleListChange({ current: 1 }, dateRangeFilter);
     };
 
     return (
@@ -151,7 +151,10 @@ const MyDepositions = () => {
                         </Row>
                     </Space.Item>
                     <StyledSpaceItem fullWidth>
-                        <Tabs defaultActiveKey="1" onChange={onDepositionTabChange}>
+                        <Tabs
+                            defaultActiveKey={filter?.PastDepositions ? FilterCriteria.PAST : FilterCriteria.UPCOMING}
+                            onChange={onDepositionTabChange}
+                        >
                             <Tabs.TabPane
                                 tab={`${CONSTANTS.UPCOMING_DEPOSITION_TAB_TITLE} (${totalUpcoming || 0})`}
                                 key={FilterCriteria.UPCOMING}
@@ -173,6 +176,10 @@ const MyDepositions = () => {
                                         "This Month": [dayjs().startOf("month"), dayjs().endOf("month")],
                                     }}
                                     onChange={(dateRange) => onFilterByDateChange(dateRange)}
+                                    defaultValue={[
+                                        filter?.MinDate ? dayjs(filter?.MinDate) : null,
+                                        filter?.MaxDate ? dayjs(filter?.MaxDate) : null,
+                                    ]}
                                 />
                             </Col>
                         </Row>
@@ -192,20 +199,20 @@ const MyDepositions = () => {
                                     },
                                 };
                             }}
+                            shouldUpdateHeightAfterTime={100}
                             rowKey="id"
                             loading={loading}
                             dataSource={mappedDepositions || []}
                             columns={depositionColumns}
                             onChange={(newPage, _, sorter) => {
-                                setSorting(sorter);
-                                handleListChange(newPage, getFilterParam(filterCriteria), sorter);
+                                handleListChange(newPage, null, sorter);
                             }}
                             sortDirections={["descend", "ascend"]}
                             pagination={{
                                 current: page,
                                 position: ["bottomRight"],
                                 pageSize: DEPOSITIONS_COUNT_PER_PAGE,
-                                total: filterCriteria === FilterCriteria.UPCOMING ? totalUpcoming : totalPast,
+                                total: filter?.PastDepositions === true ? totalPast : totalUpcoming,
                                 showSizeChanger: false,
                             }}
                             scroll

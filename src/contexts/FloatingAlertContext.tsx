@@ -1,6 +1,6 @@
 import React, { createContext, useState, useContext, useCallback, useRef, useEffect } from "react";
+import Alert from "prp-components-library/src/components/Alert";
 import styled, { ThemeProvider } from "styled-components";
-import Alert from "../components/Alert";
 import { theme } from "../constants/styles/theme";
 import { getREM } from "../constants/styles/utils";
 import { GlobalStateContext } from "../state/GlobalState";
@@ -50,10 +50,12 @@ export const FloatingAlertContextProvider = ({ children, parentThemeMode }: IFlo
         alertsRef.current = alerts;
     }, [alerts]);
 
-    const addFloatingAlert = useCallback((props) => {
+    const addFloatingAlert = useCallback((props, shouldNotRepeat?) => {
         const lastAlert = alertsRef.current[alertsRef.current.length - 1];
-        const isLastAlertTheSameAsIncomming = props?.message === lastAlert?.message;
-        if (!showAlert.current && isLastAlertTheSameAsIncomming) return;
+        const isLastAlertTheSameAsIncoming = props?.message === lastAlert?.message;
+        if (!showAlert.current && isLastAlertTheSameAsIncoming && shouldNotRepeat) {
+            return;
+        }
         showAlert.current = false;
         setAlerts((oldAlerts) => [...oldAlerts, props]);
     }, []);

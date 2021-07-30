@@ -1,9 +1,8 @@
-import React from "react";
+import Alert from "prp-components-library/src/components/Alert";
+import Space from "prp-components-library/src/components/Space";
+import Text from "prp-components-library/src/components/Text";
+import Title from "prp-components-library/src/components/Title";
 import { NETWORK_ERROR } from "../../constants/codeSent";
-import Space from "../../components/Space";
-import Alert from "../../components/Alert";
-import Title from "../../components/Typography/Title";
-import Text from "../../components/Typography/Text";
 import { StyledButtonLink } from "./styles";
 import { theme } from "../../constants/styles/theme";
 import ColorStatus from "../../types/ColorStatus";

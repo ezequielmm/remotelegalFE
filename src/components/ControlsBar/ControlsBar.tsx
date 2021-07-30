@@ -1,5 +1,14 @@
 import React, { ReactElement, useEffect, useState, useCallback } from "react";
 import { useHistory } from "react-router";
+import Badge from "prp-components-library/src/components/Badge";
+import Button from "prp-components-library/src/components/Button";
+import Confirm from "prp-components-library/src/components/Confirm";
+import Dropdown from "prp-components-library/src/components/Dropdown";
+import Icon from "prp-components-library/src/components/Icon";
+import Menu from "prp-components-library/src/components/Menu";
+import Popover from "prp-components-library/src/components/Popover";
+import Space from "prp-components-library/src/components/Space";
+import Text from "prp-components-library/src/components/Text";
 import { ThemeProvider } from "styled-components";
 import { Row, Col } from "antd";
 import { LocalAudioTrack, LocalParticipant, LocalVideoTrack } from "twilio-video";
@@ -37,17 +46,8 @@ import { BreakroomModel } from "../../models";
 import Chat from "../../routes/InDepo/Chat";
 import ColorStatus from "../../types/ColorStatus";
 import { ThemeMode } from "../../types/ThemeType";
-import Button from "../Button";
-import Confirm from "../Confirm";
 import Control from "../Control/Control";
-import Dropdown from "../Dropdown";
-import Popover from "../Popover";
-import Icon from "../Icon";
-import Badge from "../Badge";
 import Logo from "../Logo";
-import Menu from "../Menu";
-import Space from "../Space";
-import Text from "../Typography/Text";
 import CopyLink from "./components/CopyLink";
 import EndDepoModal from "./components/EndDepoModal";
 import getLeaveModalTextContent from "./helpers/getLeaveModalTextContent";
@@ -510,13 +510,9 @@ export default function ControlsBar({
                                 onVisibleChange={toggleMore}
                                 visible={moreOpen}
                                 overlay={
-                                    <Menu>
-                                        <Menu.Item key="0">
-                                            <Button
-                                                data-testid="support_button"
-                                                type="link"
-                                                onClick={() => setHelpModal(true)}
-                                            >
+                                    <Menu selectable={false}>
+                                        <Menu.Item key="0" onClick={() => setHelpModal(true)}>
+                                            <Button data-testid="support_button" type="link">
                                                 <Space size="small" align="center">
                                                     <Icon icon={SupportIcon} size={8} color={ColorStatus.white} />
                                                     <Text state={ColorStatus.white} size="small">
@@ -525,8 +521,8 @@ export default function ControlsBar({
                                                 </Space>
                                             </Button>
                                         </Menu.Item>
-                                        <Menu.Item key="1">
-                                            <Button data-testid="settings_button" type="link" onClick={toggleSettingsModal}>
+                                        <Menu.Item key="1" onClick={toggleSettingsModal}>
+                                            <Button data-testid="settings_button" type="link">
                                                 <Space size="small" align="center">
                                                     <Icon icon={SettingsIcon} size={8} color={ColorStatus.white} />
                                                     <Text state={ColorStatus.white} size="small">

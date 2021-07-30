@@ -1,11 +1,15 @@
-import React, { SetStateAction, useEffect, useRef, useState } from "react";
+import { SetStateAction, useEffect, useRef, useState, Dispatch } from "react";
 import { Row } from "antd";
 import dayjs from "dayjs";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import Do from "dayjs/plugin/advancedFormat";
-import Space from "../../../components/Space";
-import Title from "../../../components/Typography/Title";
+import Button from "prp-components-library/src/components/Button";
+import Divider from "prp-components-library/src/components/Divider";
+import Space from "prp-components-library/src/components/Space";
+import Spinner from "prp-components-library/src/components/Spinner";
+import Text from "prp-components-library/src/components/Text";
+import Title from "prp-components-library/src/components/Title";
 import { ReactComponent as SuccessIcon } from "../../../assets/icons/Success.svg";
 import { ReactComponent as CalendarIcon } from "../../../assets/icons/calendar.svg";
 import { ReactComponent as TimeIcon } from "../../../assets/icons/time.svg";
@@ -23,16 +27,12 @@ import { DepositionModel } from "../../../models";
 import * as CONSTANTS from "../../../constants/activeDepositionDetails";
 import SectionCard from "./SectionCard";
 import SectionCardCol from "./SectionCardCol";
-import Text from "../../../components/Typography/Text";
 import ColorStatus from "../../../types/ColorStatus";
-import Divider from "../../../components/Divider";
-import Button from "../../../components/Button";
 import { useFetchCaption } from "../../../hooks/activeDepositionDetails/hooks";
 import Message from "../../../components/Message";
 import downloadFile from "../../../helpers/downloadFile";
 import { useFetchDeposition } from "../../../hooks/depositions/hooks";
 import CardFetchError from "../../../components/CardFetchError";
-import Spinner from "../../../components/Spinner";
 import EditDepoModal from "./EditDepoModal";
 import EditRequesterNotesModal from "./RequesterModal";
 import { mapTimeZone } from "../../../models/general";
@@ -48,7 +48,7 @@ const DepositionDetailsSection = ({
 }: {
     deposition: DepositionModel.IDeposition;
     activeKey: string;
-    setUpdatedDeposition: React.Dispatch<SetStateAction<DepositionModel.IDeposition>>;
+    setUpdatedDeposition: Dispatch<SetStateAction<DepositionModel.IDeposition>>;
 }) => {
     const { fetchDeposition, loading, deposition: updatedDeposition, error } = useFetchDeposition();
     const {

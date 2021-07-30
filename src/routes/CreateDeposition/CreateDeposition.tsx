@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { Form } from "antd";
+import Button from "prp-components-library/src/components/Button";
+import Space from "prp-components-library/src/components/Space";
+import Title from "prp-components-library/src/components/Title";
 import { useHistory } from "react-router";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { FormProvider, useForm } from "react-hook-form";
-import Space from "../../components/Space";
-import Button from "../../components/Button";
-import Title from "../../components/Typography/Title";
 import CaseSection from "./CaseSection";
 import WitnessesSection from "./WitnessesSection";
 import DetailsSection from "./DetailsSection";

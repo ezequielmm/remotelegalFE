@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import Button from "prp-components-library/src/components/Button";
 import { getPX, getREM, hexToRGBA } from "../../constants/styles/utils";
 
 export const RoughDraftDetailDepoPill = styled.div`
@@ -26,4 +27,8 @@ export const CustomGridSpace = styled.div`
 
 export const TitleWrapper = styled.div`
     overflow: hidden;
+`;
+
+export const StyledLink = styled(Button)`
+    color: ${({ theme }) => theme.colors.disabled[7]};
 `;

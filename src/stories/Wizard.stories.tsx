@@ -1,19 +1,18 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Story, Meta } from "@storybook/react/types-6-0";
 
 import { Form } from "antd";
+import Button from "prp-components-library/src/components/Button";
+import { InputWrapper } from "prp-components-library/src/components/Input/styles";
+import Select from "prp-components-library/src/components/Select";
+import Text from "prp-components-library/src/components/Text";
+import Wizard from "prp-components-library/src/components/Wizard";
 import styled from "styled-components";
-import Wizard from "../components/Wizard";
 
-// Join Depo demo imports
-import { InputWrapper } from "../components/Input/styles";
-import Select from "../components/Select";
-import Button from "../components/Button";
 import isInvalidEMail from "../helpers/isInvalidEmail";
 import useInput from "../hooks/useInput";
 import ColorStatus from "../types/ColorStatus";
-import Text from "../components/Typography/Text";
 
 export default {
     title: "Wizard",
@@ -45,23 +44,27 @@ const Template: Story = ({ ...args }) => {
         margin-bottom: 24px;
     `;
 
-    const { inputValue: emailValue, input: emailInput, invalid: emailInvalid, setValue: setEmailValue } = useInput(
-        isInvalidEMail,
-        {
-            name: "email",
-            placeholder: "Enter your email",
-            maxLength: 50,
-        }
-    );
+    const {
+        inputValue: emailValue,
+        input: emailInput,
+        invalid: emailInvalid,
+        setValue: setEmailValue,
+    } = useInput(isInvalidEMail, {
+        name: "email",
+        placeholder: "Enter your email",
+        maxLength: 50,
+    });
 
-    const { inputValue: nameValue, input: nameInput, invalid: nameInvalid, setValue: setNameValue } = useInput(
-        isInputEmpty,
-        {
-            name: "fullname",
-            placeholder: "Enter your full name",
-            maxLength: 50,
-        }
-    );
+    const {
+        inputValue: nameValue,
+        input: nameInput,
+        invalid: nameInvalid,
+        setValue: setNameValue,
+    } = useInput(isInputEmpty, {
+        name: "fullname",
+        placeholder: "Enter your full name",
+        maxLength: 50,
+    });
 
     const handleRoleChange = (value) => {
         setRole(value || null);

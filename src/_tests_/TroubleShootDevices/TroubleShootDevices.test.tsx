@@ -42,7 +42,7 @@ beforeEach(() => {
         value: { reload: jest.fn() },
     });
     customDeps = getMockDeps();
-    customDeps.apiService.setParticipantStatus = jest.fn().mockResolvedValue({});
+    customDeps.apiService.notifyParticipantPresence = jest.fn().mockResolvedValue({});
     mockVolumeMeter.mockReturnValue({ volumeLevel: 10 });
     getUserMediaMock.mockResolvedValue(TEST_CONSTANTS.STREAM_MOCK);
     enumerateDevicesMock.mockResolvedValue(TEST_CONSTANTS.DEVICES_LIST_MOCK);
@@ -277,13 +277,13 @@ test("it calls setParticipantStatus with the right params and sets the devices i
         speakers: TEST_CONSTANTS.DEVICES_LIST_MOCK[2].deviceId,
     };
     await waitFor(() => {
-        expect(customDeps.apiService.setParticipantStatus).toHaveBeenCalledWith({ isMuted: false, depositionID });
+        expect(customDeps.apiService.notifyParticipantPresence).toHaveBeenCalledWith({ isMuted: false, depositionID });
         expect(JSON.parse(localStorage.getItem("selectedDevices"))).toEqual(LOCALSTORAGE_OBJECT);
         expect(screen.getByText("IN DEPO")).toBeInTheDocument();
     });
 });
-test("Alert is shown when setParticipantStatus fetch fails", async () => {
-    customDeps.apiService.setParticipantStatus = jest.fn().mockRejectedValue({});
+test("Alert is shown when notifyParticipantPresence fetch fails", async () => {
+    customDeps.apiService.notifyParticipantPresence = jest.fn().mockRejectedValue({});
     renderWithGlobalContext(<TroubleShootUserDevices />, customDeps);
     await waitFor(() => expect(screen.queryByTestId("overlay")).toBeFalsy());
     userEvent.click(screen.getByText(MODULE_CONSTANTS.JOIN_BUTTON_LABEL));
@@ -291,7 +291,7 @@ test("Alert is shown when setParticipantStatus fetch fails", async () => {
         expect(screen.getByText(MODULE_CONSTANTS.NETWORK_ERROR)).toBeInTheDocument();
     });
 });
-test("it calls setParticipantStatus with the right params and sets the devices in localStorage with false if none are available", async () => {
+test("it calls notifyParticipantPresence with the right params and sets the devices in localStorage with false if none are available", async () => {
     enumerateDevicesMock.mockResolvedValue(TEST_CONSTANTS.NON_AVAILABLE_DEVICES_LIST_MOCK);
     renderWithGlobalContext(<TroubleShootUserDevices />, customDeps);
     await waitFor(() => expect(screen.queryByTestId("overlay")).toBeFalsy());
@@ -353,6 +353,11 @@ test("it changes devices", async () => {
     const initialState = {
         ...rootReducer,
         initialState: {
+            depositionsList: {
+                sorting: "",
+                pageNumber: 0,
+                filter: undefined,
+            } as any,
             user: { ...rootReducer.initialState.user },
             postDepo: { ...rootReducer.initialState.postDepo },
             signalR: { ...rootReducer.initialState.signalR },

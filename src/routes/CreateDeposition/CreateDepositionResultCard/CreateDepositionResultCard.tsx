@@ -1,12 +1,12 @@
 import React from "react";
-import Space from "../../../components/Space";
-import Button from "../../../components/Button";
+import Button from "prp-components-library/src/components/Button";
+import CardResult from "prp-components-library/src/components/CardResult";
+import Icon from "prp-components-library/src/components/Icon";
+import { CustomStatus } from "prp-components-library/src/components/Result/Result";
+import Space from "prp-components-library/src/components/Space";
 import * as CONSTANTS from "../../../constants/createDeposition";
 import CardFetchError from "../../../components/CardFetchError";
-import { CustomStatus } from "../../../components/Result/Result";
-import CardResult from "../../../components/CardResult";
 import { ReactComponent as SuccessCreateIcon } from "../../../assets/icons/success-schedule.svg";
-import Icon from "../../../components/Icon";
 
 interface CreateDepositionResultCardProps {
     addNewCase: () => void;

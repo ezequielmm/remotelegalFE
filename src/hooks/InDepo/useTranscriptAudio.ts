@@ -5,26 +5,27 @@ import actions from "../../state/InDepo/InDepoActions";
 import { DepositionID } from "../../state/types";
 import useAsyncCallback from "../useAsyncCallback";
 import useSignalR from "../useSignalR";
-import useWebSocket from "../useWebSocket";
 import ENV from "../../constants/env";
 
-const useTranscriptAudio = (doNotConnectToSocket = false) => {
+const useTranscriptAudio = (doNotConnectToSocket = false, sampleRate: number) => {
     const { dispatch, state } = useContext(GlobalStateContext);
     const { isRecording } = state.room;
     const { depositionID } = useParams<DepositionID>();
     const { TRANSCRIPT_URL } = ENV.API;
-    const { sendMessage: sendSignalRMessage, unsubscribeMethodFromGroup, subscribeToGroup, signalR } = useSignalR(
-        "/transcriptionHub",
+    const transcriptHubUrl = `/transcriptionHub?depositionId=${depositionID}`;
+    const { sendMessage, unsubscribeMethodFromGroup, subscribeToGroup, signalR } = useSignalR(
+        transcriptHubUrl,
         TRANSCRIPT_URL,
         true,
-        doNotConnectToSocket
+        doNotConnectToSocket,
+        true
     );
 
     useEffect(() => {
         if (signalR?.connectionState === "Connected" && depositionID) {
-            sendSignalRMessage("SubscribeToDeposition", { depositionId: depositionID });
+            sendMessage("SubscribeToDeposition", { depositionId: depositionID });
         }
-    }, [signalR, depositionID, sendSignalRMessage]);
+    }, [signalR, depositionID, sendMessage]);
 
     useEffect(() => {
         if (!signalR) {
@@ -36,12 +37,30 @@ const useTranscriptAudio = (doNotConnectToSocket = false) => {
     }, [signalR]);
 
     useEffect(() => {
+        if (sendMessage && signalR && sampleRate) {
+            sendMessage("ChangeTranscriptionStatus", {
+                sampleRate,
+                depositionId: depositionID,
+                offRecord: !isRecording,
+            });
+        }
+    }, [sendMessage, isRecording, signalR, depositionID, sampleRate]);
+
+    useEffect(() => {
         let manageReceiveNotification;
         if (dispatch && signalR && unsubscribeMethodFromGroup && subscribeToGroup) {
             manageReceiveNotification = (message) => {
                 const { id, transcriptDateTime, text, userName } = message.content;
                 if (!text) return;
-                const parsedTranscription = { id, text, userName, transcriptDateTime };
+                const parsedTranscription = {
+                    id,
+                    text,
+                    userName,
+                    transcriptDateTime:
+                        Array.isArray(transcriptDateTime) && transcriptDateTime.length > 0
+                            ? new Date(transcriptDateTime[0])
+                            : transcriptDateTime,
+                };
                 dispatch(actions.addTranscription(parsedTranscription));
             };
             subscribeToGroup("ReceiveNotification", manageReceiveNotification);
@@ -51,32 +70,17 @@ const useTranscriptAudio = (doNotConnectToSocket = false) => {
         };
     }, [signalR, subscribeToGroup, dispatch, unsubscribeMethodFromGroup]);
 
-    const [sendMessage] = useWebSocket(`/transcriptions`, undefined, true);
-
     const [transcriptAudio] = useAsyncCallback(
-        async (audio: ArrayBuffer | string, newSampleRate: number, reconnect: boolean) => {
-            if (isRecording) {
-                sendMessage({
-                    message: audio,
-                    extraUrl: `depositionId=${depositionID}&sampleRate=${newSampleRate}`,
-                    reconnect,
-                });
-            }
-        },
-        [isRecording, sendMessage]
-    );
-
-    const [stopAudio] = useAsyncCallback(
-        async (newSampleRate: number) => {
-            sendMessage({
-                message: JSON.stringify({ offRecord: true }),
-                extraUrl: `depositionId=${depositionID}&sampleRate=${newSampleRate}`,
+        async (audio: ArrayBuffer) => {
+            sendMessage("UploadTranscription", {
+                depositionId: depositionID,
+                audio: new Uint8Array(audio),
             });
         },
         [sendMessage]
     );
 
-    return [stopAudio, transcriptAudio];
+    return { transcriptAudio, sendMessage };
 };
 
 export default useTranscriptAudio;

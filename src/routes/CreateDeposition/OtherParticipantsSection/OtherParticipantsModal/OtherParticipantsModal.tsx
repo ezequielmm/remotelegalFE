@@ -1,19 +1,19 @@
 import React, { ReactElement } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Form, Row } from "antd";
+import Button from "prp-components-library/src/components/Button";
+import Confirm from "prp-components-library/src/components/Confirm";
+import Modal from "prp-components-library/src/components/Modal";
+import RHFInput from "prp-components-library/src/components/RHF/RHFInput";
+import RHFSelect from "prp-components-library/src/components/RHF/RHFSelect";
+import Select from "prp-components-library/src/components/Select";
+import Space from "prp-components-library/src/components/Space";
+import Text from "prp-components-library/src/components/Text";
+import Title from "prp-components-library/src/components/Title";
 import { useForm, useFormContext } from "react-hook-form";
-import Space from "../../../../components/Space";
-import Modal from "../../../../components/Modal";
-import Confirm from "../../../../components/Confirm";
-import Button from "../../../../components/Button";
-import Title from "../../../../components/Typography/Title";
-import Text from "../../../../components/Typography/Text";
 import * as CONSTANTS from "../../../../constants/otherParticipants";
-import RHFInput from "../../../../components/RHFInput";
-import RHFSelect from "../../../../components/RHFSelect";
 import { IParticipant } from "../../../../models/participant";
 import OtherParticipantsSchema from "../../../../schemas/OtherParticipantsSchema";
-import Select from "../../../../components/Select";
 import ColorStatus from "../../../../types/ColorStatus";
 import { GlobalStateContext } from "../../../../state/GlobalState";
 
@@ -111,6 +111,7 @@ export default function OtherParticipantsModal({
                                 label={CONSTANTS.OPTIONAL_NAME_LABEL}
                                 placeholder={CONSTANTS.NAME_PLACEHOLDER}
                                 noMargin
+                                maxLength={50}
                             />
                             <RHFInput
                                 control={control}

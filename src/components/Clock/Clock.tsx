@@ -1,5 +1,4 @@
-import React from "react";
-import Text from "../Typography/Text";
+import Text from "prp-components-library/src/components/Text";
 import useShowTime from "../../hooks/useShowTime";
 import { TimeZones } from "../../models/general";
 import ColorStatus from "../../types/ColorStatus";

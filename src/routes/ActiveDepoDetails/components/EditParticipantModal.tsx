@@ -1,23 +1,23 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Form, Row } from "antd";
-import Space from "../../../components/Space";
-import Text from "../../../components/Typography/Text";
-import Modal from "../../../components/Modal";
-import Confirm from "../../../components/Confirm";
-import Button from "../../../components/Button";
-import Title from "../../../components/Typography/Title";
+import Button from "prp-components-library/src/components/Button";
+import Confirm from "prp-components-library/src/components/Confirm";
+import Input from "prp-components-library/src/components/Input";
+import Modal from "prp-components-library/src/components/Modal";
+import { InputWrapper } from "prp-components-library/src/components/Input/styles";
+import Select from "prp-components-library/src/components/Select";
+import Space from "prp-components-library/src/components/Space";
+import Text from "prp-components-library/src/components/Text";
+import Title from "prp-components-library/src/components/Title";
+import { Status } from "prp-components-library/src/components/StatusPill/StatusPill";
 import * as CONSTANTS from "../../../constants/activeDepositionDetails";
 import { IParticipant, Roles } from "../../../models/participant";
-import Select from "../../../components/Select";
-import Input from "../../../components/Input";
 import normalizedRoles, { ROLES } from "../../../constants/roles";
-import { InputWrapper } from "../../../components/Input/styles";
 import { DepositionModel } from "../../../models";
 import isInvalidEmail from "../../../helpers/isInvalidEmail";
 import isPhoneInvalid from "../../../helpers/isPhoneInvalid";
 import ColorStatus from "../../../types/ColorStatus";
 import { useEditParticipant } from "../../../hooks/activeDepositionDetails/hooks";
-import { Status } from "../../../components/StatusPill/StatusPill";
 import removeWhiteSpace from "../../../helpers/removeWhitespace";
 import useFloatingAlertContext from "../../../hooks/useFloatingAlertContext";
 
@@ -118,9 +118,9 @@ const EditParticipantModal = ({
 
     const handleSubmitParticipant = () => {
         const body = {
-            name: formState.name.value,
-            email: formState.email.value,
-            phone: formState.phone.value,
+            name: formState.name.value?.trim(),
+            email: formState.email.value?.trim(),
+            phone: formState.phone.value?.trim(),
             id: currentParticipant.id,
             role: removeWhiteSpace(formState.role.value),
         };

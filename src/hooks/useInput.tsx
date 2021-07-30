@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import Input from "../components/Input";
-import { IInputProps } from "../components/Input/Input";
+import { useState } from "react";
+import Input from "prp-components-library/src/components/Input";
+import { IInputProps } from "prp-components-library/src/components/Input/Input";
 
 const useInput = (
     isInvalid?: {

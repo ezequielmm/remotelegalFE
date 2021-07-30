@@ -17,7 +17,7 @@ jest.mock("../../hooks/InDepo/useParticipantStatus", () => ({
     })),
 }));
 
-test("Shows waiting for witness and participant identity", async () => {
+test("Shows waiting for witness and participant identity", () => {
     useGetParticipantStatus.mockImplementation(() => ({
         participantsStatus: {
             "test@test.com": {
@@ -40,7 +40,7 @@ test("Shows waiting for witness and participant identity", async () => {
     expect(queryByTestId("participant_time")).toBeTruthy();
 });
 
-test("Shows both participants´ identities", async () => {
+test("Shows both participants´ identities", () => {
     useGetParticipantStatus.mockImplementation(() => ({
         participantsStatus: {
             "test@test.com": {
@@ -65,7 +65,7 @@ test("Shows both participants´ identities", async () => {
     expect(queryByTestId("participant_time")).toBeTruthy();
 });
 
-test("Should display the muted microphone icon when the enableMuteUnmute is true and the participant is muted", async () => {
+test("Should display the muted microphone icon when the enableMuteUnmute is true and the participant is muted", () => {
     useGetParticipantStatus.mockImplementation(() => ({
         participantsStatus: {
             "test@test.com": {
@@ -75,7 +75,7 @@ test("Should display the muted microphone icon when the enableMuteUnmute is true
         },
     }));
     const participant = getParticipant("test2", "Witness", "test@test.com");
-    const { queryByTestId } = renderWithGlobalContext(
+    const { queryAllByTestId } = renderWithGlobalContext(
         <VideoConference
             attendees={participantMap}
             timeZone={TimeZones.ET}
@@ -84,10 +84,11 @@ test("Should display the muted microphone icon when the enableMuteUnmute is true
             enableMuteUnmute
         />
     );
-    expect(queryByTestId("participant_muted")).toBeInTheDocument();
+
+    expect(queryAllByTestId("participant_muted")[0].parentElement).toHaveStyle({ opacity: 1 });
 });
 
-test("Should not display the muted microphone icon when the enableMuteUnmute is false", async () => {
+test("Should not display the muted microphone icon when the enableMuteUnmute is false", () => {
     useGetParticipantStatus.mockImplementation(() => ({
         participantsStatus: {
             "test@test.com": {
@@ -97,7 +98,7 @@ test("Should not display the muted microphone icon when the enableMuteUnmute is 
         },
     }));
     const participant = getParticipant("test2", "Witness", "test@test.com");
-    const { queryByTestId } = renderWithGlobalContext(
+    const { queryAllByTestId } = renderWithGlobalContext(
         <VideoConference
             attendees={participantMap}
             timeZone={TimeZones.ET}
@@ -105,10 +106,10 @@ test("Should not display the muted microphone icon when the enableMuteUnmute is 
             localParticipant={participant}
         />
     );
-    expect(queryByTestId("participant_muted")).not.toBeInTheDocument();
+    expect(queryAllByTestId("participant_muted")[0].parentElement).toHaveStyle({ opacity: 0 });
 });
 
-test("Should not display the muted microphone icon when the enableMuteUnmute is true but the participant is muted", async () => {
+test("Should not display the muted microphone icon when the enableMuteUnmute is true but the participant is not muted", () => {
     useGetParticipantStatus.mockImplementation(() => ({
         participantsStatus: {
             "test@test.com": {
@@ -118,7 +119,7 @@ test("Should not display the muted microphone icon when the enableMuteUnmute is 
         },
     }));
     const participant = getParticipant("test2", "Witness", "test@test.com");
-    const { queryByTestId } = renderWithGlobalContext(
+    const { queryAllByTestId } = renderWithGlobalContext(
         <VideoConference
             attendees={participantMap}
             timeZone={TimeZones.ET}
@@ -127,10 +128,10 @@ test("Should not display the muted microphone icon when the enableMuteUnmute is 
             enableMuteUnmute
         />
     );
-    expect(queryByTestId("participant_muted")).not.toBeInTheDocument();
+    expect(queryAllByTestId("participant_muted")[0].parentElement).toHaveStyle({ opacity: 0 });
 });
 
-test("Should not display the muted microphone icon when the enableMuteUnmute is true but the a different participant is muted", async () => {
+test("Should not display the muted microphone icon when the enableMuteUnmute is true but the a different participant is muted", () => {
     useGetParticipantStatus.mockImplementation(() => ({
         participantsStatus: {
             "test@test.com": {
@@ -140,7 +141,7 @@ test("Should not display the muted microphone icon when the enableMuteUnmute is 
         },
     }));
     const participant = getParticipant("test2", "Witness", "test@test.com");
-    const { queryByTestId } = renderWithGlobalContext(
+    const { queryAllByTestId } = renderWithGlobalContext(
         <VideoConference
             attendees={participantMap}
             timeZone={TimeZones.ET}
@@ -149,5 +150,5 @@ test("Should not display the muted microphone icon when the enableMuteUnmute is 
             enableMuteUnmute
         />
     );
-    expect(queryByTestId("participant_muted")).not.toBeInTheDocument();
+    expect(queryAllByTestId("participant_muted")[0].parentElement).toHaveStyle({ opacity: 0 });
 });

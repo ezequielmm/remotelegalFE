@@ -1,16 +1,15 @@
-import React from "react";
 // also exported from '@storybook/react' if you can deal with breaking changes in 6.1
 import { Story, Meta } from "@storybook/react/types-6-0";
 import { Menu, Dropdown } from "antd";
+import Button from "prp-components-library/src/components/Button";
+import Space from "prp-components-library/src/components/Space";
+import Table from "prp-components-library/src/components/Table";
+import Text from "prp-components-library/src/components/Text";
 import { FilePdfOutlined, MoreOutlined } from "@ant-design/icons";
 import { ContainerBackground } from "./Decorators";
-import Button from "../components/Button";
-import Text from "../components/Typography/Text";
 
-import Table from "../components/Table";
 import { theme } from "../constants/styles/theme";
 import { ThemeMode } from "../types/ThemeType";
-import Space from "../components/Space";
 
 const menu = (
     <Menu>

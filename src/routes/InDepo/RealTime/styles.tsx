@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import Space from "../../../components/Space";
+import Space from "prp-components-library/src/components/Space";
 import { getPX, getREM, hexToRGBA } from "../../../constants/styles/utils";
 
 export const StyledRealTimeContainer = styled.div`

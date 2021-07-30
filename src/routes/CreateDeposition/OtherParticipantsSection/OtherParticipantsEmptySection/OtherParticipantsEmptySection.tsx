@@ -1,7 +1,7 @@
-import React, { ReactElement } from "react";
-import Space from "../../../../components/Space";
-import Icon from "../../../../components/Icon";
-import Text from "../../../../components/Typography/Text";
+import { ReactElement } from "react";
+import Icon from "prp-components-library/src/components/Icon";
+import Space from "prp-components-library/src/components/Space";
+import Text from "prp-components-library/src/components/Text";
 import { ReactComponent as ParticipantsIcon } from "../../../../assets/icons/participants.svg";
 import * as CONSTANTS from "../../../../constants/otherParticipants";
 import ColorStatus from "../../../../types/ColorStatus";

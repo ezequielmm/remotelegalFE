@@ -1,13 +1,12 @@
-import React from "react";
-import Space from "../../components/Space";
-import Icon from "../../components/Icon";
-import Text from "../../components/Typography/Text";
+import Button from "prp-components-library/src/components/Button";
+import { useHistory } from "react-router";
+import Icon from "prp-components-library/src/components/Icon";
+import Space from "prp-components-library/src/components/Space";
+import Text from "prp-components-library/src/components/Text";
 import { ReactComponent as DepositionIcon } from "../../assets/icons/deposition.svg";
 import * as CONSTANTS from "../../constants/depositions";
 import ColorStatus from "../../types/ColorStatus";
-import Button from "../../components/Button";
 import { FilterCriteria } from "../../types/DepositionFilterCriteriaType";
-import { useHistory } from "react-router";
 
 interface MyDepositionsEmptyProps {
     type?: string;

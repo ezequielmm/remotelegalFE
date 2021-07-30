@@ -35,7 +35,8 @@
         "@typescript-eslint/no-unused-vars": "error",
         "no-shadow": "off",
         "react/require-default-props": "off",
-        "import/no-unresolved": "off"
+        "import/no-unresolved": "off",
+        "react/jsx-uses-react": "off"
     },
     "settings": {
         "import/resolver": {

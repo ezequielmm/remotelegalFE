@@ -9,6 +9,7 @@ import { GlobalState, rootReducer as globalReducer } from "../../state/GlobalSta
 import getMockDeps from "./getMockDeps";
 import { ThemeMode } from "../../types/ThemeType";
 import { FloatingAlertContextProvider } from "../../contexts/FloatingAlertContext";
+import { QueryClient, QueryClientProvider } from "react-query";
 
 export default (
     children: JSX.Element,
@@ -17,16 +18,19 @@ export default (
     customHistory?
 ) => {
     const history = createMemoryHistory();
+    const queryClient = new QueryClient();
     const renderAPI = render(
-        <ThemeProvider theme={{ ...theme, mode: ThemeMode[theme.mode] }}>
-            <FloatingAlertContextProvider>
-                <Router history={customHistory || history}>
-                    <GlobalState deps={deps} rootReducer={rootReducer}>
-                        {children}
-                    </GlobalState>
-                </Router>
-            </FloatingAlertContextProvider>
-        </ThemeProvider>
+        <QueryClientProvider client={queryClient} contextSharing>
+            <ThemeProvider theme={{ ...theme, mode: ThemeMode[theme.mode] }}>
+                <FloatingAlertContextProvider>
+                    <Router history={customHistory || history}>
+                        <GlobalState deps={deps} rootReducer={rootReducer}>
+                            {children}
+                        </GlobalState>
+                    </Router>
+                </FloatingAlertContextProvider>
+            </ThemeProvider>
+        </QueryClientProvider>
     );
     return { ...renderAPI, mockReducer: rootReducer, deps };
 };

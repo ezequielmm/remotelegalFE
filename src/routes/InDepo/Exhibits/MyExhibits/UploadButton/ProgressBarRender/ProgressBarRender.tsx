@@ -1,6 +1,6 @@
 import { UploadFileStatus } from "antd/lib/upload/interface";
-import React, { ReactElement, useEffect, useState } from "react";
-import ProgressBar from "../../../../../../components/ProgressBar";
+import { ReactElement, useEffect, useState } from "react";
+import ProgressBar from "prp-components-library/src/components/ProgressBar";
 import * as CONSTANTS from "../../../../../../constants/exhibits";
 
 interface Props {

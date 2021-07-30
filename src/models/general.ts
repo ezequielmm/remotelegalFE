@@ -5,6 +5,7 @@ import { IGeneralUi } from "../state/GeneralUi/GeneralUiReducer";
 import { IPostDepo } from "../state/PostDepo/PostDepoReducer";
 import { ISignalR } from "../state/SignalR/SignalRReducer";
 import { IUserReducer } from "../state/User/UserReducer";
+import { IDepositionsListReducer } from "../state/Depositions/DepositionsListReducer";
 
 export interface IAction<T = string, P = any> {
     type: T;
@@ -28,6 +29,7 @@ export type IGlobalState = {
     signalR: ISignalR;
     postDepo: IPostDepo;
     user: IUserReducer;
+    depositionsList: IDepositionsListReducer;
 };
 
 export interface IGlobalContext {

@@ -1,6 +1,5 @@
-import React from "react";
 import { ButtonProps, ButtonType } from "antd/lib/button";
-import Text from "../Typography/Text";
+import Text from "prp-components-library/src/components/Text";
 import { StyledRoundedControl, StyledCircleControl, StyledRoundedButton } from "./styles";
 import ColorStatus from "../../types/ColorStatus";
 

@@ -1,11 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import dayjs from "dayjs";
+import Alert from "prp-components-library/src/components/Alert";
+import Icon from "prp-components-library/src/components/Icon";
+import Space from "prp-components-library/src/components/Space";
+import Text from "prp-components-library/src/components/Text";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
-import Space from "../../../components/Space";
-import Text from "../../../components/Typography/Text";
-import Alert from "../../../components/Alert";
-import Icon from "../../../components/Icon";
 import { ReactComponent as TimeIcon } from "../../../assets/icons/time.svg";
 import { ReactComponent as InfoIcon } from "../../../assets/icons/information.svg";
 import { ContainerProps, StyledLayoutContent, StyledLayoutCotainer } from "../styles";
@@ -25,7 +25,7 @@ const RealTime = ({
     visible,
     timeZone,
     transcriptions,
-    playedSeconds,
+    playedTimeValue,
     scrollToHighlighted,
     transcriptionsWithoutEvents,
 }: ContainerProps & {
@@ -34,7 +34,7 @@ const RealTime = ({
     timeZone: TimeZones;
     transcriptions?: (TranscriptionModel.Transcription & TranscriptionModel.TranscriptionPause)[];
     transcriptionsWithoutEvents?: TranscriptionModel.Transcription[];
-    playedSeconds?: number;
+    playedTimeValue?: number;
     scrollToHighlighted?: boolean;
 }) => {
     const scrollableRef = useRef(null);
@@ -43,40 +43,40 @@ const RealTime = ({
     useEffect(() => {
         const highlightTranscript = () => {
             const lastTranscription = transcriptionsWithoutEvents[transcriptionsWithoutEvents.length - 1];
-            if (playedSeconds >= lastTranscription.transcriptionVideoTime) {
-                return setCurrentTranscript(lastTranscription.id);
+            if (playedTimeValue >= lastTranscription?.transcriptionVideoTime) {
+                return setCurrentTranscript(lastTranscription?.id);
             }
             const currentTranscriptTranscription = transcriptionsWithoutEvents.find(
                 (transcription, index) =>
-                    playedSeconds <=
-                    transcription.transcriptionVideoTime +
-                        transcriptionsWithoutEvents[index + 1].transcriptionVideoTime -
-                        transcription.transcriptionVideoTime
+                    playedTimeValue <=
+                    transcription?.transcriptionVideoTime +
+                        transcriptionsWithoutEvents[index + 1]?.transcriptionVideoTime -
+                        transcription?.transcriptionVideoTime
             );
 
             return setCurrentTranscript(currentTranscriptTranscription?.id);
         };
 
-        if (transcriptionsWithoutEvents?.length && playedSeconds) {
+        if (transcriptionsWithoutEvents?.length && playedTimeValue) {
             highlightTranscript();
         }
-    }, [playedSeconds, transcriptionsWithoutEvents]);
+    }, [playedTimeValue, transcriptionsWithoutEvents]);
 
     const transcriptionSlicingLength = transcriptions?.length > 20 ? transcriptions?.length - 20 : 0;
 
     const sortedTranscriptions = !scrollToHighlighted
         ? transcriptions
               ?.slice(transcriptionSlicingLength)
-              .sort((a, b) => new Date(a.transcriptDateTime).getTime() - new Date(b.transcriptDateTime).getTime())
+              .sort((a, b) => new Date(a?.transcriptDateTime)?.getTime() - new Date(b?.transcriptDateTime)?.getTime())
         : [];
 
     const transcriptionsWithoutDuplicates = !scrollToHighlighted
-        ? [].concat(transcriptions.slice(0, transcriptionSlicingLength), sortedTranscriptions)
+        ? [].concat(transcriptions?.slice(0, transcriptionSlicingLength), sortedTranscriptions)
         : transcriptions;
 
     useEffect(() => {
         if (!scrollToHighlighted && transcriptionsWithoutDuplicates?.length) {
-            setCurrentTranscript(transcriptionsWithoutDuplicates[transcriptionsWithoutDuplicates.length - 1]?.id);
+            setCurrentTranscript(transcriptionsWithoutDuplicates[transcriptionsWithoutDuplicates?.length - 1]?.id);
         }
     }, [scrollToHighlighted, transcriptionsWithoutDuplicates]);
 
@@ -113,9 +113,9 @@ const RealTime = ({
                                             />
                                         ) : (
                                             <Space direction="vertical" key={transcription.id}>
-                                                {playedSeconds !== undefined &&
-                                                    (i === 0 || playedSeconds - transcription.prevEndTime >= 0) &&
-                                                    playedSeconds - transcription.transcriptionVideoTime < 0 && (
+                                                {playedTimeValue !== undefined &&
+                                                    (i === 0 || playedTimeValue - transcription.prevEndTime >= 0) &&
+                                                    playedTimeValue - transcription.transcriptionVideoTime < 0 && (
                                                         <HiddenRef />
                                                     )}
                                                 <Text

@@ -1,8 +1,5 @@
-import React from "react";
-
 import { Story, Meta } from "@storybook/react/types-6-0";
-
-import Tabs from "../components/Tabs";
+import Tabs from "prp-components-library/src/components/Tabs";
 
 export default {
     title: "Tabs",

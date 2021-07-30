@@ -1,8 +1,8 @@
 import React from "react";
+import Text from "prp-components-library/src/components/Text";
 import DepositionDetailsSection from "../routes/ActiveDepoDetails/components/ActiveDepoDetailsSection";
 import ParticipantListTable from "../routes/ActiveDepoDetails/components/ParticipantListTable";
 import normalizedRoles from "./roles";
-import Text from "../components/Typography/Text";
 
 export enum DEPOSITION_DETAILS_TABS {
     "Additional Information",

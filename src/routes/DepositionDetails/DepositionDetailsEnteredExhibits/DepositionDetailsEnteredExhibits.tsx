@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { RowSelectionType } from "antd/lib/table/interface.d";
-import Title from "../../../components/Typography/Title";
+import Button from "prp-components-library/src/components/Button";
+import Icon from "prp-components-library/src/components/Icon";
+import Space from "prp-components-library/src/components/Space";
+import Title from "prp-components-library/src/components/Title";
 import { DEPOSITION_DETAILS_ENTERED_EXHIBITS_TITLE } from "../../../constants/depositionDetails";
 import { useEnteredExhibit } from "../../../hooks/useEnteredExhibits";
-import Button from "../../../components/Button";
-import Icon from "../../../components/Icon";
 import { ReactComponent as DownloadIcon } from "../../../assets/icons/download.svg";
 import EnteredExhibitsTable from "./EnteredExhibitsTable";
-import Space from "../../../components/Space";
 import downloadFile from "../../../helpers/downloadFile";
 import { useGetDocumentsUrlList } from "../../../hooks/transcripts/hooks";
 import Message from "../../../components/Message";

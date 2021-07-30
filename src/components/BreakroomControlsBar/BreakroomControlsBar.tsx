@@ -1,8 +1,13 @@
 import React, { ReactElement, useEffect, useState } from "react";
 import { LocalAudioTrack, LocalParticipant, LocalVideoTrack } from "twilio-video";
+import Confirm from "prp-components-library/src/components/Confirm";
+import Divider from "prp-components-library/src/components/Divider";
+import Icon from "prp-components-library/src/components/Icon";
+import Space from "prp-components-library/src/components/Space";
+import Tag from "prp-components-library/src/components/Tag";
+import Text from "prp-components-library/src/components/Text";
 import useParticipantTracks from "../../hooks/InDepo/useParticipantTracks";
 import useTracksStatus from "../../hooks/InDepo/useTracksStatus";
-import Icon from "../Icon";
 import { ReactComponent as MuteIcon } from "../../assets/in-depo/Mute.svg";
 import { ReactComponent as UnmuteIcon } from "../../assets/in-depo/Unmute.svg";
 import { ReactComponent as CameraOnIcon } from "../../assets/in-depo/Camera.on.svg";
@@ -12,12 +17,7 @@ import { ReactComponent as LockBreakroomIcon } from "../../assets/icons/Lock.svg
 import { ReactComponent as UnLockBreakroomIcon } from "../../assets/icons/Unlock.svg";
 import { ReactComponent as ExhibitsIcon } from "../../assets/in-depo/Exhibits.svg";
 import Control from "../Control/Control";
-import Tag from "../Tag";
-import Text from "../Typography/Text";
 import Logo from "../Logo";
-import Confirm from "../Confirm";
-import Space from "../Space";
-import Divider from "../Divider";
 import { StyledContainer, StyledLogo } from "../ControlsBar/styles";
 import { CONTROLS_BAR_EXHIBITS_LABEL, CONTROLS_BAR_BREAKROOMS_PRIVACITY_DESCRIPTION } from "../../constants/inDepo";
 import {

@@ -1,5 +1,5 @@
+import Button from "prp-components-library/src/components/Button";
 import styled from "styled-components";
-import Button from "../../components/Button";
 
 export const DeleteWitnessButton = styled(Button)`
     color: ${({ theme }) => theme.default.errorColor};

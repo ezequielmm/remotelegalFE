@@ -1,15 +1,19 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useHistory } from "react-router";
+import Space from "prp-components-library/src/components/Space";
+import Spinner from "prp-components-library/src/components/Spinner";
+import { Status } from "prp-components-library/src/components/StatusPill/StatusPill";
+import Title from "prp-components-library/src/components/Title";
+import Icon from "prp-components-library/src/components/Icon";
 import CardFetchError from "../../components/CardFetchError";
-import Space from "../../components/Space";
-import Spinner from "../../components/Spinner";
-import Title from "../../components/Typography/Title";
+import { ReactComponent as BackIcon } from "../../assets/general/Back.svg";
 import { DEPOSITION_DETAILS_TITLE } from "../../constants/activeDepositionDetails";
 import { useFetchDeposition } from "../../hooks/depositions/hooks";
 import ActiveDepositionDetailsHeader from "./components/ActiveDepoDetailsHeader";
 import ActiveDepositionDetailsTabs from "./components/ActiveDepoDetailsTabs";
 import * as CONSTANTS from "../../constants/activeDepositionDetails";
-import { Status } from "../../components/StatusPill/StatusPill";
+import { StyledLink } from "../DepositionDetails/styles";
+import { DEPOSITION_BACK_TO_DEPOSITIONS } from "../../constants/depositionDetails";
 
 export default function ActiveDepositionDetails() {
     const { fetchDeposition, loading, deposition, error } = useFetchDeposition();
@@ -38,6 +42,16 @@ export default function ActiveDepositionDetails() {
     return (
         <>
             <Space direction="vertical" size="large">
+                <Space.Item style={{ margin: 0 }}>
+                    <StyledLink
+                        icon={<Icon data-testid="depo_active_detail_back_button" icon={BackIcon} />}
+                        type="link"
+                        onClick={() => history.push("/depositions")}
+                        size="small"
+                    >
+                        {DEPOSITION_BACK_TO_DEPOSITIONS}
+                    </StyledLink>
+                </Space.Item>
                 <Space.Item>
                     <Title level={4} noMargin weight="light">
                         {DEPOSITION_DETAILS_TITLE}

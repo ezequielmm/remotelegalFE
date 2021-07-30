@@ -1,15 +1,15 @@
-import React, { useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Form } from "antd";
-import Space from "../../Space";
-import { InputWrapper } from "../../Input/styles";
-import Input from "../../Input";
-import Title from "../../Typography/Title";
-import Button from "../../Button";
-import Modal from "../../Modal";
+import Button from "prp-components-library/src/components/Button";
+import Input from "prp-components-library/src/components/Input";
+import { InputWrapper } from "prp-components-library/src/components/Input/styles";
+import Modal from "prp-components-library/src/components/Modal";
+import { ModalSize } from "prp-components-library/src/components/Modal/Modal";
+import Space from "prp-components-library/src/components/Space";
+import Title from "prp-components-library/src/components/Title";
 import StampCanvas from "./StampCanvas";
 import * as CONSTANTS from "../../../constants/stampModal";
 import { TimeZones } from "../../../models/general";
-import { ModalSize } from "../../Modal/Modal";
 
 interface IModalProps {
     open: boolean;

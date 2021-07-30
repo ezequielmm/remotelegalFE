@@ -1,16 +1,17 @@
 import React, { useRef, useState, useEffect, useCallback } from "react";
-import Space from "../../../components/Space";
-import Title from "../../../components/Typography/Title";
-import Table from "../../../components/Table";
-import Button from "../../../components/Button";
+import Button from "prp-components-library/src/components/Button";
+import Confirm from "prp-components-library/src/components/Confirm";
+import Icon from "prp-components-library/src/components/Icon";
+import Space from "prp-components-library/src/components/Space";
+import { Status } from "prp-components-library/src/components/StatusPill/StatusPill";
+import Table from "prp-components-library/src/components/Table";
+import Title from "prp-components-library/src/components/Title";
 import AddParticipantModal from "./AddParticipantModal";
 import { DepositionModel } from "../../../models";
 import * as CONSTANTS from "../../../constants/activeDepositionDetails";
-import Icon from "../../../components/Icon";
 import { ReactComponent as DeleteIcon } from "../../../assets/icons/delete.svg";
 import { ReactComponent as AddIcon } from "../../../assets/general/Add.svg";
 import { ReactComponent as EditIcon } from "../../../assets/icons/edit.svg";
-import Confirm from "../../../components/Confirm";
 import { IParticipant, Roles } from "../../../models/participant";
 import ColorStatus from "../../../types/ColorStatus";
 import {
@@ -19,7 +20,6 @@ import {
 } from "../../../hooks/activeDepositionDetails/hooks";
 import CardFetchError from "../../../components/CardFetchError";
 import { UserInfo } from "../../../models/user";
-import { Status } from "../../../components/StatusPill/StatusPill";
 import EditParticipantModal from "./EditParticipantModal";
 import useFloatingAlertContext from "../../../hooks/useFloatingAlertContext";
 

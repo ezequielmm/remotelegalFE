@@ -1,12 +1,12 @@
 import React, { memo, useRef, useState, useContext, useCallback, useEffect } from "react";
 import styled, { ThemeContext } from "styled-components";
 import { Divider } from "antd";
-import Title from "../../Typography/Title";
-import Text from "../../Typography/Text";
-import Button from "../../Button";
-import Card from "../../Card";
-import Space from "../../Space";
-import Icon from "../../Icon";
+import Button from "prp-components-library/src/components/Button";
+import Card from "prp-components-library/src/components/Card";
+import Icon from "prp-components-library/src/components/Icon";
+import Space from "prp-components-library/src/components/Space";
+import Text from "prp-components-library/src/components/Text";
+import Title from "prp-components-library/src/components/Title";
 import { ReactComponent as CloseIcon } from "../../../assets/icons/close.svg";
 import { ReactComponent as CopyIcon } from "../../../assets/icons/copy.svg";
 import { getREM } from "../../../constants/styles/utils";

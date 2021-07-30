@@ -1,18 +1,18 @@
-import React, { Dispatch, SetStateAction, useEffect, useRef } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { Row, Form } from "antd";
+import Button from "prp-components-library/src/components/Button";
+import Alert from "prp-components-library/src/components/Alert";
+import Input from "prp-components-library/src/components/Input";
+import { InputWrapper } from "prp-components-library/src/components/Input/styles";
+import Modal from "prp-components-library/src/components/Modal";
+import Result from "prp-components-library/src/components/Result";
+import { CustomStatus } from "prp-components-library/src/components/Result/Result";
+import Space from "prp-components-library/src/components/Space";
+import Text from "prp-components-library/src/components/Text";
+import Title from "prp-components-library/src/components/Title";
 import useInput from "../../../hooks/useInput";
 import isInputEmpty from "../../../helpers/isInputEmpty";
-import { InputWrapper } from "../../../components/Input/styles";
-import Space from "../../../components/Space";
-import Input from "../../../components/Input";
-import Alert from "../../../components/Alert";
-import Title from "../../../components/Typography/Title";
-import Text from "../../../components/Typography/Text";
 import { useCreateCase } from "../../../hooks/cases/hooks";
-import Modal from "../../../components/Modal";
-import Button from "../../../components/Button";
-import Result from "../../../components/Result";
-import { CustomStatus } from "../../../components/Result/Result";
 import ColorStatus from "../../../types/ColorStatus";
 import Message from "../../../components/Message";
 
@@ -25,18 +25,20 @@ interface IModalProps {
 }
 
 const CaseModal = ({ open, handleClose, fetchCases, noStep2, setCase }: IModalProps) => {
-    const [caseNumber, setCaseNumber] = React.useState("");
-    const [displaySuccess, setDisplaySuccess] = React.useState(false);
+    const [caseNumber, setCaseNumber] = useState("");
+    const [displaySuccess, setDisplaySuccess] = useState(false);
     const elementRef = useRef(null);
     const newCaseCreated = useRef(false);
-    const { inputValue: caseNameValue, input: caseNameInput, invalid: caseNameInvalid, setValue } = useInput(
-        isInputEmpty,
-        {
-            name: "case-name",
-            placeholder: "Type case name",
-            maxLength: 100,
-        }
-    );
+    const {
+        inputValue: caseNameValue,
+        input: caseNameInput,
+        invalid: caseNameInvalid,
+        setValue,
+    } = useInput(isInputEmpty, {
+        name: "case-name",
+        placeholder: "Type case name",
+        maxLength: 100,
+    });
     const caseNameErrorMessage = caseNameInvalid && "Please enter case name";
     const NETWORK_ERROR = "Something went wrong. Please try again.";
     const [createCase, loading, error, data] = useCreateCase();

@@ -1,11 +1,10 @@
 import React from "react";
 // also exported from '@storybook/react' if you can deal with breaking changes in 6.1
+import Badge from "prp-components-library/src/components/Badge";
+import Icon from "prp-components-library/src/components/Icon";
 import { Story, Meta } from "@storybook/react/types-6-0";
-
-import Badge from "../components/Badge";
 import { ContainerSmall } from "./Decorators";
 import ColorStatus from "../types/ColorStatus";
-import Icon from "../components/Icon";
 import { ReactComponent as CalendarIcon } from "../assets/icons/calendar.svg";
 
 export default {

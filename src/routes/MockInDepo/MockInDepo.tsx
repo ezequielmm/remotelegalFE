@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useContext, useRef } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 import { Participant } from "twilio-video";
-import Spinner from "../../components/Spinner";
+import Spinner from "prp-components-library/src/components/Spinner";
 import Exhibits from "../InDepo/Exhibits";
 import RealTime from "../InDepo/RealTime";
 import VideoConference from "../InDepo/VideoConference";
@@ -140,7 +140,7 @@ const InDepo = () => {
         setTimeout(() => isMounted.current && setAtendeesVisibility((prev) => !prev), 300);
     }, [realTimeOpen, exhibitsOpen]);
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (participants.length && mockDepoRoom?.localParticipant) {
             const localParticipantEmail = JSON.parse(mockDepoRoom?.localParticipant?.identity)?.email;
             const isMuted = participants.find((participant) => participant?.email === localParticipantEmail)?.isMuted;

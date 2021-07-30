@@ -1,20 +1,20 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Redirect, useHistory, useParams } from "react-router";
+import Button from "prp-components-library/src/components/Button";
+import Modal from "prp-components-library/src/components/Modal";
+import Space from "prp-components-library/src/components/Space";
+import Spinner from "prp-components-library/src/components/Spinner";
+import Text from "prp-components-library/src/components/Text";
+import Title from "prp-components-library/src/components/Title";
 import { DepositionID } from "../../state/types";
 import backgroundImage from "../../assets/pre-depo/bg.png";
-import Space from "../../components/Space";
-import Modal from "../../components/Modal";
-import Title from "../../components/Typography/Title";
-import Text from "../../components/Typography/Text";
 import Logo from "../../components/Logo";
 import useSignalR from "../../hooks/useSignalR";
 import * as CONSTANTS from "../../constants/preJoinDepo";
 import ColorStatus from "../../types/ColorStatus";
-import Button from "../../components/Button";
 import { useAuthentication } from "../../hooks/auth";
 import { useGenerateDepositionToken } from "../../hooks/InDepo/depositionLifeTimeHooks";
 import { useCheckUserStatus } from "../../hooks/preJoinDepo/hooks";
-import Spinner from "../../components/Spinner";
 import ErrorScreen from "../../components/ErrorScreen";
 import { NotificationEntityType } from "../../types/Notification";
 import getUserNameString from "../../helpers/getUserNameString";
@@ -50,7 +50,6 @@ const WaitingRoom = () => {
     if (userStatusLoading || generateTokenLoading) {
         return <Spinner />;
     }
-
     if (userStatusError || generateTokenError) {
         return (
             <ErrorScreen
@@ -88,13 +87,20 @@ const WaitingRoom = () => {
                         </Title>
                         <Text
                             state={ColorStatus.disabled}
-                            size="large"
                             ellipsis={false}
                             dataTestId="waiting_room_access_denied_details"
                         >
-                            {`${CONSTANTS.ACCESS_DENIED_DETAILS_START}${CONSTANTS.ACCESS_DENIED_DETAILS_EMAIL}${CONSTANTS.ACCESS_DENIED_DETAILS_MIDDLE}${CONSTANTS.ACCESS_DENIED_DETAILS_NUMBER}`}
+                            <>
+                                {`${CONSTANTS.ACCESS_DENIED_DETAILS_START}`}
+                                <Text state={ColorStatus.disabled} ellipsis={false} weight="bold">
+                                    {CONSTANTS.ACCESS_DENIED_DETAILS_EMAIL}
+                                </Text>
+                                {`${CONSTANTS.ACCESS_DENIED_DETAILS_MIDDLE}`}
+                                <Text state={ColorStatus.disabled} ellipsis={false} weight="bold">
+                                    {CONSTANTS.ACCESS_DENIED_DETAILS_NUMBER}
+                                </Text>
+                            </>
                         </Text>
-
                         <Space justify="flex-end" fullWidth>
                             <Button
                                 data-testid={CONSTANTS.ACCESS_DENIED_BUTTON_TEST_ID}

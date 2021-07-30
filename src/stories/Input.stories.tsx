@@ -2,12 +2,12 @@ import React from "react";
 // also exported from '@storybook/react' if you can deal with breaking changes in 6.1
 import { Story, Meta } from "@storybook/react/types-6-0";
 import { UserOutlined } from "@ant-design/icons";
+import Input from "prp-components-library/src/components/Input";
+import Text from "prp-components-library/src/components/Text";
+import { InputWrapper } from "prp-components-library/src/components/Input/styles";
 import { Form } from "antd";
 import { ContainerSmall } from "./Decorators";
-import Input from "../components/Input";
-import Text from "../components/Typography/Text";
 import useInput from "../hooks/useInput";
-import { InputWrapper } from "../components/Input/styles";
 import isInvalidEMail from "../helpers/isInvalidEmail";
 
 import ColorStatus from "../types/ColorStatus";

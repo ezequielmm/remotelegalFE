@@ -1,14 +1,14 @@
 import React, { useContext } from "react";
+import Button from "prp-components-library/src/components/Button";
+import Icon from "prp-components-library/src/components/Icon";
+import Dropdown from "prp-components-library/src/components/Dropdown";
+import Menu from "prp-components-library/src/components/Menu";
+import Space from "prp-components-library/src/components/Space";
+import Text from "prp-components-library/src/components/Text";
 import { Auth } from "aws-amplify";
 import { useHistory, useLocation } from "react-router-dom";
 import { Layout } from "antd";
-import Space from "../Space";
 import Logo from "../Logo";
-import Icon from "../Icon";
-import Button from "../Button";
-import Dropdown from "../Dropdown";
-import Menu from "../Menu";
-import Text from "../Typography/Text";
 import Sider from "./Sider";
 import Content from "./Content";
 import { ReactComponent as DropdownArrow } from "../../assets/layout/DropdownArrow.svg";
@@ -17,6 +17,7 @@ import ColorStatus from "../../types/ColorStatus";
 import { ReactComponent as AddIcon } from "../../assets/general/Add.svg";
 import { GlobalStateContext } from "../../state/GlobalState";
 import { useToggleSider } from "../../hooks/generalUi/useGeneralUi";
+import actions from "../../state/Depositions/DepositionsListActions";
 
 const { Header } = Layout;
 
@@ -34,6 +35,7 @@ const AppLayout = ({ children }: DashboardProps) => {
             generalUi: { isSiderCollapsed },
             user: { currentUser },
         },
+        dispatch,
     } = useContext(GlobalStateContext);
 
     const signOut = async () => {
@@ -99,7 +101,12 @@ const AppLayout = ({ children }: DashboardProps) => {
                         <Menu
                             theme="dark"
                             defaultSelectedKeys={[pathname]}
-                            onSelect={(item) => history.push(`${item.key}`)}
+                            onSelect={(item) => {
+                                if (item?.key === "/depositions") {
+                                    dispatch(actions.clear());
+                                }
+                                history.push(`${item.key}`);
+                            }}
                         >
                             {CONSTANTS.menuRoutes.map((group) => (
                                 <Menu.ItemGroup

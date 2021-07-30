@@ -1,15 +1,15 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Row, Col } from "antd";
+import Badge from "prp-components-library/src/components/Badge";
+import Icon from "prp-components-library/src/components/Icon";
+import Result from "prp-components-library/src/components/Result";
+import { CustomStatus } from "prp-components-library/src/components/Result/Result";
+import Space from "prp-components-library/src/components/Space";
+import Text from "prp-components-library/src/components/Text";
 import { useParams } from "react-router-dom";
 import { useFileList, useUploadFile } from "../../../../hooks/exhibits/hooks";
 import { MY_EXHIBITS_RESULT_SUBTITLE, MY_EXHIBITS_RESULT_TITLE, EXHIBIT_TABS } from "../../../../constants/exhibits";
-import Space from "../../../../components/Space";
-import Result from "../../../../components/Result";
-import { CustomStatus } from "../../../../components/Result/Result";
-import Icon from "../../../../components/Icon";
 import { ReactComponent as MyExhibitsIcon } from "../../../../assets/icons/MyExhibits-empty.svg";
-import Text from "../../../../components/Typography/Text";
-import Badge from "../../../../components/Badge";
 import { ExhibitTabPaneSpacer, ScrollTableContainer } from "../styles";
 import UploadButton from "./UploadButton";
 import FileListTable from "./FileListTable";
@@ -18,6 +18,7 @@ import { theme } from "../../../../constants/styles/theme";
 import { ExhibitFile } from "../../../../types/ExhibitFile";
 import ColorStatus from "../../../../types/ColorStatus";
 import { GlobalStateContext } from "../../../../state/GlobalState";
+import { getREM } from "../../../../constants/styles/utils";
 
 export default function MyExhibits({ activeKey }: { activeKey: string }) {
     const { depositionID } = useParams<{ depositionID: string }>();
@@ -40,7 +41,7 @@ export default function MyExhibits({ activeKey }: { activeKey: string }) {
                         <Text size="large" state={ColorStatus.white}>
                             My Exhibits
                         </Text>
-                        <Badge count={files?.length || 0} />
+                        <Badge style={{ lineHeight: getREM(1.72) }} count={files?.length || 0} />
                     </Space>
                     <ScrollTableContainer direction="vertical" size="large">
                         <UploadButton onUpload={upload} onUploadCompleted={refreshList} />

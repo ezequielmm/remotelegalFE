@@ -1,10 +1,10 @@
 import React from "react";
 import { Col } from "antd";
 import { ColProps } from "antd/lib/col";
-import Space from "../../../components/Space";
-import Text from "../../../components/Typography/Text";
+import Icon from "prp-components-library/src/components/Icon";
+import Space from "prp-components-library/src/components/Space";
+import Text from "prp-components-library/src/components/Text";
 import ColorStatus from "../../../types/ColorStatus";
-import Icon from "../../../components/Icon";
 
 interface SectionCardColProps {
     icon: React.ComponentType;

@@ -108,7 +108,7 @@ export const useSignedUrl = (file: ExhibitFile, isPublic?: boolean) => {
         }
     }, [getURL, file, isPublic]);
 
-    return { error, documentUrl: documentUrl, isPublic: documentIsPublic };
+    return { error, documentUrl, isPublic: documentIsPublic };
 };
 
 export const useExhibitFileInfo = () => {
@@ -155,7 +155,7 @@ export const useExhibitTabs = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [message]);
 
-    return { highlightKey, activeKey, setActiveKey: setActiveKey };
+    return { highlightKey, activeKey, setActiveKey };
 };
 
 export const useShareExhibitFile = () => {
@@ -258,9 +258,10 @@ export const useExhibitGetAnnotations = () => {
 
     return {
         getAllLatestAnnotations,
-        savedAnnotations: useMemo(() => savedAnnotations?.map((annotation) => annotation.details), [
-            savedAnnotations,
-        ]) as [],
+        savedAnnotations: useMemo(
+            () => savedAnnotations?.map((annotation) => annotation.details),
+            [savedAnnotations]
+        ) as [],
     };
 };
 

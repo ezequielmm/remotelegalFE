@@ -1,10 +1,9 @@
-import React from "react";
 import { Col, Row } from "antd";
-import Card from "../../components/Card";
-import Result from "../../components/Result";
-import Text from "../../components/Typography/Text";
-import Space from "../../components/Space";
-import Icon from "../../components/Icon";
+import Card from "prp-components-library/src/components/Card";
+import Icon from "prp-components-library/src/components/Icon";
+import Result from "prp-components-library/src/components/Result";
+import Space from "prp-components-library/src/components/Space";
+import Text from "prp-components-library/src/components/Text";
 import { ReactComponent as HelpIcon } from "../../assets/layout/Help.svg";
 import * as CONSTANTS from "../../constants/help";
 import ColorStatus from "../../types/ColorStatus";

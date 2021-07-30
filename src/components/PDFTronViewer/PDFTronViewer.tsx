@@ -354,8 +354,8 @@ const PDFTronViewer = ({
         stamp.PageNumber = 1;
         stamp.setX(0);
         stamp.setY(0);
-        stamp.Width = 150;
-        stamp.Height = 60;
+        stamp.Width = (PDFTron?.docViewer?.getPageHeight(1) * 30) / 100;
+        stamp.Height = (PDFTron?.docViewer?.getPageHeight(1) * 10) / 100;
         stamp.MaintainAspectRatio = true;
         annotManager.addAnnotation(stamp, null);
         annotManager.redrawAnnotation(stamp);

@@ -1,6 +1,6 @@
 import React, { ReactElement } from "react";
-import Confirm from "../../../../../components/Confirm";
-import { IConfirmProps } from "../../../../../components/Confirm/Confirm";
+import Confirm from "prp-components-library/src/components/Confirm";
+import { IConfirmProps } from "prp-components-library/src/components/Confirm/Confirm";
 import * as CONSTANTS from "../../../../../constants/exhibits";
 import { ExhibitFile } from "../../../../../types/ExhibitFile";
 
@@ -47,7 +47,7 @@ const ExhibitSharingModal = ({
                     file ? CONSTANTS.MY_EXHIBITS_SHARE_MODAL_SUBTITLE_ERROR : CONSTANTS.MY_EXHIBITS_SHARE_MODAL_SUBTITLE
                 }
                 {...props}
-            ></Confirm>
+            />
         </div>
     );
 };

@@ -1,13 +1,12 @@
-import React from "react";
 import { Redirect } from "react-router-dom";
 import { Col, Row, Form } from "antd";
-import { InputWrapper } from "../../components/Input/styles";
-import Space from "../../components/Space";
+import Alert from "prp-components-library/src/components/Alert";
+import Button from "prp-components-library/src/components/Button";
+import { InputWrapper } from "prp-components-library/src/components/Input/styles";
+import Space from "prp-components-library/src/components/Space";
+import Text from "prp-components-library/src/components/Text";
+import Title from "prp-components-library/src/components/Title";
 import Container from "../../components/Container";
-import Alert from "../../components/Alert";
-import Button from "../../components/Button";
-import Title from "../../components/Typography/Title";
-import Text from "../../components/Typography/Text";
 import * as CONSTANTS from "../../constants/resetPassword";
 import isInvalidEMail from "../../helpers/isInvalidEmail";
 import { useAuthentication, useResetPassword } from "../../hooks/auth";
@@ -16,7 +15,11 @@ import CodeSent from "../CodeSent/CodeSent";
 import useInput from "../../hooks/useInput";
 
 const ResetPassword = () => {
-    const { inputValue: emailValue, input: emailInput, invalid: emailInvalid } = useInput(isInvalidEMail, {
+    const {
+        inputValue: emailValue,
+        input: emailInput,
+        invalid: emailInvalid,
+    } = useInput(isInvalidEMail, {
         name: "email",
         placeholder: "Enter your email",
     });

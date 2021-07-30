@@ -1,23 +1,61 @@
 import AudioRecorder from "audio-recorder-polyfill";
 import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { useParams } from "react-router";
 import { GlobalStateContext } from "../state/GlobalState";
+import { DepositionID } from "../state/types";
 import useTranscriptAudio from "./InDepo/useTranscriptAudio";
 
 export default (isAudioEnabled: boolean, audioTracks, doNotConnectToSocket = false) => {
     const [recorder, setRecorder] = useState(null);
+    const [sampleRate, setSampleRate] = useState<number>(undefined);
     const { state } = useContext(GlobalStateContext);
     const { isRecording } = state.room;
-    const [sampleRate, setSampleRate] = useState<number>(undefined);
-    const [stopAudio, transcriptAudio] = useTranscriptAudio(doNotConnectToSocket);
+    const { depositionID } = useParams<DepositionID>();
+    const { transcriptAudio, sendMessage } = useTranscriptAudio(doNotConnectToSocket, sampleRate);
     const recorderRef = useRef(null);
+
     const stopMicrophone = useCallback(async () => {
-        if (recorder) {
-            recorder.stop();
-            if (sampleRate) {
-                stopAudio(sampleRate);
-            }
+        recorder?.stop();
+    }, [recorder]);
+
+    useEffect(() => {
+        let interval;
+        const AvailableAudioContext =
+            window.AudioContext || // Default
+            (window as any).webkitAudioContext; // Safari and old versions of Chrome
+        const audioCtx = AvailableAudioContext && new AvailableAudioContext();
+        let noise;
+        if (isRecording && !isAudioEnabled && AvailableAudioContext && sendMessage && depositionID) {
+            sendMessage("InitializeRecognition", {
+                depositionId: depositionID,
+                sampleRate: 48000, // Hardcoded value just to reset
+            });
+            const createNoise = () => {
+                const channels = 2;
+                const frameCount = audioCtx.sampleRate * 2.0;
+                const myArrayBuffer = audioCtx.createBuffer(2, frameCount, audioCtx.sampleRate);
+                let nowBuffering;
+                // eslint-disable-next-line no-plusplus
+                for (let channel = 0; channel < channels; channel++) {
+                    nowBuffering = myArrayBuffer.getChannelData(channel);
+                    // eslint-disable-next-line no-plusplus
+                    for (let i = 0; i < frameCount; i++) {
+                        nowBuffering[i] = Math.random() * 2 - 1;
+                    }
+                }
+                return nowBuffering;
+            };
+            setSampleRate(undefined);
+            noise = createNoise();
         }
-    }, [stopAudio, sampleRate, recorder]);
+        if (noise) {
+            interval = setInterval(() => transcriptAudio(noise), 1500);
+        }
+        return () => {
+            clearInterval(interval);
+            audioCtx?.close();
+        };
+    }, [isRecording, isAudioEnabled, transcriptAudio, sendMessage, depositionID]);
 
     useEffect(() => {
         const innerRef = recorderRef;
@@ -44,11 +82,15 @@ export default (isAudioEnabled: boolean, audioTracks, doNotConnectToSocket = fal
                     const buffer: ArrayBuffer =
                         typeof event.target.result !== "string" ? event.target.result : new ArrayBuffer(0);
                     const newSampleRate = new Int32Array(buffer.slice(24, 28))[0];
-                    const reconnect = newSampleRate !== sampleRate;
-                    if (reconnect) {
+                    const isSampleRateDifferent = newSampleRate !== sampleRate;
+                    if (isSampleRateDifferent) {
+                        sendMessage("InitializeRecognition", {
+                            depositionId: depositionID,
+                            sampleRate: newSampleRate,
+                        });
                         setSampleRate(newSampleRate);
                     }
-                    transcriptAudio(buffer, newSampleRate, reconnect);
+                    transcriptAudio(buffer);
                 };
                 fileReader.readAsArrayBuffer(e.data);
             };
@@ -59,7 +101,7 @@ export default (isAudioEnabled: boolean, audioTracks, doNotConnectToSocket = fal
                 recorder.removeEventListener("dataavailable", dataAvailableHandler);
             }
         };
-    }, [sampleRate, recorder, transcriptAudio, isRecording, isAudioEnabled]);
+    }, [recorder, transcriptAudio, isRecording, isAudioEnabled, sampleRate, sendMessage, depositionID]);
 
     const getMicrophone = () => {
         if (recorder) {

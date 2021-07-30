@@ -1,10 +1,10 @@
+import React from "react";
+import Text from "prp-components-library/src/components/Text";
 import { formatBytes } from "../helpers/formatBytes";
 import DepositionDetailsSummary from "../routes/DepositionDetails/DepositionDetailsSummary";
 import DepositionDetailsEnteredExhibits from "../routes/DepositionDetails/DepositionDetailsEnteredExhibits";
 import DepositionDetailsTranscript from "../routes/DepositionDetails/DepositionDetailsTranscript";
 import DepositionDetailsAttendees from "../routes/DepositionDetails/DepositionDetailsAttendees";
-import Text from "../components/Typography/Text";
-import React from "react";
 
 export enum DEPOSITION_DETAILS_TABS {
     summary = "summary",
@@ -104,7 +104,8 @@ export const DEPOSITION_DETAILS_TABS_DATA = [
     },
 ] as DepositionDetailsTabData[];
 
-export const DEPOSITON_DETAILS_TITLE = "Deposition details";
+export const DEPOSITION_DETAILS_TITLE = "Deposition details";
+export const DEPOSITION_BACK_TO_DEPOSITIONS = "BACK TO MY DEPOSITIONS";
 
 export const VIDEO_PLACEHOLDER_TITLE = "The recording will be ready soon";
 export const VIDEO_PLACEHOLDER_SUBTITLE = "Once the recording is uploaded, you will see it here.";

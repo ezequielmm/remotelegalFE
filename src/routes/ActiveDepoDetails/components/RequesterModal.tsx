@@ -1,12 +1,12 @@
 import React, { SetStateAction, useEffect, useState } from "react";
 import { Row, Form } from "antd";
-import Space from "../../../components/Space";
-import Title from "../../../components/Typography/Title";
-import Modal from "../../../components/Modal";
-import Button from "../../../components/Button";
+import Button from "prp-components-library/src/components/Button";
+import Modal from "prp-components-library/src/components/Modal";
+import Space from "prp-components-library/src/components/Space";
+import Title from "prp-components-library/src/components/Title";
+import TextArea from "prp-components-library/src/components/TextArea";
 import * as CONSTANTS from "../../../constants/activeDepositionDetails";
 import { DepositionModel } from "../../../models";
-import TextArea from "../../../components/TextArea";
 import { useEditDeposition } from "../../../hooks/activeDepositionDetails/hooks";
 import Message from "../../../components/Message";
 

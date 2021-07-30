@@ -1,17 +1,18 @@
-import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
-import Icon from "../../../components/Icon";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
+import Button from "prp-components-library/src/components/Button";
+import Divider from "prp-components-library/src/components/Divider";
+import Icon from "prp-components-library/src/components/Icon";
+import Space from "prp-components-library/src/components/Space";
+import Spinner from "prp-components-library/src/components/Spinner";
+import Text from "prp-components-library/src/components/Text";
+import Title from "prp-components-library/src/components/Title";
 import { ReactComponent as CloseIcon } from "../../../assets/icons/close.svg";
 import { ReactComponent as SendIcon } from "../../../assets/in-depo/send.svg";
 import { ReactComponent as ErrorIcon } from "../../../assets/icons/Error.svg";
 import { GlobalStateContext } from "../../../state/GlobalState";
 import ChatItem from "./ChatItem";
 import * as CONSTANTS from "../../../constants/inDepo";
-import Title from "../../../components/Typography/Title";
-import Text from "../../../components/Typography/Text";
 import ColorStatus from "../../../types/ColorStatus";
-import Divider from "../../../components/Divider";
-import Spinner from "../../../components/Spinner";
-import Space from "../../../components/Space";
 import {
     StyledChatContainer,
     StyledChatBody,
@@ -22,7 +23,6 @@ import {
     StyledSendButton,
     StyledInputWrapper,
 } from "./styles";
-import Button from "../../../components/Button";
 import { Message } from "../../../models/general";
 
 const ChatScreen = ({
@@ -52,9 +52,10 @@ const ChatScreen = ({
 
     const { currentRoom, timeZone } = state.room;
 
-    const currentEmail = useMemo(() => JSON.parse(currentRoom?.localParticipant?.identity || "{}").email, [
-        currentRoom,
-    ]);
+    const currentEmail = useMemo(
+        () => JSON.parse(currentRoom?.localParticipant?.identity || "{}").email,
+        [currentRoom]
+    );
 
     const scrollToBottom = () => {
         if (scrollDiv?.current?.scrollTop !== undefined) {

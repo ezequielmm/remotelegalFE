@@ -1,12 +1,12 @@
 import React from "react";
 import { Tooltip } from "antd";
 import Column from "antd/lib/table/Column";
-import Table from "../../../../components/Table";
+import FileIcon from "prp-components-library/src/components/FileIcon";
+import Table from "prp-components-library/src/components/Table";
+import { ITableProps } from "prp-components-library/src/components/Table/Table";
+import Text from "prp-components-library/src/components/Text";
 import { StyledFileNameCell } from "./styles";
-import FileIcon from "../../../../components/FileIcon";
-import Text from "../../../../components/Typography/Text";
 import ColorStatus from "../../../../types/ColorStatus";
-import { ITableProps } from "../../../../components/Table/Table";
 
 interface IEnteredExhibitsTable extends ITableProps {}
 

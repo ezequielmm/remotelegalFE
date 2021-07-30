@@ -1,9 +1,9 @@
 import React from "react";
 
 import { Story, Meta } from "@storybook/react/types-6-0";
-import Modal from "../components/Modal";
-import Button from "../components/Button";
-import Result from "../components/Result";
+import Button from "prp-components-library/src/components/Button";
+import Modal from "prp-components-library/src/components/Modal";
+import Result from "prp-components-library/src/components/Result";
 
 export default {
     title: "Modal",

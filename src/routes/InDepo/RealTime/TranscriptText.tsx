@@ -1,7 +1,7 @@
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import styled from "styled-components";
-import Text from "../../../components/Typography/Text";
-import { ITextProps } from "../../../components/Typography/Text/Text";
+import Text from "prp-components-library/src/components/Text";
+import { ITextProps } from "prp-components-library/src/components/Text/Text";
 
 interface TranscriptTextProps extends ITextProps {
     scrollTo: boolean;

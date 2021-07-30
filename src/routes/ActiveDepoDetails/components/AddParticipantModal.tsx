@@ -1,22 +1,22 @@
 import React, { SetStateAction, useEffect, useState } from "react";
 import { Row, Form } from "antd";
-import { InputWrapper } from "../../../components/Input/styles";
-import Space from "../../../components/Space";
-import Input from "../../../components/Input";
-import Text from "../../../components/Typography/Text";
-import Title from "../../../components/Typography/Title";
-import Modal from "../../../components/Modal";
-import Button from "../../../components/Button";
+import Button from "prp-components-library/src/components/Button";
+import Confirm from "prp-components-library/src/components/Confirm";
+import Input from "prp-components-library/src/components/Input";
+import { InputWrapper } from "prp-components-library/src/components/Input/styles";
+import Modal from "prp-components-library/src/components/Modal";
+import Select from "prp-components-library/src/components/Select";
+import Space from "prp-components-library/src/components/Space";
+import Text from "prp-components-library/src/components/Text";
+import Title from "prp-components-library/src/components/Title";
+import { Status } from "prp-components-library/src/components/StatusPill/StatusPill";
 import * as CONSTANTS from "../../../constants/activeDepositionDetails";
-import Select from "../../../components/Select";
 import ColorStatus from "../../../types/ColorStatus";
 import isPhoneInvalid from "../../../helpers/isPhoneInvalid";
 import isInvalidEmail from "../../../helpers/isInvalidEmail";
 import { useAddParticipantToExistingDepo } from "../../../hooks/activeDepositionDetails/hooks";
 import filterEmptyPropertiesFromObject from "../../../helpers/filterEmptyPropertiesFromObject";
-import Confirm from "../../../components/Confirm";
 import { getAddParticipantConfirmTextContext } from "../helpers/getModalTextContent";
-import { Status } from "../../../components/StatusPill/StatusPill";
 import useFloatingAlertContext from "../../../hooks/useFloatingAlertContext";
 
 interface IModalProps {

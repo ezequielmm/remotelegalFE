@@ -1,18 +1,18 @@
 import React from "react";
 import { Row, Col } from "antd";
 import { ArrayField, useFormContext } from "react-hook-form";
+import ButtonUpload from "prp-components-library/src/components/ButtonUpload";
+import Icon from "prp-components-library/src/components/Icon";
+import RHFDatePicker from "prp-components-library/src/components/RHF/RHFDatePicker";
+import RHFInput from "prp-components-library/src/components/RHF/RHFInput";
+import RHFRadioButton from "prp-components-library/src/components/RHF/RHFRadioButton";
+import RHFSelect from "prp-components-library/src/components/RHF/RHFSelect";
+import RHFTimePicker from "prp-components-library/src/components/RHF/RHFTimePicker";
+import RHFUploadFile from "prp-components-library/src/components/RHF/RHFUploadFile";
+import Space from "prp-components-library/src/components/Space";
+import Text from "prp-components-library/src/components/Text";
+import Title from "prp-components-library/src/components/Title";
 import dayjs from "dayjs";
-import Space from "../../../../components/Space";
-import ButtonUpload from "../../../../components/ButtonUpload";
-import Icon from "../../../../components/Icon";
-import RHFDatePicker from "../../../../components/RHFDatePicker";
-import RHFInput from "../../../../components/RHFInput";
-import RHFRadioButton from "../../../../components/RHFRadioButton/RHFRadioButton";
-import RHFSelect from "../../../../components/RHFSelect";
-import RHFTimePicker from "../../../../components/RHFTimePicker";
-import RHFUploadFile from "../../../../components/RHFUploadFile";
-import Text from "../../../../components/Typography/Text";
-import Title from "../../../../components/Typography/Title";
 import * as CONSTANTS from "../../../../constants/createDeposition";
 import { theme } from "../../../../constants/styles/theme";
 import { DeleteWitnessButton, WitnessTitleContainer } from "../../styles";
@@ -55,7 +55,7 @@ const WitnessItem = ({ deposition, removeWitness, witnessNumber }: WitnessItemPr
             <Space.Item fullWidth>
                 <WitnessTitleContainer data-testid="witness_title">
                     <Title level={5} weight="regular" dataTestId="witness_sub_title">
-                        {`${CONSTANTS.WITNESS_TITLE} ${witnessNumber + 1}`}
+                        {`${CONSTANTS.WITNESS_TITLE}`}
                     </Title>
                     {witnessNumber > 0 && (
                         <DeleteWitnessButton
@@ -92,6 +92,7 @@ const WitnessItem = ({ deposition, removeWitness, witnessNumber }: WitnessItemPr
                             name={`depositions[${witnessNumber}].witness.name`}
                             label={CONSTANTS.OPTIONAL_NAME_LABEL}
                             placeholder={CONSTANTS.WITNESS_NAME_PLACEHOLDER}
+                            maxLength={50}
                         />
                     </Col>
                     <Col xs={6}>

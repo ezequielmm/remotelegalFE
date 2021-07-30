@@ -194,6 +194,7 @@ const RoomReducer: Reducer<IRoom, IAction> = (state: IRoom, action: IAction): IR
                 ...state,
                 currentExhibit: null,
                 exhibitDocument: null,
+                currentExhibitPage: null,
                 isCurrentExhibitOwner: false,
                 stampLabel: "",
                 lastAnnotationId: "",

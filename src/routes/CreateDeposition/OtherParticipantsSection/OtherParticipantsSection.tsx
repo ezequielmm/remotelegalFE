@@ -1,25 +1,25 @@
-import React, { ReactElement, useState } from "react";
+import { ReactElement, useState } from "react";
 import { Row } from "antd";
+import Button from "prp-components-library/src/components/Button";
+import Card from "prp-components-library/src/components/Card";
+import Icon from "prp-components-library/src/components/Icon";
+import Space from "prp-components-library/src/components/Space";
+import Table from "prp-components-library/src/components/Table";
+import Text from "prp-components-library/src/components/Text";
+import Title from "prp-components-library/src/components/Title";
 import { PlusOutlined } from "@ant-design/icons";
 import { useFormContext, useFieldArray, Controller } from "react-hook-form";
 import Column from "antd/lib/table/Column";
-import Space from "../../../components/Space";
-import Table from "../../../components/Table";
-import Card from "../../../components/Card";
-import Text from "../../../components/Typography/Text";
-import Title from "../../../components/Typography/Title";
-import Button from "../../../components/Button";
 import { MAX_PARTICIPANTS_ALLOWED } from "../../../constants/otherParticipants";
 import * as CONSTANTS from "../../../constants/otherParticipants";
 import OtherParticipantsModal from "./OtherParticipantsModal";
 import { ReactComponent as DeleteIcon } from "../../../assets/icons/delete.svg";
 import { ReactComponent as EditIcon } from "../../../assets/icons/edit.svg";
-import Icon from "../../../components/Icon";
 import OtherParticipantsEmptySection from "./OtherParticipantsEmptySection";
 import ColorStatus from "../../../types/ColorStatus";
 
 export default function OtherParticipantsSection(): ReactElement {
-    const [openOtherParticipants, setOpenOtherParticipants] = React.useState(false);
+    const [openOtherParticipants, setOpenOtherParticipants] = useState(false);
     const [currentOtherParticipant, setCurrentOtherParticipant] = useState(null);
     const [currentOtherParticipantIndex, setCurrentOtherParticipantIndex] = useState(-1);
     const [editMode, setEditMode] = useState(false);

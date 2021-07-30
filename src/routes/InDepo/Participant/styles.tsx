@@ -39,7 +39,7 @@ export const StyledParticipantMask = styled.div<{ highlight?: boolean }>`
     }
 `;
 
-export const StyledIdentityBox = styled.div<{ theme: Theme; showMicStatus?: boolean }>`
+export const StyledIdentityBox = styled.div`
     position: absolute;
     bottom: 0;
     left: 0;
@@ -77,9 +77,11 @@ export const StyledTimeBox = styled.div`
     text-shadow: 0px 0px 2px rgba(0, 0, 0, 0.3), 0px 0px 8px rgba(0, 0, 0, 0.5);
 `;
 
-export const StyledParticipantMicContainer = styled.div`
-    ${({ theme }) =>
+export const StyledParticipantMicContainer = styled.div<{ theme: Theme; showMicStatus?: boolean }>`
+    ${({ theme, showMicStatus }) =>
         `
+        opacity: ${showMicStatus ? 1 : 0};
+        margin-left: ${showMicStatus ? "0" : "-24px"};
         &:not(:last-child) {
             margin-right: ${getREM(theme.default.spaces[1])};
         }

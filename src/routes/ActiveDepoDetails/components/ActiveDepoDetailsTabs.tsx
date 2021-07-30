@@ -1,6 +1,6 @@
 import React, { SetStateAction } from "react";
-import Space from "../../../components/Space";
-import Tabs from "../../../components/Tabs";
+import Space from "prp-components-library/src/components/Space";
+import Tabs from "prp-components-library/src/components/Tabs";
 import * as CONSTANTS from "../../../constants/activeDepositionDetails";
 import { DepositionModel } from "../../../models";
 

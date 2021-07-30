@@ -1,9 +1,9 @@
 import React from "react";
-import Modal from "../../Modal";
-import Result from "../../Result";
-import Text from "../../Typography/Text";
-import Space from "../../Space";
-import Icon from "../../Icon";
+import Icon from "prp-components-library/src/components/Icon";
+import Modal from "prp-components-library/src/components/Modal";
+import Result from "prp-components-library/src/components/Result";
+import Space from "prp-components-library/src/components/Space";
+import Text from "prp-components-library/src/components/Text";
 import { ReactComponent as HelpIcon } from "../../../assets/layout/Help.svg";
 import * as CONSTANTS from "../../../constants/help";
 import { theme } from "../../../constants/styles/theme";

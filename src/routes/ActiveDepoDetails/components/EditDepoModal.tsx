@@ -2,22 +2,26 @@ import React, { SetStateAction, useEffect, useState } from "react";
 import { Row, Form, Tooltip, Upload, Col } from "antd";
 import styled from "styled-components";
 import dayjs from "dayjs";
+import Button from "prp-components-library/src/components/Button";
+import ButtonUpload from "prp-components-library/src/components/ButtonUpload";
+import Confirm from "prp-components-library/src/components/Confirm";
+import DatePicker from "prp-components-library/src/components/DatePicker";
+import Icon from "prp-components-library/src/components/Icon";
+import Input from "prp-components-library/src/components/Input";
+import { InputWrapper } from "prp-components-library/src/components/Input/styles";
+import Modal from "prp-components-library/src/components/Modal";
+import Radio from "prp-components-library/src/components/Radio";
+import RadioGroup from "prp-components-library/src/components/RadioGroup";
+import Select from "prp-components-library/src/components/Select";
+import Space from "prp-components-library/src/components/Space";
+import { Status } from "prp-components-library/src/components/StatusPill/StatusPill";
+import Text from "prp-components-library/src/components/Text";
+import Title from "prp-components-library/src/components/Title";
+import TextArea from "prp-components-library/src/components/TextArea";
+import TimePicker from "prp-components-library/src/components/TimePicker";
 import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
 import timezone from "dayjs/plugin/timezone";
 import { ReactComponent as CloseIcon } from "../../../assets/icons/close.svg";
-import { InputWrapper } from "../../../components/Input/styles";
-import Space from "../../../components/Space";
-import Input from "../../../components/Input";
-import Select from "../../../components/Select";
-import RadioGroup from "../../../components/RadioGroup";
-import Radio from "../../../components/Radio";
-import TextArea from "../../../components/TextArea";
-import Title from "../../../components/Typography/Title";
-import Text from "../../../components/Typography/Text";
-import Modal from "../../../components/Modal";
-import Button from "../../../components/Button";
-import ButtonUpload from "../../../components/ButtonUpload";
-import Icon from "../../../components/Icon";
 import { ReactComponent as InformationIcon } from "../../../assets/icons/information.svg";
 import { ReactComponent as AttachClipIcon } from "../../../assets/icons/attach-clip.svg";
 import { DepositionModel } from "../../../models";
@@ -31,12 +35,8 @@ import {
 import Message from "../../../components/Message";
 import { getREM } from "../../../constants/styles/utils";
 import ColorStatus from "../../../types/ColorStatus";
-import { Status } from "../../../components/StatusPill/StatusPill";
 import getModalTextContent, { getConfirmTextContent } from "../helpers/getModalTextContent";
-import Confirm from "../../../components/Confirm";
 import isCanceledDateInvalid from "../helpers/isCanceledDateInvalid";
-import DatePicker from "../../../components/DatePicker";
-import TimePicker from "../../../components/TimePicker";
 import { mapTimeZone, TimeZones } from "../../../models/general";
 import { theme } from "../../../constants/styles/theme";
 import formatToDateOffset from "../../../helpers/formatToDateOffset";
@@ -188,24 +188,35 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
     };
 
     const disabledDate = (current: dayjs.Dayjs) => {
-        return dayjs(current).isBefore(dayjs()) || dayjs(current).isAfter(dayjs().add(1, "y"));
+        return dayjs(current.hour(23).minute(59)).isBefore(dayjs()) || dayjs(current).isAfter(dayjs().add(1, "y"));
     };
 
     const handleChangeDate = (current: dayjs.Dayjs) => {
         const currentDateAsDayJsObject = dayjs(current).tz(mapTimeZone[deposition.timeZone], true);
         setFormStatus({ ...formStatus, calendarDate: currentDateAsDayJsObject });
-        if (current && dayjs(current).isBefore(dayjs(new Date()).subtract(5, "m"))) {
+        if (
+            current &&
+            dayjs(current.hour(formStatus.startDate.hour()).minute(formStatus.startDate.minute())).isBefore(
+                dayjs(new Date()).subtract(5, "m")
+            )
+        ) {
             return setInvalidStartTime(true);
         }
         return setInvalidStartTime(false);
     };
 
     const handleChangeStartTime = (current: dayjs.Dayjs) => {
-        setFormStatus({ ...formStatus, startDate: dayjs(current).tz(mapTimeZone[deposition.timeZone], true) });
-        if (dayjs(current).isBefore(dayjs(new Date()).tz(mapTimeZone[deposition.timeZone], true).subtract(5, "m"))) {
+        const concatenatedDate = formStatus.calendarDate.hour(current.hour()).minute(current.minute());
+        setFormStatus({ ...formStatus, startDate: dayjs(concatenatedDate).tz(mapTimeZone[deposition.timeZone], true) });
+        if (
+            dayjs(concatenatedDate).isBefore(
+                dayjs(new Date()).tz(mapTimeZone[deposition.timeZone], true).subtract(5, "m")
+            )
+        ) {
             return setInvalidStartTime(true);
         }
-        if (current && formStatus.endDate && dayjs(current).isSameOrAfter(formStatus.endDate)) {
+
+        if (concatenatedDate && formStatus.endDate && dayjs(concatenatedDate).isSameOrAfter(formStatus.endDate)) {
             return setInvalidEndTime(true);
         }
         setInvalidEndTime(false);
@@ -217,7 +228,9 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
             setInvalidEndTime(false);
             return setFormStatus({ ...formStatus, endDate: null });
         }
-        setFormStatus({ ...formStatus, endDate: dayjs(current).tz(mapTimeZone[deposition.timeZone], true) });
+        const concatenatedDate = formStatus.calendarDate.hour(current.hour()).minute(current.minute());
+
+        setFormStatus({ ...formStatus, endDate: dayjs(concatenatedDate).tz(mapTimeZone[deposition.timeZone], true) });
         const isEndTimeSameOrBeforeStartTime =
             current &&
             dayjs(formStatus.startDate.tz(mapTimeZone[formStatus.timeZone], true))
@@ -517,7 +530,7 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
                                             data-testid={
                                                 CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_UPLOAD_COMPONENT_DATA_TEST_ID
                                             }
-                                            customRequest={({ file: newFile }) => {
+                                            customRequest={({ file: newFile }: any) => {
                                                 const isInvalid = newFile.type !== "application/pdf";
                                                 if (isInvalid) {
                                                     setInvalidFile(true);
