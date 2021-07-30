@@ -83,63 +83,61 @@ const Participant = ({
                 </StyledTimeBox>
             )}
             <StyledIdentityBox>
-                <Space align="center">
-                    <StyledParticipantMicContainer showMicStatus={isMuted}>
-                        <Icon
-                            data-testid="participant_muted"
-                            color={theme.default.whiteColor}
-                            icon={MuteIcon}
-                            size={9}
-                        />
-                    </StyledParticipantMicContainer>
-                    <Space direction="vertical" size="0">
-                        {isWitness && (
-                            <Text
-                                data-testid="participant_name"
-                                size="small"
-                                lineHeight={theme.default.spaces[8]}
-                                weight="bold"
-                                state={ColorStatus.white}
-                                block
-                            >
-                                {isWitness && identity ? identity.name || "Guest" : "waiting for witness"}
-                            </Text>
-                        )}
-                        {!isWitness && (
-                            <Text
-                                data-testid="participant_name"
-                                size="small"
-                                lineHeight={theme.default.spaces[8]}
-                                weight="bold"
-                                state={ColorStatus.white}
-                            >
-                                {!isWitness ? identity?.name : "Guest"}
-                            </Text>
-                        )}
-                        <Text
-                            data-testid="participant_role"
-                            size="small"
-                            lineHeight={theme.default.spaces[8]}
-                            state={ColorStatus.white}
-                        >
-                            {identity && normalizedRoles[identity.role]
-                                ? normalizedRoles[identity.role]
-                                : identity?.role}
-                        </Text>
-                    </Space>
-                    <div style={{ marginLeft: "auto" }}>
-                        <StyledParticipantMicContainer style={{ color: "white" }}>
-                            <StyledNetworkQuality
-                                data-testid={CONSTANTS.NETWORK_INDICATOR_TEST_ID}
-                                steps={5}
-                                showInfo={false}
-                                strokeColor={netWorkLevel <= 2 ? theme.default.warningColor : theme.default.whiteColor}
-                                trailColor={theme.colors.disabled[6]}
-                                percent={netWorkLevel * 20}
-                                strokeWidth={theme.default.spaces[3] * theme.default.baseUnit}
+                <Space align="flex-end" justify="space-between">
+                    <Space.Item>
+                        <StyledParticipantMicContainer showMicStatus={isMuted}>
+                            <Icon
+                                data-testid="participant_muted"
+                                color={theme.default.whiteColor}
+                                icon={MuteIcon}
+                                size={9}
                             />
                         </StyledParticipantMicContainer>
-                    </div>
+                        <Space direction="vertical" size="0">
+                            {isWitness && (
+                                <Text
+                                    data-testid="participant_name"
+                                    size="small"
+                                    lineHeight={theme.default.spaces[8]}
+                                    weight="bold"
+                                    state={ColorStatus.white}
+                                    block
+                                >
+                                    {isWitness && identity ? identity.name || "Guest" : "waiting for witness"}
+                                </Text>
+                            )}
+                            {!isWitness && (
+                                <Text
+                                    data-testid="participant_name"
+                                    size="small"
+                                    lineHeight={theme.default.spaces[8]}
+                                    weight="bold"
+                                    state={ColorStatus.white}
+                                >
+                                    {!isWitness ? identity?.name : "Guest"}
+                                </Text>
+                            )}
+                            <Text
+                                data-testid="participant_role"
+                                size="small"
+                                lineHeight={theme.default.spaces[8]}
+                                state={ColorStatus.white}
+                            >
+                                {identity && normalizedRoles[identity.role]
+                                    ? normalizedRoles[identity.role]
+                                    : identity?.role}
+                            </Text>
+                        </Space>
+                    </Space.Item>
+                    <StyledNetworkQuality
+                        data-testid={CONSTANTS.NETWORK_INDICATOR_TEST_ID}
+                        steps={5}
+                        showInfo={false}
+                        strokeColor={netWorkLevel <= 2 ? theme.default.warningColor : theme.default.whiteColor}
+                        trailColor={theme.colors.disabled[6]}
+                        percent={netWorkLevel * 20}
+                        strokeWidth={theme.default.spaces[3] * theme.default.baseUnit}
+                    />
                 </Space>
             </StyledIdentityBox>
         </StyledParticipantMask>
