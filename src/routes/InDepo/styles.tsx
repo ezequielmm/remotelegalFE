@@ -30,37 +30,25 @@ export const StyledRoomFooter = styled.div`
 `;
 
 export interface ContainerProps {
-    visible: boolean;
     onClick?: () => void;
 }
 
-interface StyledLayoutCotainerProps extends Pick<ContainerProps, "visible"> {
+interface StyledLayoutCotainerProps extends ContainerProps {
     noBackground?: boolean;
+    visible?: boolean;
 }
 
 export const StyledLayoutCotainer = styled.div<StyledLayoutCotainerProps>`
     height: 100%;
-    width: 0;
     overflow: hidden;
-    display: flex;
+    display: ${({ visible }) => (visible === false ? "none" : "flex")};
     flex-direction: column;
-    flex: 0;
-    opacity: 0;
+    flex: ${({ visible }) => (visible === false ? 0 : 1)};
     background: ${({ noBackground, theme }) => !noBackground && theme.colors.inDepoNeutrals[6]};
+    margin-right: ${({ theme }) => getREM(theme.default.spaces[3])};
+    padding: ${({ noBackground, theme }) =>
+        noBackground ? getREM(theme.default.spaces[1]) : getREM(theme.default.spaces[6])};
     border-radius: ${({ theme }) => getREM(theme.default.borderRadiusBase)};
-    transition: flex 150ms ease 300ms;
-    will-change: flex;
-    ${({ noBackground, visible, theme }) => {
-        return visible
-            ? `
-                width: unset;
-                flex: 1;
-                opacity: 1;
-                padding: ${noBackground ? getREM(theme.default.spaces[1]) : getREM(theme.default.spaces[6])};
-                margin-right: ${getREM(theme.default.spaces[3])};
-            `
-            : "";
-    }}
 `;
 
 export const StyledLayoutContent = styled.div`

@@ -22,7 +22,6 @@ dayjs.extend(timezone);
 const RealTime = ({
     disableAutoscroll,
     manageTranscriptionClicked,
-    visible,
     timeZone,
     transcriptions,
     playedTimeValue,
@@ -81,7 +80,7 @@ const RealTime = ({
     }, [scrollToHighlighted, transcriptionsWithoutDuplicates]);
 
     return (
-        <StyledLayoutCotainer noBackground={disableAutoscroll} visible={visible}>
+        <StyledLayoutCotainer noBackground={disableAutoscroll}>
             <StyledLayoutContent>
                 <StyledRealTimeContainer>
                     <div>
