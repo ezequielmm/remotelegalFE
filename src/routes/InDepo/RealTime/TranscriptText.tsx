@@ -4,7 +4,6 @@ import Text from "prp-components-library/src/components/Text";
 import { ITextProps } from "prp-components-library/src/components/Text/Text";
 
 interface TranscriptTextProps extends ITextProps {
-    scrollTo: boolean;
     highlighted: boolean;
     pointer: boolean;
     onClick: () => void;
@@ -15,15 +14,7 @@ const TranscriptionText = styled(Text)<Omit<TranscriptTextProps, "scrollTo">>`
     cursor: ${({ pointer }) => pointer && "pointer"};
 `;
 
-const TranscriptText = ({ highlighted, scrollTo, ...rest }: TranscriptTextProps) => {
-    const elementRef = useRef<HTMLSpanElement>(null);
-
-    useEffect(() => {
-        if (elementRef?.current && scrollTo) {
-            elementRef.current.scrollIntoView({ behavior: "smooth" });
-        }
-    }, [scrollTo]);
-
-    return <TranscriptionText highlighted={highlighted} ref={elementRef} {...rest} />;
+const TranscriptText = ({ highlighted, ...rest }: TranscriptTextProps) => {
+    return <TranscriptionText highlighted={highlighted} {...rest} />;
 };
 export default TranscriptText;

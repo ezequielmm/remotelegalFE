@@ -9,12 +9,13 @@ import utc from "dayjs/plugin/utc";
 import { ReactComponent as TimeIcon } from "../../../assets/icons/time.svg";
 import { ReactComponent as InfoIcon } from "../../../assets/icons/information.svg";
 import { ContainerProps, StyledLayoutContent, StyledLayoutCotainer } from "../styles";
-import { HiddenRef, RoughDraftPill, StyledRealTimeContainer } from "./styles";
+import { HiddenRef, RoughDraftPill, StyledRealTimeContainer, StyledRealTimeInner } from "./styles";
 import TranscriptionText from "./TranscriptText";
 import * as CONSTANTS from "../../../constants/inDepo";
 import ColorStatus from "../../../types/ColorStatus";
 import { mapTimeZone, TimeZones } from "../../../models/general";
 import { TranscriptionModel } from "../../../models";
+import useWindowSize from "../../../hooks/useWindowSize";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -36,8 +37,9 @@ const RealTime = ({
     playedTimeValue?: number;
     scrollToHighlighted?: boolean;
 }) => {
-    const scrollableRef = useRef(null);
+    const layoutContentRef = useRef(null);
     const [currentTranscript, setCurrentTranscript] = useState(null);
+    const [windowWidth] = useWindowSize();
 
     useEffect(() => {
         const highlightTranscript = () => {
@@ -79,83 +81,120 @@ const RealTime = ({
         }
     }, [scrollToHighlighted, transcriptionsWithoutDuplicates]);
 
+    const listRef = useRef(null);
+    const sizeMap = useRef({});
+    const setSize = (index, size) => {
+        listRef.current.resetAfterIndex(0);
+        sizeMap.current = { ...sizeMap.current, [index]: size };
+    };
+    const [lastScrolledIndex, setLastScrolledIndex] = useState(null);
+    const getSize = (index) => {
+        return !disableAutoscroll
+            ? sizeMap.current[index] + (index === 0 ? 70 : 15) || 50
+            : sizeMap.current[index] + 15 || 50;
+    };
+
+    const transcriptionsToRender = !disableAutoscroll
+        ? [{}, ...transcriptionsWithoutDuplicates]
+        : transcriptionsWithoutDuplicates.filter(({ index }) => index !== 0);
+
+    const Row = ({ index, setSize, windowWidth, data }) => {
+        const rowRef = useRef(null);
+        const scrollToIndex = data.findIndex((transcription) => currentTranscript === transcription.id);
+
+        useEffect(() => {
+            if (scrollToIndex && lastScrolledIndex !== scrollToIndex) {
+                listRef?.current?.scrollToItem(scrollToIndex);
+                setLastScrolledIndex(scrollToIndex);
+            }
+        }, []);
+
+        useEffect(() => {
+            setSize(index, rowRef.current.getBoundingClientRect().height);
+        }, [setSize, index, windowWidth]);
+
+        if (index === 0 && !disableAutoscroll) {
+            return (
+                <div ref={rowRef}>
+                    <RoughDraftPill>ROUGH DRAFT: NOT FOR OFFICIAL USE</RoughDraftPill>
+                </div>
+            );
+        }
+
+        return (
+            <StyledRealTimeInner ref={rowRef}>
+                {(data[index].from || data[index].text) &&
+                    (data[index].from ? (
+                        <Alert
+                            data-testid={data[index].to ? "transcription_paused" : "transcription_currently_paused"}
+                            key={data[index].id}
+                            message={
+                                data[index].to
+                                    ? CONSTANTS.getPauseText(data[index].from, data[index].to, timeZone)
+                                    : CONSTANTS.TRANSCRIPTIONS_PAUSED
+                            }
+                            type={data[index].to ? "info" : "warning"}
+                            icon={<Icon icon={data[index].to ? TimeIcon : InfoIcon} />}
+                        />
+                    ) : (
+                        <Space direction="vertical" key={data[index].id}>
+                            {playedTimeValue !== undefined &&
+                                (index === 0 || playedTimeValue - data[index].prevEndTime >= 0) &&
+                                playedTimeValue - data[index].transcriptionVideoTime < 0 && <HiddenRef />}
+                            <Text
+                                state={ColorStatus.disabled}
+                                font="code"
+                                size="small"
+                                weight="bold"
+                                block
+                                dataTestId="transcription_title"
+                            >
+                                <>
+                                    {`${data[index].userName || "Guest"} `}
+                                    {dayjs(data[index].transcriptDateTime)
+                                        .tz(mapTimeZone[timeZone])
+                                        ?.format("hh:mm:ss A")}
+                                </>
+                            </Text>
+                            <TranscriptionText
+                                font="code"
+                                size="small"
+                                block
+                                ellipsis={false}
+                                dataTestId="transcription_text"
+                                highlighted={scrollToHighlighted && currentTranscript === data[index].id}
+                                pointer={!!manageTranscriptionClicked}
+                                onClick={() => {
+                                    if (manageTranscriptionClicked) manageTranscriptionClicked(data[index]);
+                                }}
+                            >
+                                {data[index].text}
+                            </TranscriptionText>
+                        </Space>
+                    ))}
+            </StyledRealTimeInner>
+        );
+    };
+
     return (
         <StyledLayoutCotainer noBackground={disableAutoscroll}>
-            <StyledLayoutContent>
-                <StyledRealTimeContainer>
-                    <div>
-                        <div ref={scrollableRef}>
-                            {!disableAutoscroll && <RoughDraftPill>ROUGH DRAFT: NOT FOR OFFICIAL USE</RoughDraftPill>}
-                            <Space direction="vertical" size="middle">
-                                {transcriptionsWithoutDuplicates?.map(
-                                    (transcription, i) =>
-                                        (transcription.from || transcription.text) &&
-                                        (transcription.from ? (
-                                            <Alert
-                                                data-testid={
-                                                    transcription.to
-                                                        ? "transcription_paused"
-                                                        : "transcription_currently_paused"
-                                                }
-                                                key={transcription.id}
-                                                message={
-                                                    transcription.to
-                                                        ? CONSTANTS.getPauseText(
-                                                              transcription.from,
-                                                              transcription.to,
-                                                              timeZone
-                                                          )
-                                                        : CONSTANTS.TRANSCRIPTIONS_PAUSED
-                                                }
-                                                type={transcription.to ? "info" : "warning"}
-                                                icon={<Icon icon={transcription.to ? TimeIcon : InfoIcon} />}
-                                            />
-                                        ) : (
-                                            <Space direction="vertical" key={transcription.id}>
-                                                {playedTimeValue !== undefined &&
-                                                    (i === 0 || playedTimeValue - transcription.prevEndTime >= 0) &&
-                                                    playedTimeValue - transcription.transcriptionVideoTime < 0 && (
-                                                        <HiddenRef />
-                                                    )}
-                                                <Text
-                                                    state={ColorStatus.disabled}
-                                                    font="code"
-                                                    size="small"
-                                                    weight="bold"
-                                                    block
-                                                    dataTestId="transcription_title"
-                                                >
-                                                    <>
-                                                        {`${transcription.userName || "Guest"} `}
-                                                        {dayjs(transcription.transcriptDateTime)
-                                                            .tz(mapTimeZone[timeZone])
-                                                            ?.format("hh:mm:ss A")}
-                                                    </>
-                                                </Text>
-                                                <TranscriptionText
-                                                    font="code"
-                                                    size="small"
-                                                    block
-                                                    ellipsis={false}
-                                                    dataTestId="transcription_text"
-                                                    scrollTo={currentTranscript === transcription.id}
-                                                    highlighted={
-                                                        scrollToHighlighted && currentTranscript === transcription.id
-                                                    }
-                                                    pointer={!!manageTranscriptionClicked}
-                                                    onClick={() => {
-                                                        if (manageTranscriptionClicked)
-                                                            manageTranscriptionClicked(transcription);
-                                                    }}
-                                                >
-                                                    {transcription.text}
-                                                </TranscriptionText>
-                                            </Space>
-                                        ))
-                                )}
-                            </Space>
-                        </div>
-                    </div>
+            <StyledLayoutContent ref={layoutContentRef}>
+                <StyledRealTimeContainer
+                    height={layoutContentRef?.current?.offsetHeight || 0}
+                    itemCount={transcriptionsToRender.length}
+                    itemSize={getSize}
+                    itemData={transcriptionsToRender}
+                    ref={listRef}
+                >
+                    {({ index, style, data }) => {
+                        return (
+                            <>
+                                <div style={style}>
+                                    <Row index={index} setSize={setSize} windowWidth={windowWidth} data={data} />
+                                </div>
+                            </>
+                        );
+                    }}
                 </StyledRealTimeContainer>
             </StyledLayoutContent>
         </StyledLayoutCotainer>

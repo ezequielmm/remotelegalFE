@@ -44,6 +44,7 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
     "react-test-renderer": "^16.14.0",
+    "react-window": "^1.8.6",
     "screenfull": "^5.1.0",
     "source-map-explorer": "^2.5.2",
     "styled-components": "^5.2.1",
