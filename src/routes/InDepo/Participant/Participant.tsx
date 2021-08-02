@@ -84,7 +84,7 @@ const Participant = ({
             )}
             <StyledIdentityBox>
                 <Space align="flex-end" justify="space-between">
-                    <Space.Item>
+                    <Space size={1}>
                         <StyledParticipantMicContainer showMicStatus={isMuted}>
                             <Icon
                                 data-testid="participant_muted"
@@ -128,7 +128,7 @@ const Participant = ({
                                     : identity?.role}
                             </Text>
                         </Space>
-                    </Space.Item>
+                    </Space>
                     <StyledNetworkQuality
                         data-testid={CONSTANTS.NETWORK_INDICATOR_TEST_ID}
                         steps={5}
