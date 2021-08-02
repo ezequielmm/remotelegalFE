@@ -263,9 +263,7 @@ const TroubleShootDevicesModal = ({ isDepo, visible = true, onClose }: TroubleSh
                                                 ref={(newRef) => setAudioRef(newRef)}
                                                 data-testid="audio_file"
                                                 src={SpeakerTestAudio}
-                                            >
-                                                <track kind="captions" />
-                                            </audio>
+                                            />
                                             <Button
                                                 data-testid="test_speakers"
                                                 type="link"

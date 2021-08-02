@@ -71,12 +71,8 @@ const Participant = ({
 
     return (
         <StyledParticipantMask highlight={hasBorder}>
-            <video ref={videoRef} autoPlay>
-                <track kind="captions" />
-            </video>
-            <audio ref={audioRef} autoPlay>
-                <track kind="captions" />
-            </audio>
+            <video ref={videoRef} autoPlay />
+            <audio ref={audioRef} autoPlay />
             {timeZone && (
                 <StyledTimeBox>
                     <Clock timeZone={timeZone} />
