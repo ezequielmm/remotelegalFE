@@ -98,7 +98,17 @@ const RealTime = ({
         ? [{}, ...transcriptionsWithoutDuplicates]
         : transcriptionsWithoutDuplicates.filter(({ index }) => index !== 0);
 
-    const Row = ({ index, setSize, windowWidth, data }) => {
+    const Row = ({
+        index,
+        setSize,
+        windowWidth,
+        data,
+    }: {
+        index: number;
+        setSize: (index: number, size: number) => void;
+        windowWidth: number;
+        data: (TranscriptionModel.Transcription & TranscriptionModel.TranscriptionPause)[];
+    }) => {
         const rowRef = useRef(null);
         const scrollToIndex = data.findIndex((transcription) => currentTranscript === transcription.id);
 
@@ -107,7 +117,7 @@ const RealTime = ({
                 listRef?.current?.scrollToItem(scrollToIndex);
                 setLastScrolledIndex(scrollToIndex);
             }
-        }, []);
+        }, [scrollToIndex]);
 
         useEffect(() => {
             setSize(index, rowRef.current.getBoundingClientRect().height);

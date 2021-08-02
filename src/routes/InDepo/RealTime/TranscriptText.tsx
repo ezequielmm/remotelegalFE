@@ -1,4 +1,3 @@
-import { useEffect, useRef } from "react";
 import styled from "styled-components";
 import Text from "prp-components-library/src/components/Text";
 import { ITextProps } from "prp-components-library/src/components/Text/Text";
