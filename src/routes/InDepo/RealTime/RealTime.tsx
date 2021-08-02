@@ -87,7 +87,7 @@ const RealTime = ({
         listRef.current.resetAfterIndex(0);
         sizeMap.current = { ...sizeMap.current, [index]: size };
     };
-    const [lastScrolledIndex, setLastScrolledIndex] = useState(null);
+    // const [lastScrolledIndex, setLastScrolledIndex] = useState(null);
     const getSize = (index) => {
         return !disableAutoscroll
             ? sizeMap.current[index] + (index === 0 ? 70 : 15) || 50
@@ -110,14 +110,14 @@ const RealTime = ({
         data: (TranscriptionModel.Transcription & TranscriptionModel.TranscriptionPause)[];
     }) => {
         const rowRef = useRef(null);
-        const scrollToIndex = data.findIndex((transcription) => currentTranscript === transcription.id);
+        // const scrollToIndex = data.findIndex((transcription) => currentTranscript === transcription.id);
 
-        useEffect(() => {
+        /*  useEffect(() => {
             if (scrollToIndex && lastScrolledIndex !== scrollToIndex) {
                 listRef?.current?.scrollToItem(scrollToIndex);
                 setLastScrolledIndex(scrollToIndex);
             }
-        }, [scrollToIndex]);
+        }, [scrollToIndex]); */
 
         useEffect(() => {
             setSize(index, rowRef.current.getBoundingClientRect().height);
