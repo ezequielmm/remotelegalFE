@@ -55,28 +55,10 @@ jobs:
                   source: ./env/.env.${{ steps.extract-branch-for-replacement.outputs.branch }}
                   target: .env
 
-            - name:  Automated Version Bump
-              if: contains('
-                  refs/heads/develop
-                  ', github.ref)
-              uses:  'phips28/gh-action-bump-version@master'
-              env:
-                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-              with:
-                skip-tag:  'true'
-
-            - name: Prebuild
-              if: contains('
-                  refs/heads/develop
-                  refs/heads/qa
-                  ', github.ref)
-              run: yarn prebuild
-
             - name: Build
               run: ESLINT_NO_DEV_ERRORS=true DISABLE_ESLINT_PLUGIN=true yarn build
             - name: Test
               run: CI=true yarn test
-
             - name: Upload publish to GitHub Store
               uses: actions/upload-artifact@master
               with:
