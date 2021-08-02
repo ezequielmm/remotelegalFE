@@ -1,0 +1,21 @@
+const fs = require("fs");
+const packageJson = require("./package.json");
+
+const appVersion = packageJson.version;
+
+const jsonData = {
+    version: appVersion,
+};
+
+const jsonContent = JSON.stringify(jsonData);
+
+// eslint-disable-next-line func-names
+// eslint-disable-next-line consistent-return
+fs.writeFile("./public/meta.json", jsonContent, "utf8", (err) => {
+    if (err) {
+        console.log("An error occured while writing JSON Object to meta.json");
+        return console.log(err);
+    }
+
+    console.log("meta.json file has been saved with latest version number");
+});
