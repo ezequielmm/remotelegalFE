@@ -260,6 +260,7 @@ const InDepo = () => {
                     </StyledInDepoLayout>
                     <StyledRoomFooter>
                         <ControlsBar
+                            canViewTechTab={permissions.includes("ViewDepositionStatus")}
                             breakrooms={breakrooms}
                             canJoinToLockedBreakroom={
                                 JSON.parse(currentRoom?.localParticipant?.identity || "{}").role === Roles.courtReporter

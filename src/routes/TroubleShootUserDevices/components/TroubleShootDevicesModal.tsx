@@ -67,6 +67,9 @@ const TroubleShootDevicesModal = ({ isDepo, visible = true, onClose }: TroubleSh
     const oldDevices = localStorage.getItem("selectedDevices") && JSON.parse(localStorage.getItem("selectedDevices"));
     const availableRoom = currentRoom || mockDepoRoom;
     const { depositionID } = useParams<{ depositionID: string }>();
+    const [cameraError, setCameraError] = useState(false);
+    const [micError, setMicError] = useState(false);
+    const [isCameraBlocked, setIsCameraBlocked] = useState(false);
     const [isVideoOff, setVideoOff] = useState(true);
     const [audioRef, setAudioRef] = useState<HTMLMediaElement>(null);
     const videoRef = useRef<HTMLVideoElement>(null);
@@ -74,15 +77,27 @@ const TroubleShootDevicesModal = ({ isDepo, visible = true, onClose }: TroubleSh
         useNotifyParticipantPresence();
     const addAlert = useFloatingAlertContext();
 
-    const cameraError = errors.length && errors.filter((error) => error?.videoinput)[0];
-    const micError = errors.length && errors.filter((error) => error?.audioinput)[0];
-    const isCameraBlocked = cameraError && cameraError.videoinput.name === "NotAllowedError";
     const cameraErrorSubTitle =
         (isCameraBlocked && CONSTANTS.CAMERA_BLOCKED_ERROR_MESSAGES.subtitle) ||
         (cameraError && CONSTANTS.CAMERA_UNAVAILABLE_ERROR_MESSAGES.subtitle);
     const cameraErrorTitle =
         (isCameraBlocked && CONSTANTS.CAMERA_BLOCKED_ERROR_MESSAGES.title) ||
         (cameraError && CONSTANTS.CAMERA_UNAVAILABLE_ERROR_MESSAGES.title);
+
+    useEffect(() => {
+        const cameraError = errors.length >= 1 && errors.filter((error) => error?.videoinput)[0];
+        const micError = errors.length >= 1 && errors.filter((error) => error?.audioinput)[0];
+        const isCameraBlocked = cameraError && cameraError.videoinput.name === "NotAllowedError";
+        if (cameraError) {
+            setCameraError(cameraError);
+        }
+        if (micError) {
+            setMicError(micError);
+        }
+        if (isCameraBlocked) {
+            setIsCameraBlocked(isCameraBlocked);
+        }
+    }, [errors]);
 
     useEffect(() => {
         const sendToDepo = () => {

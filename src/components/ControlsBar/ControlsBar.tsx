@@ -1,5 +1,5 @@
 import React, { ReactElement, useEffect, useState, useCallback } from "react";
-import { useHistory } from "react-router";
+import { useHistory, useParams } from "react-router";
 import Badge from "prp-components-library/src/components/Badge";
 import Button from "prp-components-library/src/components/Button";
 import Confirm from "prp-components-library/src/components/Confirm";
@@ -12,6 +12,7 @@ import Text from "prp-components-library/src/components/Text";
 import { ThemeProvider } from "styled-components";
 import { Row, Col } from "antd";
 import { LocalAudioTrack, LocalParticipant, LocalVideoTrack } from "twilio-video";
+import { Link } from "react-router-dom";
 import { ReactComponent as ArrowIcon } from "../../assets/general/Arrow.svg";
 import { ReactComponent as ChatIcon } from "../../assets/icons/comment_icon.svg";
 import { ReactComponent as SettingsIcon } from "../../assets/in-depo/settings.svg";
@@ -30,6 +31,8 @@ import { ReactComponent as UnmuteIcon } from "../../assets/in-depo/Unmute.svg";
 import { ReactComponent as KebebHorizontalIcon } from "../../assets/icons/kebeb.horizontal.svg";
 import { ReactComponent as KebebIcon } from "../../assets/icons/kebeb.svg";
 import { ReactComponent as LockIcon } from "../../assets/icons/Lock.svg";
+import { ReactComponent as TechTabIcon } from "../../assets/icons/tech-tab-icon.svg";
+import { DepositionID } from "../../state/types";
 import * as CONSTANTS from "../../constants/inDepo";
 import { theme } from "../../constants/styles/theme";
 import { getREM } from "../../constants/styles/utils";
@@ -66,6 +69,7 @@ import TroubleShootDevicesModal from "../../routes/TroubleShootUserDevices/compo
 import useWindowSize from "../../hooks/useWindowSize";
 
 interface IControlsBar {
+    canViewTechTab?: boolean;
     breakrooms?: BreakroomModel.Breakroom[];
     canJoinToLockedBreakroom?: boolean;
     disableBreakrooms?: boolean;
@@ -87,6 +91,7 @@ interface IControlsBar {
 
 export default function ControlsBar({
     breakrooms,
+    canViewTechTab,
     canJoinToLockedBreakroom = false,
     disableBreakrooms = false,
     disableChat = false,
@@ -129,6 +134,7 @@ export default function ControlsBar({
     const leaveModalTextContent = getLeaveModalTextContent(isRecording, isWitness);
     const [windowWidth] = useWindowSize();
     const [drawerVisible, setDrawerVisible] = useState(false);
+    const { depositionID } = useParams<DepositionID>();
 
     const toggleBreakrooms = () => togglerBreakrooms((prevState) => !prevState);
     const toggleChat = () => togglerChat((prevState) => !prevState);
@@ -533,6 +539,26 @@ export default function ControlsBar({
                                                 </Text>
                                             </Button>
                                         </Menu.Item>
+                                        {canViewTechTab && (
+                                            <Menu.Item key="2">
+                                                <Link
+                                                    to={`/deposition/tech_info/${depositionID}`}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                >
+                                                    <Space size="small" align="center">
+                                                        <Icon icon={TechTabIcon} size={8} color={ColorStatus.white} />
+                                                        <Text
+                                                            data-testid="tech_tab"
+                                                            state={ColorStatus.white}
+                                                            size="small"
+                                                        >
+                                                            {CONSTANTS.CONTROLS_BAR_TECH_LABEL}
+                                                        </Text>
+                                                    </Space>
+                                                </Link>
+                                            </Menu.Item>
+                                        )}
                                     </Menu>
                                 }
                                 arrow

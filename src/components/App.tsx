@@ -6,6 +6,7 @@ import TagManager from "react-gtm-module";
 import "@datadog/browser-logs/bundle/datadog-logs";
 import { Route, Router, Switch } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
+import { QueryClient, QueryClientProvider } from "react-query";
 import GlobalStyle from "./GlobalStyle";
 import { theme } from "../constants/styles/theme";
 import MockInDepo from "../routes/MockInDepo";
@@ -30,7 +31,7 @@ import WaitingRoom from "../routes/WaitingRoom";
 import Help from "../routes/Help";
 import { FloatingAlertContextProvider } from "../contexts/FloatingAlertContext";
 import TroubleShootUserDevices from "../routes/TroubleShootUserDevices/TroubleShootUserDevices";
-import { QueryClient, QueryClientProvider } from "react-query";
+import TechInfo from "../routes/TechInfo";
 
 declare global {
     interface Window {
@@ -91,6 +92,7 @@ function App() {
                                     path="/deposition/pre-join/troubleshoot-devices/:depositionID"
                                     component={TroubleShootUserDevices}
                                 />
+                                <Route exact path="/deposition/tech_info/:depositionID" component={TechInfo} />
                                 <RouteWithLayout exact path="/my-cases" component={MyCases} />
                                 <RouteWithLayout exact path="/deposition/new" component={CreateDeposition} />
                                 <RouteWithLayout exact path="/depositions" component={MyDepositions} />
