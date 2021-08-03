@@ -19,6 +19,8 @@ import { Roles } from "../../models/participant";
 import { useAuthentication } from "../auth";
 import stopAllTracks from "../../helpers/stopAllTracks";
 import beep from "../../assets/sounds/Select.mp3";
+import useSendSystemUserInfo from "../techInfo/useSendUserSystemInfo";
+import useSendParticipantDevices from "../techInfo/sendParticipantDevices";
 
 export const useKillDepo = () => {
     const { deps } = useContext(GlobalStateContext);
@@ -246,7 +248,8 @@ export const useJoinDeposition = () => {
             isMounted.current = false;
         };
     }, []);
-
+    const [sendUserSystemInfo, , sendSystemUserInfoError] = useSendSystemUserInfo();
+    const [sendParticipantDevices, , sendParticipantDevicesError] = useSendParticipantDevices();
     const [getDepositionPermissions] = useDepositionPermissions();
     const [getTranscriptions] = useGetTranscriptions();
     const [getBreakrooms] = useGetBreakrooms();
@@ -254,10 +257,32 @@ export const useJoinDeposition = () => {
     const [checkUserStatus] = useCheckUserStatus();
     const history = useHistory();
     const { currentEmail } = useAuthentication();
-
+    const devices = JSON.parse(localStorage.getItem("selectedDevices"));
     return useAsyncCallback(
         async (depositionID: string) => {
-            const devices = JSON.parse(localStorage.getItem("selectedDevices"));
+            try {
+                await sendUserSystemInfo();
+            } catch {
+                console.error(`Couldn´t send system user info because of: ${sendSystemUserInfoError}`);
+            }
+            try {
+                const participantDevices = {
+                    camera: {
+                        name: devices?.videoForBE.name || "",
+                        status: devices?.videoForBE.status,
+                    },
+                    microphone: {
+                        name: devices?.microphoneForBE.name || "",
+                    },
+                    speakers: {
+                        name: devices?.speakersForBE.name || "",
+                    },
+                };
+                await sendParticipantDevices(participantDevices);
+            } catch {
+                console.error(`Couldn´t send system user info because of: ${sendParticipantDevicesError}`);
+            }
+
             const dataTrack = new LocalDataTrack();
             const userStatus = await checkUserStatus(depositionID, currentEmail.current);
             dispatch(actions.setUserStatus(userStatus));

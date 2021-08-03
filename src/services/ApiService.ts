@@ -13,7 +13,7 @@ import { wait } from "../helpers/wait";
 import { EventModel, CaseModel, DepositionModel, UserModel, ParticipantModel } from "../models";
 import { HTTP_METHOD, ITokenSet } from "../models/general";
 import TEMP_TOKEN from "../constants/ApiService";
-import { getBrowserInfo } from "../helpers/browserInfo";
+import getBrowserInfo from "../helpers/browserInfo";
 
 interface RequestParams {
     path: string;
@@ -95,6 +95,13 @@ export class ApiService {
     getDepositionPermissions = async (depositionID: string) => {
         return this.request<DepositionModel.IDeposition>({
             path: `/api/permissions/depositions/${depositionID}`,
+            method: HTTP_METHOD.GET,
+        });
+    };
+
+    getDepositionInfo = async (depositionID: string) => {
+        return this.request<DepositionModel.IDeposition>({
+            path: `/api/depositions/${depositionID}/info`,
             method: HTTP_METHOD.GET,
         });
     };
@@ -261,6 +268,23 @@ export class ApiService {
             payload,
             withToken: false,
             method: HTTP_METHOD.POST,
+        });
+    };
+
+    sendUserSystemInfo = async (depositionID: string) => {
+        const payload = getBrowserInfo();
+        return this.request({
+            path: `/api/depositions/${depositionID}/userSystemInfo`,
+            method: HTTP_METHOD.POST,
+            payload,
+        });
+    };
+
+    sendParticipantDevices = async (depositionID: string, payload) => {
+        return this.request({
+            path: `/api/depositions/${depositionID}/devices`,
+            method: HTTP_METHOD.POST,
+            payload,
         });
     };
 

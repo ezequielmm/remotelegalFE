@@ -1,33 +1,26 @@
 import styled from "styled-components";
 import Space from "prp-components-library/src/components/Space";
+import { VariableSizeList as RealTimeContainer } from "react-window";
 import { getPX, getREM, hexToRGBA } from "../../../constants/styles/utils";
 
-export const StyledRealTimeContainer = styled.div`
+export const StyledRealTimeContainer = styled(RealTimeContainer)`
     height: 100%;
     padding: ${({ theme }) => `${getREM(theme.default.spaces[1])}`};
     background: ${({ theme }) => theme.default.whiteColor};
+    &::-webkit-scrollbar {
+        width: ${({ theme }) => getPX(theme.default.spaces[2])};
+    }
+    &::-webkit-scrollbar-track {
+        background-color: ${({ theme }) => theme.default.disabledBg};
+    }
+    &::-webkit-scrollbar-thumb {
+        border-radius: ${({ theme }) => getPX(theme.default.spaces[5])};
+        background: ${({ theme }) => theme.colors.inDepoBlue[6]};
+    }
 
-    > * {
-        height: 100%;
-        overflow-y: auto;
-        padding: ${({ theme }) => `${getREM(theme.default.spaces[7])}`};
-        scrollbar-color: ${({ theme }) => `${theme.colors.inDepoBlue[6]} ${theme.default.disabledBg}`};
-        scrollbar-width: thin;
-        &::-webkit-scrollbar {
-            width: ${({ theme }) => getPX(theme.default.spaces[2])};
-        }
-        &::-webkit-scrollbar-track {
-            background-color: ${({ theme }) => theme.default.disabledBg};
-        }
-        &::-webkit-scrollbar-thumb {
-            border-radius: ${({ theme }) => getPX(theme.default.spaces[5])};
-            background: ${({ theme }) => theme.colors.inDepoBlue[6]};
-        }
-
-        & > :not(:last-child) {
-            margin-bottom: ${({ theme }) => `${getREM(theme.default.spaces[6])}`};
-            border-bottom: ${({ theme }) => `1px dashed ${theme.colors.inDepoBlue[2]}`};
-        }
+    & > :not(:last-child) {
+        margin-bottom: ${({ theme }) => `${getREM(theme.default.spaces[6])}`};
+        border-bottom: ${({ theme }) => `1px dashed ${theme.colors.inDepoBlue[2]}`};
     }
 `;
 
@@ -50,4 +43,8 @@ export const RoughDraftPill = styled.div`
 
 export const TranscriptionsContainer = styled(Space)`
     width: 100%;
+`;
+
+export const StyledRealTimeInner = styled.div`
+    padding: 0 ${({ theme }) => `${getREM(theme.default.spaces[8])}`};
 `;

@@ -63,6 +63,7 @@ export const CONTROLS_BAR_BREAKROOMS_LABEL = "Breakrooms";
 export const CONTROLS_BAR_SUMMARY_LABEL = "Summary";
 export const CONTROLS_BAR_CHAT_LABEL = "Chat";
 export const CONTROLS_BAR_SETTINGS_LABEL = "Settings";
+export const CONTROLS_BAR_TECH_LABEL = "Check status";
 export const CONTROLS_BAR_SUPPORT_LABEL = "Need Help?";
 export const CONTROLS_BAR_MORE_LABEL = "More";
 export const CONTROLS_BAR_JOIN_BUTTON = "JOIN";

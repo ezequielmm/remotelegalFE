@@ -89,9 +89,7 @@ const TestVideo = forwardRef(
                         </Text>
                     </StyledVideoError>
                 ) : (
-                    <video playsInline data-testid="video" ref={ref} autoPlay>
-                        <track kind="captions" />
-                    </video>
+                    <video playsInline data-testid="video" ref={ref} autoPlay />
                 )}
                 <TestVideoControlsWrapper justify="center">
                     {showButtons && (

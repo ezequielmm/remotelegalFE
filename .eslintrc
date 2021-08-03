@@ -36,7 +36,8 @@
         "no-shadow": "off",
         "react/require-default-props": "off",
         "import/no-unresolved": "off",
-        "react/jsx-uses-react": "off"
+        "react/jsx-uses-react": "off",
+        "jsx-a11y/media-has-caption": "off"
     },
     "settings": {
         "import/resolver": {

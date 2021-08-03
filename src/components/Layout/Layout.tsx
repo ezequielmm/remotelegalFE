@@ -118,8 +118,11 @@ const AppLayout = ({ children }: DashboardProps) => {
                                     key={group.title}
                                 >
                                     {group.routes.map((item) => (
-                                        <Menu.Item data-testid={item.dataTestId} key={item.path}>
-                                            <Icon icon={item.icon} color={ColorStatus.primary} />
+                                        <Menu.Item
+                                            icon={<Icon icon={item.icon} color={ColorStatus.primary} />}
+                                            data-testid={item.dataTestId}
+                                            key={item.path}
+                                        >
                                             {item.name}
                                         </Menu.Item>
                                     ))}

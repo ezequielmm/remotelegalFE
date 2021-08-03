@@ -268,6 +268,16 @@ test("it calls setParticipantStatus with the right params and sets the devices i
     await waitFor(() => expect(screen.queryByTestId("overlay")).toBeFalsy());
     userEvent.click(screen.getByText(MODULE_CONSTANTS.JOIN_BUTTON_LABEL));
     const LOCALSTORAGE_OBJECT = {
+        speakersForBE: {
+            name: TEST_CONSTANTS.DEVICES_LIST_MOCK[2].label,
+        },
+        videoForBE: {
+            status: MODULE_CONSTANTS.DevicesStatus.enabled,
+            name: TEST_CONSTANTS.DEVICES_LIST_MOCK[4].label,
+        },
+        microphoneForBE: {
+            name: TEST_CONSTANTS.DEVICES_LIST_MOCK[0].label,
+        },
         ...TEST_CONSTANTS.GET_AUDIO_EXPECTED_MOCK({
             deviceId: { exact: TEST_CONSTANTS.DEVICES_LIST_MOCK[0].deviceId },
         }),
@@ -293,10 +303,21 @@ test("Alert is shown when notifyParticipantPresence fetch fails", async () => {
 });
 test("it calls notifyParticipantPresence with the right params and sets the devices in localStorage with false if none are available", async () => {
     enumerateDevicesMock.mockResolvedValue(TEST_CONSTANTS.NON_AVAILABLE_DEVICES_LIST_MOCK);
+    getUserMediaMock.mockRejectedValue({ name: "NotAllowedError" });
     renderWithGlobalContext(<TroubleShootUserDevices />, customDeps);
     await waitFor(() => expect(screen.queryByTestId("overlay")).toBeFalsy());
     userEvent.click(screen.getByText(MODULE_CONSTANTS.JOIN_BUTTON_LABEL));
     const LOCALSTORAGE_OBJECT = {
+        microphoneForBE: {
+            name: "",
+        },
+        speakersForBE: {
+            name: "Default Speakers",
+        },
+        videoForBE: {
+            name: "",
+            status: MODULE_CONSTANTS.DevicesStatus.blocked,
+        },
         video: false,
         audio: false,
         speakers: false,

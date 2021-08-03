@@ -14,3 +14,8 @@ export const CAMERA_UNAVAILABLE_ERROR_MESSAGES = {
     subtitle:
         "We are not able to access your camera. You can still join the deposition, but no one else will see you until you enable your camera.",
 };
+export enum DevicesStatus {
+    unavailable = "unavailable",
+    blocked = "blocked",
+    enabled = "enabled",
+}

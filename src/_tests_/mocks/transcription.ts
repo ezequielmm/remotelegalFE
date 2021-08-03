@@ -88,3 +88,23 @@ export const getRecordResponse = (record) => ({
     eventType: record ? EventModel.EventType.onTheRecord : EventModel.EventType.offTheRecord,
     id: "e9d2fad6-2513-4fe9-8438-08d8c12e7911",
 });
+
+export const getVeryLongTranscription = (): any => {
+    let longTranscription = [];
+    for (let i = 0; i <= 99; i++) {
+        longTranscription = [
+            ...longTranscription,
+            {
+                text: `Hello, how are you? ${i}`,
+                transcriptDateTime: "2021-03-09T12:51:56",
+                transcriptionVideoTime: 110,
+                duration: 280,
+                confidence: 0,
+                userName: "Hardcoded Name",
+                id: `${i}`,
+            },
+        ];
+    }
+
+    return longTranscription;
+};
