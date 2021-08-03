@@ -68,7 +68,7 @@ const Participant = ({
                 type: "info",
                 duration: 3,
             };
-            addFloatingAlert(args, true);
+            addFloatingAlert(args);
         }
     }, [netWorkLevel, addFloatingAlert, identity, isLocal]);
 

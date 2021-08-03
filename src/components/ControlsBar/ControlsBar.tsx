@@ -9,6 +9,7 @@ import Menu from "prp-components-library/src/components/Menu";
 import Popover from "prp-components-library/src/components/Popover";
 import Space from "prp-components-library/src/components/Space";
 import Text from "prp-components-library/src/components/Text";
+import Drawer from "prp-components-library/src/components/Drawer";
 import { ThemeProvider } from "styled-components";
 import { Row, Col } from "antd";
 import { LocalAudioTrack, LocalParticipant, LocalVideoTrack } from "twilio-video";
@@ -63,10 +64,12 @@ import {
     StyledDrawer,
     StyledDrawerSpace,
     StyledEndButton,
+    StyledMobileMenu,
 } from "./styles";
 import HelpModal from "./components/HelpModal";
 import TroubleShootDevicesModal from "../../routes/TroubleShootUserDevices/components/TroubleShootDevicesModal";
 import useWindowSize from "../../hooks/useWindowSize";
+import MobileMoreMenu from "./components/MobileMoreMenu";
 
 interface IControlsBar {
     canViewTechTab?: boolean;
@@ -135,6 +138,7 @@ export default function ControlsBar({
     const [windowWidth] = useWindowSize();
     const [drawerVisible, setDrawerVisible] = useState(false);
     const { depositionID } = useParams<DepositionID>();
+    const widthMorethanLg = windowWidth >= parseInt(theme.default.breakpoints.lg, 10);
 
     const toggleBreakrooms = () => togglerBreakrooms((prevState) => !prevState);
     const toggleChat = () => togglerChat((prevState) => !prevState);
@@ -143,7 +147,10 @@ export default function ControlsBar({
     const toggleExhibits = () => togglerExhibits((prevState) => !prevState);
     const toggleRealTime = () => togglerRealTime((prevState) => !prevState);
     const toggleLeaveModal = () => setOpenLeaveModal((prevState) => !prevState);
-    const toggleSettingsModal = useCallback(() => setSettings((showSettings) => !showSettings), []);
+    const toggleSettingsModal = useCallback(() => {
+        setSettings((showSettings) => !showSettings);
+        togglerMore(false);
+    }, []);
 
     const { messages, sendMessage, loadClient, loadingClient, errorLoadingClient } = useChat({
         chatOpen,
@@ -224,6 +231,11 @@ export default function ControlsBar({
         </StyledComposedIconContainer>
     );
 
+    const handleHelpModal = () => {
+        setHelpModal(true);
+        togglerMore(false);
+    };
+
     const renderBreakrooms = () => {
         const menuItems = [];
 
@@ -272,7 +284,8 @@ export default function ControlsBar({
                     </Menu.Item>
                 )
             );
-            if (breakrooms.length > i + 1) menuItems.push(<Menu.Divider key={`${item.id}divider`} />);
+            if (breakrooms.length > i + 1 && widthMorethanLg)
+                menuItems.push(<Menu.Divider key={`${item.id}divider`} />);
         });
 
         return menuItems;
@@ -309,7 +322,7 @@ export default function ControlsBar({
                 closeModal={() => setEndDepoModal(false)}
             />
             <HelpModal visible={helpModal} jobNumber={jobNumber} closeModal={() => setHelpModal(false)} />
-            {windowWidth >= parseInt(theme.default.breakpoints.sm, 10) && (
+            {widthMorethanLg && (
                 <Space.Item flex="1 0 0">
                     <StyledLogo>
                         <Logo version="light" height="100%" />
@@ -347,7 +360,7 @@ export default function ControlsBar({
                             )
                         }
                     />
-                    {windowWidth >= parseInt(theme.default.breakpoints.sm, 10) && canRecord && (
+                    {widthMorethanLg && canRecord && (
                         <Control
                             disabled={loadingStartPauseRecording}
                             data-testid="record"
@@ -369,7 +382,7 @@ export default function ControlsBar({
                         />
                     )}
 
-                    {windowWidth >= parseInt(theme.default.breakpoints.sm, 10) && canEnd && (
+                    {widthMorethanLg && canEnd && (
                         <Control
                             data-testid="end"
                             onClick={() => {
@@ -386,7 +399,7 @@ export default function ControlsBar({
                     )}
                 </Space>
             </Space.Item>
-            {windowWidth >= parseInt(theme.default.breakpoints.sm, 10) ? (
+            {widthMorethanLg ? (
                 <Space.Item flex="1 0 0" fullHeight>
                     <Space justify="flex-end" align="center" fullHeight>
                         <Space align="center">
@@ -613,6 +626,7 @@ export default function ControlsBar({
                             <StyledEndButton
                                 size="middle"
                                 icon={<Icon icon={BreakroomsIcon} size={6} color={theme.default.whiteColor} />}
+                                onClick={() => (leaveWithoutModal ? handleRedirection() : toggleLeaveModal())}
                             >
                                 Leave Deposition
                             </StyledEndButton>
@@ -626,19 +640,33 @@ export default function ControlsBar({
                                         isActive={exhibitsOpen}
                                         onClick={toggleExhibits}
                                         type="simple"
-                                        label={CONSTANTS.CONTROLS_BAR_EXHIBITS_LABEL}
+                                        label={CONSTANTS.CONTROLS_BAR_LIVE_EXHIBITS_LABEL}
                                         icon={<Icon icon={ExhibitsIcon} size="1.625rem" />}
                                     />
                                 </Col>
-                                <Col xs={8}>
-                                    <Control
-                                        data-testid="breakrooms"
-                                        isActive={breakroomsOpen}
-                                        type="simple"
-                                        label={CONSTANTS.CONTROLS_BAR_BREAKROOMS_LABEL}
-                                        icon={composeBreakroomsIcon}
-                                    />
-                                </Col>
+                                {breakrooms && !!breakrooms.length && (
+                                    <>
+                                        <Col xs={8}>
+                                            <Control
+                                                data-testid="breakrooms"
+                                                isActive={breakroomsOpen}
+                                                type="simple"
+                                                label={CONSTANTS.CONTROLS_BAR_BREAKROOMS_LABEL}
+                                                icon={composeBreakroomsIcon}
+                                                onClick={toggleBreakrooms}
+                                            />
+                                        </Col>
+                                        <Drawer
+                                            visible={breakroomsOpen}
+                                            onClose={toggleBreakrooms}
+                                            placement="bottom"
+                                            height="100%"
+                                            title={CONSTANTS.CONTROLS_BAR_BREAKROOMS_LABEL}
+                                        >
+                                            <StyledMobileMenu>{renderBreakrooms()}</StyledMobileMenu>
+                                        </Drawer>
+                                    </>
+                                )}
                                 <Col xs={8}>
                                     <Control
                                         data-testid={CONSTANTS.CHAT_CONTROL_TEST_ID}
@@ -664,6 +692,12 @@ export default function ControlsBar({
                                         type="simple"
                                         label={CONSTANTS.CONTROLS_BAR_SUMMARY_LABEL}
                                         icon={<Icon icon={SummaryIcon} size="1.625rem" />}
+                                        onClick={toggleSummary}
+                                    />
+                                    <CopyLink
+                                        closePopOver={toggleSummary}
+                                        link={joinDepositionLink}
+                                        summaryOpen={summaryOpen}
                                     />
                                 </Col>
                                 <Col xs={8}>
@@ -673,6 +707,13 @@ export default function ControlsBar({
                                         type="simple"
                                         label={CONSTANTS.CONTROLS_BAR_MORE_LABEL}
                                         icon={<Icon icon={KebebHorizontalIcon} size="1.625rem" />}
+                                        onClick={toggleMore}
+                                    />
+                                    <MobileMoreMenu
+                                        moreOpen={moreOpen}
+                                        toggleMore={toggleMore}
+                                        handleHelpModal={handleHelpModal}
+                                        toggleSettingsModal={toggleSettingsModal}
                                     />
                                 </Col>
                             </Row>

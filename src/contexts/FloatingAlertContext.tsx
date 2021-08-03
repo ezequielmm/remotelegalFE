@@ -18,9 +18,10 @@ const FloatingAlertWrapper = styled.div`
     top: ${getREM(theme.default.spaces[4])};
     left: 50%;
     transform: translate(-50%, 0);
+    width: fit-content;
+    z-index: 3000;
     .ant-alert {
-        margin: 0 auto ${getREM(theme.default.spaces[2])};
-        width: fit-content;
+        margin: 0 ${getREM(theme.default.spaces[6])} ${getREM(theme.default.spaces[2])};
         animation: showMessage 0.3s ease-out;
     }
     @keyframes showMessage {

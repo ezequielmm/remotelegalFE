@@ -1,7 +1,7 @@
-import { useRef, useEffect, useState, useContext } from "react";
+import React, { useRef, useEffect, useState, useContext } from "react";
 import { Col } from "antd/lib/grid";
 import Row from "antd/lib/row";
-import styled from "styled-components";
+import styled, { ThemeProvider } from "styled-components";
 import { Form } from "antd";
 import Button from "prp-components-library/src/components/Button";
 import Icon from "prp-components-library/src/components/Icon";
@@ -11,7 +11,9 @@ import { InputWrapper } from "prp-components-library/src/components/Input/styles
 import Select from "prp-components-library/src/components/Select";
 import Space from "prp-components-library/src/components/Space";
 import Title from "prp-components-library/src/components/Title";
+import Divider from "prp-components-library/src/components/Divider";
 import { useHistory, useParams } from "react-router";
+import Drawer from "prp-components-library/src/components/Drawer";
 import actions from "../../../state/InDepo/InDepoActions";
 import * as CONSTANTS from "../../../constants/TroubleShootUserDevices";
 import useUserTracks, { StreamOption } from "../../../hooks/useUserTracks";
@@ -28,12 +30,21 @@ import trackpubsToTracks from "../../../helpers/trackPubsToTracks";
 import { theme } from "../../../constants/styles/theme";
 import { getREM } from "../../../constants/styles/utils";
 import { breakpoints } from "../../../constants/styles/breakpoints";
+import useWindowSize from "../../../hooks/useWindowSize";
+import { ThemeMode } from "../../../types/ThemeType";
 import useNotifyParticipantPresence from "../../../hooks/InDepo/useNotifyParticipantPresence";
 
 interface TroubleShootDevicesModalProps {
     isDepo?: boolean;
     visible?: boolean;
     onClose?: () => void;
+}
+interface SettingsWrapperProps {
+    children: React.ReactNode;
+    isDepo: boolean;
+    onClose: () => void;
+    visible: boolean;
+    widthMorethanLg: boolean;
 }
 
 const StyledCol = styled(Col)`
@@ -49,6 +60,33 @@ const StyledForm = styled(Form)`
         }
     }
 `;
+
+const SettingsWrapper = ({ isDepo, children, onClose, visible, widthMorethanLg }: SettingsWrapperProps) => {
+    return (
+        <>
+            {isDepo && !widthMorethanLg ? (
+                <ThemeProvider theme={{ ...theme, mode: ThemeMode.default }}>
+                    <Drawer visible={isDepo ? visible : true} onClose={onClose} placement="bottom" height="100%">
+                        {children}
+                    </Drawer>
+                </ThemeProvider>
+            ) : (
+                <Modal
+                    onCancel={onClose}
+                    onlyBody
+                    visible={visible}
+                    destroyOnClose
+                    closable={!!isDepo}
+                    centered
+                    mask={!!isDepo}
+                    size={ModalSize.large}
+                >
+                    {children}
+                </Modal>
+            )}
+        </>
+    );
+};
 
 const TroubleShootDevicesModal = ({ isDepo, visible = true, onClose }: TroubleShootDevicesModalProps) => {
     const {
@@ -83,6 +121,8 @@ const TroubleShootDevicesModal = ({ isDepo, visible = true, onClose }: TroubleSh
     const cameraErrorTitle =
         (isCameraBlocked && CONSTANTS.CAMERA_BLOCKED_ERROR_MESSAGES.title) ||
         (cameraError && CONSTANTS.CAMERA_UNAVAILABLE_ERROR_MESSAGES.title);
+    const [windowWidth] = useWindowSize();
+    const widthMorethanLg = windowWidth >= parseInt(theme.default.breakpoints.lg, 10);
 
     useEffect(() => {
         const cameraError = errors.length >= 1 && errors.filter((error) => error?.videoinput)[0];
@@ -236,30 +276,29 @@ const TroubleShootDevicesModal = ({ isDepo, visible = true, onClose }: TroubleSh
     return (
         <>
             {gettingTracks && !isDepo && <Overlay />}
-            <Modal
-                onCancel={onClose}
-                onlyBody
+            <SettingsWrapper
+                widthMorethanLg={widthMorethanLg}
+                onClose={onClose}
                 visible={isDepo ? visible : true}
-                destroyOnClose
-                closable={!!isDepo}
-                centered
-                mask={!!isDepo}
-                size={ModalSize.large}
+                isDepo={isDepo}
             >
                 <StyledForm layout="vertical">
-                    <Space direction="vertical" fullWidth>
+                    <Space direction="vertical" fullWidth mt={widthMorethanLg ? null : 3}>
                         <Space.Item fullWidth>
                             <Title
                                 dataTestId={isDepo ? "setting_in_depo" : "troubleshooting_settings"}
-                                level={4}
+                                level={widthMorethanLg ? 4 : 6}
                                 weight="light"
                             >
                                 {isDepo ? CONSTANTS.IN_DEPO_TITLE : CONSTANTS.TITLE}
                             </Title>
                         </Space.Item>
+                        {!widthMorethanLg && (
+                            <Divider style={{ marginBottom: getREM(theme.default.spaces[6]) }} hasMargin={false} />
+                        )}
                         <Space.Item fullWidth>
                             <Row gutter={24}>
-                                <StyledCol sm={13}>
+                                <StyledCol sm={13} xs={24}>
                                     <TestVideo
                                         showButtons={!isDepo}
                                         hasError={cameraError}
@@ -367,7 +406,7 @@ const TroubleShootDevicesModal = ({ isDepo, visible = true, onClose }: TroubleSh
                         </Space>
                     </Space>
                 </StyledForm>
-            </Modal>
+            </SettingsWrapper>
         </>
     );
 };

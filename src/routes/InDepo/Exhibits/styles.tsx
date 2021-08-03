@@ -12,6 +12,7 @@ export const ExhibitTabPaneSpacer = styled(AntSpace)`
         .spinner {
             position: absolute;
             left: 50%;
+            transform: translateX(-50%);
         }
     }
 
@@ -19,6 +20,13 @@ export const ExhibitTabPaneSpacer = styled(AntSpace)`
         height: inherit;
         overflow: hidden;
     }
+    ${({ theme }) => `
+        @media (max-width: ${theme.default.breakpoints.sm}) {
+            .ant-result-icon {
+                margin-bottom: 0;
+            }
+        }
+    `}
 `;
 
 export const ScrollTableContainer = styled(AntSpace)`

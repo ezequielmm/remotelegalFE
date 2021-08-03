@@ -263,7 +263,7 @@ const PDFTronViewer = ({
                 {
                     licenseKey:
                         "Precision Reporters LLC(precisionreporters.com):OEM:Remote Legal::B+:AMS(20220210):72A5A0AD0457260A7360B13AC982737860616F5CD9387AD28B625582AD4C3EB6329431F5C7",
-                    css: "./PDFTronStyles.css",
+                    css: "../../PDFTronStyles.css",
                     path: "/webviewer/lib/",
                     disabledElements: CONSTANTS.DISABLED_BUTTONS.concat(disableElements),
                 },

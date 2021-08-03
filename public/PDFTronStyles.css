@@ -1,3 +1,13 @@
 .HeaderItems {
     justify-content: center;
 }
+
+@media (max-width: 640px) {
+    .HeaderItems .divider{
+        margin-left: 0;
+        margin-right: 0;
+    }
+    .HeaderItems>.Button, .HeaderItems>.toggle-element-button{
+        margin: 0 4px;
+    }
+}

@@ -58,6 +58,7 @@ export const CONTROLS_BAR_ON_THE_RECORD_LABEL = "Go on the record";
 export const CONTROLS_BAR_OFF_THE_RECORD_LABEL = "Go off the record";
 export const CONTROLS_BAR_END_LABEL = "End Deposition";
 export const CONTROLS_BAR_EXHIBITS_LABEL = "Exhibits";
+export const CONTROLS_BAR_LIVE_EXHIBITS_LABEL = "Live Exhibits";
 export const CONTROLS_BAR_REAL_TIME_LABEL = "Real Time";
 export const CONTROLS_BAR_BREAKROOMS_LABEL = "Breakrooms";
 export const CONTROLS_BAR_SUMMARY_LABEL = "Summary";
