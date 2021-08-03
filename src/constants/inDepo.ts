@@ -18,7 +18,7 @@ export const TWILIO_VIDEO_CONFIG: ConnectOptions = {
         },
     },
     maxAudioBitrate: 16000,
-    preferredVideoCodecs: [{ codec: "VP8", simulcast: false }],
+    preferredVideoCodecs: [{ codec: "VP8", simulcast: true }],
     networkQuality: { local: 1, remote: 1 },
     dominantSpeaker: true,
 };

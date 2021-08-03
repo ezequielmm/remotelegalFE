@@ -16665,7 +16665,7 @@ twilio-sync@^1.0.0:
     twilsock "^0.6.2"
     uuid "^3.3.2"
 
-twilio-video@*, twilio-video@^2.15.2:
+twilio-video@*, twilio-video@^2.15.3:
   version "2.15.3"
   resolved "https://registry.yarnpkg.com/twilio-video/-/twilio-video-2.15.3.tgz#aca2bf2a8a2ac9db9f5e6c3b2c38ab669a97969b"
   integrity sha512-lwNNlQ6gdThSIG+vL/X7EDFseRPTUyBkHRFwLYTzkvVpGuf6evzP0qsGQkm0m8wV+YqH6dSiT0C9ufV/7wzfWw==
