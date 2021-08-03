@@ -20,6 +20,7 @@ import ColorStatus from "../../../types/ColorStatus";
 import { theme } from "../../../constants/styles/theme";
 import { GlobalStateContext } from "../../../state/GlobalState";
 import { ReactComponent as MuteIcon } from "../../../assets/in-depo/Participant.muted.svg";
+import AspectRatio from "../../../assets/in-depo/aspect-ratio-16-9.svg";
 import normalizedRoles from "../../../constants/roles";
 import useFloatingAlertContext from "../../../hooks/useFloatingAlertContext";
 
@@ -29,12 +30,14 @@ const Participant = ({
     isWitness,
     isMuted = false,
     isLocal,
+    isSingle,
 }: {
     isLocal?: boolean;
     timeZone?: TimeZones;
     participant: LocalParticipant | RemoteParticipant;
     isWitness?: boolean;
     isMuted?: boolean;
+    isSingle?: boolean;
 }) => {
     const { videoRef, audioRef, dataTracks, netWorkLevel } = useParticipantTracks(participant);
     const [hasBorder, setHasBorder] = useState(false);
@@ -70,9 +73,10 @@ const Participant = ({
     }, [netWorkLevel, addFloatingAlert, identity, isLocal]);
 
     return (
-        <StyledParticipantMask highlight={hasBorder}>
+        <StyledParticipantMask highlight={hasBorder} isWitness={isWitness} isSingle={isSingle}>
             <video ref={videoRef} autoPlay />
             <audio ref={audioRef} autoPlay />
+            <img src={AspectRatio} alt="16/9" className="aspect-ratio" />
             {timeZone && (
                 <StyledTimeBox>
                     <Clock timeZone={timeZone} />

@@ -14,19 +14,13 @@ export const StyledInDepoLayout = styled.div`
     position: relative;
     display: flex;
     justify-content: center;
-    background: linear-gradient(
-        to bottom,
-        ${({ theme }) => theme.colors.inDepoNeutrals[2]} 0%,
-        ${({ theme }) => theme.colors.inDepoNeutrals[2]} 60%,
-        ${({ theme }) => theme.colors.inDepoNeutrals[5]} 100%
-    );
+    background: ${({ theme }) => theme.colors.inDepoNeutrals[10]};
     padding: ${({ theme }) => getREM(theme.default.spaces[3])};
 `;
 
 export const StyledRoomFooter = styled.div`
     width: 100%;
     height: ${({ theme }) => getREM(theme.default.spaces[9] * 3)};
-    position: relative;
 `;
 
 export interface ContainerProps {
@@ -43,7 +37,7 @@ export const StyledLayoutCotainer = styled.div<StyledLayoutCotainerProps>`
     overflow: hidden;
     display: ${({ visible }) => (visible === false ? "none" : "flex")};
     flex-direction: column;
-    flex: ${({ visible }) => (visible === false ? 0 : 1)};
+    flex: ${({ visible }) => (visible === false ? 0 : "1 0 40%")};
     background: ${({ noBackground, theme }) => !noBackground && theme.colors.inDepoNeutrals[6]};
     margin-right: ${({ theme }) => getREM(theme.default.spaces[3])};
     padding: ${({ noBackground, theme }) =>
