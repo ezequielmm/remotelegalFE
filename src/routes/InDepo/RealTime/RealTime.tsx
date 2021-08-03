@@ -87,7 +87,6 @@ const RealTime = ({
         listRef.current.resetAfterIndex(0);
         sizeMap.current = { ...sizeMap.current, [index]: size };
     };
-    // const [lastScrolledIndex, setLastScrolledIndex] = useState(null);
     const getSize = (index) => {
         return !disableAutoscroll
             ? sizeMap.current[index] + (index === 0 ? 70 : 15) || 50
@@ -97,6 +96,22 @@ const RealTime = ({
     const transcriptionsToRender = !disableAutoscroll
         ? [{}, ...transcriptionsWithoutDuplicates]
         : transcriptionsWithoutDuplicates.filter(({ index }) => index !== 0);
+
+    const [isAutoscrolling, setIsAutoscrolling] = useState(false);
+    const scrollToIndex = transcriptionsToRender.findIndex((transcription) => currentTranscript === transcription.id);
+
+    useEffect(() => {
+        if (isAutoscrolling) {
+            listRef?.current?.scrollToItem(scrollToIndex);
+        }
+    }, [scrollToIndex, isAutoscrolling]);
+
+    const validateAutoscrolling = ({ visibleStopIndex }) => {
+        setIsAutoscrolling(false);
+        if (visibleStopIndex >= transcriptionsToRender.length - 2 || scrollToHighlighted) {
+            setIsAutoscrolling(true);
+        }
+    };
 
     const Row = ({
         index,
@@ -110,14 +125,6 @@ const RealTime = ({
         data: (TranscriptionModel.Transcription & TranscriptionModel.TranscriptionPause)[];
     }) => {
         const rowRef = useRef(null);
-        // const scrollToIndex = data.findIndex((transcription) => currentTranscript === transcription.id);
-
-        /*  useEffect(() => {
-            if (scrollToIndex && lastScrolledIndex !== scrollToIndex) {
-                listRef?.current?.scrollToItem(scrollToIndex);
-                setLastScrolledIndex(scrollToIndex);
-            }
-        }, [scrollToIndex]); */
 
         useEffect(() => {
             setSize(index, rowRef.current.getBoundingClientRect().height);
@@ -195,6 +202,7 @@ const RealTime = ({
                     itemSize={getSize}
                     itemData={transcriptionsToRender}
                     ref={listRef}
+                    onItemsRendered={validateAutoscrolling}
                 >
                     {({ index, style, data }) => {
                         return (
