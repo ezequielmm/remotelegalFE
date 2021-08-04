@@ -24,12 +24,13 @@
     "@types/react-dom": "^17.0.0",
     "@types/styled-components": "^5.1.9",
     "@types/twilio-video": "^2.7.3",
-    "antd": "^4.16.9",
     "@types/ua-parser-js": "^0.7.36",
+    "antd": "^4.16.9",
     "audio-recorder-polyfill": "^0.4.1",
     "aws-amplify": "^3.3.12",
     "craco-less": "^1.17.0",
     "dayjs": "^1.10.5",
+    "fs": "^0.0.1-security",
     "husky": "^4.3.0",
     "prp-components-library": "ssh://git@github.com/PrecisionReporters/prp-components-library.git#develop",
     "rc-queue-anim": "^1.8.5",
@@ -55,6 +56,8 @@
     "yup": "^0.29.3"
   },
   "scripts": {
+    "generate-build-version": "node generate-build-version",
+    "prebuild": "yarn run generate-build-version",
     "analyze": "source-map-explorer 'build/static/js/*.js'",
     "start": "node ./src/helpers/copyPDFTronAssets.js && craco start",
     "build": "node ./src/helpers/copyPDFTronAssets.js && craco build",
