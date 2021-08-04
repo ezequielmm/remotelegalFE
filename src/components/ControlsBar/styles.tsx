@@ -15,6 +15,7 @@ export const StyledContainer = styled(Space)`
     height: ${({ theme }) => getREM(theme.default.spaces[7] * 4)};
     background-color: ${({ theme }) => theme.colors.inDepoNeutrals[3]};
     border-top: 1px solid ${({ theme }) => theme.colors.inDepoNeutrals[0]};
+    position: relative;
 `;
 
 export const StyledLogo = styled.div`

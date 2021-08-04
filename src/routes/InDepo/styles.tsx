@@ -43,19 +43,6 @@ export const StyledLayoutCotainer = styled.div<StyledLayoutCotainerProps>`
     padding: ${({ noBackground, theme }) =>
         noBackground ? getREM(theme.default.spaces[1]) : getREM(theme.default.spaces[6])};
     border-radius: ${({ theme }) => getREM(theme.default.borderRadiusBase)};
-    transition: flex 150ms ease 300ms;
-    will-change: flex;
-    ${({ noBackground, visible, theme }) => {
-        return visible
-            ? `
-                width: unset;
-                flex: 1;
-                opacity: 1;
-                padding: ${noBackground ? getREM(theme.default.spaces[1]) : getREM(theme.default.spaces[6])};
-                margin-right: ${getREM(theme.default.spaces[3])};
-            `
-            : "";
-    }}
 `;
 
 export const StyledLayoutContent = styled.div`
