@@ -225,7 +225,11 @@ export const StyledDeponentContainer = styled.div<{ isSingle: boolean }>`
     display: flex;
     flex: ${({ isSingle }) => (isSingle ? 0 : "6 1 35%")};
     align-items: center;
-    ${StyledVideoConference}.grid &, ${StyledVideoConference}.vertical & {
+    ${StyledVideoConference}.grid & {
+        flex: 1 0 56%;
+        justify-content: center;
+    }
+    ${StyledVideoConference}.vertical & {
         flex: 1;
         justify-content: center;
     }
