@@ -223,7 +223,7 @@ export const StyledVideoConferenceWrapper = styled.div<{ isGridLayout: boolean }
 export const StyledDeponentContainer = styled.div<{ isSingle: boolean }>`
     width: 100%;
     display: flex;
-    flex: ${({ isSingle }) => (isSingle ? 0 : 6)};
+    flex: ${({ isSingle }) => (isSingle ? 0 : "6 1 35%")};
     align-items: center;
     ${StyledVideoConference}.grid &, ${StyledVideoConference}.vertical & {
         flex: 1;
@@ -236,7 +236,7 @@ export const StyledAttendeesContainer = styled.div<{ participantsLength: number;
     overflow-y: auto;
     overflow-x: hidden;
     display: flex;
-    flex: ${({ participantsLength }) => (participantsLength > 4 ? 5 : 6)};
+    flex: ${({ participantsLength }) => (participantsLength > 4 ? "5 0 35%" : "6 0 35%")};
     flex-wrap: wrap;
     align-content: ${({ participantsLength }) => (participantsLength > 8 ? "flex-start" : "center")};
     align-items: center;

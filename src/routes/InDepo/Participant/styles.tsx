@@ -33,7 +33,7 @@ export const StyledParticipantMask = styled.div<{ highlight?: boolean; isWitness
                 height: max-content;
 
                 .aspect-ratio {
-                    max-height: 100%;
+                    max-height: 45vh;
                     width: 100%;
                 }
             `;
@@ -51,7 +51,8 @@ export const StyledParticipantMask = styled.div<{ highlight?: boolean; isWitness
         }
 
         return `
-            width: auto;
+            width: max-content;
+            aspect-ratio: 16/9;
 
             .aspect-ratio {
                 max-height: unset;
