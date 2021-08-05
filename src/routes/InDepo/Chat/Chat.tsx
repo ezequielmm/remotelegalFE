@@ -24,6 +24,8 @@ import {
     StyledInputWrapper,
 } from "./styles";
 import { Message } from "../../../models/general";
+import { theme } from "../../../constants/styles/theme";
+import useWindowSize from "../../../hooks/useWindowSize";
 
 const ChatScreen = ({
     closePopOver,
@@ -49,6 +51,8 @@ const ChatScreen = ({
     const inputRef = useRef(null);
     const { state } = useContext(GlobalStateContext);
     const [textRows, setTextRows] = useState(1);
+    const [windowWidth] = useWindowSize();
+    const widthMorethanLg = windowWidth >= parseInt(theme.default.breakpoints.lg, 10);
 
     const { currentRoom, timeZone } = state.room;
 
@@ -118,7 +122,12 @@ const ChatScreen = ({
     };
 
     return (
-        <StyledChatContainer data-testid={CONSTANTS.CHAT_TEST_ID} hasPadding={false} height={height}>
+        <StyledChatContainer
+            data-testid={CONSTANTS.CHAT_TEST_ID}
+            hasPadding={false}
+            height={height}
+            bordered={widthMorethanLg}
+        >
             <StyledChatBody>
                 <StyledCloseIcon
                     icon={CloseIcon}
