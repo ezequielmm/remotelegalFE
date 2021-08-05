@@ -483,6 +483,19 @@ test("Redirects to waiting room if shouldSendToPreDepo is false and isAdmitted i
 });
 
 describe("InDepo -> RealTime", () => {
+    const originalOffsetHeight = Object.getOwnPropertyDescriptor(HTMLElement.prototype, "offsetHeight");
+    const originalOffsetWidth = Object.getOwnPropertyDescriptor(HTMLElement.prototype, "offsetWidth");
+
+    beforeAll(() => {
+        Object.defineProperty(HTMLElement.prototype, "offsetHeight", { configurable: true, value: 50 });
+        Object.defineProperty(HTMLElement.prototype, "offsetWidth", { configurable: true, value: 50 });
+    });
+
+    afterAll(() => {
+        Object.defineProperty(HTMLElement.prototype, "offsetHeight", originalOffsetHeight);
+        Object.defineProperty(HTMLElement.prototype, "offsetWidth", originalOffsetWidth);
+    });
+
     it("shows transcriptions when joinDeposition returns a transcriptions list not empty", async () => {
         const { getByTestId } = renderWithGlobalContext(
             <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,

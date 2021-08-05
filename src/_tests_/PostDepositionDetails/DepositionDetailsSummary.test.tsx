@@ -25,6 +25,19 @@ beforeEach(() => {
 });
 
 describe("DepositionDetailsSummary -> RealTime", () => {
+    const originalOffsetHeight = Object.getOwnPropertyDescriptor(HTMLElement.prototype, "offsetHeight");
+    const originalOffsetWidth = Object.getOwnPropertyDescriptor(HTMLElement.prototype, "offsetWidth");
+
+    beforeAll(() => {
+        Object.defineProperty(HTMLElement.prototype, "offsetHeight", { configurable: true, value: 50 });
+        Object.defineProperty(HTMLElement.prototype, "offsetWidth", { configurable: true, value: 50 });
+    });
+
+    afterAll(() => {
+        Object.defineProperty(HTMLElement.prototype, "offsetHeight", originalOffsetHeight);
+        Object.defineProperty(HTMLElement.prototype, "offsetWidth", originalOffsetWidth);
+    });
+
     it("shows spinner while transcriptions are being loaded", async () => {
         customDeps.apiService.getDepositionTranscriptionsWithOffsets = jest.fn().mockImplementation(async () => {
             await wait(100);

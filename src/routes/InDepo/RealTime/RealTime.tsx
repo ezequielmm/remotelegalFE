@@ -16,6 +16,7 @@ import ColorStatus from "../../../types/ColorStatus";
 import { mapTimeZone, TimeZones } from "../../../models/general";
 import { TranscriptionModel } from "../../../models";
 import useWindowSize from "../../../hooks/useWindowSize";
+import AutoSizer from "react-virtualized-auto-sizer";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -196,24 +197,34 @@ const RealTime = ({
     return (
         <StyledLayoutCotainer noBackground={disableAutoscroll}>
             <StyledLayoutContent ref={layoutContentRef}>
-                <StyledRealTimeContainer
-                    height={layoutContentRef?.current?.offsetHeight || 0}
-                    itemCount={transcriptionsToRender.length}
-                    itemSize={getSize}
-                    itemData={transcriptionsToRender}
-                    ref={listRef}
-                    onItemsRendered={validateAutoscrolling}
-                >
-                    {({ index, style, data }) => {
-                        return (
-                            <>
-                                <div style={style}>
-                                    <Row index={index} setSize={setSize} windowWidth={windowWidth} data={data} />
-                                </div>
-                            </>
-                        );
-                    }}
-                </StyledRealTimeContainer>
+                <AutoSizer>
+                    {({ height, width }) => (
+                        <StyledRealTimeContainer
+                            height={height}
+                            itemCount={transcriptionsToRender.length}
+                            itemSize={getSize}
+                            itemData={transcriptionsToRender}
+                            ref={listRef}
+                            width={width}
+                            onItemsRendered={validateAutoscrolling}
+                        >
+                            {({ index, style, data }) => {
+                                return (
+                                    <>
+                                        <div style={style}>
+                                            <Row
+                                                index={index}
+                                                setSize={setSize}
+                                                windowWidth={windowWidth}
+                                                data={data}
+                                            />
+                                        </div>
+                                    </>
+                                );
+                            }}
+                        </StyledRealTimeContainer>
+                    )}
+                </AutoSizer>
             </StyledLayoutContent>
         </StyledLayoutCotainer>
     );
