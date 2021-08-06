@@ -3247,10 +3247,10 @@
     react-window "^1.8.5"
     srt-webvtt "^1.0.1"
 
-"@pdftron/webviewer@7.3.2":
-  version "7.3.2"
-  resolved "https://registry.yarnpkg.com/@pdftron/webviewer/-/webviewer-7.3.2.tgz#58c24fa6318268b7962fb51bbf6486bac24c7d64"
-  integrity sha512-GJJ3ErKn2gZKXcjFBg46d4u0X+60daiVu04i+AoYbA7xyocCpGIhW/cg0dZmTq0c1ITfHXvn5uG42UN3BBFWiA==
+"@pdftron/webviewer@8.0.0":
+  version "8.0.0"
+  resolved "https://registry.yarnpkg.com/@pdftron/webviewer/-/webviewer-8.0.0.tgz#d5e82dd6abb445f552824a498cbd5db165384a38"
+  integrity sha512-gTm3JEY6CWbIJiezEwfUWS0houHpZN0uOIpKf73en1hq6EUbJmpKNt8V2FBlxNn3YFjt+XCU62btLfZtWpWRPw==
 
 "@pmmmwh/react-refresh-webpack-plugin@0.4.3", "@pmmmwh/react-refresh-webpack-plugin@^0.4.3":
   version "0.4.3"

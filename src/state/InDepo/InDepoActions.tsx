@@ -1,5 +1,5 @@
 import { LocalDataTrack, LocalTrack, Participant, Room } from "twilio-video";
-import { CoreControls } from "@pdftron/webviewer";
+import { Core } from "@pdftron/webviewer";
 import { TimeZones } from "../../models/general";
 import { DataTrackMessage, DisconnectRoomState } from "../types";
 import { BreakroomModel } from "../../models";
@@ -134,7 +134,7 @@ const actions = {
         type: ACTION_TYPE.IN_DEPO_SET_STAMP_LABEL,
         payload: label,
     }),
-    setExhibitDocument: (exhibitDocument: CoreControls.Document, rawAnnotations: string) => ({
+    setExhibitDocument: (exhibitDocument: Core.Document, rawAnnotations: string) => ({
         type: ACTION_TYPE.IN_DEPO_SET_EXHIBIT_DOCUMENT_INSTANCE,
         payload: { exhibitDocument, rawAnnotations },
     }),

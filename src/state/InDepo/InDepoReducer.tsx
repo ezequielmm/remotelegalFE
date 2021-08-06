@@ -1,6 +1,6 @@
 import { Reducer } from "react";
 import { LocalDataTrack, LocalTrack, Participant, Room } from "twilio-video";
-import { CoreControls } from "@pdftron/webviewer";
+import { Core } from "@pdftron/webviewer";
 import { TimeZones } from "../../models/general";
 import { BreakroomModel } from "../../models";
 import { IAction, DataTrackMessage } from "../types";
@@ -37,7 +37,7 @@ export interface IRoom {
     rawAnnotations?: string;
     lastAnnotationId?: string;
     stampLabel?: string;
-    exhibitDocument?: CoreControls.Document;
+    exhibitDocument?: Core.Document;
     dominantSpeaker?: Participant | null;
     participants?: [];
     token: string;

@@ -11,7 +11,7 @@
     "@hookform/resolvers": "^1.0.1",
     "@microsoft/signalr": "^5.0.3",
     "@microsoft/signalr-protocol-msgpack": "^5.0.7",
-    "@pdftron/webviewer": "7.3.2",
+    "@pdftron/webviewer": "8.0.0",
     "@pdftron/webviewer-video": "3.10.8",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
