@@ -2,7 +2,7 @@ import { LocalDataTrack, LocalTrack, Participant, Room } from "twilio-video";
 import { CoreControls } from "@pdftron/webviewer";
 import { TimeZones } from "../../models/general";
 import { DataTrackMessage, DisconnectRoomState } from "../types";
-import { EventModel, TranscriptionModel, BreakroomModel } from "../../models";
+import { BreakroomModel } from "../../models";
 import { EXHIBIT_TAB } from "../../constants/exhibits";
 import { ExhibitFile } from "../../types/ExhibitFile";
 
@@ -21,7 +21,6 @@ export enum ACTION_TYPE {
     IN_DEPO_REMOVE_PARTICIPANT_BREAKROOM = "IN_DEPO_REMOVE_PARTICIPANT_BREAKROOM",
     IN_DEPO_ADD_DATA_TRACK = "IN_DEPO_ADD_DATA_TRACK",
     IN_DEPO_ADD_BREAKROOM_DATA_TRACK = "IN_DEPO_ADD_BREAKROOM_DATA_TRACK",
-    IN_DEPO_ADD_TRANSCRIPTION = "IN_DEPO_ADD_TRANSCRIPTION",
     IN_DEPO_START_SHARE_EXHIBIT = "IN_DEPO_START_SHARE_EXHIBIT",
     IN_DEPO_STOP_SHARE_EXHIBIT = "IN_DEPO_STOP_SHARE_EXHIBIT",
     IN_DEPO_SET_EXHIBIT_TAB_NAME = "IN_DEPO_SET_EXHIBIT_TAB_NAME",
@@ -36,7 +35,6 @@ export enum ACTION_TYPE {
     SET_TIMEZONE = "IN_DEPO_SET_TIMEZONE",
     IN_DEPO_SET_PERMISSIONS = "IN_DEPO_SET_PERMISSIONS",
     MOCK_DEPO_SET_ROOM = "MOCK_DEPO_SET_ROOM",
-    SET_TRANSCRIPTIONS = "IN_DEPO_SET_TRANSCRIPTIONS",
     SET_BREAKROOMS = "IN_DEPO_SET_BREAKROOMS",
     SET_IS_RECORDING = "IN_DEPO_SET_IS_RECORDING",
     CHANGE_EXHIBIT_TAB = "CHANGE_EXHIBIT_TAB",
@@ -62,10 +60,6 @@ const actions = {
     addBreakroomDataTrack: (dataTrack: LocalDataTrack) => ({
         type: ACTION_TYPE.IN_DEPO_ADD_BREAKROOM_DATA_TRACK,
         payload: dataTrack,
-    }),
-    addTranscription: (transcription: TranscriptionModel.Transcription | EventModel.IEvent) => ({
-        type: ACTION_TYPE.IN_DEPO_ADD_TRANSCRIPTION,
-        payload: transcription,
     }),
     joinToRoom: (payload: Room) => ({
         type: ACTION_TYPE.IN_DEPO_JOIN_TO_ROOM,
@@ -107,13 +101,7 @@ const actions = {
         type: ACTION_TYPE.SET_IS_RECORDING,
         payload,
     }),
-    setTranscriptions: (payload: {
-        transcriptions: TranscriptionModel.Transcription[];
-        events: EventModel.IEvent[];
-    }) => ({
-        type: ACTION_TYPE.SET_TRANSCRIPTIONS,
-        payload,
-    }),
+
     setBreakrooms: (payload: BreakroomModel.Breakroom[]) => ({
         type: ACTION_TYPE.SET_BREAKROOMS,
         payload,

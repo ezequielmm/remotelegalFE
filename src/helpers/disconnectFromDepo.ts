@@ -29,7 +29,6 @@ const disconnectFromDepo = (
         message: { module: "", value: "" },
         isRecording: null,
         timeZone: null,
-        transcriptions: [],
         permissions: [],
         currentExhibit: null,
         currentExhibitPage: null,

@@ -27,23 +27,14 @@ import getDepositionTime from "./helpers/getDepositionTime";
 import { NotificationAction, NotificationEntityType } from "../../types/Notification";
 import stopAllTracks from "../../helpers/stopAllTracks";
 import generalUIActions from "../../state/GeneralUi/GeneralUiActions";
+import TranscriptionsProvider from "../../state/Transcriptions/TranscriptionsContext";
 
 const InDepo = () => {
     const isMounted = useRef(true);
     const inDepoTheme = { ...theme, mode: ThemeMode.inDepo };
     const { state, dispatch } = useContext(GlobalStateContext);
     const [joinDeposition, loading, error] = useJoinDepositionForMockRoom();
-    const {
-        tracks,
-        isRecording,
-        mockDepoRoom,
-        transcriptions,
-        timeZone,
-        participants,
-        startTime,
-        breakrooms,
-        jobNumber,
-    } = state.room;
+    const { tracks, isRecording, mockDepoRoom, timeZone, participants, startTime, breakrooms, jobNumber } = state.room;
     const { depositionID } = useParams<DepositionID>();
     const [realTimeOpen, togglerRealTime] = useState<boolean>(false);
     const [exhibitsOpen, togglerExhibits] = useState<boolean>(false);
@@ -170,46 +161,48 @@ const InDepo = () => {
     }
 
     return mockDepoRoom ? (
-        <ThemeProvider theme={inDepoTheme}>
-            <StyledInDepoContainer data-testid="videoconference">
-                <StyledInDepoLayout>
-                    <Exhibits visible={exhibitsOpen} togglerExhibits={togglerExhibits} />
-                    {realTimeOpen && <RealTime timeZone={timeZone} transcriptions={transcriptions} />}
-                    <VideoConference
-                        localParticipant={mockDepoRoom.localParticipant}
-                        timeZone={timeZone}
-                        attendees={mockDepoRoom.participants}
-                        layoutSize={videoLayoutSize}
-                        atendeesVisibility={atendeesVisibility}
-                        enableMuteUnmute
+        <TranscriptionsProvider>
+            <ThemeProvider theme={inDepoTheme}>
+                <StyledInDepoContainer data-testid="videoconference">
+                    <StyledInDepoLayout>
+                        <Exhibits visible={exhibitsOpen} />
+                        {realTimeOpen && <RealTime timeZone={timeZone} />}
+                        <VideoConference
+                            localParticipant={mockDepoRoom.localParticipant}
+                            timeZone={timeZone}
+                            attendees={mockDepoRoom.participants}
+                            layoutSize={videoLayoutSize}
+                            atendeesVisibility={atendeesVisibility}
+                            enableMuteUnmute
+                        />
+                    </StyledInDepoLayout>
+                    <StyledRoomFooter>
+                        <ControlsBar
+                            isPreDepo
+                            breakrooms={breakrooms}
+                            leaveWithoutModal
+                            disableBreakrooms
+                            disableChat
+                            isRecording={isRecording}
+                            canEnd={false}
+                            canRecord={false}
+                            realTimeOpen={realTimeOpen}
+                            togglerRealTime={togglerRealTime}
+                            exhibitsOpen={exhibitsOpen}
+                            togglerExhibits={togglerExhibits}
+                            localParticipant={mockDepoRoom.localParticipant}
+                            initialAudioEnabled={initialAudioEnabled}
+                            jobNumber={jobNumber}
+                        />
+                    </StyledRoomFooter>
+                    <StartMessage
+                        icon={CalendarIcon}
+                        title={getDepositionTime(startTime)}
+                        description={CONSTANTS.PRE_DEPOSITION_START_TIME_DESCRIPTION}
                     />
-                </StyledInDepoLayout>
-                <StyledRoomFooter>
-                    <ControlsBar
-                        isPreDepo
-                        breakrooms={breakrooms}
-                        leaveWithoutModal
-                        disableBreakrooms
-                        disableChat
-                        isRecording={isRecording}
-                        canEnd={false}
-                        canRecord={false}
-                        realTimeOpen={realTimeOpen}
-                        togglerRealTime={togglerRealTime}
-                        exhibitsOpen={exhibitsOpen}
-                        togglerExhibits={togglerExhibits}
-                        localParticipant={mockDepoRoom.localParticipant}
-                        initialAudioEnabled={initialAudioEnabled}
-                        jobNumber={jobNumber}
-                    />
-                </StyledRoomFooter>
-                <StartMessage
-                    icon={CalendarIcon}
-                    title={getDepositionTime(startTime)}
-                    description={CONSTANTS.PRE_DEPOSITION_START_TIME_DESCRIPTION}
-                />
-            </StyledInDepoContainer>
-        </ThemeProvider>
+                </StyledInDepoContainer>
+            </ThemeProvider>
+        </TranscriptionsProvider>
     ) : null;
 };
 

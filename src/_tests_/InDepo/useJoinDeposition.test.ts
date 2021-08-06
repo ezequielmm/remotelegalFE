@@ -7,9 +7,13 @@ import actions from "../../state/InDepo/InDepoActions";
 import * as AUTH from "../mocks/Auth";
 import { wait } from "../../helpers/wait";
 import configParticipantListeners from "../../helpers/configParticipantListeners";
+import { setTranscriptionMessages } from "../../helpers/formatTranscriptionsMessages";
+import { getEvents, getTranscription } from "../mocks/transcription";
+
+let setTranscriptions;
 
 jest.mock("twilio-video", () => ({
-    ...jest.requireActual("twilio-video"),
+    ...(jest.requireActual("twilio-video") as any),
     LocalDataTrack: function dataTrack() {
         return { test: "1234" };
     },
@@ -19,8 +23,12 @@ jest.mock("twilio-video", () => ({
     connect: async () => "room",
 }));
 
+beforeEach(() => {
+    setTranscriptions = jest.fn();
+});
+
 jest.mock("react-router", () => ({
-    ...jest.requireActual("react-router"),
+    ...(jest.requireActual("react-router") as any),
     useLocation: () => {},
     useParams: () => ({ depositionID: "test1234" }),
 }));
@@ -40,7 +48,7 @@ test("It calls dispatch with proper actions", async () => {
     const playMock = jest.fn();
     const useSoundMock = useSound as jest.Mock;
     useSoundMock.mockImplementation(() => [playMock]);
-    const { result } = renderHook(() => useJoinDeposition(), { wrapper });
+    const { result } = renderHook(() => useJoinDeposition(jest.fn()), { wrapper });
     const [joinToRoom] = result.current;
 
     await act(async () => {
@@ -61,7 +69,7 @@ test("It does not call audio play function if no participant were added", async 
     const playMock = jest.fn();
     useSound.mockImplementation((sound) => [playMock]);
     AUTH.VALID();
-    const { result } = renderHook(() => useJoinDeposition(), { wrapper });
+    const { result } = renderHook(() => useJoinDeposition(jest.fn()), { wrapper });
     const [joinToRoom] = result.current;
 
     await act(async () => {
@@ -77,12 +85,30 @@ test("It calls audio play function when a participant is added", async () => {
     const useSoundMock = useSound as jest.Mock;
     useSoundMock.mockImplementation(() => [playMock]);
     AUTH.VALID();
-    const { result } = renderHook(() => useJoinDeposition(), { wrapper });
+    const { result } = renderHook(() => useJoinDeposition(jest.fn()), { wrapper });
     const [joinToRoom] = result.current;
 
     await act(async () => {
         await wait(200);
         await joinToRoom();
         expect(playMock).toHaveBeenCalled();
+    });
+});
+
+test("It calls setTranscriptions with the transcriptions", async () => {
+    const expectedTranscriptions = setTranscriptionMessages([getTranscription()], getEvents() as any);
+    configParticipantListeners.mockImplementation((room, callback) => callback());
+    const playMock = jest.fn();
+    const useSoundMock = useSound as jest.Mock;
+    useSoundMock.mockImplementation(() => [playMock]);
+    AUTH.VALID();
+    const { result } = renderHook(() => useJoinDeposition(setTranscriptions), { wrapper });
+    const [joinToRoom] = result.current;
+
+    await act(async () => {
+        await wait(200);
+        await joinToRoom();
+        expect(playMock).toHaveBeenCalled();
+        expect(setTranscriptions).toHaveBeenCalledWith(expectedTranscriptions);
     });
 });

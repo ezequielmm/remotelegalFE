@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useRef, useState } from "react";
+import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { connect, createLocalAudioTrack, createLocalVideoTrack, LocalDataTrack, Room } from "twilio-video";
 import { useHistory, useParams } from "react-router";
 import useSound from "use-sound";
@@ -21,6 +21,8 @@ import stopAllTracks from "../../helpers/stopAllTracks";
 import beep from "../../assets/sounds/Select.mp3";
 import useSendSystemUserInfo from "../techInfo/useSendUserSystemInfo";
 import useSendParticipantDevices from "../techInfo/sendParticipantDevices";
+import { setTranscriptionMessages } from "../../helpers/formatTranscriptionsMessages";
+import { TranscriptionModel } from "../../models";
 
 export const useKillDepo = () => {
     const { deps } = useContext(GlobalStateContext);
@@ -197,7 +199,7 @@ export const useJoinDepositionForMockRoom = () => {
     );
 };
 
-export const useJoinDeposition = () => {
+export const useJoinDeposition = (setTranscriptions: React.Dispatch<TranscriptionModel.Transcription[]>) => {
     const [depoRoom, setDepoRoom] = useState<Room>(undefined);
     const { dispatch } = useContext(GlobalStateContext);
     const [generateToken] = useGenerateDepositionToken();
@@ -313,10 +315,9 @@ export const useJoinDeposition = () => {
             dispatch(actions.setIsRecording(isOnTheRecord));
             dispatch(actions.setPermissions(permissions));
             dispatch(actions.setBreakrooms(breakrooms || []));
-            dispatch(actions.setTranscriptions({ transcriptions: transcriptions || [], events: events || [] }));
             dispatch(actions.setTimeZone(timeZone));
             dispatch(actions.addDataTrack(dataTrack));
-
+            setTranscriptions(setTranscriptionMessages(transcriptions, events));
             return configParticipantListeners(
                 room,
                 (callbackRoom) => {

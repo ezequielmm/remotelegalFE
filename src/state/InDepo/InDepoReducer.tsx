@@ -2,12 +2,11 @@ import { Reducer } from "react";
 import { LocalDataTrack, LocalTrack, Participant, Room } from "twilio-video";
 import { CoreControls } from "@pdftron/webviewer";
 import { TimeZones } from "../../models/general";
-import { BreakroomModel, TranscriptionModel } from "../../models";
+import { BreakroomModel } from "../../models";
 import { IAction, DataTrackMessage } from "../types";
 import { ACTION_TYPE } from "./InDepoActions";
 import { ExhibitFile } from "../../types/ExhibitFile";
 import { EXHIBIT_TAB } from "../../constants/exhibits";
-import { addTranscriptionMessages, setTranscriptionMessages } from "../../helpers/formatTranscriptionsMessages";
 import { UserInfo } from "../../models/user";
 
 export interface IRoom {
@@ -29,7 +28,6 @@ export interface IRoom {
     timeZone?: TimeZones;
     isRecording?: boolean;
     breakrooms?: BreakroomModel.Breakroom[];
-    transcriptions?: (TranscriptionModel.Transcription & TranscriptionModel.TranscriptionPause)[];
     permissions?: string[];
     currentExhibit?: ExhibitFile;
     currentExhibitPage?: string;
@@ -67,7 +65,6 @@ export const RoomReducerInitialState: IRoom = {
     message: { module: "", value: "" },
     isRecording: null,
     timeZone: null,
-    transcriptions: [],
     permissions: [],
     currentExhibit: null,
     currentExhibitPage: null,
@@ -95,22 +92,12 @@ const RoomReducer: Reducer<IRoom, IAction> = (state: IRoom, action: IAction): IR
                 ...state,
                 breakroomDataTrack: action.payload,
             };
-        case ACTION_TYPE.IN_DEPO_ADD_TRANSCRIPTION: {
-            return {
-                ...state,
-                transcriptions: addTranscriptionMessages(action.payload, state.transcriptions, state.isRecording),
-            };
-        }
         case ACTION_TYPE.IN_DEPO_SET_PERMISSIONS:
             return {
                 ...state,
                 permissions: action.payload,
             };
-        case ACTION_TYPE.SET_TRANSCRIPTIONS:
-            return {
-                ...state,
-                transcriptions: setTranscriptionMessages(action.payload.transcriptions, action.payload.events),
-            };
+
         case ACTION_TYPE.SET_BREAKROOMS:
             return {
                 ...state,

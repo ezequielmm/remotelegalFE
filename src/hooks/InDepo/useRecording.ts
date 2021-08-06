@@ -4,9 +4,11 @@ import { GlobalStateContext } from "../../state/GlobalState";
 import { DepositionID } from "../../state/types";
 import useAsyncCallback from "../useAsyncCallback";
 import actions from "../../state/InDepo/InDepoActions";
+import { TranscriptionsContext } from "../../state/Transcriptions/TranscriptionsContext";
 
 const useRecording = (recording: boolean) => {
     const { state, dispatch } = useContext(GlobalStateContext);
+    const { addNewTranscription } = useContext(TranscriptionsContext);
     const { dataTrack } = state.room;
     const { deps } = useContext(GlobalStateContext);
     const { depositionID } = useParams<DepositionID>();
@@ -38,11 +40,11 @@ const useRecording = (recording: boolean) => {
     useEffect(() => {
         if (res) {
             dispatch(actions.setIsRecording(recording));
-            dispatch(actions.addTranscription(res));
-            dataTrack.send(JSON.stringify({ module: "recordDepo", value: res }));
+            addNewTranscription(res, recording);
+            dataTrack.send(JSON.stringify({ module: "recordDepo", value: res, recording }));
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [dataTrack, record, res]);
+    }, [dataTrack, record, res, addNewTranscription]);
 
     return { startPauseRecording, loadingStartPauseRecording };
 };

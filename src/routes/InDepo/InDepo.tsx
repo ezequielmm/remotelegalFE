@@ -20,7 +20,7 @@ import actions from "../../state/InDepo/InDepoActions";
 import signalRActions from "../../state/SignalR/SignalRActions";
 import generalUIActions from "../../state/GeneralUi/GeneralUiActions";
 import { ThemeMode } from "../../types/ThemeType";
-import { EventModel } from "../../models";
+import { EventModel, TranscriptionModel } from "../../models";
 import useSignalR from "../../hooks/useSignalR";
 import GuestRequests from "./GuestRequests";
 import { Roles } from "../../models/participant";
@@ -28,19 +28,21 @@ import { useAuthentication } from "../../hooks/auth";
 import LoadingScreen from "./LoadingScreen";
 import { NotificationEntityType } from "../../types/Notification";
 import stopAllTracks from "../../helpers/stopAllTracks";
+import TranscriptionsProvider from "../../state/Transcriptions/TranscriptionsContext";
 
 const InDepo = () => {
+    const { depositionID } = useParams<DepositionID>();
     const isMounted = useRef(true);
     const inDepoTheme = { ...theme, mode: ThemeMode.inDepo };
     const { state, dispatch } = useContext(GlobalStateContext);
-    const [joinDeposition, loading, error] = useJoinDeposition();
+    const [initialTranscriptions, setInitialTranscriptions] = useState<TranscriptionModel.Transcription[]>([]);
+    const [joinDeposition, loading, error] = useJoinDeposition(setInitialTranscriptions);
     const {
         breakrooms,
         isRecording,
         message,
         currentRoom,
         permissions,
-        transcriptions,
         timeZone,
         dataTrack,
         currentExhibit,
@@ -53,7 +55,7 @@ const InDepo = () => {
     } = state.room;
 
     const { currentUser } = state?.user;
-    const { depositionID } = useParams<DepositionID>();
+
     const [realTimeOpen, togglerRealTime] = useState<boolean>(false);
     const [exhibitsOpen, togglerExhibits] = useState<boolean>(false);
     const [initialAudioEnabled, setInitialAudioEnabled] = useState<boolean>(true);
@@ -148,7 +150,6 @@ const InDepo = () => {
     useEffect(() => {
         if (message.module === "recordDepo") {
             dispatch(actions.setIsRecording(message.value.eventType === EventModel.EventType.onTheRecord));
-            dispatch(actions.addTranscription(message.value));
         }
     }, [dispatch, message]);
 
@@ -237,8 +238,12 @@ const InDepo = () => {
             />
         );
     }
-    try {
-        return currentRoom && dataTrack ? (
+
+    return currentRoom && dataTrack ? (
+        <TranscriptionsProvider
+            initialTranscriptions={initialTranscriptions}
+            setInitialTranscriptions={setInitialTranscriptions}
+        >
             <ThemeProvider theme={inDepoTheme}>
                 <StyledInDepoContainer data-testid="videoconference">
                     {(!!currentUser?.isAdmin ||
@@ -248,7 +253,7 @@ const InDepo = () => {
                     <StyledInDepoLayout>
                         <RecordPill on={isRecording} />
                         <Exhibits visible={exhibitsOpen} togglerExhibits={togglerExhibits} />
-                        {realTimeOpen && <RealTime timeZone={timeZone} transcriptions={transcriptions} />}
+                        {realTimeOpen && <RealTime timeZone={timeZone} />}
                         <VideoConference
                             localParticipant={currentRoom.localParticipant}
                             timeZone={timeZone}
@@ -282,10 +287,8 @@ const InDepo = () => {
                     </StyledRoomFooter>
                 </StyledInDepoContainer>
             </ThemeProvider>
-        ) : null;
-    } catch (runtimeError) {
-        console.error(runtimeError);
-    }
+        </TranscriptionsProvider>
+    ) : null;
 };
 
 export default InDepo;

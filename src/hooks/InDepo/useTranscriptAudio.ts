@@ -1,14 +1,15 @@
 import { useContext, useEffect } from "react";
 import { useParams } from "react-router";
 import { GlobalStateContext } from "../../state/GlobalState";
-import actions from "../../state/InDepo/InDepoActions";
 import { DepositionID } from "../../state/types";
 import useAsyncCallback from "../useAsyncCallback";
 import useSignalR from "../useSignalR";
 import ENV from "../../constants/env";
+import { TranscriptionsContext } from "../../state/Transcriptions/TranscriptionsContext";
 
 const useTranscriptAudio = (doNotConnectToSocket = false, sampleRate: number) => {
     const { dispatch, state } = useContext(GlobalStateContext);
+    const { addNewTranscription } = useContext(TranscriptionsContext);
     const { isRecording } = state.room;
     const { depositionID } = useParams<DepositionID>();
     const { TRANSCRIPT_URL } = ENV.API;
@@ -61,14 +62,14 @@ const useTranscriptAudio = (doNotConnectToSocket = false, sampleRate: number) =>
                             ? new Date(transcriptDateTime[0])
                             : transcriptDateTime,
                 };
-                dispatch(actions.addTranscription(parsedTranscription));
+                addNewTranscription(parsedTranscription);
             };
             subscribeToGroup("ReceiveNotification", manageReceiveNotification);
         }
         return () => {
             if (manageReceiveNotification) unsubscribeMethodFromGroup("ReceiveNotification", manageReceiveNotification);
         };
-    }, [signalR, subscribeToGroup, dispatch, unsubscribeMethodFromGroup]);
+    }, [signalR, subscribeToGroup, dispatch, unsubscribeMethodFromGroup, addNewTranscription]);
 
     const [transcriptAudio] = useAsyncCallback(
         async (audio: ArrayBuffer) => {
