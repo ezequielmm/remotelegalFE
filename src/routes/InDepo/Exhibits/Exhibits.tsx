@@ -24,7 +24,7 @@ const Exhibits = ({ visible, togglerExhibits }: exhibitsProps) => {
 
     return (
         <>
-            {windowWidth >= parseInt(theme.default.breakpoints.sm, 10) ? (
+            {windowWidth >= parseInt(theme.default.breakpoints.lg, 10) ? (
                 <StyledLayoutCotainer visible={visible}>
                     <StyledLayoutContent>
                         <div style={{ display: visible ? "block" : "none", height: "100%", overflow: "hidden" }}>
