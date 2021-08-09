@@ -14,24 +14,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Cache node modules
-        id: yarn-cache
-        uses: actions/cache@v2
-        env:
-          cache-name: cache-node-modules
-        with:
-          path: "**/node_modules"
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
-
       - uses: webfactory/ssh-agent@v0.4.1
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
       - name: Install Dependencies
-        if: ${{ steps.yarn-cache.outputs.cache-hit != 'true' }}
         run: yarn install
 
       - name: Test

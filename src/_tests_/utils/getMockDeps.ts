@@ -16,9 +16,11 @@ import { getTranscriptFileList } from "../mocks/transcriptsFileList";
 import { MOCKED_EMAIL } from "../constants/changePassword";
 import fileUrlList from "../mocks/fileUrlList";
 import { getUserDepoStatusWithParticipantAdmitted, getFrontEndContent } from "../constants/preJoinDepo";
+import { DEPOSITION_INFO_MOCK } from "../constants/techInfo";
 
 export default (): Deps => ({
     apiService: {
+        getDepositionInfo: jest.fn().mockResolvedValue(DEPOSITION_INFO_MOCK),
         fetchCaption: jest.fn().mockResolvedValue(CAPTION_MOCK),
         recordDeposition: jest.fn().mockResolvedValue(getRecordResponse(true)),
         joinResponse: jest.fn().mockResolvedValue(true),

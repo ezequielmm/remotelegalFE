@@ -6,6 +6,7 @@ import Icon from "prp-components-library/src/components/Icon";
 import Space from "prp-components-library/src/components/Space";
 import Tag from "prp-components-library/src/components/Tag";
 import Text from "prp-components-library/src/components/Text";
+import { Col, Row } from "antd";
 import useParticipantTracks from "../../hooks/InDepo/useParticipantTracks";
 import useTracksStatus from "../../hooks/InDepo/useTracksStatus";
 import { ReactComponent as MuteIcon } from "../../assets/in-depo/Mute.svg";
@@ -16,9 +17,19 @@ import { ReactComponent as BreakroomsIcon } from "../../assets/in-depo/Breakroom
 import { ReactComponent as LockBreakroomIcon } from "../../assets/icons/Lock.svg";
 import { ReactComponent as UnLockBreakroomIcon } from "../../assets/icons/Unlock.svg";
 import { ReactComponent as ExhibitsIcon } from "../../assets/in-depo/Exhibits.svg";
+import { ReactComponent as KebebIcon } from "../../assets/icons/kebeb.svg";
+import { theme } from "../../constants/styles/theme";
 import Control from "../Control/Control";
 import Logo from "../Logo";
-import { StyledContainer, StyledLogo } from "../ControlsBar/styles";
+import {
+    StyledContainer,
+    StyledDrawer,
+    StyledDrawerSpace,
+    StyledEndButton,
+    StyledLogo,
+    StyledMoreWrapper,
+    StyledTagSpace,
+} from "../ControlsBar/styles";
 import { CONTROLS_BAR_EXHIBITS_LABEL, CONTROLS_BAR_BREAKROOMS_PRIVACITY_DESCRIPTION } from "../../constants/inDepo";
 import {
     LEAVE_BREAKROOM_TITLE,
@@ -27,6 +38,8 @@ import {
     LEAVE_BREAKROOM_LEAVE,
 } from "../../constants/inBreakroom";
 import ColorStatus from "../../types/ColorStatus";
+import useWindowSize from "../../hooks/useWindowSize";
+import FloatingMessage from "../FloatingMessage";
 
 interface IBreakroomControlsBar {
     localParticipant: LocalParticipant;
@@ -63,6 +76,10 @@ export default function BreakroomControlsBar({
 
     const [toggledLockRoom, setToggledLockRoom] = useState<boolean>(false);
 
+    const [windowWidth] = useWindowSize();
+    const [drawerVisible, setDrawerVisible] = useState(false);
+    const widthMorethanLg = windowWidth >= parseInt(theme.default.breakpoints.lg, 10);
+
     useEffect(() => {
         setToggledLockRoom(isLocked);
     }, [isLocked]);
@@ -70,6 +87,10 @@ export default function BreakroomControlsBar({
     const handleLockRoom = () => {
         setToggledLockRoom(!toggledLockRoom);
         lockRoom(!toggledLockRoom);
+    };
+
+    const handleDrawerVisible = () => {
+        setDrawerVisible(!drawerVisible);
     };
 
     return (
@@ -87,23 +108,32 @@ export default function BreakroomControlsBar({
             </Confirm>
 
             <StyledContainer px={6} justify="space-between" align="center">
-                <Space.Item flex="2 0 0" fullHeight>
-                    <Space size={6} align="center" fullHeight>
-                        <StyledLogo>
-                            <Logo version="light" height="100%" />
-                        </StyledLogo>
-                        <Space py={6} fullHeight>
-                            <Divider type="vertical" fitContent hasMargin={false} />
+                {widthMorethanLg ? (
+                    <Space.Item flex="2 0 0" fullHeight>
+                        <Space size={6} align="center" fullHeight>
+                            <StyledLogo>
+                                <Logo version="light" height="100%" />
+                            </StyledLogo>
+                            <Space py={6} fullHeight>
+                                <Divider type="vertical" fitContent hasMargin={false} />
+                            </Space>
+                            <Space size={2} direction="vertical">
+                                <Tag>{breakroomName}</Tag>
+                                <Text state={ColorStatus.white} size="small">
+                                    {CONTROLS_BAR_BREAKROOMS_PRIVACITY_DESCRIPTION}
+                                </Text>
+                            </Space>
                         </Space>
-                        <Space size={2} direction="vertical">
+                    </Space.Item>
+                ) : (
+                    <>
+                        <StyledTagSpace>
                             <Tag>{breakroomName}</Tag>
-                            <Text state={ColorStatus.white} size="small">
-                                {CONTROLS_BAR_BREAKROOMS_PRIVACITY_DESCRIPTION}
-                            </Text>
-                        </Space>
-                    </Space>
-                </Space.Item>
-                <Space.Item flex="1 0 0">
+                        </StyledTagSpace>
+                        <FloatingMessage message={CONTROLS_BAR_BREAKROOMS_PRIVACITY_DESCRIPTION} />
+                    </>
+                )}
+                <Space.Item flex="1 0 0" fullWidth>
                     <Space size={4} justify="center" align="center">
                         <Control
                             data-testid="audio"
@@ -133,36 +163,77 @@ export default function BreakroomControlsBar({
                         />
                     </Space>
                 </Space.Item>
-                <Space.Item flex="2 0 0">
-                    <Space justify="flex-end" align="center">
-                        {false && (
+                {widthMorethanLg ? (
+                    <Space.Item flex="2 0 0">
+                        <Space justify="flex-end" align="center">
                             <Control
-                                data-testid="exhibits"
-                                isActive={exhibitsOpen}
-                                onClick={toggleExhibits}
+                                data-testid="lock_breakroom"
                                 type="simple"
-                                label={CONTROLS_BAR_EXHIBITS_LABEL}
-                                icon={<Icon icon={ExhibitsIcon} size="1.625rem" />}
+                                isActive={isLocked}
+                                label="Lock Breakroom"
+                                onClick={() => handleLockRoom()}
+                                icon={
+                                    <Icon icon={isLocked ? LockBreakroomIcon : UnLockBreakroomIcon} size="1.625rem" />
+                                }
                             />
-                        )}
-                        <Control
-                            data-testid="lock_breakroom"
-                            type="simple"
-                            isActive={isLocked}
-                            label="Lock Breakroom"
-                            onClick={() => handleLockRoom()}
-                            icon={<Icon icon={isLocked ? LockBreakroomIcon : UnLockBreakroomIcon} size="1.625rem" />}
-                        />
-                        <Control
-                            data-testid="end"
-                            onClick={() => setIsModalOpen(!isModalOpen)}
-                            type="simple"
-                            color="red"
-                            label="Leave Breakroom"
-                            icon={<Icon icon={BreakroomsIcon} size="1.625rem" />}
-                        />
-                    </Space>
-                </Space.Item>
+                            <Control
+                                data-testid="end"
+                                onClick={() => setIsModalOpen(!isModalOpen)}
+                                type="simple"
+                                color="red"
+                                label="Leave Breakroom"
+                                icon={<Icon icon={BreakroomsIcon} size="1.625rem" />}
+                            />
+                        </Space>
+                    </Space.Item>
+                ) : (
+                    <>
+                        <StyledMoreWrapper>
+                            <Control
+                                isActive
+                                type="circle"
+                                icon={<Icon icon={KebebIcon} color={theme.default.whiteColor} size="1.625rem" />}
+                                onClick={handleDrawerVisible}
+                            />
+                        </StyledMoreWrapper>
+                        <StyledDrawer
+                            visible={drawerVisible}
+                            onClose={handleDrawerVisible}
+                            closable={false}
+                            placement="bottom"
+                            height="auto"
+                            footer={
+                                <StyledEndButton
+                                    size="middle"
+                                    icon={<Icon icon={BreakroomsIcon} size={6} color={theme.default.whiteColor} />}
+                                    onClick={() => setIsModalOpen(!isModalOpen)}
+                                >
+                                    Leave Breakroom
+                                </StyledEndButton>
+                            }
+                        >
+                            <StyledDrawerSpace fullWidth align="center">
+                                <Row style={{ width: "100%" }}>
+                                    <Col xs={8}>
+                                        <Control
+                                            data-testid="lock_breakroom_mobile"
+                                            type="simple"
+                                            isActive={isLocked}
+                                            label="Lock Breakroom"
+                                            onClick={() => handleLockRoom()}
+                                            icon={
+                                                <Icon
+                                                    icon={isLocked ? LockBreakroomIcon : UnLockBreakroomIcon}
+                                                    size="1.625rem"
+                                                />
+                                            }
+                                        />
+                                    </Col>
+                                </Row>
+                            </StyledDrawerSpace>
+                        </StyledDrawer>
+                    </>
+                )}
             </StyledContainer>
         </>
     );

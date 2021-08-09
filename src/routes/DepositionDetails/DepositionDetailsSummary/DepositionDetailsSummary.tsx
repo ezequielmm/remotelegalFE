@@ -234,7 +234,6 @@ export default function DepositionDetailsSummary({ setActiveKey, deposition }: I
                                         manageTranscriptionClicked={duration > 0 && manageTranscriptionClicked}
                                         disableAutoscroll
                                         transcriptions={transcriptions}
-                                        visible
                                         timeZone={deposition?.timeZone}
                                         playedTimeValue={currentTime * 1000}
                                         scrollToHighlighted

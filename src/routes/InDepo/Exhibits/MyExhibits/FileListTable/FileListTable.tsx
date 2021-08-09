@@ -51,17 +51,15 @@ const FileListTable = ({ onClickViewFile, onOptionsConfirmOk, ...props }: IFileL
                     data-testid="option_delete_button"
                     type="link"
                     disabled={currentExhibit?.id && currentExhibit?.id === exhibit?.id}
+                    icon={<Icon icon={DeleteIcon} size={8} style={{ color: "white" }} />}
                     onClick={() => {
                         setSelectedExhibitForOptions(exhibit);
                         toggleModal("delete");
                     }}
                 >
-                    <Space size="middle" align="center">
-                        <Icon icon={DeleteIcon} size={8} style={{ color: "white" }} />
-                        <Text state={ColorStatus.white} size="small">
-                            Delete
-                        </Text>
-                    </Space>
+                    <Text state={ColorStatus.white} size="small">
+                        Delete
+                    </Text>
                 </Button>
             </Menu.Item>
         </Menu>

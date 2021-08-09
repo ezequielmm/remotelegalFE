@@ -18,6 +18,7 @@ import { ExhibitFile } from "../../../../types/ExhibitFile";
 import { GlobalStateContext } from "../../../../state/GlobalState";
 import { AnnotationPayload, PdfTronViewerProps } from "../../../../components/PDFTronViewer/PDFTronViewer";
 import { DepositionModel } from "../../../../models";
+import useWindowSize from "../../../../hooks/useWindowSize";
 
 interface Props extends PdfTronViewerProps {
     file: ExhibitFile;
@@ -56,21 +57,24 @@ export const ExhibitViewer = ({
     const { error, documentUrl, isPublic } = useSignedUrl(file, readOnly);
     const { setBringAllToPage, bringAllToMe } = useBringAllToMe();
     const [showSpinner, setShowSpinner] = useState(true);
+    const [windowWidth] = useWindowSize();
 
     return (
         <StyledExhibitViewerContainer>
             {showSpinner && <Spinner className="spinner" height="100%" />}
-            <ExhibitViewerHeader
-                file={file}
-                onClose={onClose}
-                onBringAllToMe={bringAllToMe}
-                onClosePending={onClosePending}
-                showBackButton={showBackButtonOnHeader}
-                showCloseButton={showCloseButtonOnHeader}
-                showShareButton={showShareButtonOnHeader}
-                showBringAllToMeButton={showBringAllToMeButton}
-                readOnly={isPublic}
-            />
+            {windowWidth >= parseInt(theme.default.breakpoints.sm, 10) && (
+                <ExhibitViewerHeader
+                    file={file}
+                    onClose={onClose}
+                    onBringAllToMe={bringAllToMe}
+                    onClosePending={onClosePending}
+                    showBackButton={showBackButtonOnHeader}
+                    showCloseButton={showCloseButtonOnHeader}
+                    showShareButton={showShareButtonOnHeader}
+                    showBringAllToMeButton={showBringAllToMeButton}
+                    readOnly={isPublic}
+                />
+            )}
             {documentUrl && (
                 <PDFTronViewer
                     activeKey={activeKey}

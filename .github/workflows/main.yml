@@ -55,10 +55,19 @@ jobs:
                   source: ./env/.env.${{ steps.extract-branch-for-replacement.outputs.branch }}
                   target: .env
 
+            - name: Prebuild
+              run: |
+                COMMIT_HASH=$(git rev-parse HEAD)
+                CONTENT="{\"version\": \"$COMMIT_HASH\"}"
+                rm latest.json
+                echo $CONTENT >> latest.json
+                yarn prebuild
+
             - name: Build
               run: ESLINT_NO_DEV_ERRORS=true DISABLE_ESLINT_PLUGIN=true yarn build
             - name: Test
               run: CI=true yarn test
+
             - name: Upload publish to GitHub Store
               uses: actions/upload-artifact@master
               with:

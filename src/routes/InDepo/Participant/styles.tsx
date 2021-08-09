@@ -3,7 +3,7 @@ import { Progress } from "antd";
 import { getPX, getREM } from "../../../constants/styles/utils";
 import { Theme } from "../../../types/ThemeType";
 
-export const StyledParticipantMask = styled.div<{ highlight?: boolean }>`
+export const StyledParticipantMask = styled.div<{ highlight?: boolean; isWitness?: boolean; isSingle?: boolean }>`
     border-radius: ${({ theme }) => getPX(theme.default.borderRadiusBase, theme.default.baseUnit)};
     overflow: hidden;
     transform: translateZ(0); // Fix Safari stacking context problem
@@ -13,12 +13,53 @@ export const StyledParticipantMask = styled.div<{ highlight?: boolean }>`
     position: relative;
     border: ${({ theme, highlight }) => (highlight ? `3px solid ${theme.default.successColor}` : "unset")};
 
+    .aspect-ratio {
+        height: 100%;
+        display: block;
+    }
+
     video {
         width: 100%;
         height: 100%;
         position: absolute;
-        object-fit: contain;
+        object-fit: cover;
+        z-index: -1; // Fix Safari stacking context problem
     }
+
+    ${({ isWitness, isSingle }) => {
+        if (isWitness) {
+            return `
+                width: 100%;
+                height: max-content;
+
+                .aspect-ratio {
+                    max-height: 45vh;
+                    width: 100%;
+                }
+            `;
+        }
+
+        if (isSingle) {
+            return `
+                width: 100%;
+
+                .aspect-ratio {
+                    max-height: 100%;
+                    width: 100%;
+                }
+            `;
+        }
+
+        return `
+            width: max-content;
+            aspect-ratio: 16/9;
+
+            .aspect-ratio {
+                max-height: unset;
+                width: unset;
+            }
+        `;
+    }}
 
     &:before {
         width: 100%;
@@ -54,6 +95,7 @@ export const StyledIdentityBox = styled.div`
     background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.5) 100%);
     text-shadow: 0px 0px 2px rgba(0, 0, 0, 0.3), 0px 0px 8px rgba(0, 0, 0, 0.5);
     right: 0;
+    transform: translateZ(0); // Fix Safari stacking context problem
 `;
 
 export const StyledTimeBox = styled.div`
@@ -81,10 +123,7 @@ export const StyledParticipantMicContainer = styled.div<{ theme: Theme; showMicS
     ${({ theme, showMicStatus }) =>
         `
         opacity: ${showMicStatus ? 1 : 0};
-        margin-left: ${showMicStatus ? "0" : "-24px"};
-        &:not(:last-child) {
-            margin-right: ${getREM(theme.default.spaces[1])};
-        }
+        margin-left: -${showMicStatus ? "0" : getREM(theme.default.spaces[9])};
     `}
 `;
 

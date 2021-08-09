@@ -1,5 +1,5 @@
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
-import { connect, createLocalAudioTrack, createLocalVideoTrack, LocalDataTrack, Room, Logger } from "twilio-video";
+import { connect, createLocalAudioTrack, createLocalVideoTrack, LocalDataTrack, Room } from "twilio-video";
 import { useHistory, useParams } from "react-router";
 import useSound from "use-sound";
 import { GlobalStateContext } from "../../state/GlobalState";
@@ -19,6 +19,8 @@ import { Roles } from "../../models/participant";
 import { useAuthentication } from "../auth";
 import stopAllTracks from "../../helpers/stopAllTracks";
 import beep from "../../assets/sounds/Select.mp3";
+import useSendSystemUserInfo from "../techInfo/useSendUserSystemInfo";
+import useSendParticipantDevices from "../techInfo/sendParticipantDevices";
 
 export const useKillDepo = () => {
     const { deps } = useContext(GlobalStateContext);
@@ -89,22 +91,7 @@ export const useJoinBreakroom = () => {
             }
 
             tracks.push(dataTrack);
-            const logger = Logger.getLogger("twilio-video");
-            const originalFactory = logger.methodFactory;
-            logger.methodFactory = (methodName, logLevel, loggerName) => {
-                const method = originalFactory(methodName, logLevel, loggerName);
-                return (datetime, logLevel, component, message, data) => {
-                    method(datetime, logLevel, component, message, data);
-                    if (message === "event" && data.group === "signaling") {
-                        if (data.name === "closed") {
-                            if (data.level === "error") {
-                                console.error("Connection to Twilio's signaling server abruptly closed:", data.reason);
-                            }
-                        }
-                    }
-                };
-            };
-            logger.setLevel("debug");
+
             const room = await connect(token, {
                 ...TWILIO_VIDEO_CONFIG,
                 name: breakroomID,
@@ -178,22 +165,7 @@ export const useJoinDepositionForMockRoom = () => {
             }
 
             tracks.push(dataTrack);
-            const logger = Logger.getLogger("twilio-video");
-            const originalFactory = logger.methodFactory;
-            logger.methodFactory = (methodName, logLevel, loggerName) => {
-                const method = originalFactory(methodName, logLevel, loggerName);
-                return (datetime, logLevel, component, message, data) => {
-                    method(datetime, logLevel, component, message, data);
-                    if (message === "event" && data.group === "signaling") {
-                        if (data.name === "closed") {
-                            if (data.level === "error") {
-                                console.error("Connection to Twilio's signaling server abruptly closed:", data.reason);
-                            }
-                        }
-                    }
-                };
-            };
-            logger.setLevel("debug");
+
             const room = await connect(token, {
                 ...TWILIO_VIDEO_CONFIG,
                 name: depositionID,
@@ -246,7 +218,8 @@ export const useJoinDeposition = () => {
             isMounted.current = false;
         };
     }, []);
-
+    const [sendUserSystemInfo, , sendSystemUserInfoError] = useSendSystemUserInfo();
+    const [sendParticipantDevices, , sendParticipantDevicesError] = useSendParticipantDevices();
     const [getDepositionPermissions] = useDepositionPermissions();
     const [getTranscriptions] = useGetTranscriptions();
     const [getBreakrooms] = useGetBreakrooms();
@@ -254,10 +227,32 @@ export const useJoinDeposition = () => {
     const [checkUserStatus] = useCheckUserStatus();
     const history = useHistory();
     const { currentEmail } = useAuthentication();
-
+    const devices = JSON.parse(localStorage.getItem("selectedDevices"));
     return useAsyncCallback(
         async (depositionID: string) => {
-            const devices = JSON.parse(localStorage.getItem("selectedDevices"));
+            try {
+                await sendUserSystemInfo();
+            } catch {
+                console.error(`Couldn´t send system user info because of: ${sendSystemUserInfoError}`);
+            }
+            try {
+                const participantDevices = {
+                    camera: {
+                        name: devices?.videoForBE.name || "",
+                        status: devices?.videoForBE.status,
+                    },
+                    microphone: {
+                        name: devices?.microphoneForBE.name || "",
+                    },
+                    speakers: {
+                        name: devices?.speakersForBE.name || "",
+                    },
+                };
+                await sendParticipantDevices(participantDevices);
+            } catch {
+                console.error(`Couldn´t send system user info because of: ${sendParticipantDevicesError}`);
+            }
+
             const dataTrack = new LocalDataTrack();
             const userStatus = await checkUserStatus(depositionID, currentEmail.current);
             dispatch(actions.setUserStatus(userStatus));
@@ -298,22 +293,7 @@ export const useJoinDeposition = () => {
             }
 
             tracks.push(dataTrack);
-            const logger = Logger.getLogger("twilio-video");
-            const originalFactory = logger.methodFactory;
-            logger.methodFactory = (methodName, logLevel, loggerName) => {
-                const method = originalFactory(methodName, logLevel, loggerName);
-                return (datetime, logLevel, component, message, data) => {
-                    method(datetime, logLevel, component, message, data);
-                    if (message === "event" && data.group === "signaling") {
-                        if (data.name === "closed") {
-                            if (data.level === "error") {
-                                console.error("Connection to Twilio's signaling server abruptly closed:", data.reason);
-                            }
-                        }
-                    }
-                };
-            };
-            logger.setLevel("debug");
+
             const room = await connect(token, {
                 ...TWILIO_VIDEO_CONFIG,
                 name: depositionID,

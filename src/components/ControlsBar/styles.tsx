@@ -15,6 +15,7 @@ export const StyledContainer = styled(Space)`
     height: ${({ theme }) => getREM(theme.default.spaces[7] * 4)};
     background-color: ${({ theme }) => theme.colors.inDepoNeutrals[3]};
     border-top: 1px solid ${({ theme }) => theme.colors.inDepoNeutrals[0]};
+    position: relative;
 `;
 
 export const StyledLogo = styled.div`
@@ -95,5 +96,38 @@ export const StyledEndButton = styled(Button)`
         path {
             fill: ${theme.default.whiteColor};
         }
+        &:active, &:focus, &:hover{
+            background-color: ${theme.colors.inDepoRed[6]};
+            border-color: ${theme.colors.inDepoRed[6]};
+            color: ${theme.default.whiteColor};
+        }
+    `}
+`;
+
+export const StyledMobileMenu = styled(Menu)`
+    &.ant-menu-dark {
+        background-color: transparent;
+    }
+    ${({ theme }) => `
+        .ant-menu-item {
+            background-color: ${theme.colors.inDepoNeutrals[3]};
+            border: 1px solid ${theme.colors.inDepoNeutrals[1]} !important;
+            padding: 0 ${getREM(theme.default.spaces[9])};
+            border-radius: ${getREM(theme.default.spaces[4])};
+            margin-bottom: ${getREM(theme.default.spaces[3])} !important;
+            height: ${getREM(theme.default.spaces[12] * 2)}
+        }
+    `}
+`;
+
+export const StyledTagSpace = styled.div`
+    position: absolute;
+    bottom: 0;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    ${({ theme }) => `
+        left: ${getREM(theme.default.spaces[6])};
     `}
 `;

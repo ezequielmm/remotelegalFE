@@ -247,8 +247,8 @@ const InDepo = () => {
                     )}
                     <StyledInDepoLayout>
                         <RecordPill on={isRecording} />
-                        <Exhibits visible={exhibitsOpen} />
-                        <RealTime visible={realTimeOpen} timeZone={timeZone} transcriptions={transcriptions} />
+                        <Exhibits visible={exhibitsOpen} togglerExhibits={togglerExhibits} />
+                        {realTimeOpen && <RealTime timeZone={timeZone} transcriptions={transcriptions} />}
                         <VideoConference
                             localParticipant={currentRoom.localParticipant}
                             timeZone={timeZone}
@@ -260,6 +260,7 @@ const InDepo = () => {
                     </StyledInDepoLayout>
                     <StyledRoomFooter>
                         <ControlsBar
+                            canViewTechTab={permissions.includes("ViewDepositionStatus")}
                             breakrooms={breakrooms}
                             canJoinToLockedBreakroom={
                                 JSON.parse(currentRoom?.localParticipant?.identity || "{}").role === Roles.courtReporter

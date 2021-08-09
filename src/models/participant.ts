@@ -9,7 +9,7 @@ export enum Roles {
     interpreter = "Interpreter",
     observer = "Observer",
     paralegal = "Paralegal",
-    techExpert = "Tech Expert",
+    techExpert = "TechExpert",
 }
 export interface IParticipant {
     id?: string;

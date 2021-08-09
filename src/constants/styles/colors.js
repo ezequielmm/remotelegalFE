@@ -33,6 +33,7 @@ const inDepoNeutrals = [
     "#093755",
     "#4EBBF8",
     "#0B649C",
+    "#000d16",
 ];
 
 module.exports.colors = {

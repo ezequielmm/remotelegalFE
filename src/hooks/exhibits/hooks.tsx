@@ -234,7 +234,7 @@ export const useCloseSharedExhibit = () => {
         if (currentExhibit && dataTrack) {
             dataTrack.send(JSON.stringify({ module: "closeSharedExhibit", value: currentExhibit }));
         }
-    }, [exhibitDocument, stampLabel, dataTrack, rawAnnotations]);
+    }, [exhibitDocument, stamp, stampLabel, dataTrack, rawAnnotations]);
 
     if (message.module === "closeSharedExhibit" && message?.value?.id === currentExhibit?.id) {
         dispatch(actions.stopShareExhibit());

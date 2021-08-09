@@ -18,7 +18,7 @@ export const TWILIO_VIDEO_CONFIG: ConnectOptions = {
         },
     },
     maxAudioBitrate: 16000,
-    preferredVideoCodecs: [{ codec: "VP8", simulcast: false }],
+    preferredVideoCodecs: [{ codec: "VP8", simulcast: true }],
     networkQuality: { local: 1, remote: 1 },
     dominantSpeaker: true,
 };
@@ -58,11 +58,13 @@ export const CONTROLS_BAR_ON_THE_RECORD_LABEL = "Go on the record";
 export const CONTROLS_BAR_OFF_THE_RECORD_LABEL = "Go off the record";
 export const CONTROLS_BAR_END_LABEL = "End Deposition";
 export const CONTROLS_BAR_EXHIBITS_LABEL = "Exhibits";
+export const CONTROLS_BAR_LIVE_EXHIBITS_LABEL = "Live Exhibits";
 export const CONTROLS_BAR_REAL_TIME_LABEL = "Real Time";
 export const CONTROLS_BAR_BREAKROOMS_LABEL = "Breakrooms";
 export const CONTROLS_BAR_SUMMARY_LABEL = "Summary";
 export const CONTROLS_BAR_CHAT_LABEL = "Chat";
 export const CONTROLS_BAR_SETTINGS_LABEL = "Settings";
+export const CONTROLS_BAR_TECH_LABEL = "Check status";
 export const CONTROLS_BAR_SUPPORT_LABEL = "Need Help?";
 export const CONTROLS_BAR_MORE_LABEL = "More";
 export const CONTROLS_BAR_JOIN_BUTTON = "JOIN";

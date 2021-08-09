@@ -1,11 +1,12 @@
 import React from "react";
-import { act } from "react-dom/test-utils";
+import { screen, act } from "@testing-library/react";
 import { wait } from "../../helpers/wait";
 import RealTime from "../../routes/InDepo/RealTime";
 import {
     getTranscription,
     getTranscriptionsWithPause,
     getTranscriptionsWithPaused,
+    getVeryLongTranscription,
     timeZone,
 } from "../mocks/transcription";
 import "mutationobserver-shim";
@@ -28,34 +29,49 @@ jest.mock("audio-recorder-polyfill", () => {
 };
 const transcription = getTranscription();
 describe("RealTime", () => {
+    const originalOffsetHeight = Object.getOwnPropertyDescriptor(HTMLElement.prototype, "offsetHeight");
+    const originalOffsetWidth = Object.getOwnPropertyDescriptor(HTMLElement.prototype, "offsetWidth");
+
+    beforeAll(() => {
+        Object.defineProperty(HTMLElement.prototype, "offsetHeight", { configurable: true, value: 50 });
+        Object.defineProperty(HTMLElement.prototype, "offsetWidth", { configurable: true, value: 50 });
+    });
+
+    afterAll(() => {
+        Object.defineProperty(HTMLElement.prototype, "offsetHeight", originalOffsetHeight);
+        Object.defineProperty(HTMLElement.prototype, "offsetWidth", originalOffsetWidth);
+    });
+
     it("shows no transcriptions when transcriptions are empty", async () => {
-        const { queryByTestId } = renderWithGlobalContext(<RealTime visible transcriptions={[]} timeZone={timeZone} />);
+        renderWithGlobalContext(<RealTime visible transcriptions={[]} timeZone={timeZone} />);
         await wait(100);
-        act(() => expect(queryByTestId("transcription_text")).toBeFalsy());
-        act(() => expect(queryByTestId("transcription_title")).toBeFalsy());
+        act(() => expect(screen.queryByTestId("transcription_text")).toBeFalsy());
+        act(() => expect(screen.queryByTestId("transcription_title")).toBeFalsy());
     });
 
     test("shows transcriptions when transcriptions list is not empty", async () => {
-        const { getByTestId } = renderWithGlobalContext(
-            <RealTime visible transcriptions={[transcription]} timeZone={timeZone} />
-        );
+        renderWithGlobalContext(<RealTime visible transcriptions={[transcription]} timeZone={timeZone} />);
         await wait(100);
-        act(() => expect(getByTestId("transcription_text")).toBeTruthy());
-        act(() => expect(getByTestId("transcription_title")).toBeTruthy());
+        act(() => expect(screen.getByTestId("transcription_text")).toBeTruthy());
+        act(() => expect(screen.getByTestId("transcription_title")).toBeTruthy());
     });
 
     test("shows transcriptions with pause message", async () => {
-        const { getByTestId } = renderWithGlobalContext(
-            <RealTime visible transcriptions={getTranscriptionsWithPause()} timeZone={timeZone} />
-        );
+        renderWithGlobalContext(<RealTime visible transcriptions={getTranscriptionsWithPause()} timeZone={timeZone} />);
         await wait(100);
-        act(() => expect(getByTestId("transcription_paused")).toBeTruthy());
+        act(() => expect(screen.getByTestId("transcription_paused")).toBeTruthy());
     });
     test("shows transcriptions with paused message", async () => {
-        const { getByTestId } = renderWithGlobalContext(
+        renderWithGlobalContext(
             <RealTime visible transcriptions={getTranscriptionsWithPaused()} timeZone={timeZone} />
         );
         await wait(100);
-        act(() => expect(getByTestId("transcription_currently_paused")).toBeTruthy());
+        act(() => expect(screen.getByTestId("transcription_currently_paused")).toBeTruthy());
+    });
+
+    test("renders only necessary transcriptions", async () => {
+        renderWithGlobalContext(<RealTime visible transcriptions={getVeryLongTranscription()} timeZone={timeZone} />);
+        await wait(100);
+        act(() => expect(screen.getAllByTestId("transcription_text").length).toBeLessThan(100));
     });
 });
