@@ -25,6 +25,7 @@ export const ANNOTATE_ITEMS = [
     "undoButton",
     "redoButton",
     "AnnotationEraserTool",
+    "toolsOverlay",
 ];
 
 export const CONTEXT_MENU_ITEMS = [
