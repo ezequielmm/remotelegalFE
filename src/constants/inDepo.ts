@@ -123,3 +123,4 @@ export const BREAKROOM_IS_LOCKED = "Breakroom locked - Other participants won't 
 export const BREAKROOM_IS_UNLOCKED = "Breakroom unlocked - Other participants will be able to enter the room";
 export const BREAKROOM_LOCK_ERROR = "Something went wrong. Please try again.";
 export const BREAKROOM_LOCK_ALERT_DURATION = 4;
+export const NETWORK_QUALITY_TIME_SECONDS = 300;
