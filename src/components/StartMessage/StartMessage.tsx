@@ -42,6 +42,10 @@ const StyledCloseIcon = styled(Icon)`
     }
 `;
 
+const StyledTitleSpace = styled(Space)`
+    padding-right: ${getREM(theme.default.spaces[6])};
+`;
+
 const StartMessage = ({ title, description, icon, open = true, ...rest }: IStartMessageProps) => {
     const [isOpen, setIsOpen] = useState<boolean>(open);
     const [windowWidth] = useWindowSize();
@@ -62,7 +66,7 @@ const StartMessage = ({ title, description, icon, open = true, ...rest }: IStart
                     />
                     {windowWidth < parseInt(theme.default.breakpoints.sm, 10) ? (
                         <>
-                            <Space>
+                            <StyledTitleSpace>
                                 <Space.Item>
                                     <Icon size={9} color={theme.default.primaryColor} icon={icon} />
                                 </Space.Item>
@@ -79,7 +83,7 @@ const StartMessage = ({ title, description, icon, open = true, ...rest }: IStart
                                         </Text>
                                     </Space>
                                 </Space.Item>
-                            </Space>
+                            </StyledTitleSpace>
                             <Text block size="small" ellipsis={false} state={ColorStatus.white}>
                                 {description}
                             </Text>
