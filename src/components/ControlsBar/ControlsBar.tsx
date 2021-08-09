@@ -65,6 +65,7 @@ import {
     StyledDrawerSpace,
     StyledEndButton,
     StyledMobileMenu,
+    StyledMoreMenu,
 } from "./styles";
 import HelpModal from "./components/HelpModal";
 import TroubleShootDevicesModal from "../../routes/TroubleShootUserDevices/components/TroubleShootDevicesModal";
@@ -529,18 +530,7 @@ export default function ControlsBar({
                                 onVisibleChange={toggleMore}
                                 visible={moreOpen}
                                 overlay={
-                                    <Menu selectable={false}>
-                                        <Menu.Item key="0" onClick={() => setHelpModal(true)}>
-                                            <Button
-                                                icon={<Icon icon={SupportIcon} size={8} color={ColorStatus.white} />}
-                                                data-testid="support_button"
-                                                type="link"
-                                            >
-                                                <Text state={ColorStatus.white} size="small">
-                                                    {CONSTANTS.CONTROLS_BAR_SUPPORT_LABEL}
-                                                </Text>
-                                            </Button>
-                                        </Menu.Item>
+                                    <StyledMoreMenu selectable={false}>
                                         <Menu.Item key="1" onClick={toggleSettingsModal}>
                                             <Button
                                                 icon={<Icon icon={SettingsIcon} size={8} color={ColorStatus.white} />}
@@ -572,7 +562,18 @@ export default function ControlsBar({
                                                 </Link>
                                             </Menu.Item>
                                         )}
-                                    </Menu>
+                                        <Menu.Item key="0" onClick={handleHelpModal}>
+                                            <Button
+                                                icon={<Icon icon={SupportIcon} size={8} color={ColorStatus.white} />}
+                                                data-testid="support_button"
+                                                type="link"
+                                            >
+                                                <Text state={ColorStatus.white} size="small">
+                                                    {CONSTANTS.CONTROLS_BAR_SUPPORT_LABEL}
+                                                </Text>
+                                            </Button>
+                                        </Menu.Item>
+                                    </StyledMoreMenu>
                                 }
                                 arrow
                                 styled
