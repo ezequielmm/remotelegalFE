@@ -41,15 +41,9 @@ const GlobalStyle = createGlobalStyle`
     .ant-checkbox-wrapper {
         display: inline-flex;
         align-items: flex-start;
-        .ant-table-cell &{
-            display: inline-block;
-        }
     }
     .ant-checkbox {
-        margin-top: 4px;
-        .ant-table-cell &{
-            margin-top: 0;
-        }
+        font-size: 1rem;
     }
 
     .ant-layout-header {
