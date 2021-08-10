@@ -97,6 +97,7 @@ beforeEach(() => {
         realTimeOpen: false,
         canRecord: false,
         canEnd: false,
+        settings: { EnableBreakrooms: "enabled", EnableRealTimeTab: "enabled", EnableLiveTranscriptions: "enabled" },
     };
 });
 
@@ -472,4 +473,12 @@ test("Should display Settings modal", async () => {
     await waitFor(() => {
         expect(screen.getByTestId("setting_in_depo")).toBeInTheDocument();
     });
+});
+
+it("Should hide buttons depending on settings", async () => {
+    const settings = { EnableBreakrooms: "disabled", RealTime: "disabled" };
+    renderWithGlobalContext(<ControlsBar {...props} settings={settings} />);
+
+    expect(screen.queryByTestId("breakrooms")).toBeNull();
+    expect(screen.queryByTestId("realtime")).not.toBeInTheDocument();
 });

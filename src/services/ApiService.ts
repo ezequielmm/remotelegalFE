@@ -580,6 +580,14 @@ export class ApiService {
         });
     };
 
+    getSystemSettings = async () => {
+        return this.request({
+            path: `/api/systemsettings`,
+            withToken: false,
+            method: HTTP_METHOD.GET,
+        });
+    };
+
     private request = async <T>({
         path,
         payload = {},

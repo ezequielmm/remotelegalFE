@@ -1,5 +1,4 @@
 import { fireEvent } from "@testing-library/react";
-import React from "react";
 import ControlsBar from "../../components/ControlsBar";
 import BreakroomControlsBar from "../../components/BreakroomControlsBar";
 import getParticipant from "../mocks/participant";
@@ -28,6 +27,7 @@ beforeEach(() => {
         realTimeOpen: false,
         canRecord: false,
         canEnd: false,
+        settings: { EnableBreakrooms: "enabled", EnableRealTimeTab: "enabled", EnableLiveTranscriptions: "enabled" },
     };
 });
 (global.navigator as any).mediaDevices = {

@@ -39,7 +39,7 @@ beforeEach(() => {
 
 describe("useRecording", () => {
     test("It calls setIsRecording with true after the API service responds and the dataTrack with the right JSON", async () => {
-        const { result, waitFor } = renderHook(() => useRecording(true), { wrapper: overridenWrapper });
+        const { result, waitFor } = renderHook(() => useRecording(true, "enabled"), { wrapper: overridenWrapper });
         result.current.startPauseRecording();
         await waitFor(() => {
             expect(state.dispatch).toHaveBeenCalledWith(actions.setIsRecording(true));
@@ -52,7 +52,7 @@ describe("useRecording", () => {
 
     test("It calls setIsRecording with false after the API service responds and the dataTrack with the right JSON", async () => {
         mockDeps.apiService.recordDeposition = jest.fn().mockResolvedValue(CONSTANTS.getRecordResponse(false));
-        const { result, waitFor } = renderHook(() => useRecording(false), { wrapper: overridenWrapper });
+        const { result, waitFor } = renderHook(() => useRecording(false, "enabled"), { wrapper: overridenWrapper });
         result.current.startPauseRecording();
         await waitFor(() => {
             expect(state.dispatch).toHaveBeenCalledWith(actions.setIsRecording(false));
@@ -64,7 +64,9 @@ describe("useRecording", () => {
     });
 
     test("It calls has loading in true for a second after calling startPauseRecoding", async () => {
-        const { result, waitForNextUpdate } = renderHook(() => useRecording(false), { wrapper: overridenWrapper });
+        const { result, waitForNextUpdate } = renderHook(() => useRecording(false, "enabled"), {
+            wrapper: overridenWrapper,
+        });
         result.current.startPauseRecording();
         await waitForNextUpdate();
         expect(result.current.loadingStartPauseRecording).toBeTruthy();

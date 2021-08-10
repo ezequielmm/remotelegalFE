@@ -1,6 +1,5 @@
 import { act, fireEvent, waitFor, waitForDomChange, waitForElement } from "@testing-library/react";
 import { createMemoryHistory } from "history";
-import React from "react";
 import { Route, Switch } from "react-router-dom";
 import * as TESTS_CONSTANTS from "../constants/InDepo";
 import * as MODULE_CONSTANTS from "../../constants/inDepo";

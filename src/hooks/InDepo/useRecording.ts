@@ -6,7 +6,7 @@ import useAsyncCallback from "../useAsyncCallback";
 import actions from "../../state/InDepo/InDepoActions";
 import { TranscriptionsContext } from "../../state/Transcriptions/TranscriptionsContext";
 
-const useRecording = (recording: boolean) => {
+const useRecording = (recording: boolean, EnableLiveTranscriptions: string) => {
     const { state, dispatch } = useContext(GlobalStateContext);
     const { addNewTranscription } = useContext(TranscriptionsContext);
     const { dataTrack } = state.room;
@@ -40,7 +40,7 @@ const useRecording = (recording: boolean) => {
     useEffect(() => {
         if (res) {
             dispatch(actions.setIsRecording(recording));
-            addNewTranscription(res, recording);
+            if (EnableLiveTranscriptions === "enabled") addNewTranscription(res, recording);
             dataTrack.send(JSON.stringify({ module: "recordDepo", value: res, recording }));
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps

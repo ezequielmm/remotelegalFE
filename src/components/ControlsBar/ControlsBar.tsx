@@ -91,6 +91,11 @@ interface IControlsBar {
     handleJoinBreakroom?: (roomNumber: string) => void;
     initialAudioEnabled?: boolean;
     jobNumber?: string;
+    settings?: {
+        EnableBreakrooms: string;
+        EnableRealTimeTab: string;
+        EnableLiveTranscriptions: string;
+    };
 }
 
 export default function ControlsBar({
@@ -112,13 +117,15 @@ export default function ControlsBar({
     handleJoinBreakroom,
     initialAudioEnabled,
     jobNumber,
+    settings = { EnableRealTimeTab: "disabled", EnableBreakrooms: "disabled", EnableLiveTranscriptions: "disabled" },
 }: IControlsBar): ReactElement {
+    const { EnableBreakrooms, EnableRealTimeTab, EnableLiveTranscriptions } = settings;
     const { videoTracks, audioTracks } = useParticipantTracks(localParticipant);
     const { isAudioEnabled, isCameraEnabled, setAudioEnabled, setCameraEnabled } = useTracksStatus(
         audioTracks as LocalAudioTrack[],
         videoTracks as LocalVideoTrack[]
     );
-    const { startPauseRecording, loadingStartPauseRecording } = useRecording(!isRecording);
+    const { startPauseRecording, loadingStartPauseRecording } = useRecording(!isRecording, EnableLiveTranscriptions);
     const [chatOpen, togglerChat] = useState(false);
     const [showSettings, setSettings] = useState(false);
     const [unreadedChats, setUnreadedChats] = useState(0);
@@ -196,7 +203,7 @@ export default function ControlsBar({
             }));
     }, [chatOpen]);
 
-    useStreamAudio(isAudioEnabled, audioTracks, isPreDepo);
+    useStreamAudio(EnableLiveTranscriptions === "enabled" && isAudioEnabled, audioTracks, isPreDepo);
 
     const handleRedirection = () => {
         return isWitness && !isAuthenticated
@@ -412,15 +419,18 @@ export default function ControlsBar({
                                 label={CONSTANTS.CONTROLS_BAR_EXHIBITS_LABEL}
                                 icon={<Icon icon={ExhibitsIcon} size="1.625rem" />}
                             />
-                            <Control
-                                data-testid="realtime"
-                                isActive={realTimeOpen}
-                                onClick={toggleRealTime}
-                                type="simple"
-                                label={CONSTANTS.CONTROLS_BAR_REAL_TIME_LABEL}
-                                icon={<Icon icon={RealTimeIcon} size="1.625rem" />}
-                            />
-                            {breakrooms && !!breakrooms.length && (
+                            {EnableRealTimeTab === "enabled" && (
+                                <Control
+                                    data-testid="realtime"
+                                    isActive={realTimeOpen}
+                                    onClick={toggleRealTime}
+                                    type="simple"
+                                    label={CONSTANTS.CONTROLS_BAR_REAL_TIME_LABEL}
+                                    icon={<Icon icon={RealTimeIcon} size="1.625rem" />}
+                                />
+                            )}
+
+                            {EnableBreakrooms === "enabled" && breakrooms && !!breakrooms.length && (
                                 <Dropdown
                                     onVisibleChange={toggleBreakrooms}
                                     visible={breakroomsOpen}

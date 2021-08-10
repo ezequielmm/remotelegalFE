@@ -52,5 +52,10 @@ export default (): Deps => ({
         getDocumentsUrlList: jest.fn().mockResolvedValue(fileUrlList),
         notifyParties: jest.fn().mockResolvedValue({ notified: true }),
         frontEndContent: jest.fn().mockResolvedValue(getFrontEndContent()),
+        getSystemSettings: jest.fn().mockResolvedValue({
+            EnableBreakrooms: "enabled",
+            EnableRealTimeTab: "enabled",
+            EnableLiveTranscriptions: "enabled",
+        }),
     } as any,
 });

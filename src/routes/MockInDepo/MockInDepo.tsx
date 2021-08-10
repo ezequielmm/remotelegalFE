@@ -28,6 +28,7 @@ import { NotificationAction, NotificationEntityType } from "../../types/Notifica
 import stopAllTracks from "../../helpers/stopAllTracks";
 import generalUIActions from "../../state/GeneralUi/GeneralUiActions";
 import TranscriptionsProvider from "../../state/Transcriptions/TranscriptionsContext";
+import { useSystemSetting } from "../../hooks/InDepo/useSystemSettings";
 
 const InDepo = () => {
     const isMounted = useRef(true);
@@ -139,11 +140,13 @@ const InDepo = () => {
         }
     }, [participants, mockDepoRoom]);
 
+    const { settings, loading: loadingSettings } = useSystemSetting();
+
     if (isAuthenticated === null) {
         return null;
     }
 
-    if (loading) {
+    if (loading || loadingSettings) {
         return <Spinner />;
     }
 
@@ -193,6 +196,7 @@ const InDepo = () => {
                             localParticipant={mockDepoRoom.localParticipant}
                             initialAudioEnabled={initialAudioEnabled}
                             jobNumber={jobNumber}
+                            settings={settings}
                         />
                     </StyledRoomFooter>
                     <StartMessage
