@@ -4,6 +4,9 @@ export const CASE_NUMBER_PLACEHOLDER = "Type case number";
 
 export const ADD_CASE_BUTTON = "Add case";
 export const EDIT_CASE_BUTTON = "Edit case";
+export const EDIT_CASE_CONFIRM_BUTTON_ID = "confirm_edit_case";
+export const EDIT_CASE_CANCEL_BUTTON_ID = "cancel_edit_case";
+export const EDIT_CASE_TITLE = "Edit Case";
 export const EDIT_CASE_CONFIRM_TITLE = "Save changes?";
 export const EDIT_CASE_SUCCESSFUL = "The case was successfully edited!";
 
