@@ -7,7 +7,7 @@ import "@datadog/browser-logs/bundle/datadog-logs";
 import { Route, Router, Switch } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 import { QueryClient, QueryClientProvider } from "react-query";
-import GlobalStyle from "./GlobalStyle";
+import GlobalStyle from "prp-components-library/src/components/GlobalStyle";
 import { theme } from "../constants/styles/theme";
 import MockInDepo from "../routes/MockInDepo";
 import Login from "../routes/Login";
