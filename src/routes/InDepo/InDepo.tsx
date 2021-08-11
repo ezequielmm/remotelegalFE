@@ -7,7 +7,7 @@ import Exhibits from "./Exhibits";
 import RealTime from "./RealTime";
 import VideoConference from "./VideoConference";
 import ControlsBar from "../../components/ControlsBar";
-import { StyledInDepoContainer, StyledInDepoLayout, StyledRoomFooter } from "./styles";
+import { GlobalStylesInDepo, StyledInDepoContainer, StyledInDepoLayout, StyledRoomFooter } from "./styles";
 import { useJoinDeposition } from "../../hooks/InDepo/depositionLifeTimeHooks";
 import { GlobalStateContext } from "../../state/GlobalState";
 import disconnectFromDepo from "../../helpers/disconnectFromDepo";
@@ -62,6 +62,7 @@ const InDepo = () => {
     const [initialAudioEnabled, setInitialAudioEnabled] = useState<boolean>(true);
     const [videoLayoutSize, setVideoLayoutSize] = useState<number>(0);
     const [atendeesVisibility, setAtendeesVisibility] = useState<boolean>(true);
+    const [inDepoHeight, setInDepoHeight] = useState<number>();
     const history = useHistory();
     const { isAuthenticated } = useAuthentication();
     const { sendMessage, signalR, subscribeToGroup, unsubscribeMethodFromGroup } = useSignalR("/depositionHub");
@@ -74,6 +75,10 @@ const InDepo = () => {
     }, [dispatch]);
 
     useEffect(() => {
+        // Check when body height change
+        const resizeObserver = new ResizeObserver((entries) => setInDepoHeight(entries[0].target.clientHeight || 0));
+        resizeObserver.observe(document.body);
+
         return () => {
             isMounted.current = false;
         };
@@ -248,7 +253,8 @@ const InDepo = () => {
             setInitialTranscriptions={setInitialTranscriptions}
         >
             <ThemeProvider theme={inDepoTheme}>
-                <StyledInDepoContainer data-testid="videoconference">
+                <GlobalStylesInDepo />
+                <StyledInDepoContainer data-testid="videoconference" height={inDepoHeight}>
                     {(!!currentUser?.isAdmin ||
                         JSON.parse(currentRoom?.localParticipant?.identity || "{}").role === Roles.courtReporter) && (
                         <GuestRequests depositionID={depositionID} />

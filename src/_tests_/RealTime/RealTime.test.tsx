@@ -12,8 +12,6 @@ import "mutationobserver-shim";
 import renderWithGlobalContext from "../utils/renderWithGlobalContext";
 import { TranscriptionsContext } from "../../state/Transcriptions/TranscriptionsContext";
 
-window.HTMLElement.prototype.scrollIntoView = jest.fn();
-
 jest.mock("audio-recorder-polyfill", () => {
     return jest.fn().mockImplementation(() => ({
         start: jest.fn(),
