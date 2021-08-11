@@ -64,6 +64,7 @@ const InDepo = () => {
     const [atendeesVisibility, setAtendeesVisibility] = useState<boolean>(true);
     const [inDepoHeight, setInDepoHeight] = useState<number>();
     const history = useHistory();
+    const tracksRef = useRef(tracks);
     const { isAuthenticated } = useAuthentication();
     const { sendMessage, signalR, subscribeToGroup, unsubscribeMethodFromGroup } = useSignalR("/depositionHub");
 
@@ -73,6 +74,10 @@ const InDepo = () => {
         dispatch(generalUIActions.toggleTheme(ThemeMode.inDepo));
         return () => dispatch(generalUIActions.toggleTheme(ThemeMode.default));
     }, [dispatch]);
+
+    useEffect(() => {
+        tracksRef.current = tracks;
+    }, [tracks]);
 
     useEffect(() => {
         // Check when body height change
@@ -96,9 +101,9 @@ const InDepo = () => {
 
     useEffect(() => {
         return () => {
-            stopAllTracks(tracks);
+            stopAllTracks(tracksRef.current);
         };
-    }, [tracks]);
+    }, []);
 
     useEffect(() => {
         if (signalR?.connectionState === "Connected" && depositionID) {
@@ -114,7 +119,7 @@ const InDepo = () => {
                     dispatch,
                     history,
                     depositionID,
-                    tracks,
+                    tracksRef.current,
                     currentRoom?.localParticipant?.identity &&
                         JSON.parse(currentRoom?.localParticipant?.identity).role === Roles.witness
                 );
@@ -128,7 +133,7 @@ const InDepo = () => {
             currentRoom.on("dominantSpeakerChanged", setDominantSpeaker);
         }
         const cleanUpFunction = () => {
-            disconnectFromDepo(currentRoom, dispatch, null, depositionID, tracks);
+            disconnectFromDepo(currentRoom, dispatch, null, depositionID, tracksRef.current);
         };
         window.addEventListener("beforeunload", cleanUpFunction);
 
@@ -140,7 +145,7 @@ const InDepo = () => {
 
             window.removeEventListener("beforeunload", cleanUpFunction);
         };
-    }, [currentRoom, dispatch, depositionID, tracks, history]);
+    }, [currentRoom, dispatch, depositionID, history]);
 
     useEffect(() => {
         if (depositionID && isAuthenticated !== null && currentUser) {

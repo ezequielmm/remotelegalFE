@@ -14,6 +14,7 @@ import Title from "prp-components-library/src/components/Title";
 import Divider from "prp-components-library/src/components/Divider";
 import { useHistory, useParams } from "react-router";
 import Drawer from "prp-components-library/src/components/Drawer";
+import { createLocalVideoTrack, createLocalAudioTrack, Room, LocalVideoTrack, LocalAudioTrack } from "twilio-video";
 import actions from "../../../state/InDepo/InDepoActions";
 import * as CONSTANTS from "../../../constants/TroubleShootUserDevices";
 import useUserTracks, { StreamOption } from "../../../hooks/useUserTracks";
@@ -33,6 +34,7 @@ import { breakpoints } from "../../../constants/styles/breakpoints";
 import useWindowSize from "../../../hooks/useWindowSize";
 import { ThemeMode } from "../../../types/ThemeType";
 import useNotifyParticipantPresence from "../../../hooks/InDepo/useNotifyParticipantPresence";
+import { useSendParticipantStatus } from "../../../hooks/InDepo/useParticipantStatus";
 
 interface TroubleShootDevicesModalProps {
     isDepo?: boolean;
@@ -101,9 +103,9 @@ const TroubleShootDevicesModal = ({ isDepo, visible = true, onClose }: TroubleSh
     const [isMuted, setMuted] = useState(true);
     const history = useHistory();
     const { dispatch, state } = useContext(GlobalStateContext);
-    const { mockDepoRoom, currentRoom } = state.room;
+    const { mockDepoRoom, currentRoom, tracks } = state.room;
     const oldDevices = localStorage.getItem("selectedDevices") && JSON.parse(localStorage.getItem("selectedDevices"));
-    const availableRoom = currentRoom || mockDepoRoom;
+    const availableRoom: Room = currentRoom || mockDepoRoom;
     const { depositionID } = useParams<{ depositionID: string }>();
     const [cameraError, setCameraError] = useState(false);
     const [micError, setMicError] = useState(false);
@@ -114,6 +116,7 @@ const TroubleShootDevicesModal = ({ isDepo, visible = true, onClose }: TroubleSh
     const [sendUserPresence, userPresenceLoading, userPresenceError, userPresenceResponse] =
         useNotifyParticipantPresence();
     const addAlert = useFloatingAlertContext();
+    const [sendToggledMuted] = useSendParticipantStatus();
 
     const cameraErrorSubTitle =
         (isCameraBlocked && CONSTANTS.CAMERA_BLOCKED_ERROR_MESSAGES.subtitle) ||
@@ -128,15 +131,21 @@ const TroubleShootDevicesModal = ({ isDepo, visible = true, onClose }: TroubleSh
         const cameraError = errors.length >= 1 && errors.filter((error) => error?.videoinput)[0];
         const micError = errors.length >= 1 && errors.filter((error) => error?.audioinput)[0];
         const isCameraBlocked = cameraError && cameraError.videoinput.name === "NotAllowedError";
-        if (cameraError) {
-            setCameraError(cameraError);
-        }
-        if (micError) {
-            setMicError(micError);
-        }
-        if (isCameraBlocked) {
-            setIsCameraBlocked(isCameraBlocked);
-        }
+        const toggleErrors = (resetValues?: boolean) => {
+            if (cameraError) {
+                setCameraError(resetValues ? false : cameraError);
+            }
+            if (micError) {
+                setMicError(resetValues ? false : micError);
+            }
+            if (isCameraBlocked) {
+                setIsCameraBlocked(resetValues ? false : isCameraBlocked);
+            }
+        };
+        toggleErrors();
+        return () => {
+            toggleErrors(true);
+        };
     }, [errors]);
 
     useEffect(() => {
@@ -239,15 +248,27 @@ const TroubleShootDevicesModal = ({ isDepo, visible = true, onClose }: TroubleSh
         const videoDevice = devices.video as Device;
         const audioDevice = devices.audio as Device;
         const speakersDevice = devices.speakers;
-        const hasVideoChanged = oldDevices?.video?.deviceId?.exact !== videoDevice?.deviceId?.exact;
-        const hasAudioChanged = oldDevices?.audio?.deviceId?.exact !== audioDevice?.deviceId?.exact;
+        const existingVideoTrack: LocalVideoTrack | undefined = trackpubsToTracks(
+            availableRoom.localParticipant.videoTracks
+        )[0];
+        const existingAudioTrack: LocalAudioTrack | undefined = trackpubsToTracks(
+            availableRoom.localParticipant.audioTracks
+        )[0];
+        // TODO: Replace label with id
+        const hasVideoChanged = existingVideoTrack?.mediaStreamTrack?.label !== videoDevice?.label;
+        const hasAudioChanged = existingAudioTrack?.mediaStreamTrack?.label !== audioDevice?.label;
         const haveSpeakersChanged = oldDevices?.speakers !== speakersDevice;
+        const tracksCopy = [...tracks];
         if (hasVideoChanged) {
             const { deviceId } = videoDevice;
             try {
-                const localVideoTrack = trackpubsToTracks(availableRoom.localParticipant.videoTracks);
-                if (localVideoTrack[0]) {
-                    await localVideoTrack[0].restart({ deviceId });
+                if (existingVideoTrack) {
+                    await existingVideoTrack.restart({ deviceId });
+                } else {
+                    const localVideoTrack = await createLocalVideoTrack({ deviceId });
+                    await availableRoom.localParticipant.publishTrack(localVideoTrack);
+                    dispatch(actions.setInitialCameraStatus(true));
+                    tracksCopy.push(localVideoTrack);
                 }
             } catch (error) {
                 console.error(error);
@@ -256,9 +277,14 @@ const TroubleShootDevicesModal = ({ isDepo, visible = true, onClose }: TroubleSh
         if (hasAudioChanged) {
             try {
                 const { deviceId } = audioDevice;
-                const localAudioTrack = trackpubsToTracks(availableRoom.localParticipant.audioTracks);
-                if (localAudioTrack[0]) {
-                    await localAudioTrack[0].restart({ deviceId });
+                if (existingAudioTrack) {
+                    await existingAudioTrack.restart({ deviceId });
+                } else {
+                    const localAudioTrack = await createLocalAudioTrack({ deviceId });
+                    await availableRoom.localParticipant.publishTrack(localAudioTrack);
+                    await sendToggledMuted(false);
+                    dispatch(actions.setPublishedAudioTrackStatus(true));
+                    tracksCopy.push(localAudioTrack);
                 }
             } catch (error) {
                 console.error(error);
@@ -269,6 +295,7 @@ const TroubleShootDevicesModal = ({ isDepo, visible = true, onClose }: TroubleSh
         }
         if (hasAudioChanged || hasVideoChanged || haveSpeakersChanged) {
             localStorage.setItem("selectedDevices", JSON.stringify(devices));
+            dispatch(actions.addUserTracks(tracksCopy));
         }
         onClose();
     };
@@ -341,7 +368,7 @@ const TroubleShootDevicesModal = ({ isDepo, visible = true, onClose }: TroubleSh
                                                 {options?.audioinput.map((device) => (
                                                     <Select.Option
                                                         data-testid={device.label}
-                                                        key={device.value}
+                                                        key={`${device.label}${device.value}${device.kind}`}
                                                         value={JSON.stringify(device)}
                                                     >
                                                         {device.label || "-"}
@@ -361,7 +388,7 @@ const TroubleShootDevicesModal = ({ isDepo, visible = true, onClose }: TroubleSh
                                                 {options?.audiooutput.map((device) => (
                                                     <Select.Option
                                                         data-testid={device.label}
-                                                        key={device.value}
+                                                        key={`${device.label}${device.value}${device.kind}`}
                                                         value={JSON.stringify(device)}
                                                     >
                                                         {device.label || "-"}
@@ -381,7 +408,7 @@ const TroubleShootDevicesModal = ({ isDepo, visible = true, onClose }: TroubleSh
                                                 {options?.videoinput.map((device) => (
                                                     <Select.Option
                                                         data-testid={device.label}
-                                                        key={device.value}
+                                                        key={`${device.label}${device.value}${device.kind}`}
                                                         value={JSON.stringify(device)}
                                                     >
                                                         {device.label || "-"}

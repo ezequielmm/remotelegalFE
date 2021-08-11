@@ -77,21 +77,22 @@ export const useJoinBreakroom = () => {
             const tracks = [];
             const token: any = await generateBreakroomToken();
             if (!token) return "";
-
             try {
-                const audioTrack = await createLocalAudioTrack(devices?.audio ? devices.audio : null);
-                tracks.push(audioTrack);
+                if (devices?.audio) {
+                    const audioTrack = await createLocalAudioTrack(devices.audio);
+                    tracks.push(audioTrack);
+                }
             } catch (error) {
                 console.error(error);
             }
-
             try {
-                const videoTrack = await createLocalVideoTrack(devices?.video ? devices.video : null);
-                tracks.push(videoTrack);
+                if (devices?.video) {
+                    const videoTrack = await createLocalVideoTrack(devices.video);
+                    tracks.push(videoTrack);
+                }
             } catch (error) {
                 console.error(error);
             }
-
             tracks.push(dataTrack);
 
             const room = await connect(token, {
@@ -153,21 +154,22 @@ export const useJoinDepositionForMockRoom = () => {
                 history.push(`/deposition/join/${depositionID}`);
             }
             try {
-                const audioTrack = await createLocalAudioTrack(devices?.audio ? devices.audio : null);
-                tracks.push(audioTrack);
+                if (devices?.audio) {
+                    const audioTrack = await createLocalAudioTrack(devices.audio);
+                    tracks.push(audioTrack);
+                }
             } catch (error) {
                 console.error(error);
             }
-
             try {
-                const videoTrack = await createLocalVideoTrack(devices?.video ? devices.video : null);
-                tracks.push(videoTrack);
+                if (devices?.video) {
+                    const videoTrack = await createLocalVideoTrack(devices.video);
+                    tracks.push(videoTrack);
+                }
             } catch (error) {
-                console.log(error);
+                console.error(error);
             }
-
             tracks.push(dataTrack);
-
             const room = await connect(token, {
                 ...TWILIO_VIDEO_CONFIG,
                 name: depositionID,
@@ -279,32 +281,30 @@ export const useJoinDeposition = (setTranscriptions: React.Dispatch<Transcriptio
             if (isSharing) {
                 fetchExhibitFileInfo(depositionID);
             }
-
             try {
-                const audioTrack = await createLocalAudioTrack(devices?.audio ? devices.audio : null);
-                tracks.push(audioTrack);
+                if (devices?.audio) {
+                    const audioTrack = await createLocalAudioTrack(devices.audio);
+                    tracks.push(audioTrack);
+                }
             } catch (error) {
                 console.error(error);
             }
-
             try {
-                const videoTrack = await createLocalVideoTrack(devices?.video ? devices.video : null);
-                tracks.push(videoTrack);
+                if (devices?.video) {
+                    const videoTrack = await createLocalVideoTrack(devices.video);
+                    tracks.push(videoTrack);
+                }
             } catch (error) {
                 console.error(error);
             }
-
             tracks.push(dataTrack);
-
             const room = await connect(token, {
                 ...TWILIO_VIDEO_CONFIG,
                 name: depositionID,
                 tracks,
             });
-
             dispatch(actions.addUserTracks(tracks));
             setDepoRoom(room);
-
             if (!isMounted.current) {
                 stopAllTracks(tracks);
                 return disconnectFromDepo(room, dispatch);

@@ -14,6 +14,7 @@ export interface IRoom {
     newSpeaker?: string;
     initialCameraStatus?: boolean;
     stamp?: Document;
+    publishedAudioTrackStatus?: boolean;
     shouldSendToPreDepo?: boolean;
     userStatus?: UserInfo;
     startTime?: string;
@@ -49,6 +50,7 @@ export interface IRoom {
 export const RoomReducerInitialState: IRoom = {
     info: null,
     startTime: "",
+    publishedAudioTrackStatus: null,
     stamp: null,
     mockDepoRoom: null,
     shouldSendToPreDepo: null,
@@ -262,6 +264,12 @@ const RoomReducer: Reducer<IRoom, IAction> = (state: IRoom, action: IAction): IR
             return {
                 ...state,
                 newSpeaker: action.payload,
+            };
+
+        case ACTION_TYPE.SET_PUBLISHED_AUDIO_TRACK_STATUS:
+            return {
+                ...state,
+                publishedAudioTrackStatus: action.payload,
             };
 
         default:

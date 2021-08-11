@@ -340,7 +340,7 @@ test("Create track functions get called with the proper devices if they exist in
     });
 });
 
-test("Create track functions get called with null if the devices don´t exist in localStorage", async () => {
+test("Create track functions are not called if the devices don´t exist in localStorage", async () => {
     renderWithGlobalContext(
         <Route exact path={TESTS_CONSTANTS.BREAKROOM_ROUTE} component={Breakroom} />,
         customDeps,
@@ -359,7 +359,7 @@ test("Create track functions get called with null if the devices don´t exist in
     );
     history.push(TESTS_CONSTANTS.TEST_BREAKROOM_ROUTE);
     await waitFor(() => {
-        expect(mockAudioTracks).toHaveBeenCalledWith(null);
-        expect(mockVideoTracks).toHaveBeenCalledWith(null);
+        expect(mockAudioTracks).not.toHaveBeenCalled();
+        expect(mockVideoTracks).not.toHaveBeenCalled();
     });
 });

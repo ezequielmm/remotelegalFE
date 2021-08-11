@@ -7,7 +7,10 @@ import wrapper, { wrapperWithOverrideState } from "../mocks/wrapper";
 test("when audio is toggled for the first time, the value changes to false", () => {
     const { result } = renderHook(
         () => useTracksStatus([buildTrack(TRACK_TYPE.audio, true)], [buildTrack(TRACK_TYPE.video, true)]),
-        { wrapper }
+        {
+            wrapper: (children: any) =>
+                wrapperWithOverrideState(children, { room: { ...state.state.room, publishedAudioTrackStatus: null } }),
+        }
     );
 
     expect(result.current.isAudioEnabled).toBe(true);
@@ -21,7 +24,10 @@ test("when audio is toggled for the first time, the value changes to false", () 
 test("when audio is toggled again, the value changes back to true", () => {
     const { result } = renderHook(
         () => useTracksStatus([buildTrack(TRACK_TYPE.audio, true)], [buildTrack(TRACK_TYPE.video, true)]),
-        { wrapper }
+        {
+            wrapper: (children: any) =>
+                wrapperWithOverrideState(children, { room: { ...state.state.room, publishedAudioTrackStatus: null } }),
+        }
     );
 
     expect(result.current.isAudioEnabled).toBe(true);
@@ -92,4 +98,15 @@ test("if initial camera status is false, the cameraEnabled status starts with fa
         }
     );
     expect(result.current.isCameraEnabled).toBe(false);
+});
+
+test("if published audio status is true, the audioEnabled status turns to true", () => {
+    const { result } = renderHook(
+        () => useTracksStatus([buildTrack(TRACK_TYPE.audio, true)], [buildTrack(TRACK_TYPE.video, true)]),
+        {
+            wrapper: (children: any) =>
+                wrapperWithOverrideState(children, { room: { ...state.state.room, publishedAudioTrackStatus: true } }),
+        }
+    );
+    expect(result.current.isAudioEnabled).toBe(true);
 });

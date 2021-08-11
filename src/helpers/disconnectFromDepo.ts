@@ -42,6 +42,7 @@ const disconnectFromDepo = (
         token: null,
         isMuted: false,
         jobNumber: "",
+        publishedAudioTrackStatus: null,
     };
 
     if (tracks?.length) {

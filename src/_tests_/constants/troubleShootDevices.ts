@@ -44,3 +44,13 @@ export const NON_AVAILABLE_DEVICES_LIST_MOCK = [
     { label: "", kind: "videoinput", deviceId: "" },
     { label: "", kind: "videoinput", deviceId: "" },
 ];
+export const EXPECTED_CREATE_AUDIO_TRACK_MOCK_ARGS = {
+    deviceId: {
+        exact: DEVICES_LIST_MOCK[1].deviceId,
+    },
+};
+export const EXPECTED_CREATE_VIDEO_TRACK_MOCK_ARGS = {
+    deviceId: {
+        exact: DEVICES_LIST_MOCK[5].deviceId,
+    },
+};

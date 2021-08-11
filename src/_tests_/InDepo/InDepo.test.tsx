@@ -819,7 +819,7 @@ it("calls createLocalTracks with the devices if they exist in localStorage", asy
         expect(mockVideoTracks).toHaveBeenCalledWith(TESTS_CONSTANTS.DEVICES_MOCK.video);
     });
 });
-it("calls create Tracks functions with null if the devices don´t exist in localStorage", async () => {
+it("doesn´t call create Tracks if the devices don´t exist in localStorage", async () => {
     customDeps.apiService.joinDeposition = jest.fn().mockResolvedValue(TESTS_CONSTANTS.JOIN_DEPOSITION_MOCK);
     renderWithGlobalContext(
         <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,
@@ -839,7 +839,7 @@ it("calls create Tracks functions with null if the devices don´t exist in local
 
     history.push(TESTS_CONSTANTS.TEST_ROUTE);
     await waitFor(() => {
-        expect(mockAudioTracks).toHaveBeenCalledWith(null);
-        expect(mockVideoTracks).toHaveBeenCalledWith(null);
+        expect(mockAudioTracks).not.toHaveBeenCalled();
+        expect(mockVideoTracks).not.toHaveBeenCalled();
     });
 });

@@ -46,6 +46,11 @@ const InDepo = () => {
     const history = useHistory();
     const { currentEmail, isAuthenticated } = useAuthentication();
     const [checkUserStatus, , userStatusError, userStatus] = useCheckUserStatus();
+    const tracksRef = useRef(tracks);
+
+    useEffect(() => {
+        tracksRef.current = tracks;
+    }, [tracks]);
 
     useEffect(() => {
         return () => {
@@ -79,9 +84,9 @@ const InDepo = () => {
 
     useEffect(() => {
         return () => {
-            stopAllTracks(tracks);
+            stopAllTracks(tracksRef.current);
         };
-    }, [tracks, dispatch]);
+    }, []);
 
     useEffect(() => {
         dispatch(generalUIActions.toggleTheme(ThemeMode.inDepo));
@@ -106,18 +111,18 @@ const InDepo = () => {
             mockDepoRoom.on("dominantSpeakerChanged", setDominantSpeaker);
         }
         const cleanUpFunction = () => {
-            disconnectFromDepo(mockDepoRoom, dispatch, null, depositionID, tracks);
+            disconnectFromDepo(mockDepoRoom, dispatch, null, depositionID, tracksRef.current);
         };
         window.addEventListener("beforeunload", cleanUpFunction);
 
         return () => {
             if (mockDepoRoom) {
                 mockDepoRoom.off("dominantSpeakerChange", setDominantSpeaker);
-                disconnectFromDepo(mockDepoRoom, dispatch, null, depositionID, tracks);
+                disconnectFromDepo(mockDepoRoom, dispatch, null, depositionID, tracksRef.current);
             }
             window.removeEventListener("beforeunload", cleanUpFunction);
         };
-    }, [mockDepoRoom, dispatch, depositionID, tracks]);
+    }, [mockDepoRoom, dispatch, depositionID]);
 
     useEffect(() => {
         if (depositionID) {

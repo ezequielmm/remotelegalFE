@@ -114,16 +114,41 @@ const useUserTracks = (getTracks: boolean = true) => {
     }, []);
 
     useEffect(() => {
+        const listDevices = async () => {
+            const initialOptions: Options = {
+                videoinput: ["-"],
+                audioinput: ["-"],
+                audiooutput: ["-"],
+            };
+            const availableStreams = await navigator.mediaDevices.enumerateDevices();
+            availableStreams.forEach((currentStream) => {
+                const firstStream = initialOptions[currentStream.kind][0];
+                if (firstStream === "-") {
+                    initialOptions[currentStream.kind][0] = {
+                        label: currentStream.label,
+                        kind: currentStream.kind,
+                        value: currentStream.deviceId,
+                    };
+                    return {
+                        label: currentStream.label,
+                        kind: currentStream.kind,
+                        value: currentStream.deviceId,
+                    };
+                }
+                initialOptions[currentStream.kind] = [
+                    ...(initialOptions[currentStream.kind] as StreamOption[]),
+                    { label: currentStream.label, value: currentStream.deviceId, kind: currentStream.kind },
+                ];
+                return initialOptions[currentStream.kind];
+            });
+            setOptions(initialOptions);
+            return initialOptions;
+        };
         const previouslySelectedDevices =
             localStorage.getItem("selectedDevices") && JSON.parse(localStorage.getItem("selectedDevices"));
         const wasVideoSelected = previouslySelectedDevices?.video;
         const wasAudioSelected = previouslySelectedDevices?.audio;
         const wasSpeakersSelected = previouslySelectedDevices?.speakers;
-        const initialOptions: Options = {
-            videoinput: ["-"],
-            audioinput: ["-"],
-            audiooutput: ["-"],
-        };
         const getUserStreams = async () => {
             const getInitialStream = async (type: string, constraints) => {
                 try {
@@ -161,27 +186,7 @@ const useUserTracks = (getTracks: boolean = true) => {
                           },
                       }
             );
-            const availableStreams = await navigator.mediaDevices.enumerateDevices();
-            availableStreams.forEach((currentStream) => {
-                const firstStream = initialOptions[currentStream.kind][0];
-                if (firstStream === "-") {
-                    initialOptions[currentStream.kind][0] = {
-                        label: currentStream.label,
-                        kind: currentStream.kind,
-                        value: currentStream.deviceId,
-                    };
-                    return {
-                        label: currentStream.label,
-                        kind: currentStream.kind,
-                        value: currentStream.deviceId,
-                    };
-                }
-                initialOptions[currentStream.kind] = [
-                    ...(initialOptions[currentStream.kind] as StreamOption[]),
-                    { label: currentStream.label, value: currentStream.deviceId, kind: currentStream.kind },
-                ];
-                return initialOptions[currentStream.kind];
-            });
+            const initialOptions = await listDevices();
             const firstSpeakerOption = initialOptions.audiooutput[0] as StreamOption;
             if (initialOptions.audiooutput[0] === "-" || firstSpeakerOption?.value === "") {
                 initialOptions.audiooutput = [
@@ -202,13 +207,13 @@ const useUserTracks = (getTracks: boolean = true) => {
                 (input) => input?.value === wasAudioSelected?.deviceId?.exact
             );
             const previouslySelectedSpeaker = speakerArray.find((input) => input?.value === wasSpeakersSelected);
-            setOptions(initialOptions);
             setSelectedOptions({
                 videoinput: previouslySelectedVideo || initialOptions.videoinput[0],
                 audioinput: previouslySelectedAudio || initialOptions.audioinput[0],
                 audiooutput: previouslySelectedSpeaker || initialOptions.audiooutput[0],
             });
             setGettingTracks(false);
+            navigator.mediaDevices.ondevicechange = listDevices;
         };
         if (getTracks) {
             getUserStreams();

@@ -15,7 +15,7 @@ import { GlobalStateContext } from "../../state/GlobalState";
 
 const useParticipantTracks = (participant: LocalParticipant | RemoteParticipant) => {
     const { state } = useContext(GlobalStateContext);
-    const { newSpeaker } = state.room;
+    const { newSpeaker, tracks } = state.room;
     const [dataTracks, setDataTracks] = useState<DataTrack[]>([]);
     const [videoTracks, setVideoTracks] = useState<VideoTrack[]>([]);
     const [videoDisabled, setVideoDisabled] = useState<boolean>(false);
@@ -71,20 +71,28 @@ const useParticipantTracks = (participant: LocalParticipant | RemoteParticipant)
         if (!participant) {
             return;
         }
-        setVideoTracks(trackpubsToTracks(participant.videoTracks));
-        setAudioTracks(trackpubsToTracks(participant.audioTracks));
         setDataTracks(trackpubsToTracks(participant.dataTracks));
         participant.on("trackSubscribed", trackSubscribed);
         participant.on("networkQualityLevelChanged", setNetWorkLevel);
         participant.on("trackUnsubscribed", trackUnsubscribed);
         participant.on("trackDisabled", trackDisabled);
         participant.on("trackEnabled", trackEnabled);
-
         // eslint-disable-next-line consistent-return
         return () => {
             participant?.removeAllListeners();
         };
     }, [participant]);
+
+    useEffect(() => {
+        const setParticipantTracks = () => {
+            setVideoTracks((oldTracks) => [...trackpubsToTracks(participant.videoTracks), ...oldTracks]);
+            setAudioTracks((oldTracks) => [...trackpubsToTracks(participant.audioTracks), ...oldTracks]);
+        };
+        if (!participant) {
+            return;
+        }
+        setParticipantTracks();
+    }, [participant, tracks]);
 
     useEffect(() => {
         const videoTrack = videoTracks[0];
@@ -98,7 +106,7 @@ const useParticipantTracks = (participant: LocalParticipant | RemoteParticipant)
         return () => {
             videoTrack?.detach();
         };
-    }, [videoTracks, participant]);
+    }, [videoTracks]);
 
     useEffect(() => {
         const audioTrack = audioTracks[0];
@@ -110,7 +118,6 @@ const useParticipantTracks = (participant: LocalParticipant | RemoteParticipant)
                 changeSpeakers(audioRef.current, speakers);
             }
         }
-
         return () => {
             audioTrack?.detach();
         };

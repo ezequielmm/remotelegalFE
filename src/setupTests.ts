@@ -31,3 +31,10 @@ Object.defineProperty(global, "ResizeObserver", {
     writable: true,
     value: ResizeObserver,
 });
+
+Object.defineProperty(global.navigator, "mediaDevices", {
+    writable: true,
+    value: {
+        ondevicechange: jest.fn(),
+    },
+});
