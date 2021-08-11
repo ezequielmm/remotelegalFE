@@ -45,7 +45,7 @@ const useTranscriptAudio = (doNotConnectToSocket = false, sampleRate: number) =>
                 offRecord: !isRecording,
             });
         }
-    }, [sendMessage, isRecording, signalR, depositionID, sampleRate]);
+    }, [sendMessage, isRecording, signalR, depositionID]);
 
     useEffect(() => {
         let manageReceiveNotification;
