@@ -711,7 +711,7 @@ export default function ControlsBar({
                                                             placement="bottom"
                                                             height="100%"
                                                             closable={false}
-                                                            bodyStyle={{ padding: "0" }}
+                                                            bodyStyle={{ padding: "0", height: "100%" }}
                                                         >
                                                             <Chat
                                                                 closePopOver={toggleChat}
