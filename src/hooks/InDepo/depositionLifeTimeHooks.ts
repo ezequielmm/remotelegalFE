@@ -83,7 +83,7 @@ export const useJoinBreakroom = () => {
                     tracks.push(audioTrack);
                 }
             } catch (error) {
-                console.error(error);
+                console.error("(useJoinBreakroom hook) error creating local audio track:", error);
             }
             try {
                 if (devices?.video) {
@@ -91,7 +91,7 @@ export const useJoinBreakroom = () => {
                     tracks.push(videoTrack);
                 }
             } catch (error) {
-                console.error(error);
+                console.error("(useJoinBreakroom hook) error creating local video track:", error);
             }
             tracks.push(dataTrack);
 
@@ -159,7 +159,7 @@ export const useJoinDepositionForMockRoom = () => {
                     tracks.push(audioTrack);
                 }
             } catch (error) {
-                console.error(error);
+                console.error("(useJoinDepositionForMockRoom hook) error creating local audio track:", error);
             }
             try {
                 if (devices?.video) {
@@ -167,7 +167,7 @@ export const useJoinDepositionForMockRoom = () => {
                     tracks.push(videoTrack);
                 }
             } catch (error) {
-                console.error(error);
+                console.error("(useJoinDepositionForMockRoom hook) error creating local video track:", error);
             }
             tracks.push(dataTrack);
             const room = await connect(token, {
@@ -287,7 +287,7 @@ export const useJoinDeposition = (setTranscriptions: React.Dispatch<Transcriptio
                     tracks.push(audioTrack);
                 }
             } catch (error) {
-                console.error(error);
+                console.error("useJoinDeposition hook: error creating local audio track:", error);
             }
             try {
                 if (devices?.video) {
@@ -295,7 +295,7 @@ export const useJoinDeposition = (setTranscriptions: React.Dispatch<Transcriptio
                     tracks.push(videoTrack);
                 }
             } catch (error) {
-                console.error(error);
+                console.error("useJoinDeposition hook: error creating local video track:", error);
             }
             tracks.push(dataTrack);
             const room = await connect(token, {

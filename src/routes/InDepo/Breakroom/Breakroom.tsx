@@ -210,7 +210,7 @@ const Breakroom = () => {
             </ThemeProvider>
         ) : null;
     } catch (runtimeError) {
-        console.error(runtimeError);
+        console.error("Error rendering Breakroom:", runtimeError);
     }
 };
 

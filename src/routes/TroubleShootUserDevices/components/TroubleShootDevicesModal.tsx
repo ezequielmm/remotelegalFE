@@ -271,7 +271,7 @@ const TroubleShootDevicesModal = ({ isDepo, visible = true, onClose }: TroubleSh
                     tracksCopy.push(localVideoTrack);
                 }
             } catch (error) {
-                console.error(error);
+                console.error("(troubleShootDevicesModal) video device changed error:", error);
             }
         }
         if (hasAudioChanged) {
@@ -287,7 +287,7 @@ const TroubleShootDevicesModal = ({ isDepo, visible = true, onClose }: TroubleSh
                     tracksCopy.push(localAudioTrack);
                 }
             } catch (error) {
-                console.error(error);
+                console.error("(troubleShootDevicesModal) audio device changed error:", error);
             }
         }
         if (haveSpeakersChanged) {

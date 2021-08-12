@@ -34,7 +34,13 @@ const useSignalR = (
                 transport: HttpTransportType.WebSockets,
             })
             .withAutomaticReconnect([0, 200, 10000, 30000, 60000, 120000])
-            .configureLogging(LogLevel.Information);
+            .configureLogging({
+                log: (logLevel, message) => {
+                    if (logLevel >= LogLevel.Error) {
+                        console.error(`SignalR error. URL: ${url}, message: ${message}`);
+                    }
+                },
+            });
 
         newSignalR = useMessageProtocol
             ? baseSignalRConfig.withHubProtocol(new MessagePackHubProtocol()).build()
