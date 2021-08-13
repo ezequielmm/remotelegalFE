@@ -196,9 +196,29 @@ test("Trigger handleJoinBreakroom when click on JOIN Breakroom if is not recordi
 });
 
 test("Should call setParticipantStatus endpoint with muted in true by default", async () => {
+    localStorage.clear();
+    const initialState = {
+        ...rootReducer,
+        initialState: {
+            depositionsList: {
+                sorting: "",
+                pageNumber: 0,
+                filter: undefined,
+            } as any,
+            user: { ...rootReducer.initialState.user },
+            postDepo: { ...rootReducer.initialState.postDepo },
+            signalR: { ...rootReducer.initialState.signalR },
+            generalUi: { ...rootReducer.initialState.generalUi },
+            room: {
+                ...rootReducer.initialState.room,
+                newSpeaker: null,
+                publishedAudioTrackStatus: null,
+            },
+        },
+    };
     const customDeps = getMockDeps();
     customDeps.apiService.setParticipantStatus = jest.fn().mockResolvedValue({});
-    const { findByTestId } = renderWithGlobalContext(<ControlsBar {...props} exhibitsOpen />, customDeps);
+    const { findByTestId } = renderWithGlobalContext(<ControlsBar {...props} exhibitsOpen />, customDeps, initialState);
     fireEvent.click(await findByTestId("audio"));
     await waitForDomChange();
     expect(customDeps.apiService.setParticipantStatus).toHaveBeenCalledWith({ isMuted: true });
