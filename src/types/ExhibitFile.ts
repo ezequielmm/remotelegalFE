@@ -14,4 +14,5 @@ export type ExhibitFile = {
     close?: boolean;
     sharedAt?: string;
     isPublic?: boolean;
+    stampLabel?: string;
 };

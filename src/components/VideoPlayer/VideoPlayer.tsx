@@ -211,7 +211,12 @@ const VideoPlayer = ({ fullScreen, fallback, isOnlyAudio, ...rest }: IVideoPlaye
                             </StyledTimeContainer>
                         </Space.Item>
                         <StyledVolumeContainer align="center" size={1}>
-                            <Icon size={7} onClick={muteVideo} icon={muted ? VolumeOffIcon : VolumeOnIcon} />
+                            <Icon
+                                size={7}
+                                color={theme.default.whiteColor}
+                                onClick={muteVideo}
+                                icon={muted ? VolumeOffIcon : VolumeOnIcon}
+                            />
                             <Space.Item flex="1 1">
                                 <Slider
                                     value={muted ? 0 : volume}
@@ -222,16 +227,16 @@ const VideoPlayer = ({ fullScreen, fallback, isOnlyAudio, ...rest }: IVideoPlaye
                                     trackStyle={{ backgroundColor: theme.default.whiteColor }}
                                 />
                             </Space.Item>
+                            {fullScreen && (
+                                <Space.Item>
+                                    <Icon
+                                        size={6}
+                                        icon={fullscreen ? ContractIcon : ExpandIcon}
+                                        onClick={handleFullScreen}
+                                    />
+                                </Space.Item>
+                            )}
                         </StyledVolumeContainer>
-                        {fullScreen && (
-                            <Space.Item>
-                                <Icon
-                                    size={6}
-                                    icon={fullscreen ? ContractIcon : ExpandIcon}
-                                    onClick={handleFullScreen}
-                                />
-                            </Space.Item>
-                        )}
                     </Space>
                 </StyledControls>
             )}

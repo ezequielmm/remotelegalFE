@@ -13772,7 +13772,7 @@ proxy-addr@~2.0.5:
 
 "prp-components-library@ssh://git@github.com/PrecisionReporters/prp-components-library.git#develop":
   version "0.1.0"
-  resolved "ssh://git@github.com/PrecisionReporters/prp-components-library.git#e5f4f45afaeb8df198386bbb96dbf859faac94ab"
+  resolved "ssh://git@github.com/PrecisionReporters/prp-components-library.git#3828fb0db865c246085dd7a8df7205aa15ebec9a"
   dependencies:
     "@craco/craco" "^6.1.2"
     "@hookform/resolvers" "^1.0.1"

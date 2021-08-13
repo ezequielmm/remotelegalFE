@@ -49,7 +49,7 @@ export const MY_EXHIBITS_RESULT_SUBTITLE = "Start adding the exhibits that you w
 export const MY_EXHIBITS_UPLOAD_TEXT = "Uploading file...";
 export const MY_EXHIBITS_UPLOAD_COMPLETE_TEXT = "File uploaded";
 export const MY_EXHIBITS_UPLOAD_ERROR_TEXT = "Failed to upload";
-export const MY_EXHIBITS_ALLOWED_FILE_TYPES = ".mp4,.pdf,.docx,.xlsx,.pptx,.jpg,.jpeg,.png";
+export const MY_EXHIBITS_ALLOWED_FILE_TYPES = ".mp4,.mp3,.ogg,.ogv,.mov,.wav,.pdf,.docx,.xlsx,.pptx,.jpg,.jpeg,.png";
 export const MY_EXHIBITS_RENAME_TITLE_TEXT = "Rename Exhibit";
 export const MY_EXHIBITS_RENAME_SUBTITLE_TEXT = "To rename the exhibit, type the new name on the field below.";
 export const MY_EXHIBITS_RENAME_NAME_LABEL = "EXHIBIT NAME";
@@ -99,3 +99,6 @@ export const BRING_ALL_TO_ME_BUTTON_LABEL = "Bring all to me";
 export const SHARE_EXHIBIT_BUTTON_LABEL = "Share with all";
 
 export const EXHIBIT_DELETE_ERROR_MESSAGE = "An unexpected error occurred!";
+export const SUPPORTED_AUDIO_FILES = ["mp3", "ogg", "wav", "m4a"];
+export const SUPPORTED_VIDEO_FILES = ["mp4", "mov"];
+export const SUPPORTED_AUDIO_VIDEO_FILES = [...SUPPORTED_AUDIO_FILES, ...SUPPORTED_VIDEO_FILES];

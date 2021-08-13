@@ -80,6 +80,7 @@ export default function MyExhibits({ activeKey }: { activeKey: string }) {
                     file={selectedFile}
                     onClose={() => setSelectedFile(null)}
                     showShareButtonOnHeader
+                    isActive={currentExhibitTabName === EXHIBIT_TABS.myExhibits}
                 />
             )}
         </ExhibitTabPaneSpacer>
