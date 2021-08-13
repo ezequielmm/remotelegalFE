@@ -23,6 +23,7 @@ import useSendSystemUserInfo from "../techInfo/useSendUserSystemInfo";
 import useSendParticipantDevices from "../techInfo/sendParticipantDevices";
 import { setTranscriptionMessages } from "../../helpers/formatTranscriptionsMessages";
 import { TranscriptionModel } from "../../models";
+import { DevicesStatus } from "../../constants/TroubleShootUserDevices";
 
 export const useKillDepo = () => {
     const { deps } = useContext(GlobalStateContext);
@@ -234,24 +235,24 @@ export const useJoinDeposition = (setTranscriptions: React.Dispatch<Transcriptio
     const devices = JSON.parse(localStorage.getItem("selectedDevices"));
     return useAsyncCallback(
         async (depositionID: string) => {
+            const participantDevices = {
+                camera: {
+                    name: devices?.videoForBE.name || "",
+                    status: devices?.videoForBE.status,
+                },
+                microphone: {
+                    name: devices?.microphoneForBE.name || "",
+                },
+                speakers: {
+                    name: devices?.speakersForBE.name || "",
+                },
+            };
             try {
                 await sendUserSystemInfo();
             } catch {
                 console.error(`Couldn´t send system user info because of: ${sendSystemUserInfoError}`);
             }
             try {
-                const participantDevices = {
-                    camera: {
-                        name: devices?.videoForBE.name || "",
-                        status: devices?.videoForBE.status,
-                    },
-                    microphone: {
-                        name: devices?.microphoneForBE.name || "",
-                    },
-                    speakers: {
-                        name: devices?.speakersForBE.name || "",
-                    },
-                };
                 await sendParticipantDevices(participantDevices);
             } catch {
                 console.error(`Couldn´t send system user info because of: ${sendParticipantDevicesError}`);
@@ -288,6 +289,18 @@ export const useJoinDeposition = (setTranscriptions: React.Dispatch<Transcriptio
                 }
             } catch (error) {
                 console.error("useJoinDeposition hook: error creating local audio track:", error);
+                const newDevicesBody = {
+                    ...participantDevices,
+                    microphone: {
+                        ...participantDevices.microphone,
+                        name: "",
+                    },
+                };
+                try {
+                    await sendParticipantDevices(newDevicesBody);
+                } catch {
+                    console.error(`Couldn´t send system user info because of: ${sendParticipantDevicesError}`);
+                }
             }
             try {
                 if (devices?.video) {
@@ -296,6 +309,20 @@ export const useJoinDeposition = (setTranscriptions: React.Dispatch<Transcriptio
                 }
             } catch (error) {
                 console.error("useJoinDeposition hook: error creating local video track:", error);
+                const newDevicesBody = {
+                    ...participantDevices,
+                    camera: {
+                        ...participantDevices.camera,
+                        name: "",
+                        status:
+                            error.message === "Permission denied" ? DevicesStatus.blocked : DevicesStatus.unavailable,
+                    },
+                };
+                try {
+                    await sendParticipantDevices(newDevicesBody);
+                } catch {
+                    console.error(`Couldn´t send system user info because of: ${sendParticipantDevicesError}`);
+                }
             }
             tracks.push(dataTrack);
             const room = await connect(token, {

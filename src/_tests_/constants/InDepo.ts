@@ -65,9 +65,31 @@ export const NON_WITNESS_NON_REGISTERED_EXPECTED_REDIRECT_BODY = { pathname: "/s
 export const WITNESS_EXPECTED_REDIRECT_BODY = { pathname: "/deposition/end", state: { isWitness: true } };
 export const NETWORK_ERROR = "An unexpected error occurred!";
 export const DEVICES_MOCK = {
+    videoForBE: {
+        name: "test1235",
+        status: "available",
+    },
+    microphoneForBE: {
+        name: "test123",
+    },
+    speakersForBE: {
+        name: "test124345",
+    },
     audio: "test123",
     video: "test1235",
     speakers: "test124345",
+};
+export const FIRST_DEVICES_BODY = {
+    camera: {
+        name: DEVICES_MOCK.videoForBE.name,
+        status: DEVICES_MOCK.videoForBE.status,
+    },
+    microphone: {
+        name: DEVICES_MOCK.microphoneForBE.name,
+    },
+    speakers: {
+        name: DEVICES_MOCK.speakersForBE.name,
+    },
 };
 export const CONNECTION_UNSTABLE = "Your connection is unstable";
 export const NETWORK_INDICATOR_TEST_ID = "NETWORK_INDICATOR";

@@ -18,6 +18,7 @@ import { currentExhibit } from "../mocks/currentExhibit";
 import * as AUTH from "../mocks/Auth";
 import { getUserDepoStatusWithParticipantAdmitted } from "../constants/preJoinDepo";
 import "mutationobserver-shim";
+import { DevicesStatus } from "../../constants/TroubleShootUserDevices";
 
 jest.mock("@microsoft/signalr");
 
@@ -47,6 +48,9 @@ const history = createMemoryHistory();
 
 const PreDepoRoute = () => <div>PRE_DEPO</div>;
 const WaitingRoomRoute = () => <div>WAITING ROOM</div>;
+
+beforeEach(() => localStorage.clear());
+afterEach(() => localStorage.clear());
 
 // TODO: Find a better way to mock Twilio (eg, adding it to DI system)
 const mockVideoTracks = jest.fn();
@@ -819,6 +823,48 @@ it("calls createLocalTracks with the devices if they exist in localStorage", asy
         expect(mockVideoTracks).toHaveBeenCalledWith(TESTS_CONSTANTS.DEVICES_MOCK.video);
     });
 });
+it("calls sendParticipantDevices with updated devices if they are blocked", async () => {
+    mockVideoTracks.mockRejectedValue(Error("Permission denied"));
+    mockAudioTracks.mockRejectedValue(Error("Permission denied"));
+    customDeps.apiService.joinDeposition = jest.fn().mockResolvedValue(TESTS_CONSTANTS.JOIN_DEPOSITION_MOCK);
+    localStorage.setItem("selectedDevices", JSON.stringify(TESTS_CONSTANTS.DEVICES_MOCK));
+    renderWithGlobalContext(
+        <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,
+        customDeps,
+        {
+            ...rootReducer,
+            initialState: {
+                room: {
+                    ...rootReducer.initialState.room,
+                },
+                user: { currentUser: { firstName: "First Name", lastName: "Last Name" } } as any,
+                signalR: { signalR: null },
+            } as any,
+        },
+        history
+    );
+    history.push(TESTS_CONSTANTS.TEST_ROUTE);
+    await waitFor(() => {
+        expect(customDeps.apiService.sendParticipantDevices).toHaveBeenCalledWith(
+            "test1234",
+            TESTS_CONSTANTS.FIRST_DEVICES_BODY
+        );
+        expect(customDeps.apiService.sendParticipantDevices).toHaveBeenCalledWith("test1234", {
+            ...TESTS_CONSTANTS.FIRST_DEVICES_BODY,
+            camera: {
+                name: "",
+                status: DevicesStatus.blocked,
+            },
+        });
+        expect(customDeps.apiService.sendParticipantDevices).toHaveBeenCalledWith("test1234", {
+            ...TESTS_CONSTANTS.FIRST_DEVICES_BODY,
+            microphone: {
+                name: "",
+            },
+        });
+    });
+});
+
 it("doesn´t call create Tracks if the devices don´t exist in localStorage", async () => {
     customDeps.apiService.joinDeposition = jest.fn().mockResolvedValue(TESTS_CONSTANTS.JOIN_DEPOSITION_MOCK);
     renderWithGlobalContext(
