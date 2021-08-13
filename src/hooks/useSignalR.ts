@@ -70,8 +70,17 @@ const useSignalR = (
     }, [connect]);
 
     const sendMessage = useCallback(
-        (hub, message) =>
-            setNewSignalRInstance ? newSignalRInstance?.send(hub, message) : signalR?.send(hub, message),
+        (hub, message) => {
+            const signalRInstance: any = setNewSignalRInstance ? newSignalRInstance : signalR;
+            if (signalRInstance?.connectionState === "Connected") {
+                return signalRInstance.send(hub, message);
+            }
+            return console.error(
+                `tried to send message without being connected in:${hub} with the following message: ${JSON.stringify(
+                    message
+                )}`
+            );
+        },
         [setNewSignalRInstance, newSignalRInstance, signalR]
     );
 
