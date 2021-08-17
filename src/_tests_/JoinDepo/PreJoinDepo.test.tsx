@@ -1,4 +1,4 @@
-import { fireEvent, waitFor, waitForDomChange, waitForElement } from "@testing-library/react";
+import { fireEvent, waitFor, screen, waitForDomChange, waitForElement } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Amplify, Auth } from "aws-amplify";
 import { Redirect } from "react-router";
@@ -10,6 +10,7 @@ import getMockDeps from "../utils/getMockDeps";
 import * as TEST_CONSTANTS from "../constants/preJoinDepo";
 import TEMP_TOKEN from "../../constants/ApiService";
 import { AMPLIFY_CONFIG } from "../constants/login";
+import { wait } from "../../helpers/wait";
 
 Amplify.configure({
     Auth: AMPLIFY_CONFIG,
@@ -58,6 +59,26 @@ describe("it tests validations on the initial flow", () => {
         userEvent.click(getByTestId(CONSTANTS.STEP_1_BUTTON_ID));
         await waitForDomChange();
         await waitForElement(() => getAllByText(CONSTANTS.NETWORK_ERROR));
+    });
+
+    test("toast should appear only once if userDepoStatus fetch fails, even though the user continue clicking btn", async () => {
+        deps.apiService.checkUserDepoStatus = jest.fn().mockRejectedValue(new Error("error"));
+        renderWithGlobalContext(<PreJoinDepo />, deps);
+        let button;
+        await waitFor(() => {
+            button = screen.getByTestId(CONSTANTS.STEP_1_BUTTON_ID);
+        });
+        fireEvent.change(screen.getByTestId(CONSTANTS.EMAIL_INPUT_ID), {
+            target: { value: TEST_CONSTANTS.MOCKED_EMAIL },
+        });
+        fireEvent.click(button);
+        await wait(0);
+        fireEvent.click(button);
+        await wait(0);
+        fireEvent.click(button);
+        await waitFor(() => {
+            expect(screen.getAllByText(CONSTANTS.NETWORK_ERROR)).toHaveLength(1);
+        });
     });
 });
 
