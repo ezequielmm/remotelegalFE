@@ -1,10 +1,11 @@
-import { waitForDomChange, fireEvent } from "@testing-library/react";
+import { waitForDomChange, fireEvent, screen } from "@testing-library/react";
 import React from "react";
 import * as CONSTANTS from "../../constants/resetPassword";
 import * as TEST_CONSTANTS from "../constants/resetPassword";
 import ResetPassword from "../../routes/ResetPassword";
 import renderWithGlobalContext from "../utils/renderWithGlobalContext";
 import getMockDeps from "../utils/getMockDeps";
+import { wait } from "../../helpers/wait";
 
 const customDeps = getMockDeps();
 
@@ -43,7 +44,7 @@ describe("Reset Password", () => {
         fireEvent.change(emailInput, { target: { value: TEST_CONSTANTS.WELL_FORMATTED_EMAIL } });
         fireEvent.click(button);
         await waitForDomChange();
-        expect(queryByText("Check your mailbox")).toBeTruthy();
+        expect(queryByText(CONSTANTS.CHECK_YOUR_MAILBOX_TEXT)).toBeTruthy();
     });
     it("expect error alert when error on submit", async () => {
         customDeps.apiService.forgotPassword = jest.fn().mockRejectedValue(new Error(""));
@@ -57,5 +58,13 @@ describe("Reset Password", () => {
         fireEvent.click(button);
         await waitForDomChange();
         expect(queryByText(CONSTANTS.NETWORK_ERROR)).toBeTruthy();
+    });
+    it("expect the form to not be submitted until the user provides a valid email", async () => {
+        renderWithGlobalContext(<ResetPassword />);
+        const emailInput = screen.getByPlaceholderText(CONSTANTS.EMAIL_PLACEHOLDER);
+        fireEvent.change(emailInput, { target: { value: "" } });
+        fireEvent.submit(screen.getAllByTestId(CONSTANTS.RESET_PASSWORD_FORM_ID)[0]);
+        await wait(0);
+        expect(screen.queryByText(CONSTANTS.CHECK_YOUR_MAILBOX_TEXT)).not.toBeInTheDocument();
     });
 });
