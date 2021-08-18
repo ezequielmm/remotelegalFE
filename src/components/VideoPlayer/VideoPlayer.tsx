@@ -97,7 +97,7 @@ interface IVideoPlayer extends ReactPlayerProps {
     isOnlyAudio?: boolean;
 }
 
-const VideoPlayer = ({ fullScreen, fallback, isOnlyAudio, ...rest }: IVideoPlayer) => {
+const VideoPlayer = ({ fullScreen, fallback, isOnlyAudio, onReady, ...rest }: IVideoPlayer) => {
     const { dispatch, state } = useContext(GlobalStateContext);
     const { changeTime, currentTime, playing, duration } = state.postDepo;
 
@@ -181,7 +181,10 @@ const VideoPlayer = ({ fullScreen, fallback, isOnlyAudio, ...rest }: IVideoPlaye
                 width="100%"
                 height={isVideoReady ? "100%" : "0"}
                 progressInterval={250}
-                onReady={() => setIsVideoReady(true)}
+                onReady={(player) => {
+                    setIsVideoReady(true);
+                    onReady(player);
+                }}
                 volume={volume}
                 muted={muted}
                 {...rest}

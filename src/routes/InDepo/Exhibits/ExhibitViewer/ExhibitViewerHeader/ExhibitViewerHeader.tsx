@@ -20,6 +20,7 @@ import * as CONSTANTS from "../../../../../constants/exhibits";
 import StampModal from "../../../../../components/PDFTronViewer/components/StampModal";
 import actions from "../../../../../state/InDepo/InDepoActions";
 import downloadFile from "../../../../../helpers/downloadFile";
+import Message from "../../../../../components/Message";
 
 const StyledSpaceItem = styled(Space.Item)`
     overflow: hidden;
@@ -138,7 +139,15 @@ export default function ExhibitViewerHeader({
                     )}
                     {canStamp && (
                         <Button
-                            onClick={() => setStampModal(true)}
+                            onClick={() => {
+                                return stampLabel
+                                    ? Message({
+                                          content: "Please delete the existing stamp and try again",
+                                          type: "error",
+                                          duration: 3,
+                                      })
+                                    : setStampModal(true);
+                            }}
                             type="ghost"
                             size="small"
                             loading={shareExhibitPending}

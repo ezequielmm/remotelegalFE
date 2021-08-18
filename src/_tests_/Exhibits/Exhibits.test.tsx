@@ -888,4 +888,52 @@ describe("Exhibits", () => {
         fireEvent.click(fileViewButton);
         await waitFor(() => expect(screen.queryByTestId("view_document_download")).not.toBeInTheDocument());
     });
+
+    it("should not able to stamp for a stamped audio or video exhibits on live exhibit view section", async () => {
+        useSignedUrl.mockImplementation(() => ({
+            documentUrl: "documentId",
+            pending: false,
+            isPublic: false,
+            stampLabel: "stamp-label",
+        }));
+
+        renderWithGlobalContext(
+            <ThemeProvider theme={theme}>
+                <LiveExhibits />
+            </ThemeProvider>,
+            customDeps,
+            {
+                ...rootReducer,
+                initialState: {
+                    room: {
+                        ...rootReducer.initialState.room,
+                        isRecording: true,
+                        currentExhibitTabName: CONSTANTS.EXHIBIT_TABS.liveExhibits,
+                        exhibitTab: CONSTANTS.EXHIBIT_TABS.liveExhibits,
+                        permissions: ["StampExhibit"],
+                        currentExhibit: {
+                            name: "name.mp4",
+                            displayName: "name.mp4",
+                            id: "documentId",
+                            size: 1,
+                            stampLabel: "stamp-label",
+                        },
+                    },
+                    postDepo: {
+                        changeTime: { time: 1 },
+                        currentTime: 1,
+                        playing: true,
+                        duration: 1,
+                    },
+                    user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+                },
+            }
+        );
+        const stampButton = screen.queryByTestId("view_document_stamp");
+        await waitFor(() => expect(stampButton).toBeInTheDocument());
+        fireEvent.click(stampButton);
+        await waitFor(() =>
+            expect(screen.queryByText("Please delete the existing stamp and try again")).toBeInTheDocument()
+        );
+    });
 });

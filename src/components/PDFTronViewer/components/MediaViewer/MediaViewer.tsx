@@ -1,6 +1,5 @@
 import dayjs from "dayjs";
 import React, { useContext, useEffect, useState } from "react";
-import ReactPlayer from "react-player";
 import styled from "styled-components";
 import Title from "prp-components-library/src/components/Title";
 import Text from "prp-components-library/src/components/Text";
@@ -65,19 +64,8 @@ export default function MediaViewer({
 }: MediaViewerProps) {
     const { state, dispatch } = useContext(GlobalStateContext);
     const { timeZone, stampLabel } = state.room;
-    const [isMediaReady, setIsMediaReady] = useState(false);
     const [currentStampLabel, setCurrentStampLabel] = useState("");
     const [stampSelected, setStampSelected] = useState(false);
-    useEffect(() => {
-        let delay;
-        if (!isMediaReady && ReactPlayer?.canPlay(url)) {
-            setIsMediaReady(true);
-            delay = setTimeout(() => {
-                onMediaReady();
-            }, 1000);
-        }
-        return () => clearTimeout(delay);
-    }, [url, onMediaReady, isMediaReady]);
 
     const onErrorMessage = () => {
         Message({
@@ -104,7 +92,13 @@ export default function MediaViewer({
 
     return (
         <StyledMediaViewerContainer>
-            <VideoPlayer url={url} isOnlyAudio={isOnlyAudio} onError={onErrorMessage} fullScreen />
+            <VideoPlayer
+                url={url}
+                isOnlyAudio={isOnlyAudio}
+                onError={onErrorMessage}
+                onReady={onMediaReady}
+                fullScreen
+            />
             {currentStampLabel && (
                 <StyledStampLabelContainer
                     onClick={handleStampSelected}

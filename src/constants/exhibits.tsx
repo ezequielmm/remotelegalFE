@@ -100,6 +100,6 @@ export const BRING_ALL_TO_ME_BUTTON_LABEL = "Bring all to me";
 export const SHARE_EXHIBIT_BUTTON_LABEL = "Share with all";
 
 export const EXHIBIT_DELETE_ERROR_MESSAGE = "An unexpected error occurred!";
-export const SUPPORTED_AUDIO_FILES = ["mp3", "ogg", "wav", "m4a"];
-export const SUPPORTED_VIDEO_FILES = ["mp4", "mov"];
+export const SUPPORTED_AUDIO_FILES = ["mp3", "wav", "oga", "m4a"];
+export const SUPPORTED_VIDEO_FILES = ["mp4", "ogg", "ogv", "mov"];
 export const SUPPORTED_AUDIO_VIDEO_FILES = [...SUPPORTED_AUDIO_FILES, ...SUPPORTED_VIDEO_FILES];
