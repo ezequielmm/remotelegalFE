@@ -72,10 +72,11 @@ const useTranscriptAudio = (doNotConnectToSocket = false, sampleRate: number) =>
     }, [signalR, subscribeToGroup, dispatch, unsubscribeMethodFromGroup, addNewTranscription]);
 
     const [transcriptAudio] = useAsyncCallback(
-        async (audio: ArrayBuffer) => {
+        async (audio: ArrayBuffer, sampleRate: number) => {
             sendMessage("UploadTranscription", {
                 depositionId: depositionID,
                 audio: new Uint8Array(audio),
+                sampleRate: sampleRate,
             });
         },
         [sendMessage]
