@@ -37,6 +37,21 @@ const useParticipantTracks = (participant: LocalParticipant | RemoteParticipant)
         return setDataTracks((data) => [...data, track]);
     };
 
+    const onReconnecting = (remoteParticipant: RemoteParticipant) => {
+        if (videoRef.current) {
+            videoRef.current.style.display = participant?.sid === remoteParticipant?.sid ? "none" : "block";
+            setVideoTracks((videos) =>
+                videos.filter((v) => remoteParticipant?.videoTracks.size && v !== remoteParticipant.videoTracks[0])
+            );
+            setAudioTracks((audios) =>
+                audios.filter((a) => remoteParticipant?.audioTracks.size && a !== remoteParticipant.audioTracks[0])
+            );
+            setDataTracks((dataTracks) =>
+                dataTracks.filter((d) => remoteParticipant?.dataTracks.size && d !== remoteParticipant.audioTracks[0])
+            );
+        }
+    };
+
     const trackUnsubscribed = (
         track: AudioTrack | LocalDataTrack | RemoteDataTrack | VideoTrack | RemoteVideoTrack
     ) => {
@@ -73,6 +88,7 @@ const useParticipantTracks = (participant: LocalParticipant | RemoteParticipant)
         }
         setDataTracks(trackpubsToTracks(participant.dataTracks));
         participant.on("trackSubscribed", trackSubscribed);
+        participant.on("reconnecting", onReconnecting);
         participant.on("networkQualityLevelChanged", setNetWorkLevel);
         participant.on("trackUnsubscribed", trackUnsubscribed);
         participant.on("trackDisabled", trackDisabled);
