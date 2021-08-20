@@ -61,7 +61,8 @@ const InDepo = () => {
     const [atendeesVisibility, setAtendeesVisibility] = useState<boolean>(true);
     const history = useHistory();
     const { isAuthenticated } = useAuthentication();
-    const { sendMessage, signalR, subscribeToGroup, unsubscribeMethodFromGroup } = useSignalR("/depositionHub");
+    const { sendMessage, signalR, subscribeToGroup, unsubscribeMethodFromGroup, isReconnected } =
+        useSignalR("/depositionHub");
 
     useEffect(() => {
         dispatch(generalUIActions.toggleTheme(ThemeMode.inDepo));
@@ -91,10 +92,10 @@ const InDepo = () => {
     }, [tracks]);
 
     useEffect(() => {
-        if (signalR?.connectionState === "Connected" && depositionID) {
+        if ((signalR?.connectionState === "Connected" || isReconnected) && depositionID) {
             sendMessage("SubscribeToDeposition", { depositionId: depositionID });
         }
-    }, [signalR, depositionID, sendMessage]);
+    }, [signalR, depositionID, sendMessage, isReconnected]);
 
     useEffect(() => {
         const handleRoomEndError = (_, roomError) => {
