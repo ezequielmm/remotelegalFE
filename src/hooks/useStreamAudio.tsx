@@ -50,7 +50,7 @@ export default (isAudioEnabled: boolean, audioTracks, doNotConnectToSocket = fal
             noise = createNoise();
         }
         if (noise) {
-            interval = setInterval(() => transcriptAudio(noise), 240000);
+            interval = setInterval(() => transcriptAudio(noise, !sampleRate ?? 48000), 120000);
         }
         return () => {
             clearInterval(interval);
@@ -91,7 +91,7 @@ export default (isAudioEnabled: boolean, audioTracks, doNotConnectToSocket = fal
                         });
                         setSampleRate(newSampleRate);
                     }
-                    transcriptAudio(buffer);
+                    transcriptAudio(buffer, newSampleRate);
                 };
                 fileReader.readAsArrayBuffer(e.data);
             };
