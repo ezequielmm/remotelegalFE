@@ -66,7 +66,8 @@ const InDepo = () => {
     const history = useHistory();
     const tracksRef = useRef(tracks);
     const { isAuthenticated } = useAuthentication();
-    const { sendMessage, signalR, subscribeToGroup, unsubscribeMethodFromGroup } = useSignalR("/depositionHub");
+    const { sendMessage, signalR, subscribeToGroup, unsubscribeMethodFromGroup, isReconnected } =
+        useSignalR("/depositionHub");
 
     const { settings, loading: loadingSettings } = useSystemSetting();
 
@@ -106,10 +107,10 @@ const InDepo = () => {
     }, []);
 
     useEffect(() => {
-        if (signalR?.connectionState === "Connected" && depositionID) {
+        if ((signalR?.connectionState === "Connected" || isReconnected) && depositionID) {
             sendMessage("SubscribeToDeposition", { depositionId: depositionID });
         }
-    }, [signalR, depositionID, sendMessage]);
+    }, [signalR, depositionID, sendMessage, isReconnected]);
 
     useEffect(() => {
         const handleRoomEndError = (_, roomError) => {

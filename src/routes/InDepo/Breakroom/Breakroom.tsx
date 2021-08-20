@@ -39,7 +39,8 @@ const Breakroom = () => {
     const [inDepoHeight, setInDepoHeight] = useState<number>();
     const [isLocked, setIsLocked] = useState(false);
     const history = useHistory();
-    const { signalR, sendMessage, subscribeToGroup, unsubscribeMethodFromGroup } = useSignalR("/depositionHub");
+    const { signalR, sendMessage, subscribeToGroup, unsubscribeMethodFromGroup, isReconnected } =
+        useSignalR("/depositionHub");
     const [shouldShowAlert, setShouldShowAlert] = useState(false);
     const addAlert = useFloatingAlertContext();
 
@@ -72,10 +73,10 @@ const Breakroom = () => {
     }, [signalR, currentBreakroomData]);
 
     useEffect(() => {
-        if (signalR?.connectionState === "Connected" && depositionID) {
+        if ((signalR?.connectionState === "Connected" || isReconnected) && depositionID) {
             sendMessage("SubscribeToDeposition", { depositionId: depositionID });
         }
-    }, [signalR, depositionID, sendMessage]);
+    }, [signalR, depositionID, sendMessage, isReconnected]);
 
     useEffect(() => {
         if (!exhibitsOpen) return;

@@ -16,6 +16,7 @@ const useSignalR = (
     const { state, dispatch, deps } = React.useContext(GlobalStateContext);
     const { signalR }: { signalR: HubConnection } = state.signalR;
     const [newSignalRInstance, setNewSignalR] = useState<HubConnection>(null);
+    const [isReconnected, setIsReconnected] = useState(false);
 
     const [connect] = useAsyncCallback(async () => {
         if (doNotConnectToSocket) {
@@ -33,7 +34,7 @@ const useSignalR = (
                 skipNegotiation: true,
                 transport: HttpTransportType.WebSockets,
             })
-            .withAutomaticReconnect([0, 200, 10000, 30000, 60000, 120000])
+            .withAutomaticReconnect([0, 2000, 10000, 30000, 60000, 120000])
             .configureLogging({
                 log: (logLevel, message) => {
                     if (logLevel >= LogLevel.Error) {
@@ -46,17 +47,19 @@ const useSignalR = (
             ? baseSignalRConfig.withHubProtocol(new MessagePackHubProtocol()).build()
             : baseSignalRConfig.build();
 
-        newSignalR.onclose = () => {
-            console.error("SignalR onClose");
-        };
+        newSignalR.onclose((error) => {
+            console.error("SignalR onClose", error);
+        });
 
-        newSignalR.onreconnecting = (error) => {
+        newSignalR.onreconnecting((error) => {
+            setIsReconnected(false);
             console.error("SignalR Reconnecting", error);
-        };
+        });
 
-        newSignalR.onreconnected = (connectionId) => {
+        newSignalR.onreconnected((connectionId) => {
+            setIsReconnected(true);
             console.error("SignalR Reconnected", connectionId);
-        };
+        });
 
         try {
             await newSignalR.start();
@@ -109,6 +112,7 @@ const useSignalR = (
 
     return {
         connect,
+        isReconnected,
         sendMessage,
         subscribeToGroup,
         unsubscribeToGroup,

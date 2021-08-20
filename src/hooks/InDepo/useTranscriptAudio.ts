@@ -14,7 +14,7 @@ const useTranscriptAudio = (doNotConnectToSocket = false, sampleRate: number) =>
     const { depositionID } = useParams<DepositionID>();
     const { TRANSCRIPT_URL } = ENV.API;
     const transcriptHubUrl = `/transcriptionHub?depositionId=${depositionID}`;
-    const { sendMessage, unsubscribeMethodFromGroup, subscribeToGroup, signalR } = useSignalR(
+    const { sendMessage, unsubscribeMethodFromGroup, subscribeToGroup, signalR, isReconnected } = useSignalR(
         transcriptHubUrl,
         TRANSCRIPT_URL,
         true,
@@ -23,10 +23,10 @@ const useTranscriptAudio = (doNotConnectToSocket = false, sampleRate: number) =>
     );
 
     useEffect(() => {
-        if (signalR?.connectionState === "Connected" && depositionID) {
+        if ((signalR?.connectionState === "Connected" || isReconnected) && depositionID) {
             sendMessage("SubscribeToDeposition", { depositionId: depositionID });
         }
-    }, [signalR, depositionID, sendMessage]);
+    }, [signalR, depositionID, sendMessage, isReconnected]);
 
     useEffect(() => {
         if (!signalR) {
