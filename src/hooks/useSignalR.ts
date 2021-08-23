@@ -1,6 +1,7 @@
 import { HttpTransportType, HubConnection, HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import React, { useCallback, useEffect, useState } from "react";
 import { MessagePackHubProtocol } from "@microsoft/signalr-protocol-msgpack";
+import { datadogLogs } from "@datadog/browser-logs";
 import ENV from "../constants/env";
 import { GlobalStateContext } from "../state/GlobalState";
 import actions from "../state/SignalR/SignalRActions";
@@ -38,7 +39,14 @@ const useSignalR = (
             .configureLogging({
                 log: (logLevel, message) => {
                     if (logLevel >= LogLevel.Error) {
-                        console.error(`SignalR error. URL: ${url}, message: ${message}`);
+                        datadogLogs.logger.error(
+                            `SignalR logLevel: ${LogLevel[logLevel]}. Hub: ${url}, message: ${message}`,
+                            {
+                                hub: url,
+                                message,
+                                logLevel: LogLevel[logLevel],
+                            }
+                        );
                     }
                 },
             });
@@ -48,23 +56,37 @@ const useSignalR = (
             : baseSignalRConfig.build();
 
         newSignalR.onclose((error) => {
-            console.error("SignalR onClose", error);
+            if (error) {
+                datadogLogs.logger.error(`SignalR onClose in hub: ${url} with error: ${error}`, { hub: url, error });
+            } else {
+                datadogLogs.logger.info(`SingalR onClose in hub: ${url}`, { url });
+            }
         });
 
         newSignalR.onreconnecting((error) => {
             setIsReconnected(false);
-            console.error("SignalR Reconnecting", error);
+            if (error) {
+                datadogLogs.logger.error(`SingalR Reconnecting in hub: ${url} with error: ${error}`, {
+                    hub: url,
+                    error,
+                });
+            } else {
+                datadogLogs.logger.info(`SingalR Reconnecting in hub: ${url}`, { hub: url });
+            }
         });
 
         newSignalR.onreconnected((connectionId) => {
             setIsReconnected(true);
-            console.error("SignalR Reconnected", connectionId);
+            datadogLogs.logger.info(`SignalR Reconnected in hub: ${url} with connectionId: ${connectionId}`, {
+                connectionId,
+                hub: url,
+            });
         });
 
         try {
             await newSignalR.start();
         } catch (error) {
-            console.error("SignalR start error", error);
+            datadogLogs.logger.error(`SignalR start in hub: ${url} with error: ${error}`, { hub: url, error });
         }
         if (setNewSignalRInstance) {
             setNewSignalR(newSignalR);
@@ -84,10 +106,11 @@ const useSignalR = (
             if (signalRInstance?.connectionState === "Connected") {
                 return signalRInstance.send(hub, message);
             }
-            return console.error(
+            return datadogLogs.logger.error(
                 `tried to send message without being connected in:${hub} with the following message: ${JSON.stringify(
                     message
-                )}`
+                )}`,
+                { hub, message }
             );
         },
         [setNewSignalRInstance, newSignalRInstance, signalR]
