@@ -301,7 +301,14 @@ export default function ControlsBar({
 
     return (
         <StyledContainer pl={6} pr={3} align="center" data-testid="controls_container">
-            <TroubleShootDevicesModal onClose={toggleSettingsModal} isDepo visible={showSettings} />
+            <TroubleShootDevicesModal
+                onClose={toggleSettingsModal}
+                isDepo
+                visible={showSettings}
+                videoTracks={videoTracks}
+                audioTracks={audioTracks}
+                shouldUseCurrentStream
+            />
             <Confirm
                 visible={breakroomModal}
                 title={CONSTANTS.BREAKROOM_ON_THE_RECORD_TITLE}

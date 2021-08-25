@@ -14,7 +14,15 @@ import Title from "prp-components-library/src/components/Title";
 import Divider from "prp-components-library/src/components/Divider";
 import { useHistory, useParams } from "react-router";
 import Drawer from "prp-components-library/src/components/Drawer";
-import { createLocalVideoTrack, createLocalAudioTrack, Room, LocalVideoTrack, LocalAudioTrack } from "twilio-video";
+import {
+    createLocalVideoTrack,
+    createLocalAudioTrack,
+    Room,
+    LocalVideoTrack,
+    LocalAudioTrack,
+    VideoTrack,
+    AudioTrack,
+} from "twilio-video";
 import actions from "../../../state/InDepo/InDepoActions";
 import * as CONSTANTS from "../../../constants/TroubleShootUserDevices";
 import useUserTracks, { StreamOption } from "../../../hooks/useUserTracks";
@@ -40,6 +48,9 @@ interface TroubleShootDevicesModalProps {
     isDepo?: boolean;
     visible?: boolean;
     onClose?: () => void;
+    videoTracks?: VideoTrack[];
+    audioTracks?: AudioTrack[];
+    shouldUseCurrentStream?: boolean;
 }
 interface SettingsWrapperProps {
     children: React.ReactNode;
@@ -90,7 +101,16 @@ const SettingsWrapper = ({ isDepo, children, onClose, visible, widthMorethanLg }
     );
 };
 
-const TroubleShootDevicesModal = ({ isDepo, visible = true, onClose }: TroubleShootDevicesModalProps) => {
+const TroubleShootDevicesModal = ({
+    isDepo,
+    visible = true,
+    onClose,
+    audioTracks = [],
+    videoTracks = [],
+    shouldUseCurrentStream = false,
+}: TroubleShootDevicesModalProps) => {
+    const [videoStream, setVideoStream] = useState<MediaStream>(null);
+    const [audioStream, setAudioStream] = useState<MediaStream>(null);
     const {
         gettingTracks,
         options,
@@ -99,7 +119,7 @@ const TroubleShootDevicesModal = ({ isDepo, visible = true, onClose }: TroubleSh
         errors,
         setSelectedOptions,
         stopOldTrackAndSetNewTrack,
-    } = useUserTracks(visible);
+    } = useUserTracks(visible, audioStream, videoStream, shouldUseCurrentStream);
     const [isMuted, setMuted] = useState(true);
     const history = useHistory();
     const { dispatch, state } = useContext(GlobalStateContext);
@@ -126,6 +146,35 @@ const TroubleShootDevicesModal = ({ isDepo, visible = true, onClose }: TroubleSh
         (cameraError && CONSTANTS.CAMERA_UNAVAILABLE_ERROR_MESSAGES.title);
     const [windowWidth] = useWindowSize();
     const widthMorethanLg = windowWidth >= parseInt(theme.default.breakpoints.lg, 10);
+
+    useEffect(() => {
+        if (!visible) {
+            setVideoStream(null);
+            setAudioStream(null);
+        }
+    }, [visible]);
+
+    useEffect(() => {
+        if (visible && videoTracks.length) {
+            const mediaTracks = videoTracks
+                .filter((track) => track.kind === "video")
+                .map((trackPublication) => trackPublication?.mediaStreamTrack);
+
+            const stream = new MediaStream(mediaTracks);
+            setVideoStream(stream);
+        }
+    }, [visible, videoTracks]);
+
+    useEffect(() => {
+        if (visible && audioTracks.length) {
+            const mediaTracks = audioTracks
+                .filter((track) => track.kind === "audio")
+                .map((trackPublication) => trackPublication?.mediaStreamTrack);
+
+            const stream = new MediaStream(mediaTracks);
+            setAudioStream(stream);
+        }
+    }, [visible, audioTracks]);
 
     useEffect(() => {
         const cameraError = errors.length >= 1 && errors.filter((error) => error?.videoinput)[0];

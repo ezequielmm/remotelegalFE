@@ -64,6 +64,7 @@ jest.mock("react-router", () => ({
 }));
 
 beforeEach(() => {
+    window.MediaStream = (jest.fn() as any).mockImplementation(() => {});
     Object.defineProperty(global.navigator, "mediaDevices", {
         writable: true,
         value: {

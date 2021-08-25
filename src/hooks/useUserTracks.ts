@@ -45,7 +45,12 @@ export type ActiveStreamsState = {
     };
 };
 
-const useUserTracks = (getTracks: boolean = true) => {
+const useUserTracks = (
+    getTracks: boolean = true,
+    audioStream: MediaStream = null,
+    videoStream: MediaStream = null,
+    shouldUseCurrentStream = false
+) => {
     const [gettingTracks, setGettingTracks] = useState(true);
     const [activeStreams, setActiveStreams] = useState<ActiveStreamsState>({
         audioinput: {
@@ -150,9 +155,14 @@ const useUserTracks = (getTracks: boolean = true) => {
         const wasAudioSelected = previouslySelectedDevices?.audio;
         const wasSpeakersSelected = previouslySelectedDevices?.speakers;
         const getUserStreams = async () => {
-            const getInitialStream = async (type: string, constraints) => {
+            const getInitialStream = async (type: StreamOption["kind"], constraints) => {
                 try {
-                    const stream = await navigator.mediaDevices.getUserMedia(constraints);
+                    const currentStream = type === "videoinput" ? videoStream : audioStream;
+                    if (!currentStream && shouldUseCurrentStream) return;
+                    const stream =
+                        currentStream && shouldUseCurrentStream
+                            ? currentStream
+                            : await navigator.mediaDevices.getUserMedia(constraints);
                     setActiveStreams((oldActiveStreams) => ({
                         ...oldActiveStreams,
                         [type]: {
@@ -220,11 +230,14 @@ const useUserTracks = (getTracks: boolean = true) => {
         }
         return () => {
             if (getTracks) {
-                Object.values(activeStreamsRef.current).forEach((track) => stopAllTracks(track.stream?.getTracks()));
+                if (!shouldUseCurrentStream)
+                    Object.values(activeStreamsRef.current).forEach((track) =>
+                        stopAllTracks(track.stream?.getTracks())
+                    );
                 setErrors([]);
             }
         };
-    }, [getTracks]);
+    }, [getTracks, videoStream, audioStream, shouldUseCurrentStream]);
 
     return {
         errors,
