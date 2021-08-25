@@ -50,7 +50,7 @@ const InDepo = () => {
     const [initialAudioEnabled, setInitialAudioEnabled] = useState<boolean>(true);
     const [videoLayoutSize, setVideoLayoutSize] = useState<number>(0);
     const [atendeesVisibility, setAtendeesVisibility] = useState<boolean>(true);
-    const { subscribeToGroup, signalR, sendMessage } = useSignalR("/depositionHub");
+    const { subscribeToGroup, signalR, sendMessage, isReconnected } = useSignalR("/depositionHub");
     const history = useHistory();
     const { currentEmail, isAuthenticated } = useAuthentication();
     const [checkUserStatus, , userStatusError, userStatus] = useCheckUserStatus();
@@ -60,6 +60,12 @@ const InDepo = () => {
             isMounted.current = false;
         };
     }, []);
+
+    useEffect(() => {
+        if (isReconnected && depositionID) {
+            sendMessage("SubscribeToDeposition", { depositionId: depositionID });
+        }
+    }, [isReconnected, depositionID, sendMessage]);
 
     useEffect(() => {
         if (signalR?.connectionState === "Connected" && depositionID) {

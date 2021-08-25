@@ -26,10 +26,12 @@ export default (isAudioEnabled: boolean, audioTracks, doNotConnectToSocket = fal
         const audioCtx = AvailableAudioContext && new AvailableAudioContext();
         let noise;
         if (isRecording && !isAudioEnabled && AvailableAudioContext && sendMessage && depositionID) {
-            sendMessage("InitializeRecognition", {
-                depositionId: depositionID,
-                sampleRate: 48000, // Hardcoded value just to reset
-            });
+            if (!sampleRate) {
+                sendMessage("InitializeRecognition", {
+                    depositionId: depositionID,
+                    sampleRate: 48000, // Hardcoded value just to reset
+                });
+            }
             const createNoise = () => {
                 const channels = 2;
                 const frameCount = audioCtx.sampleRate * 2.0;
@@ -45,11 +47,10 @@ export default (isAudioEnabled: boolean, audioTracks, doNotConnectToSocket = fal
                 }
                 return nowBuffering;
             };
-            setSampleRate(undefined);
             noise = createNoise();
         }
         if (noise) {
-            interval = setInterval(() => transcriptAudio(noise), 1500);
+            interval = setInterval(() => transcriptAudio(noise, !sampleRate ?? 48000), 120000);
         }
         return () => {
             clearInterval(interval);
@@ -90,7 +91,7 @@ export default (isAudioEnabled: boolean, audioTracks, doNotConnectToSocket = fal
                         });
                         setSampleRate(newSampleRate);
                     }
-                    transcriptAudio(buffer);
+                    transcriptAudio(buffer, newSampleRate);
                 };
                 fileReader.readAsArrayBuffer(e.data);
             };

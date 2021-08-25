@@ -13,7 +13,7 @@ const useTranscriptAudio = (doNotConnectToSocket = false, sampleRate: number) =>
     const { depositionID } = useParams<DepositionID>();
     const { TRANSCRIPT_URL } = ENV.API;
     const transcriptHubUrl = `/transcriptionHub?depositionId=${depositionID}`;
-    const { sendMessage, unsubscribeMethodFromGroup, subscribeToGroup, signalR } = useSignalR(
+    const { sendMessage, unsubscribeMethodFromGroup, subscribeToGroup, signalR, isReconnected } = useSignalR(
         transcriptHubUrl,
         TRANSCRIPT_URL,
         true,
@@ -22,10 +22,10 @@ const useTranscriptAudio = (doNotConnectToSocket = false, sampleRate: number) =>
     );
 
     useEffect(() => {
-        if (signalR?.connectionState === "Connected" && depositionID) {
+        if ((signalR?.connectionState === "Connected" || isReconnected) && depositionID) {
             sendMessage("SubscribeToDeposition", { depositionId: depositionID });
         }
-    }, [signalR, depositionID, sendMessage]);
+    }, [signalR, depositionID, sendMessage, isReconnected]);
 
     useEffect(() => {
         if (!signalR) {
@@ -44,7 +44,7 @@ const useTranscriptAudio = (doNotConnectToSocket = false, sampleRate: number) =>
                 offRecord: !isRecording,
             });
         }
-    }, [sendMessage, isRecording, signalR, depositionID, sampleRate]);
+    }, [sendMessage, isRecording, signalR, depositionID]);
 
     useEffect(() => {
         let manageReceiveNotification;
@@ -71,10 +71,11 @@ const useTranscriptAudio = (doNotConnectToSocket = false, sampleRate: number) =>
     }, [signalR, subscribeToGroup, dispatch, unsubscribeMethodFromGroup]);
 
     const [transcriptAudio] = useAsyncCallback(
-        async (audio: ArrayBuffer) => {
+        async (audio: ArrayBuffer, sampleRate: number) => {
             sendMessage("UploadTranscription", {
                 depositionId: depositionID,
                 audio: new Uint8Array(audio),
+                sampleRate: sampleRate,
             });
         },
         [sendMessage]
