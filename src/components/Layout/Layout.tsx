@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import Button from "prp-components-library/src/components/Button";
 import Icon from "prp-components-library/src/components/Icon";
 import Dropdown from "prp-components-library/src/components/Dropdown";
@@ -28,7 +28,16 @@ interface DashboardProps {
 const AppLayout = ({ children }: DashboardProps) => {
     const history = useHistory();
     const { pathname } = useLocation();
-    const { toggleSlider } = useToggleSider();
+    const { toggleSider } = useToggleSider();
+    const [isSiderCollapsing, setIsSiderColapsing] = useState(false);
+
+    const toggleSiderCollapse = () => {
+        setIsSiderColapsing(true);
+        toggleSider();
+        setTimeout(() => {
+            setIsSiderColapsing(false);
+        }, 400);
+    };
 
     const {
         state: {
@@ -87,7 +96,7 @@ const AppLayout = ({ children }: DashboardProps) => {
                 </Space>
             </Header>
             <Layout>
-                <Sider collapsible collapsed={isSiderCollapsed} onCollapse={toggleSlider}>
+                <Sider collapsible collapsed={isSiderCollapsed} onCollapse={toggleSiderCollapse}>
                     <div>
                         <Button
                             data-testid="schedule_deposition"
@@ -139,7 +148,7 @@ const AppLayout = ({ children }: DashboardProps) => {
                         </Text>
                     </div>
                 </Sider>
-                <Content>{children}</Content>
+                {!isSiderCollapsing && <Content>{children}</Content>}
             </Layout>
         </Layout>
     );
