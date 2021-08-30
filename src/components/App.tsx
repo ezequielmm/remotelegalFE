@@ -4,6 +4,7 @@ import { createBrowserHistory } from "history";
 import ReactGA from "react-ga";
 import TagManager from "react-gtm-module";
 import "@datadog/browser-logs/bundle/datadog-logs";
+import watchRTC from "@testrtc/watchrtc-sdk";
 import { Route, Router, Switch } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 import { QueryClient, QueryClientProvider } from "react-query";
@@ -45,6 +46,12 @@ function App() {
         gtmId: "GTM-TMP4C9Q",
     };
 
+    if (process.env.REACT_APP_ENV !== "localhost" && process.env.REACT_APP_ENV !== "develop") {
+        watchRTC.init({
+            rtcApiKey: process.env.REACT_APP_RTC_API_KEY,
+            rtcRoomId: process.env.REACT_APP_ENV,
+        });
+    }
     window.DD_LOGS.init({
         clientToken: process.env.REACT_APP_DATADOG_TOKEN,
         site: process.env.REACT_APP_DATADOG_URL,
