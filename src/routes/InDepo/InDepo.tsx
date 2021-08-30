@@ -29,7 +29,6 @@ import LoadingScreen from "./LoadingScreen";
 import { NotificationEntityType } from "../../types/Notification";
 import stopAllTracks from "../../helpers/stopAllTracks";
 import TranscriptionsProvider from "../../state/Transcriptions/TranscriptionsContext";
-import { useSystemSetting } from "../../hooks/InDepo/useSystemSettings";
 
 const InDepo = () => {
     const { depositionID } = useParams<DepositionID>();
@@ -49,6 +48,7 @@ const InDepo = () => {
         currentExhibit,
         participants,
         userStatus,
+        systemSettings,
         shouldSendToPreDepo,
         currentExhibitPage,
         jobNumber,
@@ -68,8 +68,6 @@ const InDepo = () => {
     const { isAuthenticated } = useAuthentication();
     const { sendMessage, signalR, subscribeToGroup, unsubscribeMethodFromGroup, isReconnected } =
         useSignalR("/depositionHub");
-
-    const { settings, loading: loadingSettings } = useSystemSetting();
 
     useEffect(() => {
         dispatch(generalUIActions.toggleTheme(ThemeMode.inDepo));
@@ -234,7 +232,7 @@ const InDepo = () => {
     if (loading && userStatus === null && shouldSendToPreDepo === null) {
         return <Spinner />;
     }
-    if ((userStatus?.participant?.isAdmitted && loading && shouldSendToPreDepo === false) || loadingSettings) {
+    if (userStatus?.participant?.isAdmitted && loading && shouldSendToPreDepo === false) {
         return <LoadingScreen />;
     }
 
@@ -298,7 +296,7 @@ const InDepo = () => {
                             localParticipant={currentRoom.localParticipant}
                             initialAudioEnabled={initialAudioEnabled}
                             jobNumber={jobNumber}
-                            settings={settings}
+                            settings={systemSettings}
                         />
                     </StyledRoomFooter>
                 </StyledInDepoContainer>

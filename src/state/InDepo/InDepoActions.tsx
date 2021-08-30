@@ -8,6 +8,7 @@ import { ExhibitFile } from "../../types/ExhibitFile";
 
 export enum ACTION_TYPE {
     ADD_STAMP = "ADD_STAMP",
+    ADD_SYSTEM_SETTINGS = "ADD_SYSTEM_SETTINGS",
     SET_PUBLISHED_AUDIO_TRACK_STATUS = "SET_PUBLISHED_AUDIO_TRACK_STATUS",
     CHANGE_SPEAKER = "CHANGE_SPEAKER",
     SEND_MESSAGE = "SEND_MESSAGE",
@@ -189,6 +190,10 @@ const actions = {
     }),
     setPublishedAudioTrackStatus: (payload: boolean) => ({
         type: ACTION_TYPE.SET_PUBLISHED_AUDIO_TRACK_STATUS,
+        payload,
+    }),
+    setSystemSettings: (payload) => ({
+        type: ACTION_TYPE.ADD_SYSTEM_SETTINGS,
         payload,
     }),
 };

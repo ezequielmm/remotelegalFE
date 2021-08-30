@@ -8,9 +8,11 @@ import { ACTION_TYPE } from "./InDepoActions";
 import { ExhibitFile } from "../../types/ExhibitFile";
 import { EXHIBIT_TAB } from "../../constants/exhibits";
 import { UserInfo } from "../../models/user";
+import { SystemSettings } from "../../models/systemsettings";
 
 export interface IRoom {
     info?: object;
+    systemSettings?: SystemSettings;
     newSpeaker?: string;
     initialCameraStatus?: boolean;
     stamp?: Document;
@@ -50,6 +52,7 @@ export interface IRoom {
 export const RoomReducerInitialState: IRoom = {
     info: null,
     startTime: "",
+    systemSettings: null,
     publishedAudioTrackStatus: null,
     stamp: null,
     mockDepoRoom: null,
@@ -187,6 +190,11 @@ const RoomReducer: Reducer<IRoom, IAction> = (state: IRoom, action: IAction): IR
                 isCurrentExhibitOwner: false,
                 stampLabel: "",
                 lastAnnotationId: "",
+            };
+        case ACTION_TYPE.ADD_SYSTEM_SETTINGS:
+            return {
+                ...state,
+                systemSettings: action.payload,
             };
         case ACTION_TYPE.IN_DEPO_SET_EXHIBIT_TAB_NAME:
             return {

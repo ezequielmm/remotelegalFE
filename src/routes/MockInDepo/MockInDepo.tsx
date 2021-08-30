@@ -28,14 +28,23 @@ import { NotificationAction, NotificationEntityType } from "../../types/Notifica
 import stopAllTracks from "../../helpers/stopAllTracks";
 import generalUIActions from "../../state/GeneralUi/GeneralUiActions";
 import TranscriptionsProvider from "../../state/Transcriptions/TranscriptionsContext";
-import { useSystemSetting } from "../../hooks/InDepo/useSystemSettings";
 
 const InDepo = () => {
     const isMounted = useRef(true);
     const inDepoTheme = { ...theme, mode: ThemeMode.inDepo };
     const { state, dispatch } = useContext(GlobalStateContext);
     const [joinDeposition, loading, error] = useJoinDepositionForMockRoom();
-    const { tracks, isRecording, mockDepoRoom, timeZone, participants, startTime, breakrooms, jobNumber } = state.room;
+    const {
+        tracks,
+        isRecording,
+        mockDepoRoom,
+        timeZone,
+        participants,
+        startTime,
+        breakrooms,
+        jobNumber,
+        systemSettings,
+    } = state.room;
     const { depositionID } = useParams<DepositionID>();
     const [realTimeOpen, togglerRealTime] = useState<boolean>(false);
     const [exhibitsOpen, togglerExhibits] = useState<boolean>(false);
@@ -151,13 +160,11 @@ const InDepo = () => {
         }
     }, [participants, mockDepoRoom]);
 
-    const { settings, loading: loadingSettings } = useSystemSetting();
-
     if (isAuthenticated === null) {
         return null;
     }
 
-    if (loading || loadingSettings) {
+    if (loading) {
         return <Spinner />;
     }
 
@@ -207,7 +214,7 @@ const InDepo = () => {
                             localParticipant={mockDepoRoom.localParticipant}
                             initialAudioEnabled={initialAudioEnabled}
                             jobNumber={jobNumber}
-                            settings={settings}
+                            settings={systemSettings}
                         />
                     </StyledRoomFooter>
                     <StartMessage

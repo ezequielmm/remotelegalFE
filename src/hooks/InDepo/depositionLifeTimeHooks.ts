@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
-import { connect, createLocalAudioTrack, createLocalVideoTrack, LocalDataTrack, Room } from "twilio-video";
+import { connect, createLocalAudioTrack, createLocalVideoTrack, LocalDataTrack, Room, Logger } from "twilio-video";
 import { useHistory, useParams } from "react-router";
 import useSound from "use-sound";
 import { GlobalStateContext } from "../../state/GlobalState";
@@ -23,6 +23,7 @@ import useSendSystemUserInfo from "../techInfo/useSendUserSystemInfo";
 import useSendParticipantDevices from "../techInfo/sendParticipantDevices";
 import { setTranscriptionMessages } from "../../helpers/formatTranscriptionsMessages";
 import { TranscriptionModel } from "../../models";
+import { useSystemSetting } from "./useSystemSettings";
 import { DevicesStatus } from "../../constants/TroubleShootUserDevices";
 
 export const useKillDepo = () => {
@@ -134,6 +135,7 @@ export const useJoinDepositionForMockRoom = () => {
     const { dispatch } = useContext(GlobalStateContext);
     const [generateToken] = useGenerateDepositionToken();
     const [getBreakrooms] = useGetBreakrooms();
+    const [getSystemSettings] = useSystemSetting();
     const isMounted = useRef(true);
     const [play] = useSound(beep);
 
@@ -154,6 +156,8 @@ export const useJoinDepositionForMockRoom = () => {
             if (!shouldSendToPreDepo) {
                 history.push(`/deposition/join/${depositionID}`);
             }
+            const settings = await getSystemSettings();
+            dispatch(actions.setSystemSettings(settings));
             try {
                 if (devices?.audio) {
                     const audioTrack = await createLocalAudioTrack(devices.audio);
@@ -176,6 +180,28 @@ export const useJoinDepositionForMockRoom = () => {
                 name: depositionID,
                 tracks,
             });
+
+            if (settings.EnableTwilioLogs === "enabled") {
+                const logger = Logger.getLogger("twilio-video");
+                const originalFactory = logger.methodFactory;
+                logger.methodFactory = (methodName, logLevel, loggerName) => {
+                    const method = originalFactory(methodName, logLevel, loggerName);
+                    return (datetime, logLevel, component, message, data) => {
+                        method(datetime, logLevel, component, message, data);
+                        if (message === "event" && data.group === "signaling") {
+                            if (data.name === "closed") {
+                                if (data.level === "error") {
+                                    console.error(
+                                        "Connection to Twilio's signaling server abruptly closed:",
+                                        data.reason
+                                    );
+                                }
+                            }
+                        }
+                    };
+                };
+                logger.setLevel("debug");
+            }
 
             dispatch(actions.addUserTracks(tracks));
 
@@ -224,6 +250,7 @@ export const useJoinDeposition = (setTranscriptions: React.Dispatch<Transcriptio
         };
     }, []);
     const [sendUserSystemInfo, , sendSystemUserInfoError] = useSendSystemUserInfo();
+    const [getSystemSettings] = useSystemSetting();
     const [sendParticipantDevices, , sendParticipantDevicesError] = useSendParticipantDevices();
     const [getDepositionPermissions] = useDepositionPermissions();
     const [getTranscriptions] = useGetTranscriptions();
@@ -278,6 +305,8 @@ export const useJoinDeposition = (setTranscriptions: React.Dispatch<Transcriptio
             const transcriptions = await getTranscriptions();
             const breakrooms = await getBreakrooms();
             const events = await getDepositionEvents(depositionID);
+            const settings = await getSystemSettings();
+            dispatch(actions.setSystemSettings(settings));
             const tracks = [];
             if (isSharing) {
                 fetchExhibitFileInfo(depositionID);
@@ -323,6 +352,27 @@ export const useJoinDeposition = (setTranscriptions: React.Dispatch<Transcriptio
                 } catch {
                     console.error(`Couldn´t send system user info because of: ${sendParticipantDevicesError}`);
                 }
+            }
+            if (settings.EnableTwilioLogs === "enabled") {
+                const logger = Logger.getLogger("twilio-video");
+                const originalFactory = logger.methodFactory;
+                logger.methodFactory = (methodName, logLevel, loggerName) => {
+                    const method = originalFactory(methodName, logLevel, loggerName);
+                    return (datetime, logLevel, component, message, data) => {
+                        method(datetime, logLevel, component, message, data);
+                        if (message === "event" && data.group === "signaling") {
+                            if (data.name === "closed") {
+                                if (data.level === "error") {
+                                    console.error(
+                                        "Connection to Twilio's signaling server abruptly closed:",
+                                        data.reason
+                                    );
+                                }
+                            }
+                        }
+                    };
+                };
+                logger.setLevel("debug");
             }
             tracks.push(dataTrack);
             const room = await connect(token, {
