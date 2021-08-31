@@ -49,7 +49,6 @@ export const CASE_COLUMN = {
     title: "CASE",
     field: "caseName",
     ellipsis: true,
-    width: "13%",
     render: (text) => (
         <Tooltip title={text}>
             <Text>{text}</Text>
@@ -81,7 +80,6 @@ export const WITNESS_COLUMN = {
             <Text weight="bold">{text || "-"}</Text>
         </Tooltip>
     ),
-    width: "12%",
 };
 export const COURT_REPORTER_COLUMN = {
     title: "COURT REPORTER",
