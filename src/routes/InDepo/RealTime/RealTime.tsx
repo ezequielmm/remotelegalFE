@@ -16,8 +16,8 @@ import * as CONSTANTS from "../../../constants/inDepo";
 import ColorStatus from "../../../types/ColorStatus";
 import { mapTimeZone, TimeZones } from "../../../models/general";
 import { TranscriptionModel } from "../../../models";
-import useWindowSize from "../../../hooks/useWindowSize";
 import { TranscriptionsContext } from "../../../state/Transcriptions/TranscriptionsContext";
+import { WindowSizeContext } from "../../../contexts/WindowSizeContext";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -41,7 +41,7 @@ const RealTime = ({
 }) => {
     const layoutContentRef = useRef(null);
     const [currentTranscript, setCurrentTranscript] = useState(null);
-    const [windowWidth] = useWindowSize();
+    const [windowWidth] = useContext(WindowSizeContext);
     const { transcriptions: contextTranscriptions } = useContext(TranscriptionsContext);
 
     const transcriptions = postDepoTranscripts || contextTranscriptions;

@@ -13,7 +13,6 @@ import { ReactComponent as CopyIcon } from "../../../assets/icons/copy.svg";
 import { getREM } from "../../../constants/styles/utils";
 import ColorStatus from "../../../types/ColorStatus";
 import useFloatingAlertContext from "../../../hooks/useFloatingAlertContext";
-import useWindowSize from "../../../hooks/useWindowSize";
 import { ThemeMode } from "../../../types/ThemeType";
 import {
     COPY_LINK_DESCRIPTION,
@@ -24,6 +23,7 @@ import {
     COPY_LINK_ALERT_DURATION,
 } from "../../../constants/inDepo";
 import { theme } from "../../../constants/styles/theme";
+import { WindowSizeContext } from "../../../contexts/WindowSizeContext";
 
 const StyledCloseIcon = styled(Icon)`
     position: absolute;
@@ -61,7 +61,7 @@ interface CopyLinkProps {
 }
 
 const CopyLinkWrapper = ({ children, closePopOver, drawerOpen }: CopyLinkwrapperProps) => {
-    const [windowWidth] = useWindowSize();
+    const [windowWidth] = useContext(WindowSizeContext);
     const widthMorethanLg = windowWidth >= parseInt(theme.default.breakpoints.lg, 10);
     return (
         <>

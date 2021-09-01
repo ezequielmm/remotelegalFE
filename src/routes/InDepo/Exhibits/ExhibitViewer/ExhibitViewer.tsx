@@ -18,15 +18,14 @@ import { ExhibitFile } from "../../../../types/ExhibitFile";
 import { GlobalStateContext } from "../../../../state/GlobalState";
 import { AnnotationPayload, PdfTronViewerProps } from "../../../../components/PDFTronViewer/PDFTronViewer";
 import { DepositionModel } from "../../../../models";
-import useWindowSize from "../../../../hooks/useWindowSize";
 import MediaViewer from "../../../../components/PDFTronViewer/components/MediaViewer";
 import isAudioOrVideoFileType from "../../../../helpers/isAudioOrVideoFileType";
 import isAudioFileType from "../../../../helpers/isAudioFileType";
+import { WindowSizeContext } from "../../../../contexts/WindowSizeContext";
 
 interface Props extends PdfTronViewerProps {
     file: ExhibitFile;
     onClose?: () => void;
-    onBringAllToMe?: () => void;
     onClosePending?: boolean;
     activeKey?: string;
     showBackButtonOnHeader?: boolean;
@@ -65,7 +64,7 @@ export const ExhibitViewer = ({
     const { setBringAllToPage, bringAllToMe } = useBringAllToMe();
     const [showSpinner, setShowSpinner] = useState(true);
     const [hasMediaError, setHasMediaError] = useState(false);
-    const [windowWidth] = useWindowSize();
+    const [windowWidth] = useContext(WindowSizeContext);
     const isAudioOrVideoDocument = isAudioOrVideoFileType(file?.name);
 
     return (

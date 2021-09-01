@@ -8,14 +8,13 @@ import Logo from "../../../components/Logo";
 import { LOADING_DEPOSITION_TITLE, LOADING_DEPOSITION_SUBTITLE } from "../../../constants/preJoinDepo";
 import { GlobalStateContext } from "../../../state/GlobalState";
 import getUserNameString from "../../../helpers/getUserNameString";
-import useWindowSize from "../../../hooks/useWindowSize";
 import { theme } from "../../../constants/styles/theme";
+import { WindowSizeContext } from "../../../contexts/WindowSizeContext";
 
 const LoadingScreen = () => {
     const { state } = useContext(GlobalStateContext);
     const { userStatus } = state.room;
-    const [windowWidth] = useWindowSize();
-
+    const [windowWidth] = useContext(WindowSizeContext);
     return (
         <div
             data-testid="deposition_loading_screen"

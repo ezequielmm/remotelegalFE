@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { ThemeProvider } from "styled-components";
 import Icon from "prp-components-library/src/components/Icon";
 import Modal from "prp-components-library/src/components/Modal";
@@ -10,8 +10,8 @@ import { ReactComponent as HelpIcon } from "../../../assets/layout/Help.svg";
 import * as CONSTANTS from "../../../constants/help";
 import { theme } from "../../../constants/styles/theme";
 import ColorStatus from "../../../types/ColorStatus";
-import useWindowSize from "../../../hooks/useWindowSize";
 import { ThemeMode } from "../../../types/ThemeType";
+import { WindowSizeContext } from "../../../contexts/WindowSizeContext";
 
 export interface IModalProps {
     visible?: boolean;
@@ -55,7 +55,7 @@ const HelpResult = ({ jobNumber }: IModalProps) => {
 };
 
 const HelpModal = ({ visible, closeModal, jobNumber }: IModalProps) => {
-    const [windowWidth] = useWindowSize();
+    const [windowWidth] = useContext(WindowSizeContext);
     const widthMorethanLg = windowWidth >= parseInt(theme.default.breakpoints.lg, 10);
     const renderModal = widthMorethanLg ? (
         <Modal destroyOnClose visible={visible} centered onlyBody onCancel={closeModal}>

@@ -1,13 +1,16 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import App from "./components/App";
+import WindowSizeContext from "./contexts/WindowSizeContext";
 import * as serviceWorker from "./serviceWorker";
 import { getDeps } from "./state/dependencies";
 import GlobalState, { rootReducer } from "./state/GlobalState";
 
 ReactDOM.render(
     <GlobalState rootReducer={rootReducer} deps={getDeps()}>
-        <App />
+        <WindowSizeContext>
+            <App />
+        </WindowSizeContext>
     </GlobalState>,
     document.getElementById("root")
 );

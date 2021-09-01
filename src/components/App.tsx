@@ -9,6 +9,7 @@ import { Route, Router, Switch } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 import { QueryClient, QueryClientProvider } from "react-query";
 import GlobalStyle from "prp-components-library/src/components/GlobalStyle";
+import React from "react";
 import { theme } from "../constants/styles/theme";
 import MockInDepo from "../routes/MockInDepo";
 import Login from "../routes/Login";
@@ -168,4 +169,4 @@ function App() {
     );
 }
 
-export default App;
+export default React.memo(App);

@@ -1,4 +1,4 @@
-import React, { ReactElement, useEffect, useState } from "react";
+import React, { ReactElement, useContext, useEffect, useState } from "react";
 import { LocalAudioTrack, LocalParticipant, LocalVideoTrack } from "twilio-video";
 import Confirm from "prp-components-library/src/components/Confirm";
 import Divider from "prp-components-library/src/components/Divider";
@@ -30,7 +30,7 @@ import {
     StyledMoreWrapper,
     StyledTagSpace,
 } from "../ControlsBar/styles";
-import { CONTROLS_BAR_EXHIBITS_LABEL, CONTROLS_BAR_BREAKROOMS_PRIVACITY_DESCRIPTION } from "../../constants/inDepo";
+import { CONTROLS_BAR_BREAKROOMS_PRIVACITY_DESCRIPTION } from "../../constants/inDepo";
 import {
     LEAVE_BREAKROOM_TITLE,
     LEAVE_BREAKROOM_SUBTITLE,
@@ -38,8 +38,8 @@ import {
     LEAVE_BREAKROOM_LEAVE,
 } from "../../constants/inBreakroom";
 import ColorStatus from "../../types/ColorStatus";
-import useWindowSize from "../../hooks/useWindowSize";
 import FloatingMessage from "../FloatingMessage";
+import { WindowSizeContext } from "../../contexts/WindowSizeContext";
 
 interface IBreakroomControlsBar {
     localParticipant: LocalParticipant;
@@ -75,8 +75,7 @@ export default function BreakroomControlsBar({
     };
 
     const [toggledLockRoom, setToggledLockRoom] = useState<boolean>(false);
-
-    const [windowWidth] = useWindowSize();
+    const [windowWidth] = useContext(WindowSizeContext);
     const [drawerVisible, setDrawerVisible] = useState(false);
     const widthMorethanLg = windowWidth >= parseInt(theme.default.breakpoints.lg, 10);
 

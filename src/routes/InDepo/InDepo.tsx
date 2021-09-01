@@ -29,6 +29,7 @@ import LoadingScreen from "./LoadingScreen";
 import { NotificationEntityType } from "../../types/Notification";
 import stopAllTracks from "../../helpers/stopAllTracks";
 import TranscriptionsProvider from "../../state/Transcriptions/TranscriptionsContext";
+import { WindowSizeContext } from "../../contexts/WindowSizeContext";
 
 const InDepo = () => {
     const { depositionID } = useParams<DepositionID>();
@@ -56,7 +57,7 @@ const InDepo = () => {
     } = state.room;
 
     const { currentUser } = state?.user;
-
+    const [, windowHeight] = useContext(WindowSizeContext);
     const [realTimeOpen, togglerRealTime] = useState<boolean>(false);
     const [exhibitsOpen, togglerExhibits] = useState<boolean>(false);
     const [initialAudioEnabled, setInitialAudioEnabled] = useState<boolean>(true);
@@ -79,14 +80,8 @@ const InDepo = () => {
     }, [tracks]);
 
     useEffect(() => {
-        // Check when body height change
-        const resizeObserver = new ResizeObserver((entries) => setInDepoHeight(entries[0].target.clientHeight || 0));
-        resizeObserver.observe(document.body);
-
-        return () => {
-            isMounted.current = false;
-        };
-    }, []);
+        setInDepoHeight(windowHeight || 0);
+    }, [windowHeight]);
 
     useEffect(() => {
         if (!signalR) {
@@ -100,6 +95,7 @@ const InDepo = () => {
 
     useEffect(() => {
         return () => {
+            isMounted.current = false;
             stopAllTracks(tracksRef.current);
         };
     }, []);

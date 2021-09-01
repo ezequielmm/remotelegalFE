@@ -39,10 +39,10 @@ import trackpubsToTracks from "../../../helpers/trackPubsToTracks";
 import { theme } from "../../../constants/styles/theme";
 import { getREM } from "../../../constants/styles/utils";
 import { breakpoints } from "../../../constants/styles/breakpoints";
-import useWindowSize from "../../../hooks/useWindowSize";
 import { ThemeMode } from "../../../types/ThemeType";
 import useNotifyParticipantPresence from "../../../hooks/InDepo/useNotifyParticipantPresence";
 import { useSendParticipantStatus } from "../../../hooks/InDepo/useParticipantStatus";
+import { WindowSizeContext } from "../../../contexts/WindowSizeContext";
 
 interface TroubleShootDevicesModalProps {
     isDepo?: boolean;
@@ -144,7 +144,7 @@ const TroubleShootDevicesModal = ({
     const cameraErrorTitle =
         (isCameraBlocked && CONSTANTS.CAMERA_BLOCKED_ERROR_MESSAGES.title) ||
         (cameraError && CONSTANTS.CAMERA_UNAVAILABLE_ERROR_MESSAGES.title);
-    const [windowWidth] = useWindowSize();
+    const [windowWidth] = useContext(WindowSizeContext);
     const widthMorethanLg = windowWidth >= parseInt(theme.default.breakpoints.lg, 10);
 
     useEffect(() => {

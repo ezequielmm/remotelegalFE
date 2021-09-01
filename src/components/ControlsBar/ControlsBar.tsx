@@ -1,4 +1,4 @@
-import React, { ReactElement, useEffect, useState, useCallback } from "react";
+import React, { ReactElement, useEffect, useState, useCallback, useContext } from "react";
 import { useHistory, useParams } from "react-router";
 import Badge from "prp-components-library/src/components/Badge";
 import Button from "prp-components-library/src/components/Button";
@@ -54,6 +54,7 @@ import Control from "../Control/Control";
 import Logo from "../Logo";
 import CopyLink from "./components/CopyLink";
 import EndDepoModal from "./components/EndDepoModal";
+import { WindowSizeContext } from "../../contexts/WindowSizeContext";
 import getLeaveModalTextContent from "./helpers/getLeaveModalTextContent";
 import {
     LockedMenuItem,
@@ -69,7 +70,6 @@ import {
 } from "./styles";
 import HelpModal from "./components/HelpModal";
 import TroubleShootDevicesModal from "../../routes/TroubleShootUserDevices/components/TroubleShootDevicesModal";
-import useWindowSize from "../../hooks/useWindowSize";
 import MobileMoreMenu from "./components/MobileMoreMenu";
 
 interface IControlsBar {
@@ -143,7 +143,7 @@ export default function ControlsBar({
     const history = useHistory();
     const { isAuthenticated } = useAuthentication();
     const leaveModalTextContent = getLeaveModalTextContent(isRecording, isWitness);
-    const [windowWidth] = useWindowSize();
+    const [windowWidth] = useContext(WindowSizeContext);
     const [drawerVisible, setDrawerVisible] = useState(false);
     const { depositionID } = useParams<DepositionID>();
     const widthMorethanLg = windowWidth >= parseInt(theme.default.breakpoints.lg, 10);

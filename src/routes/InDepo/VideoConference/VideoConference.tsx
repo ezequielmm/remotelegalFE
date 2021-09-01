@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { LocalParticipant, RemoteParticipant, Room } from "twilio-video";
 import { theme } from "../../../constants/styles/theme";
+import { WindowSizeContext } from "../../../contexts/WindowSizeContext";
 import { useGetParticipantStatus } from "../../../hooks/InDepo/useParticipantStatus";
-import useWindowSize from "../../../hooks/useWindowSize";
 import { TimeZones } from "../../../models/general";
 import Participant from "../Participant";
 import {
@@ -46,7 +46,7 @@ const VideoConference = ({
     const { participantsStatus } = useGetParticipantStatus();
     const participants = [localParticipant, ...Array.from(attendees.values())];
     const witness = participants.find((participant) => JSON.parse(participant.identity).role === "Witness");
-    const [windowWidth] = useWindowSize();
+    const [windowWidth] = useContext(WindowSizeContext);
     const widthMorethanLg = windowWidth >= parseInt(theme.default.breakpoints.lg, 10);
     const participantsFiltered = participants.filter(
         (participant) => isBreakroom || !widthMorethanLg || JSON.parse(participant.identity).role !== "Witness"
