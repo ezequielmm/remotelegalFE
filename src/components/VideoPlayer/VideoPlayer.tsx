@@ -161,6 +161,13 @@ const VideoPlayer = ({ fullScreen, fallback, isOnlyAudio, onReady, ...rest }: IV
         }
     }, [handleSliderChange, changeTime, styledPlayerRef]);
 
+    const handleOnReady = (player) => {
+        setIsVideoReady(true);
+        if (player && onReady) {
+            onReady(player);
+        }
+    };
+
     return (
         <StyledVideoPlayer ref={styledPlayerRef} data-testid="video_player">
             {isOnlyAudio && (
@@ -181,10 +188,7 @@ const VideoPlayer = ({ fullScreen, fallback, isOnlyAudio, onReady, ...rest }: IV
                 width="100%"
                 height={isVideoReady ? "100%" : "0"}
                 progressInterval={250}
-                onReady={(player) => {
-                    setIsVideoReady(true);
-                    onReady(player);
-                }}
+                onReady={handleOnReady}
                 volume={volume}
                 muted={muted}
                 {...rest}
