@@ -320,7 +320,10 @@ const TroubleShootDevicesModal = ({
                     tracksCopy.push(localVideoTrack);
                 }
             } catch (error) {
-                console.error("(troubleShootDevicesModal) video device changed error:", error);
+                console.error(
+                    `(troubleShootDevicesModal) video device changed error of deposition ${depositionID}:`,
+                    error
+                );
             }
         }
         if (hasAudioChanged) {
@@ -336,7 +339,10 @@ const TroubleShootDevicesModal = ({
                     tracksCopy.push(localAudioTrack);
                 }
             } catch (error) {
-                console.error("(troubleShootDevicesModal) audio device changed error:", error);
+                console.error(
+                    `(troubleShootDevicesModal) audio device changed error of deposition ${depositionID}:`,
+                    error
+                );
             }
         }
         if (haveSpeakersChanged) {

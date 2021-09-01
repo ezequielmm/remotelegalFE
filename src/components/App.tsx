@@ -34,6 +34,7 @@ import { FloatingAlertContextProvider } from "../contexts/FloatingAlertContext";
 import TroubleShootUserDevices from "../routes/TroubleShootUserDevices/TroubleShootUserDevices";
 import TechInfo from "../routes/TechInfo";
 import CacheBuster from "../helpers/cacheBuster";
+import withDDContext from "./WithDDContext";
 
 declare global {
     interface Window {
@@ -103,18 +104,18 @@ function App() {
                                         <Route
                                             exact
                                             path="/deposition/pre-join/:depositionID"
-                                            component={PreJoinDepo}
+                                            component={withDDContext(PreJoinDepo)}
                                         />
                                         <Authenticator routesWithGuestToken={ROUTES_WITH_GUEST_TOKEN}>
                                             <Route
                                                 exact
                                                 path="/deposition/pre-join/troubleshoot-devices/:depositionID"
-                                                component={TroubleShootUserDevices}
+                                                component={withDDContext(TroubleShootUserDevices)}
                                             />
                                             <Route
                                                 exact
                                                 path="/deposition/tech_info/:depositionID"
-                                                component={TechInfo}
+                                                component={withDDContext(TechInfo)}
                                             />
                                             <RouteWithLayout exact path="/my-cases" component={MyCases} />
                                             <RouteWithLayout
@@ -127,25 +128,33 @@ function App() {
                                             <RouteWithLayout
                                                 exact
                                                 path="/deposition/post-depo-details/:depositionID"
-                                                component={DepositionDetails}
+                                                component={withDDContext(DepositionDetails)}
                                             />
                                             <RouteWithLayout
                                                 exact
                                                 path="/deposition/details/:depositionID"
-                                                component={ActiveDepositionDetails}
+                                                component={withDDContext(ActiveDepositionDetails)}
                                             />
                                             <Route
                                                 exact
                                                 path="/deposition/join/:depositionID/breakroom/:breakroomID"
-                                                component={Breakroom}
+                                                component={withDDContext(Breakroom)}
                                             />
                                             <Route exact path="/deposition/end" component={EndDepoScreen} />
-                                            <Route exact path="/deposition/join/:depositionID" component={InDepo} />
-                                            <Route exact path="/deposition/pre/:depositionID" component={MockInDepo} />
+                                            <Route
+                                                exact
+                                                path="/deposition/join/:depositionID"
+                                                component={withDDContext(InDepo)}
+                                            />
+                                            <Route
+                                                exact
+                                                path="/deposition/pre/:depositionID"
+                                                component={withDDContext(MockInDepo)}
+                                            />
                                             <Route
                                                 exact
                                                 path="/deposition/pre/:depositionID/waiting"
-                                                component={WaitingRoom}
+                                                component={withDDContext(WaitingRoom)}
                                             />
                                         </Authenticator>
                                     </Switch>

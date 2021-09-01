@@ -28,8 +28,8 @@ export const useFetchDeposition = () => {
         return deps.apiService.fetchDeposition(depositionID);
     }, []);
     React.useEffect(() => {
-        if (error) console.error("Error fetching deposition.");
-    }, [error]);
+        if (error) console.error(`Error fetching deposition ${depositionID}.`);
+    }, [error, depositionID]);
     return { fetchDeposition, loading, deposition: data, error };
 };
 

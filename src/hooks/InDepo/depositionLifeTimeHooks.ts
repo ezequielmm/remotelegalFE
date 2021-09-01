@@ -85,7 +85,10 @@ export const useJoinBreakroom = () => {
                     tracks.push(audioTrack);
                 }
             } catch (error) {
-                console.error("(useJoinBreakroom hook) error creating local audio track:", error);
+                console.error(
+                    `(useJoinBreakroom hook) error creating local audio track of breakroom ${breakroomID}:`,
+                    error
+                );
             }
             try {
                 if (devices?.video) {
@@ -93,7 +96,10 @@ export const useJoinBreakroom = () => {
                     tracks.push(videoTrack);
                 }
             } catch (error) {
-                console.error("(useJoinBreakroom hook) error creating local video track:", error);
+                console.error(
+                    `(useJoinBreakroom hook) error creating local video track of breakroom ${breakroomID}:`,
+                    error
+                );
             }
             tracks.push(dataTrack);
 
@@ -164,7 +170,10 @@ export const useJoinDepositionForMockRoom = () => {
                     tracks.push(audioTrack);
                 }
             } catch (error) {
-                console.error("(useJoinDepositionForMockRoom hook) error creating local audio track:", error);
+                console.error(
+                    `(useJoinDepositionForMockRoom hook) error creating local audio track of deposition ${depositionID}:`,
+                    error
+                );
             }
             try {
                 if (devices?.video) {
@@ -172,7 +181,10 @@ export const useJoinDepositionForMockRoom = () => {
                     tracks.push(videoTrack);
                 }
             } catch (error) {
-                console.error("(useJoinDepositionForMockRoom hook) error creating local video track:", error);
+                console.error(
+                    `(useJoinDepositionForMockRoom hook) error creating local video track of deposition ${depositionID}:`,
+                    error
+                );
             }
             tracks.push(dataTrack);
             const room = await connect(token, {
@@ -277,12 +289,16 @@ export const useJoinDeposition = (setTranscriptions: React.Dispatch<Transcriptio
             try {
                 await sendUserSystemInfo();
             } catch {
-                console.error(`Couldn´t send system user info because of: ${sendSystemUserInfoError}`);
+                console.error(
+                    `Couldn't send system user info of deposition ${depositionID} because of: ${sendSystemUserInfoError}`
+                );
             }
             try {
                 await sendParticipantDevices(participantDevices);
             } catch {
-                console.error(`Couldn´t send system user info because of: ${sendParticipantDevicesError}`);
+                console.error(
+                    `Couldn't send system user info of deposition ${depositionID} because of: ${sendParticipantDevicesError}`
+                );
             }
 
             const dataTrack = new LocalDataTrack();
@@ -317,7 +333,10 @@ export const useJoinDeposition = (setTranscriptions: React.Dispatch<Transcriptio
                     tracks.push(audioTrack);
                 }
             } catch (error) {
-                console.error("useJoinDeposition hook: error creating local audio track:", error);
+                console.error(
+                    `useJoinDeposition hook: error creating local audio track of deposition ${depositionID}:`,
+                    error
+                );
                 const newDevicesBody = {
                     ...participantDevices,
                     microphone: {
@@ -328,7 +347,9 @@ export const useJoinDeposition = (setTranscriptions: React.Dispatch<Transcriptio
                 try {
                     await sendParticipantDevices(newDevicesBody);
                 } catch {
-                    console.error(`Couldn´t send system user info because of: ${sendParticipantDevicesError}`);
+                    console.error(
+                        `Couldn't send system user info of deposition ${depositionID} because of: ${sendParticipantDevicesError}`
+                    );
                 }
             }
             try {
@@ -337,7 +358,10 @@ export const useJoinDeposition = (setTranscriptions: React.Dispatch<Transcriptio
                     tracks.push(videoTrack);
                 }
             } catch (error) {
-                console.error("useJoinDeposition hook: error creating local video track:", error);
+                console.error(
+                    `useJoinDeposition hook: error creating local video track of deposition ${depositionID}:`,
+                    error
+                );
                 const newDevicesBody = {
                     ...participantDevices,
                     camera: {
@@ -350,7 +374,9 @@ export const useJoinDeposition = (setTranscriptions: React.Dispatch<Transcriptio
                 try {
                     await sendParticipantDevices(newDevicesBody);
                 } catch {
-                    console.error(`Couldn´t send system user info because of: ${sendParticipantDevicesError}`);
+                    console.error(
+                        `Couldn't send system user info of deposition ${depositionID} because of: ${sendParticipantDevicesError}`
+                    );
                 }
             }
             if (settings.EnableTwilioLogs === "enabled") {

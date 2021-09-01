@@ -211,7 +211,10 @@ const Breakroom = () => {
             </ThemeProvider>
         ) : null;
     } catch (runtimeError) {
-        console.error("Error rendering Breakroom:", runtimeError);
+        console.error(
+            `Error rendering Breakroom of breakroom ${breakroomID} and deposition ${depositionID}:`,
+            runtimeError
+        );
     }
 };
 
