@@ -1,4 +1,4 @@
-import { fireEvent, waitFor, waitForDomChange, waitForElement } from "@testing-library/react";
+import { fireEvent, waitFor, waitForDomChange, waitForElement, screen } from "@testing-library/react";
 import { createMemoryHistory } from "history";
 import AudioRecorder from "audio-recorder-polyfill";
 import React from "react";
@@ -972,5 +972,29 @@ it("doesn´t call create Tracks if the devices don´t exist in localStorage", as
     await waitFor(() => {
         expect(mockAudioTracks).not.toHaveBeenCalled();
         expect(mockVideoTracks).not.toHaveBeenCalled();
+    });
+});
+
+it("should show a toast when SignalR is trying to reconnect", async () => {
+    customDeps.apiService.joinDeposition = jest.fn().mockResolvedValue(TESTS_CONSTANTS.JOIN_DEPOSITION_MOCK);
+    localStorage.setItem("selectedDevices", JSON.stringify(TESTS_CONSTANTS.DEVICES_MOCK));
+    renderWithGlobalContext(
+        <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,
+        customDeps,
+        {
+            ...rootReducer,
+            initialState: {
+                room: {
+                    ...rootReducer.initialState.room,
+                },
+                user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+                signalR: { signalR: null, signalRConnectionStatus: { isReconnected: false, isReconnecting: true } },
+            },
+        },
+        history
+    );
+
+    await waitFor(() => {
+        expect(screen.getByTestId(MODULE_CONSTANTS.RECONNECTING_ALERT_MESSAGE_TEST_ID)).toBeInTheDocument();
     });
 });

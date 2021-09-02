@@ -125,3 +125,4 @@ export const BREAKROOM_LOCK_ERROR = "Something went wrong. Please try again.";
 export const BREAKROOM_LOCK_ALERT_DURATION = 4;
 export const NETWORK_QUALITY_TIME_SECONDS = 300;
 export const RECONNECTING_ALERT_MESSAGE = "Your connection is unstable. Some actions may not be working properly.";
+export const RECONNECTING_ALERT_MESSAGE_TEST_ID = "SIGNALR_DISCONNECTED";

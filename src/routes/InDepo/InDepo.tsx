@@ -318,6 +318,7 @@ const InDepo = () => {
                         >
                             {signalRConnectionStatus?.isReconnecting && (
                                 <Alert
+                                    data-testid={CONSTANTS.RECONNECTING_ALERT_MESSAGE_TEST_ID}
                                     icon={<NoConnectionIcon />}
                                     type="info"
                                     style={{ maxWidth: "35%" }}
