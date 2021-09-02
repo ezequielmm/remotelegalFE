@@ -61,6 +61,7 @@ const PDFTronViewer = ({
     const [documentLoaded, setDocumentLoaded] = useState(false);
     const { getAllLatestAnnotations, savedAnnotations } = useExhibitGetAnnotations();
     const { realTimeAnnotation } = useExhibitRealTimeAnnotations();
+    const { signalRConnectionStatus } = state?.signalR;
 
     const setAnnotationsToExport = async () => {
         const annotationsData = await PDFTron?.Core?.annotationManager.exportAnnotations();
@@ -207,11 +208,11 @@ const PDFTronViewer = ({
     };
 
     useEffect(() => {
-        if (documentLoaded && shouldGetAnnotations) {
+        if ((documentLoaded && shouldGetAnnotations) || signalRConnectionStatus?.isReconnected) {
             getAllLatestAnnotations();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [documentLoaded, shouldGetAnnotations]);
+    }, [documentLoaded, shouldGetAnnotations, signalRConnectionStatus?.isReconnected]);
 
     useEffect(() => {
         if (documentLoaded && shouldGetAnnotations && currentExhibitPage !== "-1") {
@@ -256,6 +257,19 @@ const PDFTronViewer = ({
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [savedAnnotations, PDFTron, canStamp, dispatch]);
+
+    useEffect(() => {
+        if (!readOnly) {
+            if (signalRConnectionStatus?.isReconnecting) {
+                PDFTron?.Core.annotationManager.enableReadOnlyMode();
+                PDFTron?.UI.disableElements(["rubberStampToolGroupButton"]);
+            } else {
+                PDFTron?.Core.annotationManager.disableReadOnlyMode();
+                PDFTron?.UI.disableElements(["toolbarGroup-Measure"]);
+                PDFTron?.UI.enableElements(["rubberStampToolGroupButton"]);
+            }
+        }
+    }, [signalRConnectionStatus?.isReconnecting, PDFTron, readOnly]);
 
     useEffect(() => {
         const startViewer = () => {

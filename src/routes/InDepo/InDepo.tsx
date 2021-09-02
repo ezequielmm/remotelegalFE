@@ -3,8 +3,11 @@ import { useHistory, useParams } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 import { Participant } from "twilio-video";
 import Spinner from "prp-components-library/src/components/Spinner";
+import { Row } from "antd/lib/grid";
+import Alert from "prp-components-library/src/components/Alert";
 import Exhibits from "./Exhibits";
 import RealTime from "./RealTime";
+import { ReactComponent as NoConnectionIcon } from "../../assets/in-depo/No-Connection.svg";
 import VideoConference from "./VideoConference";
 import ControlsBar from "../../components/ControlsBar";
 import { GlobalStylesInDepo, StyledInDepoContainer, StyledInDepoLayout, StyledRoomFooter } from "./styles";
@@ -30,6 +33,10 @@ import { NotificationEntityType } from "../../types/Notification";
 import stopAllTracks from "../../helpers/stopAllTracks";
 import TranscriptionsProvider from "../../state/Transcriptions/TranscriptionsContext";
 import { WindowSizeContext } from "../../contexts/WindowSizeContext";
+import useGetDepositionInfo from "../../hooks/techInfo/useGetDepositionInfo";
+import useGetTranscriptions from "../../hooks/InDepo/useGetTranscriptions";
+import useGetEvents from "../../hooks/InDepo/useGetEvents";
+import { setTranscriptionMessages } from "../../helpers/formatTranscriptionsMessages";
 
 const InDepo = () => {
     const { depositionID } = useParams<DepositionID>();
@@ -38,6 +45,9 @@ const InDepo = () => {
     const { state, dispatch } = useContext(GlobalStateContext);
     const [initialTranscriptions, setInitialTranscriptions] = useState<TranscriptionModel.Transcription[]>([]);
     const [joinDeposition, loading, error] = useJoinDeposition(setInitialTranscriptions);
+    const [getDepositionInfo, , , depositionInfo] = useGetDepositionInfo();
+    const [getTranscriptions] = useGetTranscriptions();
+    const [getDepositionEvents] = useGetEvents();
     const {
         breakrooms,
         isRecording,
@@ -58,6 +68,7 @@ const InDepo = () => {
 
     const { currentUser } = state?.user;
     const [, windowHeight] = useContext(WindowSizeContext);
+    const { signalRConnectionStatus } = state?.signalR;
     const [realTimeOpen, togglerRealTime] = useState<boolean>(false);
     const [exhibitsOpen, togglerExhibits] = useState<boolean>(false);
     const [initialAudioEnabled, setInitialAudioEnabled] = useState<boolean>(true);
@@ -67,8 +78,7 @@ const InDepo = () => {
     const history = useHistory();
     const tracksRef = useRef(tracks);
     const { isAuthenticated } = useAuthentication();
-    const { sendMessage, signalR, subscribeToGroup, unsubscribeMethodFromGroup, isReconnected } =
-        useSignalR("/depositionHub");
+    const { sendMessage, signalR, subscribeToGroup, unsubscribeMethodFromGroup } = useSignalR("/depositionHub");
 
     useEffect(() => {
         dispatch(generalUIActions.toggleTheme(ThemeMode.inDepo));
@@ -101,10 +111,10 @@ const InDepo = () => {
     }, []);
 
     useEffect(() => {
-        if ((signalR?.connectionState === "Connected" || isReconnected) && depositionID) {
+        if ((signalR?.connectionState === "Connected" || signalRConnectionStatus?.isReconnected) && depositionID) {
             sendMessage("SubscribeToDeposition", { depositionId: depositionID });
         }
-    }, [signalR, depositionID, sendMessage, isReconnected]);
+    }, [signalR, depositionID, sendMessage, signalRConnectionStatus?.isReconnected]);
 
     useEffect(() => {
         const handleRoomEndError = (_, roomError) => {
@@ -148,6 +158,34 @@ const InDepo = () => {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [depositionID, isAuthenticated, currentUser]);
+
+    useEffect(() => {
+        if (signalRConnectionStatus?.isReconnected) {
+            getDepositionInfo();
+        }
+    }, [getDepositionInfo, signalRConnectionStatus?.isReconnected]);
+
+    useEffect(() => {
+        (async () => {
+            if (signalRConnectionStatus?.isReconnected && depositionInfo) {
+                dispatch(actions.setParticipantsData(depositionInfo.participants));
+                dispatch(actions.setIsRecording(depositionInfo.isRecording));
+                if (depositionInfo.sharingExhibit) {
+                    togglerExhibits(true);
+                }
+                const transcriptions = await getTranscriptions();
+                const events = await getDepositionEvents(depositionID);
+                setInitialTranscriptions(setTranscriptionMessages(transcriptions, events));
+            }
+        })();
+    }, [
+        depositionInfo,
+        signalRConnectionStatus?.isReconnected,
+        depositionID,
+        dispatch,
+        getDepositionEvents,
+        getTranscriptions,
+    ]);
 
     useEffect(() => {
         setAtendeesVisibility((prev) => !prev);
@@ -225,11 +263,19 @@ const InDepo = () => {
         history,
         depositionID,
     ]);
-    if (loading && userStatus === null && shouldSendToPreDepo === null) {
+    if (
+        loading &&
+        userStatus === null &&
+        shouldSendToPreDepo === null &&
+        !signalRConnectionStatus?.isReconnected &&
+        !signalRConnectionStatus?.isReconnecting
+    ) {
         return <Spinner />;
     }
-    if (userStatus?.participant?.isAdmitted && loading && shouldSendToPreDepo === false) {
-        return <LoadingScreen />;
+    if (!signalRConnectionStatus?.isReconnected) {
+        if (userStatus?.participant?.isAdmitted && loading && shouldSendToPreDepo === false) {
+            return <LoadingScreen />;
+        }
     }
 
     if (error) {
@@ -260,7 +306,27 @@ const InDepo = () => {
                         <GuestRequests depositionID={depositionID} />
                     )}
                     <StyledInDepoLayout>
-                        <RecordPill on={isRecording} />
+                        <Row
+                            justify="space-around"
+                            align="middle"
+                            style={{
+                                position: "absolute",
+                                top: 0,
+                                width: "100%",
+                                zIndex: 1000,
+                            }}
+                        >
+                            {signalRConnectionStatus?.isReconnecting && (
+                                <Alert
+                                    icon={<NoConnectionIcon />}
+                                    type="info"
+                                    style={{ maxWidth: "35%" }}
+                                    closable={false}
+                                    message={CONSTANTS.RECONNECTING_ALERT_MESSAGE}
+                                />
+                            )}
+                            <RecordPill on={isRecording} />
+                        </Row>
                         <Exhibits visible={exhibitsOpen} togglerExhibits={togglerExhibits} />
                         {realTimeOpen && <RealTime timeZone={timeZone} />}
                         <VideoConference

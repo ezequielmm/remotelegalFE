@@ -68,6 +68,7 @@ const useSignalR = (
 
         newSignalR.onreconnecting((error) => {
             setIsReconnected(false);
+            dispatch(actions.setSignalRConnectionStatus({ isReconnected: false, isReconnecting: true }));
             if (error) {
                 datadogLogs.logger.error(`SignalR Reconnecting in hub: ${url} with error: ${error}`, {
                     hub: url,
@@ -79,6 +80,7 @@ const useSignalR = (
         });
 
         newSignalR.onreconnected((connectionId) => {
+            dispatch(actions.setSignalRConnectionStatus({ isReconnected: true, isReconnecting: false }));
             setIsReconnected(true);
             datadogLogs.logger.info(`SignalR Reconnected in hub: ${url} with connectionId: ${connectionId}`, {
                 connectionId,

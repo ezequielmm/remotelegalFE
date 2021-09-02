@@ -418,6 +418,7 @@ describe("Exhibits", () => {
                     room: {
                         ...rootReducer.initialState.room,
                     },
+                    signalR: { signalR: null },
                 },
             }
         );
@@ -451,6 +452,7 @@ describe("Exhibits", () => {
                         ...rootReducer.initialState.room,
                         isRecording: true,
                     },
+                    signalR: { signalR: null },
                 },
             }
         );
@@ -643,6 +645,7 @@ describe("Exhibits", () => {
                         duration: 1,
                     },
                     user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+                    signalR: { signalR: null },
                 },
             }
         );
@@ -688,6 +691,7 @@ describe("Exhibits", () => {
                         playing: true,
                         duration: 1,
                     },
+                    signalR: { signalR: null },
                 },
             }
         );
@@ -879,6 +883,7 @@ describe("Exhibits", () => {
                         playing: true,
                         duration: 1,
                     },
+                    signalR: { signalR: null },
                 },
             }
         );
