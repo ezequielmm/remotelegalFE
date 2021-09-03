@@ -61,8 +61,9 @@ export const StyledParticipantMask = styled.div<{ highlight?: boolean; isWitness
         `;
     }}
 
-    @media (max-width: ${({ theme }) => theme.default.breakpoints.lg}) {
-        width: max-content;
+    @media (max-width: ${({ theme }) => theme.default.breakpoints.md}) {
+        width: auto;
+        height: calc(30vh - 1rem);
         aspect-ratio: 16/9;
 
         .aspect-ratio {

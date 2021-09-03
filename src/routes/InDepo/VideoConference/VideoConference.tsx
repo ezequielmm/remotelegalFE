@@ -49,7 +49,7 @@ const VideoConference = ({
     const [windowWidth] = useContext(WindowSizeContext);
     const widthMorethanLg = windowWidth >= parseInt(theme.default.breakpoints.lg, 10);
     const participantsFiltered = participants.filter(
-        (participant) => isBreakroom || !widthMorethanLg || JSON.parse(participant.identity).role !== "Witness"
+        (participant) => isBreakroom || JSON.parse(participant.identity).role !== "Witness"
     );
 
     useEffect(() => {
@@ -73,7 +73,7 @@ const VideoConference = ({
                 ref={videoConferenceContainer}
                 show={atendeesVisibility}
             >
-                {!isBreakroom && widthMorethanLg && (
+                {!isBreakroom && (
                     <StyledDeponentContainer isSingle={isBreakroom && participants.length === 1}>
                         <Participant
                             isLocal={

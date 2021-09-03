@@ -109,7 +109,7 @@ export const StyledParticipantContainer = styled.div<{
             ${layoutStyle()}
             ${breakroomsStyle()}
 
-            @media (max-width: ${theme.default.breakpoints.lg}) {
+            @media (max-width: ${theme.default.breakpoints.md}) {
                 height: calc(30vh - ${getREM(theme.default.spaces[6])});
                 flex: 1 0 100%;
                 justify-content: center;
@@ -145,7 +145,7 @@ export const StyledVideoConference = styled.div<{ show: boolean }>`
             left: 50%;
             transform: translate(-50%, -50%);
 
-            @media (max-width: ${({ theme }) => theme.default.breakpoints.lg}) {
+            @media (max-width: ${({ theme }) => theme.default.breakpoints.md}) {
                 height: 100%;
                 aspect-ratio: unset;
                 overflow-y: auto;
@@ -278,8 +278,8 @@ export const StyledDeponentContainer = styled.div<{ isSingle: boolean }>`
         justify-content: center;
     }
 
-    @media (max-width: ${({ theme }) => theme.default.breakpoints.lg}) {
-        display: none;
+    @media (max-width: ${({ theme }) => theme.default.breakpoints.md}) {
+        justify-content: center;
     }
 `;
 
@@ -294,7 +294,7 @@ export const StyledAttendeesContainer = styled.div<{ participantsLength: number;
     align-items: center;
     margin-left: ${({ theme }) => getREM(theme.default.spaces[3])};
 
-    @media (max-width: ${({ theme }) => theme.default.breakpoints.lg}) {
+    @media (max-width: ${({ theme }) => theme.default.breakpoints.md}) {
         flex: 1;
         margin-left: 0;
         align-content: ${({ participantsLength }) => (participantsLength > 3 ? "flex-start" : "center")};
