@@ -2,7 +2,7 @@ import { useCallback, useContext, useEffect, useState, Key, useMemo } from "reac
 import { TablePaginationConfig } from "antd/lib/table";
 import { useParams } from "react-router";
 import { SortOrder } from "antd/lib/table/interface";
-import uploadFile from "../../services/UploadService";
+import { uploadFileToS3 } from "../../services/UploadService";
 import { GlobalStateContext } from "../../state/GlobalState";
 import { ExhibitFile } from "../../types/ExhibitFile";
 import useAsyncCallback from "../useAsyncCallback";
@@ -13,24 +13,38 @@ import { NotificationEntityType } from "../../types/Notification";
 import { convertToXfdf } from "../../helpers/convertToXfdf";
 import { AnnotationAction } from "../../types/Annotation";
 import { serializeToString } from "../../helpers/serializeToString";
+import { HTTP_METHOD } from "../../models/general";
 
 interface HandleFetchFilesSorterType {
     field?: Key | Key[];
     order?: SortOrder;
 }
 
-export const useUploadFile = (depositionID: string) => {
+export const useUploadFileToS3 = (depositionID: string) => {
     const { deps } = useContext(GlobalStateContext);
     const upload = useCallback(
         async ({ onSuccess, onError, file, onProgress }) => {
-            uploadFile(
-                `/api/Depositions/${depositionID}/exhibits`,
-                file,
-                (event) => onProgress({ percent: (event.loaded / event.total) * 100 }),
-                onSuccess,
-                onError,
-                deps
-            );
+            if (file.size > CONSTANTS.MY_EXHIBITS_UPLOAD_LIMIT_BYTES) {
+                onError([CONSTANTS.MY_EXHIBITS_UPLOAD_ERROR_SIZE_TEXT]);
+                return;
+            }
+            try {
+                const preSignUploadExhibit = await deps.apiService.preSignUploadExhibit({
+                    depositionId: depositionID,
+                    filename: file.name,
+                });
+                uploadFileToS3(
+                    preSignUploadExhibit.url,
+                    file,
+                    (event) => onProgress({ percent: (event.loaded / event.total) * 100 }),
+                    onSuccess,
+                    onError,
+                    HTTP_METHOD.PUT,
+                    preSignUploadExhibit.headers
+                );
+            } catch (error) {
+                onError([CONSTANTS.MY_EXHIBITS_UPLOAD_ERROR_TEXT]);
+            }
         },
         [depositionID, deps]
     );

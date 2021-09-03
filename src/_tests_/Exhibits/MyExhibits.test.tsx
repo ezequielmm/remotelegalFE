@@ -34,6 +34,7 @@ test("when click on the delete exhibit button, in the file list options menu, sh
                     isRecording: true,
                     currentExhibitTabName: "myExhibits",
                 },
+                signalR: {},
             },
         }
     );
@@ -61,6 +62,7 @@ test("when click on the delete exhibit button, on the delete confirmation modal,
                     isRecording: true,
                     currentExhibitTabName: "myExhibits",
                 },
+                signalR: {},
             },
         }
     );
@@ -90,6 +92,7 @@ test("when delete an exhibit get an error a message should be display", async ()
                     isRecording: true,
                     currentExhibitTabName: "myExhibits",
                 },
+                signalR: {},
             },
         }
     );
@@ -119,6 +122,7 @@ test("should disable delete exhibit button when it is a current shared exhibit",
                     currentExhibitTabName: "myExhibits",
                     currentExhibit: currentExhibit,
                 },
+                signalR: {},
             },
         }
     );

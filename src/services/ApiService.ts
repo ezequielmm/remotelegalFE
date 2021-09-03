@@ -10,7 +10,7 @@
 import { Auth } from "aws-amplify";
 import ENV from "../constants/env";
 import { wait } from "../helpers/wait";
-import { EventModel, CaseModel, DepositionModel, UserModel, ParticipantModel } from "../models";
+import { EventModel, CaseModel, DepositionModel, UserModel, ParticipantModel, ExhibitsModel } from "../models";
 import { HTTP_METHOD, ITokenSet } from "../models/general";
 import TEMP_TOKEN from "../constants/ApiService";
 import getBrowserInfo from "../helpers/browserInfo";
@@ -517,6 +517,15 @@ export class ApiService {
             )}`,
             withContentType: true,
             method: HTTP_METHOD.GET,
+        });
+    };
+
+    preSignUploadExhibit = (payload): Promise<ExhibitsModel.IPreSignUploadExhibit> => {
+        return this.request({
+            path: "/api/documents/PreSignUploadExhibit",
+            payload,
+            withToken: true,
+            method: HTTP_METHOD.POST,
         });
     };
 

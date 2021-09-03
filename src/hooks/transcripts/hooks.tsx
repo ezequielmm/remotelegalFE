@@ -5,7 +5,7 @@ import { SortOrder } from "antd/lib/table/interface";
 import { GlobalStateContext } from "../../state/GlobalState";
 import { TranscriptFile } from "../../types/TranscriptFile";
 import useAsyncCallback from "../useAsyncCallback";
-import uploadFile from "../../services/UploadService";
+import { uploadFile } from "../../services/UploadService";
 import { ITranscripstUrlList } from "../../models/transcriptFile";
 
 interface HandleFetchFilesSorterType {

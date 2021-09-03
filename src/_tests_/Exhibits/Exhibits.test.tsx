@@ -13,7 +13,7 @@ import getMockDeps from "../utils/getMockDeps";
 import { useEnteredExhibit } from "../../hooks/useEnteredExhibits";
 
 import {
-    useUploadFile,
+    useUploadFileToS3,
     useFileList,
     useSignedUrl,
     useShareExhibitFile,
@@ -32,7 +32,7 @@ jest.mock("../../hooks/useEnteredExhibits", () => ({
 }));
 
 jest.mock("../../hooks/exhibits/hooks", () => ({
-    useUploadFile: jest.fn(),
+    useUploadFileToS3: jest.fn(),
     useFileList: jest.fn(),
     useSignedUrl: jest.fn(),
     useShareExhibitFile: jest.fn(),
@@ -56,7 +56,7 @@ let customDeps;
 
 beforeEach(() => {
     customDeps = getMockDeps();
-    useUploadFile.mockImplementation(() => ({
+    useUploadFileToS3.mockImplementation(() => ({
         upload: jest.fn(),
     }));
     useFileList.mockImplementation(() => ({
@@ -167,7 +167,7 @@ describe("Exhibits", () => {
     );
 
     it("The progress bar should be not displayed by default", async () => {
-        useUploadFile.mockImplementation(() => ({
+        useUploadFileToS3.mockImplementation(() => ({
             upload: jest.fn(),
         }));
         const { queryByTestId } = renderWithGlobalContext(
@@ -336,6 +336,7 @@ describe("Exhibits", () => {
                         ...rootReducer.initialState.room,
                         isRecording: true,
                     },
+                    signalR: {},
                 },
             }
         );
@@ -365,6 +366,7 @@ describe("Exhibits", () => {
                     room: {
                         ...rootReducer.initialState.room,
                     },
+                    signalR: {},
                 },
             }
         );
@@ -392,6 +394,7 @@ describe("Exhibits", () => {
                         ...rootReducer.initialState.room,
                         isRecording: true,
                     },
+                    signalR: {},
                 },
             }
         );
@@ -497,6 +500,7 @@ describe("Exhibits", () => {
                             isRecording: true,
                             currentExhibitTabName: CONSTANTS.EXHIBIT_TABS.myExhibits,
                         },
+                        signalR: {},
                         postDepo: {
                             changeTime: { time: 1 },
                             currentTime: 1,
@@ -549,6 +553,7 @@ describe("Exhibits", () => {
                         currentExhibitTabName: CONSTANTS.EXHIBIT_TABS.enteredExhibits,
                         permissions: ["StampExhibit"],
                     },
+                    signalR: {},
                     postDepo: {
                         changeTime: { time: 1 },
                         currentTime: 1,
@@ -595,6 +600,7 @@ describe("Exhibits", () => {
                             stampLabel: "stamp-label",
                         },
                     },
+                    signalR: {},
                     postDepo: {
                         changeTime: { time: 1 },
                         currentTime: 1,
@@ -734,6 +740,7 @@ describe("Exhibits", () => {
                         currentExhibitTabName: CONSTANTS.EXHIBIT_TABS.enteredExhibits,
                         permissions: ["StampExhibit"],
                     },
+                    signalR: {},
                     postDepo: {
                         changeTime: { time: 1 },
                         currentTime: 1,
@@ -782,6 +789,7 @@ describe("Exhibits", () => {
                         currentExhibitTabName: CONSTANTS.EXHIBIT_TABS.enteredExhibits,
                         permissions: ["StampExhibit"],
                     },
+                    signalR: {},
                     postDepo: {
                         changeTime: { time: 1 },
                         currentTime: 1,
@@ -829,6 +837,7 @@ describe("Exhibits", () => {
                         currentExhibitTabName: CONSTANTS.EXHIBIT_TABS.enteredExhibits,
                         permissions: ["StampExhibit"],
                     },
+                    signalR: {},
                     postDepo: {
                         changeTime: { time: 1 },
                         currentTime: 1,
@@ -924,6 +933,7 @@ describe("Exhibits", () => {
                             stampLabel: "stamp-label",
                         },
                     },
+                    signalR: {},
                     postDepo: {
                         changeTime: { time: 1 },
                         currentTime: 1,

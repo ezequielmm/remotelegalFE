@@ -1,6 +1,6 @@
 import { waitForElement, waitForDomChange, fireEvent, act } from "@testing-library/react";
 import React from "react";
-import uploadService from "../../services/UploadService";
+import { uploadFile } from "../../services/UploadService";
 import renderWithGlobalContext from "../utils/renderWithGlobalContext";
 import * as SIGN_UP_CONSTANTS from "../constants/signUp";
 import * as TEST_CONSTANTS from "../constants/depositionDetails";
@@ -28,7 +28,7 @@ jest.mock("react-router", () => ({
 let customDeps;
 beforeEach(() => {
     customDeps = getMockDeps();
-    const uploadServiceMock = uploadService as jest.Mock;
+    const uploadServiceMock = uploadFile as jest.Mock;
     uploadServiceMock.mockImplementation((_, __, func) => {
         func({
             loaded: 1,

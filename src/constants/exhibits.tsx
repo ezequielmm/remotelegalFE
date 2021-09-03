@@ -47,8 +47,12 @@ export const EXHIBIT_TABS_DATA = [
 export const MY_EXHIBITS_RESULT_TITLE = "No exhibits added yet";
 export const MY_EXHIBITS_RESULT_SUBTITLE = "Start adding the exhibits that you will be using for this deposition.";
 export const MY_EXHIBITS_UPLOAD_TEXT = "Uploading file...";
+export const MY_EXHIBITS_UPLOAD_LIMIT_BYTES = 50000000;
 export const MY_EXHIBITS_UPLOAD_COMPLETE_TEXT = "File uploaded";
+export const MY_EXHIBITS_UPLOAD_PROCESSING_TEXT = "Processing file...";
 export const MY_EXHIBITS_UPLOAD_ERROR_TEXT = "Failed to upload";
+export const MY_EXHIBITS_UPLOAD_ERROR_SIZE_TEXT = "File size exceeded";
+export const MY_EXHIBITS_UPLOAD_TIMEOUT = 60000;
 export const MY_EXHIBITS_ALLOWED_FILE_TYPES =
     ".mp4,.mp3,.ogg,.ogv,.mov,.m4a,.wav,.pdf,.docx,.xlsx,.pptx,.jpg,.jpeg,.png";
 export const MY_EXHIBITS_RENAME_TITLE_TEXT = "Rename Exhibit";
