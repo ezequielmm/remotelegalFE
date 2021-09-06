@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import dayjs from "dayjs";
 import Alert from "prp-components-library/src/components/Alert";
 import Icon from "prp-components-library/src/components/Icon";
@@ -42,6 +42,8 @@ const RealTime = ({
     const layoutContentRef = useRef(null);
     const [currentTranscript, setCurrentTranscript] = useState(null);
     const [windowWidth] = useContext(WindowSizeContext);
+    const [listRefState, setListRefState] = useState(null);
+    const transcriptionsToRenderRef = useRef([]);
     const { transcriptions: contextTranscriptions } = useContext(TranscriptionsContext);
 
     const transcriptions = postDepoTranscripts || contextTranscriptions;
@@ -70,16 +72,26 @@ const RealTime = ({
 
     const transcriptionSlicingLength = transcriptions?.length > 20 ? transcriptions?.length - 20 : 0;
 
-    const sortedTranscriptions = !scrollToHighlighted
-        ? transcriptions
-              ?.slice(transcriptionSlicingLength)
-              .sort((a, b) => new Date(a?.transcriptDateTime)?.getTime() - new Date(b?.transcriptDateTime)?.getTime())
-        : [];
+    const sortedTranscriptions = useMemo(
+        () =>
+            !scrollToHighlighted
+                ? transcriptions
+                      ?.slice(transcriptionSlicingLength)
+                      .sort(
+                          (a, b) =>
+                              new Date(a?.transcriptDateTime)?.getTime() - new Date(b?.transcriptDateTime)?.getTime()
+                      )
+                : [],
+        [scrollToHighlighted, transcriptionSlicingLength, transcriptions]
+    );
 
-    const transcriptionsWithoutDuplicates = !scrollToHighlighted
-        ? [].concat(transcriptions?.slice(0, transcriptionSlicingLength), sortedTranscriptions)
-        : transcriptions;
-
+    const transcriptionsWithoutDuplicates = useMemo(
+        () =>
+            !scrollToHighlighted
+                ? [].concat(transcriptions?.slice(0, transcriptionSlicingLength), sortedTranscriptions)
+                : transcriptions,
+        [scrollToHighlighted, sortedTranscriptions, transcriptionSlicingLength, transcriptions]
+    );
     useEffect(() => {
         if (!scrollToHighlighted && transcriptionsWithoutDuplicates?.length) {
             setCurrentTranscript(transcriptionsWithoutDuplicates[transcriptionsWithoutDuplicates?.length - 1]?.id);
@@ -98,12 +110,23 @@ const RealTime = ({
             : sizeMap.current[index] + 15 || 50;
     };
 
-    const transcriptionsToRender = !disableAutoscroll
-        ? [{}, ...transcriptionsWithoutDuplicates]
-        : transcriptionsWithoutDuplicates.filter(({ index }) => index !== 0);
-
+    const transcriptionsToRender = useMemo(
+        () =>
+            !disableAutoscroll
+                ? [{}, ...transcriptionsWithoutDuplicates]
+                : transcriptionsWithoutDuplicates.filter(({ index }) => index !== 0),
+        [disableAutoscroll, transcriptionsWithoutDuplicates]
+    );
     const [isAutoscrolling, setIsAutoscrolling] = useState(false);
     const scrollToIndex = transcriptionsToRender.findIndex((transcription) => currentTranscript === transcription.id);
+
+    useEffect(() => {
+        transcriptionsToRenderRef.current = transcriptionsToRender;
+    }, [transcriptionsToRender]);
+
+    useEffect(() => {
+        listRef?.current?.scrollToItem(transcriptionsToRenderRef.current.length - 1);
+    }, [listRefState]);
 
     useEffect(() => {
         if (isAutoscrolling) {
@@ -199,9 +222,12 @@ const RealTime = ({
     };
 
     return (
-        <StyledLayoutCotainer noBackground={disableAutoscroll}>
-            <StyledLayoutContent ref={layoutContentRef}>
-                <AutoSizer>
+        <StyledLayoutCotainer
+            noBackground={disableAutoscroll}
+            ref={(listRefContainer) => setListRefState(listRefContainer)}
+        >
+            <StyledLayoutContent ref={layoutContentRef} data-testid="transcriptions_container">
+                <AutoSizer ref={(ref) => setListRefState(ref)}>
                     {({ height, width }) => (
                         <StyledRealTimeContainer
                             height={height}
