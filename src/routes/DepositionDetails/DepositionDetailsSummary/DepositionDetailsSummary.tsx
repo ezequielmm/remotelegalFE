@@ -113,8 +113,8 @@ export default function DepositionDetailsSummary({ setActiveKey, deposition }: I
     }, [recordingInfo]);
 
     const handleDownloadRecording = () => {
-        if (recordingInfo?.publicUrl) {
-            downloadFile(recordingInfo.publicUrl);
+        if (recordingInfo) {
+            downloadFile(recordingInfo.publicUrl, recordingInfo.fileName);
         }
     };
 

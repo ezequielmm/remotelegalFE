@@ -29,7 +29,8 @@ export default interface IRecording {
     totalTime: number | 0;
     onTheRecordTime: number | 0;
     offTheRecordTime: number | 0;
-    publicUrl: string | "";
+    publicUrl: string;
+    fileName: string;
     status: RecordingStatus;
     outputFormat: string;
 }
