@@ -43,18 +43,14 @@ export default function MyExhibits({ activeKey }: { activeKey: string }) {
         let onExhibitUploadComplete;
         if (signalR && subscribeToGroup && unsubscribeMethodFromGroup) {
             onExhibitUploadComplete = (message: Notification) => {
-                if (
-                    message?.entityType === NotificationEntityType.exhibit &&
-                    message?.action === NotificationAction.create
-                ) {
-                    setExhibitUploadComplete(true);
-                    refreshList();
-                }
-                if (
-                    message?.entityType === NotificationEntityType.exhibit &&
-                    message?.action === NotificationAction.error
-                ) {
-                    setExhibitUploadError(true);
+                if (message?.entityType === NotificationEntityType.exhibit) {
+                    if (message?.action === NotificationAction.create) {
+                        setExhibitUploadComplete(true);
+                        refreshList();
+                    }
+                    if (message?.action === NotificationAction.error) {
+                        setExhibitUploadError(true);
+                    }
                 }
             };
             subscribeToGroup("ReceiveNotification", onExhibitUploadComplete);
