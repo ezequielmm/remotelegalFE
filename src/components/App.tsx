@@ -60,6 +60,16 @@ function App() {
         forwardErrorsToLogs: true,
         sampleRate: 100,
         env: process.env.REACT_APP_ENV,
+        beforeSend: (log) => {
+            if (
+                log?.status === "error" &&
+                (log?.message === "cancelled" ||
+                    log?.error?.stack === "cancelled" ||
+                    log?.error?.stack === "TypeError: cancelled")
+            ) {
+                return false;
+            }
+        },
     });
 
     TagManager.initialize(tagManagerId);
