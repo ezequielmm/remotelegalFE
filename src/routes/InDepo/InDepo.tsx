@@ -82,7 +82,7 @@ const InDepo = () => {
     } = state.room;
 
     const { currentUser } = state?.user;
-    const [, windowHeight] = useContext(WindowSizeContext);
+    const [windowWidth, windowHeight] = useContext(WindowSizeContext);
     const { signalRConnectionStatus } = state?.signalR;
     const [realTimeOpen, togglerRealTime] = useState<boolean>(false);
     const [exhibitsOpen, togglerExhibits] = useState<boolean>(false);
@@ -217,8 +217,9 @@ const InDepo = () => {
     }, [currentRoom, dispatch, depositionID, history, token, addAlert]);
 
     useEffect(() => {
+        const isMobile = windowWidth <= CONSTANTS.MAX_MOBILE_SIZE;
         if (depositionID && isAuthenticated !== null && currentUser) {
-            joinDeposition(depositionID);
+            joinDeposition(depositionID, isMobile);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [depositionID, isAuthenticated, currentUser]);

@@ -13,7 +13,7 @@ import useGetTranscriptions from "./useGetTranscriptions";
 import useGetEvents from "./useGetEvents";
 import { useExhibitFileInfo } from "../exhibits/hooks";
 import useGetBreakrooms from "./useGetBreakrooms";
-import { TWILIO_VIDEO_CONFIG } from "../../constants/inDepo";
+import { TWILIO_MOBILE_CONFIG, TWILIO_VIDEO_CONFIG } from "../../constants/inDepo";
 import { useCheckUserStatus } from "../preJoinDepo/hooks";
 import { Roles } from "../../models/participant";
 import { useAuthentication } from "../auth";
@@ -153,10 +153,11 @@ export const useJoinDepositionForMockRoom = () => {
     }, []);
 
     return useAsyncCallback(
-        async (depositionID: string) => {
+        async (depositionID: string, isMobile: boolean) => {
             const devices = JSON.parse(localStorage.getItem("selectedDevices"));
             const dataTrack = new LocalDataTrack();
             const tracks = [];
+            const selectedTwilioConfig = isMobile ? TWILIO_MOBILE_CONFIG : TWILIO_VIDEO_CONFIG;
             const { token, participants, shouldSendToPreDepo, startDate, jobNumber }: any = await generateToken();
             const breakrooms = await getBreakrooms();
             if (!shouldSendToPreDepo) {
@@ -188,7 +189,7 @@ export const useJoinDepositionForMockRoom = () => {
             }
             tracks.push(dataTrack);
             const room = await connect(token, {
-                ...TWILIO_VIDEO_CONFIG,
+                ...selectedTwilioConfig,
                 name: depositionID,
                 tracks,
             });
@@ -272,8 +273,9 @@ export const useJoinDeposition = (setTranscriptions: React.Dispatch<Transcriptio
     const history = useHistory();
     const { currentEmail } = useAuthentication();
     const devices = JSON.parse(localStorage.getItem("selectedDevices"));
+
     return useAsyncCallback(
-        async (depositionID: string) => {
+        async (depositionID: string, isMobile: boolean) => {
             const participantDevices = {
                 camera: {
                     name: devices?.videoForBE.name || "",
@@ -300,7 +302,7 @@ export const useJoinDeposition = (setTranscriptions: React.Dispatch<Transcriptio
                     `Couldn't send system user info of deposition ${depositionID} because of: ${sendParticipantDevicesError}`
                 );
             }
-
+            const selectedTwilioConfig = isMobile ? TWILIO_MOBILE_CONFIG : TWILIO_VIDEO_CONFIG;
             const dataTrack = new LocalDataTrack();
             const userStatus = await checkUserStatus(depositionID, currentEmail.current);
             dispatch(actions.setUserStatus(userStatus));
@@ -403,7 +405,7 @@ export const useJoinDeposition = (setTranscriptions: React.Dispatch<Transcriptio
             dispatch(actions.setToken(token));
             tracks.push(dataTrack);
             const room = await connect(token, {
-                ...TWILIO_VIDEO_CONFIG,
+                ...selectedTwilioConfig,
                 name: depositionID,
                 tracks,
             });

@@ -28,6 +28,7 @@ import { NotificationAction, NotificationEntityType } from "../../types/Notifica
 import stopAllTracks from "../../helpers/stopAllTracks";
 import generalUIActions from "../../state/GeneralUi/GeneralUiActions";
 import TranscriptionsProvider from "../../state/Transcriptions/TranscriptionsContext";
+import { WindowSizeContext } from "../../contexts/WindowSizeContext";
 
 const InDepo = () => {
     const isMounted = useRef(true);
@@ -46,6 +47,7 @@ const InDepo = () => {
         systemSettings,
     } = state.room;
     const { depositionID } = useParams<DepositionID>();
+    const [windowWidth] = useContext(WindowSizeContext);
     const [realTimeOpen, togglerRealTime] = useState<boolean>(false);
     const [exhibitsOpen, togglerExhibits] = useState<boolean>(false);
     const [initialAudioEnabled, setInitialAudioEnabled] = useState<boolean>(true);
@@ -140,8 +142,9 @@ const InDepo = () => {
     }, [mockDepoRoom, dispatch, depositionID]);
 
     useEffect(() => {
+        const isMobile = windowWidth <= CONSTANTS.MAX_MOBILE_SIZE;
         if (depositionID) {
-            joinDeposition(depositionID);
+            joinDeposition(depositionID, isMobile);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [depositionID]);
