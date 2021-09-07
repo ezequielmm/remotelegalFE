@@ -597,6 +597,15 @@ export class ApiService {
         });
     };
 
+    getDepoSummaryInfo = async (depositionID: string): Promise<boolean> => {
+        return this.request<boolean>({
+            path: `/api/depositions/${depositionID}/summary`,
+            payload: {},
+            withToken: true,
+            method: HTTP_METHOD.GET,
+        });
+    };
+
     private request = async <T>({
         path,
         payload = {},

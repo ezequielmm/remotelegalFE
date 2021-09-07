@@ -33,10 +33,11 @@ import { NotificationEntityType } from "../../types/Notification";
 import stopAllTracks from "../../helpers/stopAllTracks";
 import TranscriptionsProvider from "../../state/Transcriptions/TranscriptionsContext";
 import { WindowSizeContext } from "../../contexts/WindowSizeContext";
-import useGetDepositionInfo from "../../hooks/techInfo/useGetDepositionInfo";
 import useGetTranscriptions from "../../hooks/InDepo/useGetTranscriptions";
 import useGetEvents from "../../hooks/InDepo/useGetEvents";
 import { setTranscriptionMessages } from "../../helpers/formatTranscriptionsMessages";
+import { useExhibitFileInfo } from "../../hooks/exhibits/hooks";
+import useGetDepoSummaryInfo from "../../hooks/InDepo/useGetDepoSummaryInfo";
 
 const InDepo = () => {
     const { depositionID } = useParams<DepositionID>();
@@ -45,7 +46,7 @@ const InDepo = () => {
     const { state, dispatch } = useContext(GlobalStateContext);
     const [initialTranscriptions, setInitialTranscriptions] = useState<TranscriptionModel.Transcription[]>([]);
     const [joinDeposition, loading, error] = useJoinDeposition(setInitialTranscriptions);
-    const [getDepositionInfo, , , depositionInfo] = useGetDepositionInfo();
+    const [getDepoSummaryInfo, , , depoSummaryInfo] = useGetDepoSummaryInfo();
     const [getTranscriptions] = useGetTranscriptions();
     const [getDepositionEvents] = useGetEvents();
     const {
@@ -79,6 +80,7 @@ const InDepo = () => {
     const tracksRef = useRef(tracks);
     const { isAuthenticated } = useAuthentication();
     const { sendMessage, signalR, subscribeToGroup, unsubscribeMethodFromGroup } = useSignalR("/depositionHub");
+    const [fetchExhibitFileInfo] = useExhibitFileInfo();
 
     useEffect(() => {
         dispatch(generalUIActions.toggleTheme(ThemeMode.inDepo));
@@ -161,17 +163,20 @@ const InDepo = () => {
 
     useEffect(() => {
         if (signalRConnectionStatus?.isReconnected) {
-            getDepositionInfo();
+            getDepoSummaryInfo();
         }
-    }, [getDepositionInfo, signalRConnectionStatus?.isReconnected]);
+    }, [getDepoSummaryInfo, signalRConnectionStatus?.isReconnected]);
 
     useEffect(() => {
         (async () => {
-            if (signalRConnectionStatus?.isReconnected && depositionInfo) {
-                dispatch(actions.setParticipantsData(depositionInfo.participants));
-                dispatch(actions.setIsRecording(depositionInfo.isRecording));
-                if (depositionInfo.sharingExhibit) {
+            if (signalRConnectionStatus?.isReconnected && depoSummaryInfo) {
+                dispatch(actions.setParticipantsData(depoSummaryInfo.participants));
+                dispatch(actions.setIsRecording(depoSummaryInfo.isOnTheRecord));
+                if (depoSummaryInfo.isSharing) {
                     togglerExhibits(true);
+                    fetchExhibitFileInfo(depositionID);
+                } else {
+                    togglerExhibits(false);
                 }
                 const transcriptions = await getTranscriptions();
                 const events = await getDepositionEvents(depositionID);
@@ -179,12 +184,13 @@ const InDepo = () => {
             }
         })();
     }, [
-        depositionInfo,
+        depoSummaryInfo,
         signalRConnectionStatus?.isReconnected,
         depositionID,
         dispatch,
         getDepositionEvents,
         getTranscriptions,
+        fetchExhibitFileInfo,
     ]);
 
     useEffect(() => {
