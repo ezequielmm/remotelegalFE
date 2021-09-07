@@ -13,17 +13,10 @@ import ColorStatus from "../../../../../types/ColorStatus";
 export type IUploadStatus = "success" | "pending" | "fail" | "initial";
 interface IUploadButton {
     onUpload?: (options: any) => void;
-    fileUploadComplete?: boolean;
-    fileUploadError?: boolean;
     refreshList?: () => void;
 }
 
-export default function UploadButton({
-    onUpload,
-    fileUploadComplete,
-    refreshList,
-    fileUploadError,
-}: IUploadButton): ReactElement {
+export default function UploadButton({ onUpload, refreshList }: IUploadButton): ReactElement {
     const [disabled, setDisabled] = useState(false);
     return (
         <Dragger
@@ -43,8 +36,7 @@ export default function UploadButton({
                     errors={file?.error}
                     percent={file.percent}
                     status={file.status}
-                    fileUploadComplete={fileUploadComplete}
-                    fileUploadError={fileUploadError}
+                    fileName={file.name}
                     refreshList={refreshList}
                 />
             )}

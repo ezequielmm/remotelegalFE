@@ -107,3 +107,9 @@ export const EXHIBIT_DELETE_ERROR_MESSAGE = "An unexpected error occurred!";
 export const SUPPORTED_AUDIO_FILES = ["mp3", "wav", "oga", "m4a"];
 export const SUPPORTED_VIDEO_FILES = ["mp4", "ogg", "ogv", "mov"];
 export const SUPPORTED_AUDIO_VIDEO_FILES = [...SUPPORTED_AUDIO_FILES, ...SUPPORTED_VIDEO_FILES];
+
+export enum UPLOAD_STATE {
+    PENDING = "PENDING",
+    COMPLETE = "COMPLETE",
+    ERROR = "ERROR",
+}
