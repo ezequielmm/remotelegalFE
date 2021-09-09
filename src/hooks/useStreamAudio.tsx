@@ -9,7 +9,7 @@ export default (isAudioEnabled: boolean, audioTracks, doNotConnectToSocket = fal
     const [recorder, setRecorder] = useState(null);
     const [sampleRate, setSampleRate] = useState<number>(undefined);
     const { state } = useContext(GlobalStateContext);
-    const { isRecording } = state.room;
+    const { isRecording, depoRoomReconnecting } = state.room;
     const { depositionID } = useParams<DepositionID>();
     const { transcriptAudio, sendMessage } = useTranscriptAudio(doNotConnectToSocket, sampleRate);
     const recorderRef = useRef(null);
@@ -56,7 +56,7 @@ export default (isAudioEnabled: boolean, audioTracks, doNotConnectToSocket = fal
             clearInterval(interval);
             audioCtx?.close();
         };
-    }, [isRecording, isAudioEnabled, transcriptAudio, sendMessage, depositionID]);
+    }, [isRecording, isAudioEnabled, transcriptAudio, sendMessage, depositionID, sampleRate]);
 
     useEffect(() => {
         const innerRef = recorderRef;
@@ -76,7 +76,7 @@ export default (isAudioEnabled: boolean, audioTracks, doNotConnectToSocket = fal
 
     React.useEffect(() => {
         let dataAvailableHandler;
-        if (recorder && isRecording && isAudioEnabled) {
+        if (recorder && isRecording && isAudioEnabled && !depoRoomReconnecting) {
             dataAvailableHandler = (e) => {
                 const fileReader = new FileReader();
                 fileReader.onload = (event) => {
@@ -102,7 +102,16 @@ export default (isAudioEnabled: boolean, audioTracks, doNotConnectToSocket = fal
                 recorder.removeEventListener("dataavailable", dataAvailableHandler);
             }
         };
-    }, [recorder, transcriptAudio, isRecording, isAudioEnabled, sampleRate, sendMessage, depositionID]);
+    }, [
+        recorder,
+        transcriptAudio,
+        isRecording,
+        isAudioEnabled,
+        sampleRate,
+        sendMessage,
+        depositionID,
+        depoRoomReconnecting,
+    ]);
 
     const getMicrophone = () => {
         if (recorder) {

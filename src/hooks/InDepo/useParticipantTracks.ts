@@ -23,6 +23,7 @@ const useParticipantTracks = (participant: LocalParticipant | RemoteParticipant)
     const [netWorkLevel, setNetWorkLevel] = useState<number>(null);
     const audioRef = useRef<HTMLAudioElement & AudioTrack>();
     const videoRef = useRef<HTMLVideoElement & VideoTrack>();
+    const localParticipantVideoTrackRef = useRef<VideoTrack>(null);
 
     const trackSubscribed = (track: AudioTrack | VideoTrack | LocalDataTrack | RemoteDataTrack) => {
         if (track.kind === "video") {
@@ -35,21 +36,6 @@ const useParticipantTracks = (participant: LocalParticipant | RemoteParticipant)
             return setAudioTracks((audio) => [...audio, track]);
         }
         return setDataTracks((data) => [...data, track]);
-    };
-
-    const onReconnecting = (remoteParticipant: RemoteParticipant) => {
-        if (videoRef.current) {
-            videoRef.current.style.display = participant?.sid === remoteParticipant?.sid ? "none" : "block";
-            setVideoTracks((videos) =>
-                videos.filter((v) => remoteParticipant?.videoTracks.size && v !== remoteParticipant.videoTracks[0])
-            );
-            setAudioTracks((audios) =>
-                audios.filter((a) => remoteParticipant?.audioTracks.size && a !== remoteParticipant.audioTracks[0])
-            );
-            setDataTracks((dataTracks) =>
-                dataTracks.filter((d) => remoteParticipant?.dataTracks.size && d !== remoteParticipant.audioTracks[0])
-            );
-        }
     };
 
     const trackUnsubscribed = (
@@ -83,12 +69,39 @@ const useParticipantTracks = (participant: LocalParticipant | RemoteParticipant)
     };
 
     useEffect(() => {
+        const resetVideoRefStylesOnReconnection = () => {
+            if (videoRef.current) {
+                // We have to do this because, for some reason, the reconnected event gets
+                // triggered on first load
+                if (localParticipantVideoTrackRef.current?.isEnabled) {
+                    videoRef.current.style.display = "block";
+                }
+            }
+        };
+        const onReconnecting = (remoteParticipant: RemoteParticipant) => {
+            if (videoRef.current) {
+                videoRef.current.style.display = participant?.sid === remoteParticipant?.sid ? "none" : "block";
+                setVideoTracks((videos) =>
+                    videos.filter((v) => remoteParticipant?.videoTracks.size && v !== remoteParticipant.videoTracks[0])
+                );
+                setAudioTracks((audios) =>
+                    audios.filter((a) => remoteParticipant?.audioTracks.size && a !== remoteParticipant.audioTracks[0])
+                );
+                setDataTracks((dataTracks) =>
+                    dataTracks.filter(
+                        (d) => remoteParticipant?.dataTracks.size && d !== remoteParticipant.audioTracks[0]
+                    )
+                );
+            }
+            return null;
+        };
         if (!participant) {
             return;
         }
         setDataTracks(trackpubsToTracks(participant.dataTracks));
         participant.on("trackSubscribed", trackSubscribed);
         participant.on("reconnecting", onReconnecting);
+        participant.on("reconnected", resetVideoRefStylesOnReconnection);
         participant.on("networkQualityLevelChanged", setNetWorkLevel);
         participant.on("trackUnsubscribed", trackUnsubscribed);
         participant.on("trackDisabled", trackDisabled);
@@ -114,6 +127,7 @@ const useParticipantTracks = (participant: LocalParticipant | RemoteParticipant)
         const videoTrack = videoTracks[0];
 
         if (videoTrack) {
+            localParticipantVideoTrackRef.current = videoTrack;
             if (videoRef.current) {
                 videoRef.current.name = videoTrack.name;
             }

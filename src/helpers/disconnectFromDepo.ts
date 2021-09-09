@@ -15,6 +15,7 @@ const disconnectFromDepo = (
         info: null,
         stamp: null,
         startTime: "",
+        depoRoomReconnecting: false,
         mockDepoRoom: null,
         initialCameraStatus: null,
         shouldSendToPreDepo: null,

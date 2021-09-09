@@ -400,6 +400,7 @@ export const useJoinDeposition = (setTranscriptions: React.Dispatch<Transcriptio
                 };
                 logger.setLevel("debug");
             }
+            dispatch(actions.setToken(token));
             tracks.push(dataTrack);
             const room = await connect(token, {
                 ...TWILIO_VIDEO_CONFIG,
@@ -412,7 +413,7 @@ export const useJoinDeposition = (setTranscriptions: React.Dispatch<Transcriptio
                 stopAllTracks(tracks);
                 return disconnectFromDepo(room, dispatch);
             }
-            dispatch(actions.setToken(token));
+
             dispatch(actions.joinToRoom(room));
             dispatch(actions.setParticipantsData(participants));
             dispatch(actions.setIsRecording(isOnTheRecord));

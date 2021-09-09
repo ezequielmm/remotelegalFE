@@ -43,7 +43,7 @@ const Participant = ({
     const [timeAlert, setTimeAlert] = useState(0);
     const [hasBorder, setHasBorder] = useState(false);
     const { state } = useContext(GlobalStateContext);
-    const { dominantSpeaker } = state.room;
+    const { dominantSpeaker, depoRoomReconnecting } = state.room;
     const identity = participant && JSON.parse(participant.identity);
     useDataTrack(dataTracks);
     const addFloatingAlert = useFloatingAlertContext();
@@ -77,7 +77,7 @@ const Participant = ({
     }, [timeAlert, isLocal]);
 
     useEffect(() => {
-        if (netWorkLevel <= 2 && netWorkLevel !== null && isLocal && timeAlert === 0) {
+        if (netWorkLevel <= 2 && netWorkLevel !== null && isLocal && timeAlert === 0 && !depoRoomReconnecting) {
             setTimeAlert(CONSTANTS.NETWORK_QUALITY_TIME_SECONDS);
             datadogLogs.logger.info("Network quality low", { netWorkLevel, user: identity });
             const args = {
@@ -87,7 +87,7 @@ const Participant = ({
             };
             addFloatingAlert(args, true);
         }
-    }, [netWorkLevel, addFloatingAlert, identity, isLocal, timeAlert]);
+    }, [netWorkLevel, addFloatingAlert, identity, isLocal, timeAlert, depoRoomReconnecting]);
 
     return (
         <StyledParticipantMask highlight={hasBorder} isWitness={isWitness} isSingle={isSingle}>

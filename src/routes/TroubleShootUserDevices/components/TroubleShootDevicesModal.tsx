@@ -123,7 +123,7 @@ const TroubleShootDevicesModal = ({
     const [isMuted, setMuted] = useState(true);
     const history = useHistory();
     const { dispatch, state } = useContext(GlobalStateContext);
-    const { mockDepoRoom, currentRoom, tracks } = state.room;
+    const { mockDepoRoom, currentRoom, tracks, depoRoomReconnecting } = state.room;
     const oldDevices = localStorage.getItem("selectedDevices") && JSON.parse(localStorage.getItem("selectedDevices"));
     const availableRoom: Room = currentRoom || mockDepoRoom;
     const { depositionID } = useParams<{ depositionID: string }>();
@@ -293,6 +293,15 @@ const TroubleShootDevicesModal = ({
     };
 
     const setNewDevices = async () => {
+        if (depoRoomReconnecting) {
+            return addAlert({
+                message: CONSTANTS.NOT_CONNECTED_TO_DEPO,
+                closable: true,
+                type: "info",
+                duration: 3,
+                dataTestId: "depo_disconnected_troubleshoot_toast",
+            });
+        }
         const devices = createDevices({ video: cameraError, audio: micError }, selectedOptions);
         const videoDevice = devices.video as Device;
         const audioDevice = devices.audio as Device;
@@ -352,7 +361,7 @@ const TroubleShootDevicesModal = ({
             localStorage.setItem("selectedDevices", JSON.stringify(devices));
             dispatch(actions.addUserTracks(tracksCopy));
         }
-        onClose();
+        return onClose();
     };
 
     return (

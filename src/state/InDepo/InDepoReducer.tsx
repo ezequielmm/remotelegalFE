@@ -12,6 +12,7 @@ import { SystemSettings } from "../../models/systemsettings";
 
 export interface IRoom {
     info?: object;
+    depoRoomReconnecting?: boolean;
     systemSettings?: SystemSettings;
     newSpeaker?: string;
     initialCameraStatus?: boolean;
@@ -51,6 +52,7 @@ export interface IRoom {
 
 export const RoomReducerInitialState: IRoom = {
     info: null,
+    depoRoomReconnecting: false,
     startTime: "",
     systemSettings: null,
     publishedAudioTrackStatus: null,
@@ -279,7 +281,11 @@ const RoomReducer: Reducer<IRoom, IAction> = (state: IRoom, action: IAction): IR
                 ...state,
                 publishedAudioTrackStatus: action.payload,
             };
-
+        case ACTION_TYPE.IN_DEPO_RECONNECTING:
+            return {
+                ...state,
+                depoRoomReconnecting: action.payload,
+            };
         default:
             return state;
     }

@@ -998,3 +998,27 @@ it("should show a toast when SignalR is trying to reconnect", async () => {
         expect(screen.getByTestId(MODULE_CONSTANTS.RECONNECTING_ALERT_MESSAGE_TEST_ID)).toBeInTheDocument();
     });
 });
+it("shows alert if depo room is reconnecting", async () => {
+    customDeps.apiService.joinDeposition = jest.fn().mockResolvedValue(TESTS_CONSTANTS.JOIN_DEPOSITION_MOCK);
+    renderWithGlobalContext(
+        <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,
+        customDeps,
+        {
+            ...rootReducer,
+            initialState: {
+                room: {
+                    ...rootReducer.initialState.room,
+                    depoRoomReconnecting: true,
+                },
+                user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+                signalR: { signalR: null },
+            },
+        },
+        history
+    );
+
+    history.push(TESTS_CONSTANTS.TEST_ROUTE);
+    await waitFor(() => {
+        expect(screen.getByText(MODULE_CONSTANTS.RECONNECTING_ALERT_MESSAGE)).toBeInTheDocument();
+    });
+});

@@ -8,6 +8,7 @@ import { ExhibitFile } from "../../types/ExhibitFile";
 
 export enum ACTION_TYPE {
     ADD_STAMP = "ADD_STAMP",
+    IN_DEPO_RECONNECTING = "IN_DEPO_RECONNECTING",
     ADD_SYSTEM_SETTINGS = "ADD_SYSTEM_SETTINGS",
     SET_PUBLISHED_AUDIO_TRACK_STATUS = "SET_PUBLISHED_AUDIO_TRACK_STATUS",
     CHANGE_SPEAKER = "CHANGE_SPEAKER",
@@ -118,6 +119,10 @@ const actions = {
     }),
     setSharedExhibit: (payload: ExhibitFile) => ({
         type: ACTION_TYPE.IN_DEPO_START_SHARE_EXHIBIT,
+        payload,
+    }),
+    setInDepoReconnecting: (payload: boolean) => ({
+        type: ACTION_TYPE.IN_DEPO_RECONNECTING,
         payload,
     }),
     stopShareExhibit: () => ({

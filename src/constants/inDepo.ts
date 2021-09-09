@@ -124,5 +124,7 @@ export const BREAKROOM_IS_UNLOCKED = "Breakroom unlocked - Other participants wi
 export const BREAKROOM_LOCK_ERROR = "Something went wrong. Please try again.";
 export const BREAKROOM_LOCK_ALERT_DURATION = 4;
 export const NETWORK_QUALITY_TIME_SECONDS = 300;
-export const RECONNECTING_ALERT_MESSAGE = "Your connection is unstable. Some actions may not be working properly.";
+export const DISCONNECTED_FROM_DEPO =
+    "You have been disconnected from the deposition due to network issues. Please join again";
 export const RECONNECTING_ALERT_MESSAGE_TEST_ID = "SIGNALR_DISCONNECTED";
+export const RECONNECTING_ALERT_MESSAGE = "Your connection is unstable. Some actions may not work properly.";
