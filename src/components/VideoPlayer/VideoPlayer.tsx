@@ -14,6 +14,7 @@ import { ReactComponent as AudioIcon } from "../../assets/icons/audio.svg";
 import { ReactComponent as VolumeOnIcon } from "../../assets/icons/volume-on.svg";
 import { ReactComponent as VolumeOffIcon } from "../../assets/icons/volume-off.svg";
 import Duration from "./Duration";
+import getBrowserInfo from "../../helpers/browserInfo";
 import { getREM, hexToRGBA } from "../../constants/styles/utils";
 import { theme } from "../../constants/styles/theme";
 import actions from "../../state/PostDepo/PostDepoActions";
@@ -95,10 +96,11 @@ const StyledVolumeContainer = styled(Space)`
 export interface IVideoPlayer extends ReactPlayerProps {
     fullScreen?: boolean;
     isOnlyAudio?: boolean;
-    onInit?: () => void;
+    showVolume?: boolean;
 }
 
 const VideoPlayer = ({ fullScreen, fallback, isOnlyAudio, url, onInit, onReady, ...rest }: IVideoPlayer) => {
+    const { isIOS } = getBrowserInfo();
     const { dispatch, state } = useContext(GlobalStateContext);
     const { changeTime, currentTime, playing, duration } = state.postDepo;
 
@@ -233,33 +235,35 @@ const VideoPlayer = ({ fullScreen, fallback, isOnlyAudio, url, onInit, onReady, 
                                 <Duration seconds={duration} />
                             </StyledTimeContainer>
                         </Space.Item>
-                        <StyledVolumeContainer align="center" size={1}>
-                            <Icon
-                                size={7}
-                                color={theme.default.whiteColor}
-                                onClick={muteVideo}
-                                icon={muted ? VolumeOffIcon : VolumeOnIcon}
-                            />
-                            <Space.Item flex="1 1">
-                                <Slider
-                                    value={muted ? 0 : volume}
-                                    onChange={handleVolumeChange}
-                                    step={0.1}
-                                    max={1}
-                                    tooltipVisible={false}
-                                    trackStyle={{ backgroundColor: theme.default.whiteColor }}
+                        {showVolume && !isIOS && (
+                            <StyledVolumeContainer align="center" size={1}>
+                                <Icon
+                                    size={7}
+                                    color={theme.default.whiteColor}
+                                    onClick={muteVideo}
+                                    icon={muted ? VolumeOffIcon : VolumeOnIcon}
                                 />
-                            </Space.Item>
-                            {fullScreen && (
-                                <Space.Item>
-                                    <Icon
-                                        size={6}
-                                        icon={fullscreen ? ContractIcon : ExpandIcon}
-                                        onClick={handleFullScreen}
+                                <Space.Item flex="1 1">
+                                    <Slider
+                                        value={muted ? 0 : volume}
+                                        onChange={handleVolumeChange}
+                                        step={0.1}
+                                        max={1}
+                                        tooltipVisible={false}
+                                        trackStyle={{ backgroundColor: theme.default.whiteColor }}
                                     />
                                 </Space.Item>
-                            )}
-                        </StyledVolumeContainer>
+                            </StyledVolumeContainer>
+                        )}
+                        {fullScreen && (
+                            <Space.Item>
+                                <Icon
+                                    size={6}
+                                    icon={fullscreen ? ContractIcon : ExpandIcon}
+                                    onClick={handleFullScreen}
+                                />
+                            </Space.Item>
+                        )}
                     </Space>
                 </StyledControls>
             )}
