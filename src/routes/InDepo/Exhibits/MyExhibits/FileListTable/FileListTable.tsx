@@ -123,8 +123,8 @@ const FileListTable = ({ onClickViewFile, onOptionsConfirmOk, ...props }: IFileL
                         return (
                             <StyledFileNameCell>
                                 <FileIcon type={fileExtension} />
-                                <Tooltip title={displayName}>
-                                    <Text state={ColorStatus.white}>{displayName}</Text>
+                                <Tooltip title={decodeURI(displayName)}>
+                                    <Text state={ColorStatus.white}>{decodeURI(displayName)}</Text>
                                 </Tooltip>
                             </StyledFileNameCell>
                         );

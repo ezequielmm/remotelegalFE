@@ -29,13 +29,14 @@ export const useUploadFileToS3 = (depositionID: string) => {
                 return;
             }
             try {
+                const parseFile = new File([file], encodeURI(file.name), { type: file.type });
                 const preSignUploadExhibit = await deps.apiService.preSignUploadExhibit({
                     depositionId: depositionID,
-                    filename: file.name,
+                    filename: parseFile.name,
                 });
                 uploadFileToS3(
                     preSignUploadExhibit.url,
-                    file,
+                    parseFile,
                     (event) => onProgress({ percent: (event.loaded / event.total) * 100 }),
                     onSuccess,
                     onError,

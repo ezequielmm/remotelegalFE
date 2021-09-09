@@ -114,14 +114,14 @@ export default function ExhibitViewerHeader({
                     </Space.Item>
                 )}
                 <StyledSpaceItem flex="1">
-                    <Tooltip title={file?.displayName}>
+                    <Tooltip title={decodeURI(file?.displayName)}>
                         <Text
                             size="large"
                             state={ColorStatus.white}
                             block
                             align={showBringAllToMeButton ? undefined : "center"}
                         >
-                            {file?.displayName}
+                            {decodeURI(file?.displayName)}
                         </Text>
                     </Tooltip>
                 </StyledSpaceItem>
