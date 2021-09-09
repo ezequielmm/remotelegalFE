@@ -8,6 +8,7 @@
  * We will, however test methods and behaviors such as placing the token in each call, waiting for connection to be regained, etc when they are available.
  */
 import { Auth } from "aws-amplify";
+import { datadogLogs } from "@datadog/browser-logs";
 import ENV from "../constants/env";
 import { wait } from "../helpers/wait";
 import { EventModel, CaseModel, DepositionModel, UserModel, ParticipantModel, ExhibitsModel } from "../models";
@@ -662,6 +663,7 @@ export class ApiService {
             }
             return parsedResponse;
         } catch (errorResponse) {
+            this.logFetchError(errorResponse);
             const error = errorResponse.status || true;
             const nextAttemptCount = attemptsLeft - 1;
             const shouldRetryBasedOnStatusCode = this.httpStatusCodeRetryRegex.test(String(errorResponse.status));
@@ -675,5 +677,33 @@ export class ApiService {
             }
             throw error;
         }
+    };
+
+    private logFetchError = async (errorResponse: Response) => {
+        try {
+            const stackTrace = await this.getErrorFromResponse(errorResponse);
+            datadogLogs.logger.error(`ApiService fetch error`, {
+                errorStatus: errorResponse?.status || "",
+                errorMessage: errorResponse?.statusText || "",
+                stackTrace,
+            });
+        } catch (error) {
+            console.error("logFetchError", error);
+        }
+    };
+
+    private getErrorFromResponse = (errorResponse) => {
+        if (!errorResponse.body) return null;
+        const reader = errorResponse.body.getReader();
+        let error = null;
+        const getError = async () => {
+            const { value, done } = await reader.read();
+            if (done) {
+                return error;
+            }
+            if (value && value?.buffer instanceof ArrayBuffer) error = JSON.parse(new TextDecoder().decode(value));
+            return getError();
+        };
+        return getError();
     };
 }

@@ -7,7 +7,7 @@ const withDDContext = (component) => {
         const { depositionID } = useParams<{ depositionID: string }>();
         useEffect(() => {
             if (depositionID) {
-                datadogLogs.addLoggerGlobalContext("depositionID", depositionID);
+                datadogLogs.addLoggerGlobalContext("scope", { depositionID });
             }
         }, [depositionID]);
         return component(props) as JSX.Element;
