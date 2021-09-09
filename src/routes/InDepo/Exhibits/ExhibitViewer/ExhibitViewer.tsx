@@ -1,5 +1,5 @@
 import { Col, Row } from "antd";
-import { ReactElement, useContext, useState } from "react";
+import { ReactElement, useCallback, useContext, useState } from "react";
 import Icon from "prp-components-library/src/components/Icon";
 import Result from "prp-components-library/src/components/Result";
 import Spinner from "prp-components-library/src/components/Spinner";
@@ -67,6 +67,10 @@ export const ExhibitViewer = ({
     const [windowWidth] = useContext(WindowSizeContext);
     const isAudioOrVideoDocument = isAudioOrVideoFileType(file?.name);
 
+    const onMediaViewerInitHandler = useCallback(() => {
+        setShowSpinner(true);
+    }, []);
+
     return (
         <StyledExhibitViewerContainer>
             {showSpinner && <Spinner className="spinner" height="100%" />}
@@ -98,6 +102,7 @@ export const ExhibitViewer = ({
                     isOnlyAudio={isAudioFileType(file?.name)}
                     readOnly={isPublic}
                     onMediaReady={() => setShowSpinner(false)}
+                    onInit={onMediaViewerInitHandler}
                     onError={() => {
                         setHasMediaError(true);
                         setShowSpinner(false);

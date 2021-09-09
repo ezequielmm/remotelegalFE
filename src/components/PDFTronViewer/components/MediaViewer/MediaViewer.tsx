@@ -15,11 +15,11 @@ import Message from "../../../Message";
 import VideoPlayer from "../../../VideoPlayer";
 
 import { ReactComponent as DeleteIcon } from "../../../../assets/icons/delete.svg";
+import { IVideoPlayer } from "../../../VideoPlayer/VideoPlayer";
 
-interface MediaViewerProps {
+interface MediaViewerProps extends IVideoPlayer {
     url: string;
     stampLabelFromFile?: string;
-    isOnlyAudio?: boolean;
     readOnly?: boolean;
     onMediaReady?: () => void;
     onError?: () => void;
@@ -59,6 +59,7 @@ export default function MediaViewer({
     stampLabelFromFile,
     isOnlyAudio,
     readOnly,
+    onInit,
     onMediaReady,
     onError,
 }: MediaViewerProps) {
@@ -97,6 +98,7 @@ export default function MediaViewer({
                 isOnlyAudio={isOnlyAudio}
                 onError={onErrorMessage}
                 onReady={onMediaReady}
+                onInit={onInit}
                 fullScreen
             />
             {currentStampLabel && (

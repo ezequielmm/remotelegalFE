@@ -92,12 +92,13 @@ const StyledVolumeContainer = styled(Space)`
     width: ${getREM(5)};
 `;
 
-interface IVideoPlayer extends ReactPlayerProps {
+export interface IVideoPlayer extends ReactPlayerProps {
     fullScreen?: boolean;
     isOnlyAudio?: boolean;
+    onInit?: () => void;
 }
 
-const VideoPlayer = ({ fullScreen, fallback, isOnlyAudio, onReady, ...rest }: IVideoPlayer) => {
+const VideoPlayer = ({ fullScreen, fallback, isOnlyAudio, url, onInit, onReady, ...rest }: IVideoPlayer) => {
     const { dispatch, state } = useContext(GlobalStateContext);
     const { changeTime, currentTime, playing, duration } = state.postDepo;
 
@@ -108,6 +109,7 @@ const VideoPlayer = ({ fullScreen, fallback, isOnlyAudio, onReady, ...rest }: IV
 
     const player = useRef(null);
     const styledPlayerRef = useRef(null);
+    const currentUrl = useRef(null);
 
     const handleDuration = (newDuration) => {
         dispatch(actions.setDuration(newDuration));
@@ -161,6 +163,19 @@ const VideoPlayer = ({ fullScreen, fallback, isOnlyAudio, onReady, ...rest }: IV
         }
     }, [handleSliderChange, changeTime, styledPlayerRef]);
 
+    useEffect(() => {
+        if (onInit) onInit();
+    }, [onInit]);
+
+    useEffect(() => {
+        if (url && !currentUrl.current) {
+            currentUrl.current = url;
+        }
+        return () => {
+            currentUrl.current = null;
+        };
+    }, [url, currentUrl]);
+
     const handleOnReady = (player) => {
         setIsVideoReady(true);
         if (player && onReady) {
@@ -191,6 +206,7 @@ const VideoPlayer = ({ fullScreen, fallback, isOnlyAudio, onReady, ...rest }: IV
                 onReady={handleOnReady}
                 volume={volume}
                 muted={muted}
+                url={currentUrl?.current}
                 {...rest}
             />
             {!isVideoReady && fallback}
