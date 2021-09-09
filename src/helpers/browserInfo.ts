@@ -1,12 +1,11 @@
-import UAParser from "ua-parser-js";
+import * as deviceInfo from "react-device-detect";
 
-const getBrowserInfo = (): { browser: string; device: string; OS: string; isIOS: boolean } => {
-    const parser = new UAParser();
+const getBrowserInfo = (): { browser: string; device: string; OS: string } => {
     return {
-        browser: `${parser.getBrowser().name} ${parser.getBrowser().version}`,
-        device: `${parser.getDevice().type || "desktop"}`,
-        OS: `${parser.getOS().name} ${parser.getOS().version}`,
-        isIOS: parser.getOS().name.includes("iOS"),
+        browser: `${deviceInfo.browserName} ${deviceInfo.browserVersion}`,
+        device: `${deviceInfo.deviceType === "browser" ? "desktop" : deviceInfo.deviceType}`,
+        OS: `${deviceInfo.osName} ${deviceInfo.osVersion}`,
     };
 };
+
 export default getBrowserInfo;

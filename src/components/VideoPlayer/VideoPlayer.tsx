@@ -1,7 +1,8 @@
 import { Slider } from "antd";
-import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import ReactPlayer, { ReactPlayerProps } from "react-player";
 import screenfull from "screenfull";
+import { isIOS } from "react-device-detect";
 import styled from "styled-components";
 import Icon from "prp-components-library/src/components/Icon";
 import Space from "prp-components-library/src/components/Space";
@@ -14,7 +15,6 @@ import { ReactComponent as AudioIcon } from "../../assets/icons/audio.svg";
 import { ReactComponent as VolumeOnIcon } from "../../assets/icons/volume-on.svg";
 import { ReactComponent as VolumeOffIcon } from "../../assets/icons/volume-off.svg";
 import Duration from "./Duration";
-import getBrowserInfo from "../../helpers/browserInfo";
 import { getREM, hexToRGBA } from "../../constants/styles/utils";
 import { theme } from "../../constants/styles/theme";
 import actions from "../../state/PostDepo/PostDepoActions";
@@ -44,10 +44,10 @@ const StyledControls = styled.div`
     }
     .ant-slider{
         .ant-slider-track{
-            background-color ${theme.default.primaryColor};
+            background-color: ${theme.default.primaryColor};
         }
         .ant-slider-rail{
-            background-color ${hexToRGBA(theme.default.whiteColor, 0.2)};
+            background-color: ${hexToRGBA(theme.default.whiteColor, 0.2)};
         }
         .ant-slider-handle{
             opacity: 0;
@@ -99,8 +99,16 @@ export interface IVideoPlayer extends ReactPlayerProps {
     showVolume?: boolean;
 }
 
-const VideoPlayer = ({ fullScreen, fallback, isOnlyAudio, url, onInit, onReady, ...rest }: IVideoPlayer) => {
-    const { isIOS } = getBrowserInfo();
+const VideoPlayer = ({
+    fullScreen,
+    fallback,
+    isOnlyAudio,
+    url,
+    onInit,
+    onReady,
+    showVolume = true,
+    ...rest
+}: IVideoPlayer) => {
     const { dispatch, state } = useContext(GlobalStateContext);
     const { changeTime, currentTime, playing, duration } = state.postDepo;
 
@@ -235,7 +243,7 @@ const VideoPlayer = ({ fullScreen, fallback, isOnlyAudio, url, onInit, onReady, 
                                 <Duration seconds={duration} />
                             </StyledTimeContainer>
                         </Space.Item>
-                        {showVolume && !isIOS && (
+                        {!isIOS && showVolume && (
                             <StyledVolumeContainer align="center" size={1}>
                                 <Icon
                                     size={7}
