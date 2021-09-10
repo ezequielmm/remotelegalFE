@@ -31,6 +31,7 @@ const Participant = ({
     isMuted = false,
     isLocal,
     isSingle,
+    isVideoOnly = false,
 }: {
     isLocal?: boolean;
     timeZone?: TimeZones;
@@ -38,6 +39,7 @@ const Participant = ({
     isWitness?: boolean;
     isMuted?: boolean;
     isSingle?: boolean;
+    isVideoOnly?: boolean;
 }) => {
     const { videoRef, audioRef, dataTracks, netWorkLevel } = useParticipantTracks(participant);
     const [timeAlert, setTimeAlert] = useState(0);
@@ -90,7 +92,12 @@ const Participant = ({
     }, [netWorkLevel, addFloatingAlert, identity, isLocal, timeAlert, depoRoomReconnecting]);
 
     return (
-        <StyledParticipantMask highlight={hasBorder} isWitness={isWitness} isSingle={isSingle}>
+        <StyledParticipantMask
+            highlight={hasBorder}
+            isSingle={isSingle}
+            isVideoOnly={isVideoOnly}
+            isWitness={isWitness}
+        >
             <video ref={videoRef} autoPlay />
             <audio ref={audioRef} autoPlay />
             <img src={AspectRatio} alt="16/9" className="aspect-ratio" />

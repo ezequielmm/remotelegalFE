@@ -1,7 +1,5 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { LocalParticipant, RemoteParticipant, Room } from "twilio-video";
-import { theme } from "../../../constants/styles/theme";
-import { WindowSizeContext } from "../../../contexts/WindowSizeContext";
 import { useGetParticipantStatus } from "../../../hooks/InDepo/useParticipantStatus";
 import { TimeZones } from "../../../models/general";
 import Participant from "../Participant";
@@ -12,6 +10,7 @@ import {
     StyledAttendeesContainer,
     StyledParticipantContainer,
 } from "./styles";
+import AspectRatio from "../../../assets/in-depo/aspect-ratio-16-8.svg";
 
 enum LayoutSize {
     default,
@@ -46,8 +45,6 @@ const VideoConference = ({
     const { participantsStatus } = useGetParticipantStatus();
     const participants = [localParticipant, ...Array.from(attendees.values())];
     const witness = participants.find((participant) => JSON.parse(participant.identity).role === "Witness");
-    const [windowWidth] = useContext(WindowSizeContext);
-    const widthMorethanLg = windowWidth >= parseInt(theme.default.breakpoints.lg, 10);
     const participantsFiltered = participants.filter(
         (participant) => isBreakroom || JSON.parse(participant.identity).role !== "Witness"
     );
@@ -67,7 +64,7 @@ const VideoConference = ({
     }, [layoutSize]);
 
     return (
-        <StyledVideoConferenceWrapper isGridLayout={layoutClass === "grid"}>
+        <StyledVideoConferenceWrapper layout={layoutClass}>
             <StyledVideoConference
                 className={`${layoutClass} ${isBreakroom ? "breakrooms" : ""}`}
                 ref={videoConferenceContainer}
@@ -82,8 +79,9 @@ const VideoConference = ({
                                     : witness?.sid === localParticipant.sid
                             }
                             timeZone={timeZone}
-                            participant={isBreakroom ? participants[1] : witness}
+                            participant={witness}
                             isWitness
+                            isVideoOnly={layoutClass === "default"}
                             isMuted={
                                 enableMuteUnmute &&
                                 !!(witness && participantsStatus[JSON.parse(witness?.identity)?.email]?.isMuted)
@@ -91,7 +89,11 @@ const VideoConference = ({
                         />
                     </StyledDeponentContainer>
                 )}
-                <StyledAttendeesContainer participantsLength={participantsFiltered.length} layout={layoutClass}>
+                <StyledAttendeesContainer
+                    participantsLength={participantsFiltered.length}
+                    layout={layoutClass}
+                    isBreakroom={isBreakroom}
+                >
                     {participantsFiltered.map((participant: RemoteParticipant, i) => (
                         <StyledParticipantContainer
                             key={participant.sid}
@@ -99,7 +101,6 @@ const VideoConference = ({
                             participantsLength={participantsFiltered.length}
                             layout={layoutClass}
                             isBreakrooms={isBreakroom}
-                            isWitness={JSON.parse(participant.identity).role === "Witness"}
                         >
                             <Participant
                                 isLocal={participant?.sid === localParticipant?.sid}
@@ -108,15 +109,14 @@ const VideoConference = ({
                                     !!participantsStatus[JSON.parse(participant.identity)?.email]?.isMuted
                                 }
                                 participant={participant}
-                                isSingle={
-                                    participantsFiltered.length === 1 &&
-                                    (isBreakroom || !widthMorethanLg || layoutClass !== "vertical")
-                                }
+                                isVideoOnly={layoutClass === "default"}
+                                isSingle={participantsFiltered.length === 1}
                             />
                         </StyledParticipantContainer>
                     ))}
                 </StyledAttendeesContainer>
             </StyledVideoConference>
+            <img src={AspectRatio} alt="16/8" className="aspect-ratio" />
         </StyledVideoConferenceWrapper>
     );
 };

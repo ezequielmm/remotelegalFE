@@ -3,7 +3,12 @@ import { Progress } from "antd";
 import { getPX, getREM } from "../../../constants/styles/utils";
 import { Theme } from "../../../types/ThemeType";
 
-export const StyledParticipantMask = styled.div<{ highlight?: boolean; isWitness?: boolean; isSingle?: boolean }>`
+export const StyledParticipantMask = styled.div<{
+    highlight?: boolean;
+    isSingle?: boolean;
+    isVideoOnly?: boolean;
+    isWitness?: boolean;
+}>`
     border-radius: ${({ theme }) => getPX(theme.default.borderRadiusBase, theme.default.baseUnit)};
     overflow: hidden;
     transform: translateZ(0); // Fix Safari stacking context problem
@@ -15,62 +20,51 @@ export const StyledParticipantMask = styled.div<{ highlight?: boolean; isWitness
 
     .aspect-ratio {
         height: 100%;
+        width: 100%;
+        max-height: 100%;
+        max-width: 100%;
         display: block;
+        object-fit: contain;
     }
 
     video {
         width: 100%;
         height: 100%;
+        max-height: 100%;
+        max-width: 100%;
+        object-fit: contain;
         position: absolute;
-        object-fit: cover;
         z-index: -1; // Fix Safari stacking context problem
     }
 
-    ${({ isWitness, isSingle }) => {
-        if (isWitness) {
-            return `
-                width: 100%;
-                height: max-content;
-
+    ${({ isVideoOnly, isWitness, isSingle, theme }) =>
+        isVideoOnly
+            ? `
+                width: ${isWitness || isSingle ? "100%" : "max-content"};
+                height: ${isWitness || isSingle ? "max-content" : ""};
+                
                 .aspect-ratio {
-                    max-height: 48vh;
-                    width: 100%;
+                    max-height: ${isSingle ? "100%" : "unset"};
+                    width: ${isSingle ? "100%" : "unset"};
+                    max-width: ${isWitness || isSingle ? "" : "unset"};
                 }
-            `;
-        }
 
-        if (isSingle) {
-            return `
-                width: 100%;
-
-                .aspect-ratio {
-                    max-height: 100%;
+                @media (max-width: ${theme.default.breakpoints.md}) {
                     width: 100%;
+                    height: ${isWitness ? "100%" : "max-content"};
+                    aspect-ratio: 16/9;
+
+                    @-moz-document url-prefix() {
+                        height: inherit;
+                    }
+            
+                    .aspect-ratio {
+                        max-height: unset;
+                        width: 100%;
+                    }
                 }
-            `;
-        }
-
-        return `
-            width: max-content;
-            aspect-ratio: 16/9;
-
-            .aspect-ratio {
-                max-height: unset;
-                width: unset;
-            }
-        `;
-    }}
-
-    @media (max-width: ${({ theme }) => theme.default.breakpoints.md}) {
-        width: auto;
-        height: calc(30vh - 1rem);
-        aspect-ratio: 16/9;
-
-        .aspect-ratio {
-            max-height: unset;
-            width: unset;
-        }
-    }
+            `
+            : ""}
 
     &:before {
         width: 100%;
