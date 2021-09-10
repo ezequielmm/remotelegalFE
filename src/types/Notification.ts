@@ -17,6 +17,7 @@ export enum NotificationAction {
     delete = "delete",
     start = "start",
     error = "error",
+    close = "close",
 }
 export interface Notification {
     entityType: NotificationEntityType;

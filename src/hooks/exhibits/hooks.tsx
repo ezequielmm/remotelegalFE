@@ -229,7 +229,25 @@ export const useCloseSharedExhibit = () => {
     const { state, deps, dispatch } = useContext(GlobalStateContext);
     const { depositionID } = useParams<{ depositionID: string }>();
     const { sendAnnotation } = useExhibitSendAnnotation();
-    const { dataTrack, message, currentExhibit, exhibitDocument, stampLabel, stamp, rawAnnotations } = state.room;
+    const { currentExhibit, exhibitDocument, stampLabel, stamp, rawAnnotations } = state.room;
+    const { subscribeToGroup, unsubscribeMethodFromGroup } = useSignalR("/depositionHub");
+
+    useEffect(() => {
+        const onReceiveClose = (message: Notification) => {
+            if (
+                message.action === NotificationAction.close &&
+                currentExhibit &&
+                currentExhibit.id === message.content
+            ) {
+                dispatch(actions.stopShareExhibit());
+            }
+        };
+        subscribeToGroup("ReceiveNotification", onReceiveClose);
+        return () => {
+            unsubscribeMethodFromGroup("ReceiveNotification", onReceiveClose);
+        };
+    }, [subscribeToGroup, unsubscribeMethodFromGroup, dispatch, currentExhibit]);
+
     const [closeSharedExhibit, pendingCloseSharedExhibit] = useAsyncCallback(async () => {
         if (stampLabel) {
             if (stamp) {
@@ -241,21 +259,14 @@ export const useCloseSharedExhibit = () => {
                     details: convertToXfdf(annotationString, AnnotationAction.Modify),
                 });
             }
+
             await deps.apiService.closeStampedExhibit({ depositionID, stampLabel });
             dispatch(actions.addStamp(null));
         } else {
             await deps.apiService.closeExhibit({ depositionID });
         }
         dispatch(actions.stopShareExhibit());
-        if (currentExhibit && dataTrack) {
-            dataTrack.send(JSON.stringify({ module: "closeSharedExhibit", value: currentExhibit }));
-        }
-    }, [exhibitDocument, stamp, stampLabel, dataTrack, rawAnnotations]);
-
-    if (message.module === "closeSharedExhibit" && message?.value?.id === currentExhibit?.id) {
-        dispatch(actions.stopShareExhibit());
-        message.module = null;
-    }
+    }, [exhibitDocument, stamp, stampLabel, rawAnnotations]);
 
     return {
         closeSharedExhibit,
