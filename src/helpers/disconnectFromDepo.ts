@@ -13,6 +13,10 @@ const disconnectFromDepo = (
 ) => {
     const initialState = {
         info: null,
+        resetRecorder: false,
+        stopRecorder: false,
+        changeVideoSource: false,
+        changeAudioSource: false,
         stamp: null,
         startTime: "",
         mockDepoRoom: null,

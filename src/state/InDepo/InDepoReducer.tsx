@@ -14,6 +14,10 @@ export interface IRoom {
     info?: object;
     systemSettings?: SystemSettings;
     newSpeaker?: string;
+    stopRecorder?: boolean;
+    resetRecorder?: boolean;
+    changeVideoSource?: boolean;
+    changeAudioSource?: boolean;
     initialCameraStatus?: boolean;
     stamp?: Document;
     publishedAudioTrackStatus?: boolean;
@@ -53,6 +57,10 @@ export const RoomReducerInitialState: IRoom = {
     info: null,
     startTime: "",
     systemSettings: null,
+    changeVideoSource: false,
+    resetRecorder: false,
+    stopRecorder: false,
+    changeAudioSource: false,
     publishedAudioTrackStatus: null,
     stamp: null,
     mockDepoRoom: null,
@@ -280,6 +288,26 @@ const RoomReducer: Reducer<IRoom, IAction> = (state: IRoom, action: IAction): IR
                 publishedAudioTrackStatus: action.payload,
             };
 
+        case ACTION_TYPE.CHANGE_VIDEO_SOURCE:
+            return {
+                ...state,
+                changeVideoSource: action.payload,
+            };
+        case ACTION_TYPE.CHANGE_AUDIO_SOURCE:
+            return {
+                ...state,
+                changeAudioSource: action.payload,
+            };
+        case ACTION_TYPE.STOP_RECORDER:
+            return {
+                ...state,
+                stopRecorder: action.payload,
+            };
+        case ACTION_TYPE.RESET_RECORDER:
+            return {
+                ...state,
+                resetRecorder: action.payload,
+            };
         default:
             return state;
     }

@@ -23,10 +23,7 @@ export enum MediaStreamTypes {
 }
 
 export const MediaStreamConstraints = {
-    audioinput: {
-        echoCancellation: true,
-        noiseSuppression: true,
-    },
+    audioinput: {},
     videoinput: {
         aspectRatio: 1.777777777777778,
         facingMode: "user",

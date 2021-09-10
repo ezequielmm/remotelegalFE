@@ -45,7 +45,7 @@ const useTranscriptAudio = (doNotConnectToSocket = false, sampleRate: number) =>
                 offRecord: !isRecording,
             });
         }
-    }, [sendMessage, isRecording, signalR, depositionID]);
+    }, [sendMessage, isRecording, signalR, depositionID, sampleRate]);
 
     useEffect(() => {
         let manageReceiveNotification;
@@ -76,7 +76,7 @@ const useTranscriptAudio = (doNotConnectToSocket = false, sampleRate: number) =>
             sendMessage("UploadTranscription", {
                 depositionId: depositionID,
                 audio: new Uint8Array(audio),
-                sampleRate: sampleRate,
+                sampleRate,
             });
         },
         [sendMessage]

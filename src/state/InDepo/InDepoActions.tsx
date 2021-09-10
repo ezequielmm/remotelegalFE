@@ -8,6 +8,10 @@ import { ExhibitFile } from "../../types/ExhibitFile";
 
 export enum ACTION_TYPE {
     ADD_STAMP = "ADD_STAMP",
+    STOP_RECORDER = "STOP_RECORDER",
+    RESET_RECORDER = "RESET_RECORDER",
+    CHANGE_VIDEO_SOURCE = "CHANGE_VIDEO_SOURCE",
+    CHANGE_AUDIO_SOURCE = "CHANGE_AUDIO_SOURCE",
     ADD_SYSTEM_SETTINGS = "ADD_SYSTEM_SETTINGS",
     SET_PUBLISHED_AUDIO_TRACK_STATUS = "SET_PUBLISHED_AUDIO_TRACK_STATUS",
     CHANGE_SPEAKER = "CHANGE_SPEAKER",
@@ -194,6 +198,22 @@ const actions = {
     }),
     setSystemSettings: (payload) => ({
         type: ACTION_TYPE.ADD_SYSTEM_SETTINGS,
+        payload,
+    }),
+    changeVideoSource: (payload: boolean) => ({
+        type: ACTION_TYPE.CHANGE_VIDEO_SOURCE,
+        payload,
+    }),
+    changeAudioSource: (payload: boolean) => ({
+        type: ACTION_TYPE.CHANGE_AUDIO_SOURCE,
+        payload,
+    }),
+    stopRecorder: (payload: boolean) => ({
+        type: ACTION_TYPE.STOP_RECORDER,
+        payload,
+    }),
+    resetRecorder: (payload: boolean) => ({
+        type: ACTION_TYPE.RESET_RECORDER,
         payload,
     }),
 };
