@@ -23,6 +23,7 @@ interface MediaViewerProps extends IVideoPlayer {
     readOnly?: boolean;
     onMediaReady?: () => void;
     onError?: () => void;
+    onStamp?: (stampLabel: string) => void;
 }
 interface stampProps {
     selected?: boolean;
@@ -62,6 +63,7 @@ export default function MediaViewer({
     onInit,
     onMediaReady,
     onError,
+    onStamp,
 }: MediaViewerProps) {
     const { state, dispatch } = useContext(GlobalStateContext);
     const { timeZone, stampLabel } = state.room;
@@ -91,6 +93,10 @@ export default function MediaViewer({
         setStampSelected(!stampSelected);
     };
 
+    const handleDeleteStamp = () => {
+        onStamp("");
+    };
+
     return (
         <StyledMediaViewerContainer>
             <VideoPlayer
@@ -118,7 +124,7 @@ export default function MediaViewer({
                             data-testid="stamp_label_delete_button"
                             type="secondary"
                             size="small"
-                            onClick={() => dispatch(actions.setStampLabel(""))}
+                            onClick={handleDeleteStamp}
                         >
                             <Icon icon={DeleteIcon} size={8} style={{ color: "white" }} />
                         </StyledDeleteButton>

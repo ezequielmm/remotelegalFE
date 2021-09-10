@@ -18,6 +18,12 @@ jest.mock("react-router-dom", () => ({
     }),
 }));
 
+jest.mock("../../hooks/useSignalR", () => () => ({
+    subscribeToGroup: jest.fn(),
+    unsubscribeMethodFromGroup: jest.fn(),
+    signalR: true,
+}));
+
 describe("Entered Exhibits", () => {
     let customDeps;
     beforeEach(() => {

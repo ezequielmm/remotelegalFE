@@ -9,11 +9,12 @@ import useAsyncCallback from "../useAsyncCallback";
 import * as CONSTANTS from "../../constants/exhibits";
 import actions from "../../state/InDepo/InDepoActions";
 import useSignalR from "../useSignalR";
-import { NotificationEntityType } from "../../types/Notification";
+import { Notification, NotificationAction, NotificationEntityType } from "../../types/Notification";
 import { convertToXfdf } from "../../helpers/convertToXfdf";
 import { AnnotationAction } from "../../types/Annotation";
 import { serializeToString } from "../../helpers/serializeToString";
 import { HTTP_METHOD } from "../../models/general";
+import Message from "../../components/Message";
 
 interface HandleFetchFilesSorterType {
     field?: Key | Key[];
@@ -321,4 +322,40 @@ export const useBringAllToMe = () => {
         setBringAllToPage,
         bringAllToMe,
     };
+};
+
+export const useStampMediaExhibits = (): ((stampLabel: string) => void) => {
+    const { dispatch } = useContext(GlobalStateContext);
+    const { depositionID } = useParams<{ depositionID: string }>();
+    const { subscribeToGroup, unsubscribeMethodFromGroup, signalR, isReconnected, sendMessage } =
+        useSignalR("/depositionHub");
+
+    useEffect(() => {
+        const onReceiveStamp = (message: Notification) => {
+            if (message.entityType === NotificationEntityType.stamp && message?.content?.stampLabel !== undefined) {
+                dispatch(actions.setStampLabel(message.content.stampLabel));
+            }
+            if (message.action === NotificationAction.error) {
+                Message({
+                    content: message?.content?.message || "",
+                    type: "error",
+                    duration: 3,
+                });
+            }
+        };
+        subscribeToGroup("ReceiveNotification", onReceiveStamp);
+        return () => {
+            unsubscribeMethodFromGroup("ReceiveNotification", onReceiveStamp);
+        };
+    }, [subscribeToGroup, unsubscribeMethodFromGroup, dispatch]);
+
+    return useCallback(
+        (stampLabel: string) => {
+            if ((signalR?.connectionState === "Connected" || isReconnected) && depositionID) {
+                dispatch(actions.setStampLabel(stampLabel));
+                sendMessage("UpdateMediaStamp", { depositionId: depositionID, stampLabel });
+            }
+        },
+        [depositionID, isReconnected, signalR?.connectionState, sendMessage, dispatch]
+    );
 };

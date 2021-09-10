@@ -8,6 +8,7 @@ export enum NotificationEntityType {
     lockBreakRoom = "lockBreakRoom",
     endDeposition = "endDeposition",
     exhibit = "exhibit",
+    stamp = "stamp",
 }
 
 export enum NotificationAction {
@@ -17,14 +18,8 @@ export enum NotificationAction {
     start = "start",
     error = "error",
 }
-
-export interface NotificationParticipantStatusContent {
-    isMuted: boolean;
-    email: string;
-}
-
-export type Notification = {
+export interface Notification {
     entityType: NotificationEntityType;
     action: NotificationAction;
-    content: NotificationParticipantStatusContent;
-};
+    content: Record<string, any>;
+}
