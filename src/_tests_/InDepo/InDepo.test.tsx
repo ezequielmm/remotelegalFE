@@ -1,4 +1,4 @@
-import { fireEvent, waitFor, waitForDomChange, waitForElement } from "@testing-library/react";
+import { fireEvent, waitFor, waitForDomChange, waitForElement, screen } from "@testing-library/react";
 import { createMemoryHistory } from "history";
 import AudioRecorder from "audio-recorder-polyfill";
 import React from "react";
@@ -18,6 +18,7 @@ import { currentExhibit } from "../mocks/currentExhibit";
 import * as AUTH from "../mocks/Auth";
 import { getUserDepoStatusWithParticipantAdmitted } from "../constants/preJoinDepo";
 import "mutationobserver-shim";
+import { DevicesStatus } from "../../constants/TroubleShootUserDevices";
 
 jest.mock("@microsoft/signalr");
 
@@ -47,15 +48,21 @@ const history = createMemoryHistory();
 
 const PreDepoRoute = () => <div>PRE_DEPO</div>;
 const WaitingRoomRoute = () => <div>WAITING ROOM</div>;
-window.HTMLElement.prototype.scrollIntoView = jest.fn();
+
+beforeEach(() => localStorage.clear());
+afterEach(() => localStorage.clear());
 
 // TODO: Find a better way to mock Twilio (eg, adding it to DI system)
 const mockVideoTracks = jest.fn();
 const mockAudioTracks = jest.fn();
+const mockVideoLogger = jest.fn();
 jest.mock("twilio-video", () => ({
-    ...jest.requireActual("twilio-video"),
+    ...(jest.requireActual("twilio-video") as any),
     LocalDataTrack: function dataTrack() {
         return { send: jest.fn() };
+    },
+    Logger: {
+        getLogger: () => mockVideoLogger(),
     },
     createLocalVideoTrack: (args) => mockVideoTracks(args),
     createLocalAudioTrack: (args) => mockAudioTracks(args),
@@ -242,6 +249,57 @@ test("VideoConference is shown if fetch is successful", async () => {
     history.push(TESTS_CONSTANTS.TEST_ROUTE);
     await waitForDomChange();
     await waitForElement(() => getByTestId("videoconference"));
+});
+
+test("Logger is not called if option isn´t enabled", async () => {
+    customDeps.apiService.joinDeposition = jest.fn().mockResolvedValue(TESTS_CONSTANTS.JOIN_DEPOSITION_MOCK);
+    renderWithGlobalContext(
+        <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,
+        customDeps,
+        {
+            ...rootReducer,
+            initialState: {
+                room: {
+                    ...rootReducer.initialState.room,
+                },
+                user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+                signalR: { signalR: null },
+            },
+        } as any,
+        history
+    );
+
+    history.push(TESTS_CONSTANTS.TEST_ROUTE);
+    expect(mockVideoLogger).not.toHaveBeenCalled();
+});
+
+test("Logger is called if option is enabled", async () => {
+    customDeps.apiService.getSystemSettings = jest.fn().mockResolvedValue({
+        EnableBreakrooms: "enabled",
+        EnableRealTimeTab: "enabled",
+        EnableLiveTranscriptions: "enabled",
+        EnableTwilioLogs: "enabled",
+    });
+    customDeps.apiService.joinDeposition = jest.fn().mockResolvedValue(TESTS_CONSTANTS.JOIN_DEPOSITION_MOCK);
+    renderWithGlobalContext(
+        <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,
+        customDeps,
+        {
+            ...rootReducer,
+            initialState: {
+                room: {
+                    ...rootReducer.initialState.room,
+                },
+                user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+                signalR: { signalR: null },
+            },
+        } as any,
+        history
+    );
+    history.push(TESTS_CONSTANTS.TEST_ROUTE);
+    await waitFor(() => {
+        expect(mockVideoLogger).toHaveBeenCalled();
+    });
 });
 
 test("Off the record is shown when isOnTheRecord is false", async () => {
@@ -633,6 +691,12 @@ describe("inDepo -> Exhibits view with a shared exhibit", () => {
                 ...rootReducer,
                 initialState: {
                     room: {
+                        systemSettings: {
+                            EnableBreakrooms: "enabled",
+                            EnableRealTimeTab: "enabled",
+                            EnableLiveTranscriptions: "enabled",
+                            EnableTwilioLogs: "enabled",
+                        },
                         ...rootReducer.initialState.room,
                     },
                     user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
@@ -660,6 +724,12 @@ describe("inDepo -> Exhibits view with a shared exhibit", () => {
                 initialState: {
                     room: {
                         ...rootReducer.initialState.room,
+                        systemSettings: {
+                            EnableBreakrooms: "enabled",
+                            EnableRealTimeTab: "enabled",
+                            EnableLiveTranscriptions: "enabled",
+                            EnableTwilioLogs: "enabled",
+                        },
                         dataTrack: dataTrackMock,
                         currentRoom: {
                             on: jest.fn(),
@@ -696,6 +766,12 @@ describe("inDepo -> Exhibits view with a shared exhibit", () => {
                 initialState: {
                     room: {
                         ...rootReducer.initialState.room,
+                        systemSettings: {
+                            EnableBreakrooms: "enabled",
+                            EnableRealTimeTab: "enabled",
+                            EnableLiveTranscriptions: "enabled",
+                            EnableTwilioLogs: "enabled",
+                        },
                         dataTrack: dataTrackMock,
                         currentRoom: {
                             on: jest.fn(),
@@ -730,6 +806,12 @@ describe("inDepo -> Exhibits view with a shared exhibit", () => {
                     room: {
                         ...rootReducer.initialState.room,
                         dataTrack: dataTrackMock,
+                        systemSettings: {
+                            EnableBreakrooms: "enabled",
+                            EnableRealTimeTab: "enabled",
+                            EnableLiveTranscriptions: "enabled",
+                            EnableTwilioLogs: "enabled",
+                        },
                         currentRoom: {
                             on: jest.fn(),
                             off: jest.fn(),
@@ -767,6 +849,12 @@ describe("inDepo -> Exhibits view with a shared exhibit", () => {
                 initialState: {
                     room: {
                         ...rootReducer.initialState.room,
+                        systemSettings: {
+                            EnableBreakrooms: "enabled",
+                            EnableRealTimeTab: "enabled",
+                            EnableLiveTranscriptions: "enabled",
+                            EnableTwilioLogs: "enabled",
+                        },
                         dataTrack: dataTrackMock,
                         currentRoom: {
                             on: jest.fn(),
@@ -820,7 +908,49 @@ it("calls createLocalTracks with the devices if they exist in localStorage", asy
         expect(mockVideoTracks).toHaveBeenCalledWith(TESTS_CONSTANTS.DEVICES_MOCK.video);
     });
 });
-it("calls create Tracks functions with null if the devices don´t exist in localStorage", async () => {
+it("calls sendParticipantDevices with updated devices if they are blocked", async () => {
+    mockVideoTracks.mockRejectedValue(Error("Permission denied"));
+    mockAudioTracks.mockRejectedValue(Error("Permission denied"));
+    customDeps.apiService.joinDeposition = jest.fn().mockResolvedValue(TESTS_CONSTANTS.JOIN_DEPOSITION_MOCK);
+    localStorage.setItem("selectedDevices", JSON.stringify(TESTS_CONSTANTS.DEVICES_MOCK));
+    renderWithGlobalContext(
+        <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,
+        customDeps,
+        {
+            ...rootReducer,
+            initialState: {
+                room: {
+                    ...rootReducer.initialState.room,
+                },
+                user: { currentUser: { firstName: "First Name", lastName: "Last Name" } } as any,
+                signalR: { signalR: null },
+            } as any,
+        },
+        history
+    );
+    history.push(TESTS_CONSTANTS.TEST_ROUTE);
+    await waitFor(() => {
+        expect(customDeps.apiService.sendParticipantDevices).toHaveBeenCalledWith(
+            "test1234",
+            TESTS_CONSTANTS.FIRST_DEVICES_BODY
+        );
+        expect(customDeps.apiService.sendParticipantDevices).toHaveBeenCalledWith("test1234", {
+            ...TESTS_CONSTANTS.FIRST_DEVICES_BODY,
+            camera: {
+                name: "",
+                status: DevicesStatus.blocked,
+            },
+        });
+        expect(customDeps.apiService.sendParticipantDevices).toHaveBeenCalledWith("test1234", {
+            ...TESTS_CONSTANTS.FIRST_DEVICES_BODY,
+            microphone: {
+                name: "",
+            },
+        });
+    });
+});
+
+it("doesn´t call create Tracks if the devices don´t exist in localStorage", async () => {
     customDeps.apiService.joinDeposition = jest.fn().mockResolvedValue(TESTS_CONSTANTS.JOIN_DEPOSITION_MOCK);
     renderWithGlobalContext(
         <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,
@@ -840,7 +970,31 @@ it("calls create Tracks functions with null if the devices don´t exist in local
 
     history.push(TESTS_CONSTANTS.TEST_ROUTE);
     await waitFor(() => {
-        expect(mockAudioTracks).toHaveBeenCalledWith(null);
-        expect(mockVideoTracks).toHaveBeenCalledWith(null);
+        expect(mockAudioTracks).not.toHaveBeenCalled();
+        expect(mockVideoTracks).not.toHaveBeenCalled();
+    });
+});
+
+it("should show a toast when SignalR is trying to reconnect", async () => {
+    customDeps.apiService.joinDeposition = jest.fn().mockResolvedValue(TESTS_CONSTANTS.JOIN_DEPOSITION_MOCK);
+    localStorage.setItem("selectedDevices", JSON.stringify(TESTS_CONSTANTS.DEVICES_MOCK));
+    renderWithGlobalContext(
+        <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,
+        customDeps,
+        {
+            ...rootReducer,
+            initialState: {
+                room: {
+                    ...rootReducer.initialState.room,
+                },
+                user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+                signalR: { signalR: null, signalRConnectionStatus: { isReconnected: false, isReconnecting: true } },
+            },
+        },
+        history
+    );
+
+    await waitFor(() => {
+        expect(screen.getByTestId(MODULE_CONSTANTS.RECONNECTING_ALERT_MESSAGE_TEST_ID)).toBeInTheDocument();
     });
 });

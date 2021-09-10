@@ -1,5 +1,5 @@
-import { useContext, useEffect, useMemo, useRef, useState } from "react";
-import { connect, createLocalAudioTrack, createLocalVideoTrack, LocalDataTrack, Room } from "twilio-video";
+import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
+import { connect, createLocalAudioTrack, createLocalVideoTrack, LocalDataTrack, Room, Logger } from "twilio-video";
 import { useHistory, useParams } from "react-router";
 import useSound from "use-sound";
 import { GlobalStateContext } from "../../state/GlobalState";
@@ -21,6 +21,10 @@ import stopAllTracks from "../../helpers/stopAllTracks";
 import beep from "../../assets/sounds/Select.mp3";
 import useSendSystemUserInfo from "../techInfo/useSendUserSystemInfo";
 import useSendParticipantDevices from "../techInfo/sendParticipantDevices";
+import { setTranscriptionMessages } from "../../helpers/formatTranscriptionsMessages";
+import { TranscriptionModel } from "../../models";
+import { useSystemSetting } from "./useSystemSettings";
+import { DevicesStatus } from "../../constants/TroubleShootUserDevices";
 
 export const useKillDepo = () => {
     const { deps } = useContext(GlobalStateContext);
@@ -75,21 +79,28 @@ export const useJoinBreakroom = () => {
             const tracks = [];
             const token: any = await generateBreakroomToken();
             if (!token) return "";
-
             try {
-                const audioTrack = await createLocalAudioTrack(devices?.audio ? devices.audio : null);
-                tracks.push(audioTrack);
+                if (devices?.audio) {
+                    const audioTrack = await createLocalAudioTrack(devices.audio);
+                    tracks.push(audioTrack);
+                }
             } catch (error) {
-                console.error(error);
+                console.error(
+                    `(useJoinBreakroom hook) error creating local audio track of breakroom ${breakroomID}:`,
+                    error
+                );
             }
-
             try {
-                const videoTrack = await createLocalVideoTrack(devices?.video ? devices.video : null);
-                tracks.push(videoTrack);
+                if (devices?.video) {
+                    const videoTrack = await createLocalVideoTrack(devices.video);
+                    tracks.push(videoTrack);
+                }
             } catch (error) {
-                console.error(error);
+                console.error(
+                    `(useJoinBreakroom hook) error creating local video track of breakroom ${breakroomID}:`,
+                    error
+                );
             }
-
             tracks.push(dataTrack);
 
             const room = await connect(token, {
@@ -130,6 +141,7 @@ export const useJoinDepositionForMockRoom = () => {
     const { dispatch } = useContext(GlobalStateContext);
     const [generateToken] = useGenerateDepositionToken();
     const [getBreakrooms] = useGetBreakrooms();
+    const [getSystemSettings] = useSystemSetting();
     const isMounted = useRef(true);
     const [play] = useSound(beep);
 
@@ -150,27 +162,58 @@ export const useJoinDepositionForMockRoom = () => {
             if (!shouldSendToPreDepo) {
                 history.push(`/deposition/join/${depositionID}`);
             }
+            const settings = await getSystemSettings();
+            dispatch(actions.setSystemSettings(settings));
             try {
-                const audioTrack = await createLocalAudioTrack(devices?.audio ? devices.audio : null);
-                tracks.push(audioTrack);
+                if (devices?.audio) {
+                    const audioTrack = await createLocalAudioTrack(devices.audio);
+                    tracks.push(audioTrack);
+                }
             } catch (error) {
-                console.error(error);
+                console.error(
+                    `(useJoinDepositionForMockRoom hook) error creating local audio track of deposition ${depositionID}:`,
+                    error
+                );
             }
-
             try {
-                const videoTrack = await createLocalVideoTrack(devices?.video ? devices.video : null);
-                tracks.push(videoTrack);
+                if (devices?.video) {
+                    const videoTrack = await createLocalVideoTrack(devices.video);
+                    tracks.push(videoTrack);
+                }
             } catch (error) {
-                console.log(error);
+                console.error(
+                    `(useJoinDepositionForMockRoom hook) error creating local video track of deposition ${depositionID}:`,
+                    error
+                );
             }
-
             tracks.push(dataTrack);
-
             const room = await connect(token, {
                 ...TWILIO_VIDEO_CONFIG,
                 name: depositionID,
                 tracks,
             });
+
+            if (settings.EnableTwilioLogs === "enabled") {
+                const logger = Logger.getLogger("twilio-video");
+                const originalFactory = logger.methodFactory;
+                logger.methodFactory = (methodName, logLevel, loggerName) => {
+                    const method = originalFactory(methodName, logLevel, loggerName);
+                    return (datetime, logLevel, component, message, data) => {
+                        method(datetime, logLevel, component, message, data);
+                        if (message === "event" && data.group === "signaling") {
+                            if (data.name === "closed") {
+                                if (data.level === "error") {
+                                    console.error(
+                                        "Connection to Twilio's signaling server abruptly closed:",
+                                        data.reason
+                                    );
+                                }
+                            }
+                        }
+                    };
+                };
+                logger.setLevel("debug");
+            }
 
             dispatch(actions.addUserTracks(tracks));
 
@@ -197,7 +240,7 @@ export const useJoinDepositionForMockRoom = () => {
     );
 };
 
-export const useJoinDeposition = () => {
+export const useJoinDeposition = (setTranscriptions: React.Dispatch<TranscriptionModel.Transcription[]>) => {
     const [depoRoom, setDepoRoom] = useState<Room>(undefined);
     const { dispatch } = useContext(GlobalStateContext);
     const [generateToken] = useGenerateDepositionToken();
@@ -219,6 +262,7 @@ export const useJoinDeposition = () => {
         };
     }, []);
     const [sendUserSystemInfo, , sendSystemUserInfoError] = useSendSystemUserInfo();
+    const [getSystemSettings] = useSystemSetting();
     const [sendParticipantDevices, , sendParticipantDevicesError] = useSendParticipantDevices();
     const [getDepositionPermissions] = useDepositionPermissions();
     const [getTranscriptions] = useGetTranscriptions();
@@ -230,27 +274,31 @@ export const useJoinDeposition = () => {
     const devices = JSON.parse(localStorage.getItem("selectedDevices"));
     return useAsyncCallback(
         async (depositionID: string) => {
+            const participantDevices = {
+                camera: {
+                    name: devices?.videoForBE.name || "",
+                    status: devices?.videoForBE.status,
+                },
+                microphone: {
+                    name: devices?.microphoneForBE.name || "",
+                },
+                speakers: {
+                    name: devices?.speakersForBE.name || "",
+                },
+            };
             try {
                 await sendUserSystemInfo();
             } catch {
-                console.error(`Couldn´t send system user info because of: ${sendSystemUserInfoError}`);
+                console.error(
+                    `Couldn't send system user info of deposition ${depositionID} because of: ${sendSystemUserInfoError}`
+                );
             }
             try {
-                const participantDevices = {
-                    camera: {
-                        name: devices?.videoForBE.name || "",
-                        status: devices?.videoForBE.status,
-                    },
-                    microphone: {
-                        name: devices?.microphoneForBE.name || "",
-                    },
-                    speakers: {
-                        name: devices?.speakersForBE.name || "",
-                    },
-                };
                 await sendParticipantDevices(participantDevices);
             } catch {
-                console.error(`Couldn´t send system user info because of: ${sendParticipantDevicesError}`);
+                console.error(
+                    `Couldn't send system user info of deposition ${depositionID} because of: ${sendParticipantDevicesError}`
+                );
             }
 
             const dataTrack = new LocalDataTrack();
@@ -273,36 +321,93 @@ export const useJoinDeposition = () => {
             const transcriptions = await getTranscriptions();
             const breakrooms = await getBreakrooms();
             const events = await getDepositionEvents(depositionID);
+            const settings = await getSystemSettings();
+            dispatch(actions.setSystemSettings(settings));
             const tracks = [];
             if (isSharing) {
                 fetchExhibitFileInfo(depositionID);
             }
-
             try {
-                const audioTrack = await createLocalAudioTrack(devices?.audio ? devices.audio : null);
-                tracks.push(audioTrack);
+                if (devices?.audio) {
+                    const audioTrack = await createLocalAudioTrack(devices.audio);
+                    tracks.push(audioTrack);
+                }
             } catch (error) {
-                console.error(error);
+                console.error(
+                    `useJoinDeposition hook: error creating local audio track of deposition ${depositionID}:`,
+                    error
+                );
+                const newDevicesBody = {
+                    ...participantDevices,
+                    microphone: {
+                        ...participantDevices.microphone,
+                        name: "",
+                    },
+                };
+                try {
+                    await sendParticipantDevices(newDevicesBody);
+                } catch {
+                    console.error(
+                        `Couldn't send system user info of deposition ${depositionID} because of: ${sendParticipantDevicesError}`
+                    );
+                }
             }
-
             try {
-                const videoTrack = await createLocalVideoTrack(devices?.video ? devices.video : null);
-                tracks.push(videoTrack);
+                if (devices?.video) {
+                    const videoTrack = await createLocalVideoTrack(devices.video);
+                    tracks.push(videoTrack);
+                }
             } catch (error) {
-                console.error(error);
+                console.error(
+                    `useJoinDeposition hook: error creating local video track of deposition ${depositionID}:`,
+                    error
+                );
+                const newDevicesBody = {
+                    ...participantDevices,
+                    camera: {
+                        ...participantDevices.camera,
+                        name: "",
+                        status:
+                            error.message === "Permission denied" ? DevicesStatus.blocked : DevicesStatus.unavailable,
+                    },
+                };
+                try {
+                    await sendParticipantDevices(newDevicesBody);
+                } catch {
+                    console.error(
+                        `Couldn't send system user info of deposition ${depositionID} because of: ${sendParticipantDevicesError}`
+                    );
+                }
             }
-
+            if (settings.EnableTwilioLogs === "enabled") {
+                const logger = Logger.getLogger("twilio-video");
+                const originalFactory = logger.methodFactory;
+                logger.methodFactory = (methodName, logLevel, loggerName) => {
+                    const method = originalFactory(methodName, logLevel, loggerName);
+                    return (datetime, logLevel, component, message, data) => {
+                        method(datetime, logLevel, component, message, data);
+                        if (message === "event" && data.group === "signaling") {
+                            if (data.name === "closed") {
+                                if (data.level === "error") {
+                                    console.error(
+                                        "Connection to Twilio's signaling server abruptly closed:",
+                                        data.reason
+                                    );
+                                }
+                            }
+                        }
+                    };
+                };
+                logger.setLevel("debug");
+            }
             tracks.push(dataTrack);
-
             const room = await connect(token, {
                 ...TWILIO_VIDEO_CONFIG,
                 name: depositionID,
                 tracks,
             });
-
             dispatch(actions.addUserTracks(tracks));
             setDepoRoom(room);
-
             if (!isMounted.current) {
                 stopAllTracks(tracks);
                 return disconnectFromDepo(room, dispatch);
@@ -313,10 +418,9 @@ export const useJoinDeposition = () => {
             dispatch(actions.setIsRecording(isOnTheRecord));
             dispatch(actions.setPermissions(permissions));
             dispatch(actions.setBreakrooms(breakrooms || []));
-            dispatch(actions.setTranscriptions({ transcriptions: transcriptions || [], events: events || [] }));
             dispatch(actions.setTimeZone(timeZone));
             dispatch(actions.addDataTrack(dataTrack));
-
+            setTranscriptions(setTranscriptionMessages(transcriptions, events));
             return configParticipantListeners(
                 room,
                 (callbackRoom) => {

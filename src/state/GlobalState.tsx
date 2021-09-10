@@ -1,4 +1,4 @@
-import React, { memo, PropsWithChildren, useReducer } from "react";
+import React, { memo, PropsWithChildren, useMemo, useReducer } from "react";
 import { Deps, IGlobalContext, IGlobalReducer, IGlobalState } from "../models/general";
 import combineReducers from "./utils/combineReducers";
 import RoomReducer, { RoomReducerInitialState } from "./InDepo/InDepoReducer";
@@ -48,9 +48,16 @@ export const GlobalState = memo(
         }
         const { reducer, initialState: globalInitialState } = globalReducer;
         const [state, dispatch] = useReducer(reducer, globalInitialState);
-
+        const globalStateContextValue = useMemo(
+            () => ({
+                state,
+                dispatch,
+                deps,
+            }),
+            [deps, state, dispatch]
+        );
         return (
-            <GlobalStateContext.Provider value={{ state, dispatch, deps } as IGlobalContext}>
+            <GlobalStateContext.Provider value={globalStateContextValue as IGlobalContext}>
                 {children}
             </GlobalStateContext.Provider>
         );

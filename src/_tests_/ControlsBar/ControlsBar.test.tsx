@@ -64,6 +64,7 @@ jest.mock("react-router", () => ({
 }));
 
 beforeEach(() => {
+    window.MediaStream = (jest.fn() as any).mockImplementation(() => {});
     Object.defineProperty(global.navigator, "mediaDevices", {
         writable: true,
         value: {
@@ -97,6 +98,7 @@ beforeEach(() => {
         realTimeOpen: false,
         canRecord: false,
         canEnd: false,
+        settings: { EnableBreakrooms: "enabled", EnableRealTimeTab: "enabled", EnableLiveTranscriptions: "enabled" },
     };
 });
 
@@ -195,9 +197,29 @@ test("Trigger handleJoinBreakroom when click on JOIN Breakroom if is not recordi
 });
 
 test("Should call setParticipantStatus endpoint with muted in true by default", async () => {
+    localStorage.clear();
+    const initialState = {
+        ...rootReducer,
+        initialState: {
+            depositionsList: {
+                sorting: "",
+                pageNumber: 0,
+                filter: undefined,
+            } as any,
+            user: { ...rootReducer.initialState.user },
+            postDepo: { ...rootReducer.initialState.postDepo },
+            signalR: { ...rootReducer.initialState.signalR },
+            generalUi: { ...rootReducer.initialState.generalUi },
+            room: {
+                ...rootReducer.initialState.room,
+                newSpeaker: null,
+                publishedAudioTrackStatus: null,
+            },
+        },
+    };
     const customDeps = getMockDeps();
     customDeps.apiService.setParticipantStatus = jest.fn().mockResolvedValue({});
-    const { findByTestId } = renderWithGlobalContext(<ControlsBar {...props} exhibitsOpen />, customDeps);
+    const { findByTestId } = renderWithGlobalContext(<ControlsBar {...props} exhibitsOpen />, customDeps, initialState);
     fireEvent.click(await findByTestId("audio"));
     await waitForDomChange();
     expect(customDeps.apiService.setParticipantStatus).toHaveBeenCalledWith({ isMuted: true });
@@ -472,4 +494,12 @@ test("Should display Settings modal", async () => {
     await waitFor(() => {
         expect(screen.getByTestId("setting_in_depo")).toBeInTheDocument();
     });
+});
+
+it("Should hide buttons depending on settings", async () => {
+    const settings = { EnableBreakrooms: "disabled", RealTime: "disabled" };
+    renderWithGlobalContext(<ControlsBar {...props} settings={settings} />);
+
+    expect(screen.queryByTestId("breakrooms")).toBeNull();
+    expect(screen.queryByTestId("realtime")).not.toBeInTheDocument();
 });

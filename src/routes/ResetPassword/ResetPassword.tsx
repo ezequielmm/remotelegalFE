@@ -33,13 +33,15 @@ const ResetPassword = () => {
 
     const { isAuthenticated } = useAuthentication();
 
+    const handleSubmit = () => !isInvalidEMail(emailValue) && onSubmit(emailValue);
+
     return isAuthenticated ? (
         <Redirect to="/depositions" />
     ) : (
         <Container>
             <Row justify="center" align="middle">
                 <Col xs={20} sm={16} lg={14} xxl={12}>
-                    <Form onFinish={() => onSubmit(emailValue)} layout="vertical">
+                    <Form onFinish={handleSubmit} layout="vertical" data-testid="reset_pass_form">
                         <Space direction="vertical" size="large" fullWidth>
                             {response ? (
                                 <CodeSent

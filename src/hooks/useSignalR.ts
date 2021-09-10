@@ -57,25 +57,30 @@ const useSignalR = (
 
         newSignalR.onclose((error) => {
             if (error) {
-                datadogLogs.logger.error(`SignalR onClose in hub: ${url} with error: ${error}`, { hub: url, error });
+                datadogLogs.logger.error(`SignalR onClose in hub: ${url} with error: ${error}`, {
+                    hub: url,
+                    error,
+                });
             } else {
-                datadogLogs.logger.info(`SingalR onClose in hub: ${url}`, { url });
+                datadogLogs.logger.info(`SignalR onClose in hub: ${url}`, { url });
             }
         });
 
         newSignalR.onreconnecting((error) => {
             setIsReconnected(false);
+            dispatch(actions.setSignalRConnectionStatus({ isReconnected: false, isReconnecting: true }));
             if (error) {
-                datadogLogs.logger.error(`SingalR Reconnecting in hub: ${url} with error: ${error}`, {
+                datadogLogs.logger.error(`SignalR Reconnecting in hub: ${url} with error: ${error}`, {
                     hub: url,
                     error,
                 });
             } else {
-                datadogLogs.logger.info(`SingalR Reconnecting in hub: ${url}`, { hub: url });
+                datadogLogs.logger.info(`SignalR Reconnecting in hub: ${url}`, { hub: url });
             }
         });
 
         newSignalR.onreconnected((connectionId) => {
+            dispatch(actions.setSignalRConnectionStatus({ isReconnected: true, isReconnecting: false }));
             setIsReconnected(true);
             datadogLogs.logger.info(`SignalR Reconnected in hub: ${url} with connectionId: ${connectionId}`, {
                 connectionId,
@@ -86,7 +91,10 @@ const useSignalR = (
         try {
             await newSignalR.start();
         } catch (error) {
-            datadogLogs.logger.error(`SignalR start in hub: ${url} with error: ${error}`, { hub: url, error });
+            datadogLogs.logger.error(`SignalR start in hub: ${url} with error: ${error}`, {
+                hub: url,
+                error,
+            });
         }
         if (setNewSignalRInstance) {
             setNewSignalR(newSignalR);

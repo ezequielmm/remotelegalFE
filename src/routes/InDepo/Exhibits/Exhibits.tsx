@@ -8,9 +8,9 @@ import * as CONSTANTS from "../../../constants/exhibits";
 import { useExhibitTabs } from "../../../hooks/exhibits/hooks";
 import actions from "../../../state/InDepo/InDepoActions";
 import { GlobalStateContext } from "../../../state/GlobalState";
-import useWindowSize from "../../../hooks/useWindowSize";
 import { theme } from "../../../constants/styles/theme";
 import LiveExhibits from "./LiveExhibits";
+import { WindowSizeContext } from "../../../contexts/WindowSizeContext";
 
 export interface exhibitsProps extends ContainerProps {
     togglerExhibits?: React.Dispatch<React.SetStateAction<boolean>> | ((value: React.SetStateAction<boolean>) => void);
@@ -20,11 +20,11 @@ export interface exhibitsProps extends ContainerProps {
 const Exhibits = ({ visible, togglerExhibits }: exhibitsProps) => {
     const { highlightKey, activeKey, setActiveKey } = useExhibitTabs();
     const { dispatch } = useContext(GlobalStateContext);
-    const [windowWidth] = useWindowSize();
+    const [windowWidth] = useContext(WindowSizeContext);
 
     return (
         <>
-            {windowWidth >= parseInt(theme.default.breakpoints.sm, 10) ? (
+            {windowWidth >= parseInt(theme.default.breakpoints.lg, 10) ? (
                 <StyledLayoutCotainer visible={visible}>
                     <StyledLayoutContent>
                         <div style={{ display: visible ? "block" : "none", height: "100%", overflow: "hidden" }}>

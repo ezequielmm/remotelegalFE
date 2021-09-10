@@ -1,6 +1,5 @@
 import { act, fireEvent, waitFor, waitForDomChange, waitForElement } from "@testing-library/react";
 import { createMemoryHistory } from "history";
-import React from "react";
 import { Route, Switch } from "react-router-dom";
 import * as TESTS_CONSTANTS from "../constants/InDepo";
 import * as MODULE_CONSTANTS from "../../constants/inDepo";
@@ -32,7 +31,7 @@ const mockVideoTracks = jest.fn();
 const mockAudioTracks = jest.fn();
 
 jest.mock("twilio-video", () => ({
-    ...jest.requireActual("twilio-video"),
+    ...(jest.requireActual("twilio-video") as any),
     LocalDataTrack: function dataTrack() {
         return { send: jest.fn() };
     },
@@ -295,7 +294,7 @@ test("CreateTrack functions get called with the proper devices if they exist in 
         expect(mockVideoTracks).toHaveBeenCalledWith(TESTS_CONSTANTS.DEVICES_MOCK.video);
     });
 });
-test("CreateLocalTracks gets called with true if the devices don´t exist in localStorage", async () => {
+test("CreateLocalTracks are not called if the devices don´t exist in localStorage", async () => {
     renderWithGlobalContext(
         <Route exact path={TESTS_CONSTANTS.PRE_ROUTE} component={MockInDepo} />,
         customDeps,
@@ -304,7 +303,7 @@ test("CreateLocalTracks gets called with true if the devices don´t exist in loc
     );
     history.push(TESTS_CONSTANTS.PRE_ROUTE);
     await waitFor(() => {
-        expect(mockAudioTracks).toHaveBeenCalledWith(null);
-        expect(mockVideoTracks).toHaveBeenCalledWith(null);
+        expect(mockAudioTracks).not.toHaveBeenCalled();
+        expect(mockVideoTracks).not.toHaveBeenCalled();
     });
 });

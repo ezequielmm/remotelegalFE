@@ -1,12 +1,20 @@
-import styled from "styled-components";
+import styled, { createGlobalStyle } from "styled-components";
 import { getREM } from "../../constants/styles/utils";
 
-export const StyledInDepoContainer = styled.div`
+export const GlobalStylesInDepo = createGlobalStyle`
+    html, body {
+        background: ${({ theme }) => theme.colors.inDepoNeutrals[10]};
+    }
+`;
+
+export const StyledInDepoContainer = styled.div<{ height?: number }>`
     width: 100vw;
-    height: 100vh;
+    height: ${({ height }) => (height ? `${height}px` : "100vh")};
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    position: relative;
+    background: ${({ theme }) => theme.colors.inDepoNeutrals[10]};
 `;
 
 export const StyledInDepoLayout = styled.div`
@@ -14,13 +22,21 @@ export const StyledInDepoLayout = styled.div`
     position: relative;
     display: flex;
     justify-content: center;
-    background: ${({ theme }) => theme.colors.inDepoNeutrals[10]};
     padding: ${({ theme }) => getREM(theme.default.spaces[3])};
+
+    @media (max-width: ${({ theme }) => theme.default.breakpoints.lg}) {
+        padding-bottom: 0;
+    }
 `;
 
 export const StyledRoomFooter = styled.div`
     width: 100%;
     height: ${({ theme }) => getREM(theme.default.spaces[9] * 3)};
+
+    @media (max-width: ${({ theme }) => theme.default.breakpoints.lg}) {
+        position: fixed;
+        bottom: 0;
+    }
 `;
 
 export interface ContainerProps {

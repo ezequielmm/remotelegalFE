@@ -27,6 +27,7 @@ import getDepositionTime from "./helpers/getDepositionTime";
 import { NotificationAction, NotificationEntityType } from "../../types/Notification";
 import stopAllTracks from "../../helpers/stopAllTracks";
 import generalUIActions from "../../state/GeneralUi/GeneralUiActions";
+import TranscriptionsProvider from "../../state/Transcriptions/TranscriptionsContext";
 
 const InDepo = () => {
     const isMounted = useRef(true);
@@ -37,12 +38,12 @@ const InDepo = () => {
         tracks,
         isRecording,
         mockDepoRoom,
-        transcriptions,
         timeZone,
         participants,
         startTime,
         breakrooms,
         jobNumber,
+        systemSettings,
     } = state.room;
     const { depositionID } = useParams<DepositionID>();
     const [realTimeOpen, togglerRealTime] = useState<boolean>(false);
@@ -54,6 +55,11 @@ const InDepo = () => {
     const history = useHistory();
     const { currentEmail, isAuthenticated } = useAuthentication();
     const [checkUserStatus, , userStatusError, userStatus] = useCheckUserStatus();
+    const tracksRef = useRef(tracks);
+
+    useEffect(() => {
+        tracksRef.current = tracks;
+    }, [tracks]);
 
     useEffect(() => {
         return () => {
@@ -93,9 +99,9 @@ const InDepo = () => {
 
     useEffect(() => {
         return () => {
-            stopAllTracks(tracks);
+            stopAllTracks(tracksRef.current);
         };
-    }, [tracks, dispatch]);
+    }, []);
 
     useEffect(() => {
         dispatch(generalUIActions.toggleTheme(ThemeMode.inDepo));
@@ -120,18 +126,18 @@ const InDepo = () => {
             mockDepoRoom.on("dominantSpeakerChanged", setDominantSpeaker);
         }
         const cleanUpFunction = () => {
-            disconnectFromDepo(mockDepoRoom, dispatch, null, depositionID, tracks);
+            disconnectFromDepo(mockDepoRoom, dispatch, null, depositionID, tracksRef.current);
         };
         window.addEventListener("beforeunload", cleanUpFunction);
 
         return () => {
             if (mockDepoRoom) {
                 mockDepoRoom.off("dominantSpeakerChange", setDominantSpeaker);
-                disconnectFromDepo(mockDepoRoom, dispatch, null, depositionID, tracks);
+                disconnectFromDepo(mockDepoRoom, dispatch, null, depositionID, tracksRef.current);
             }
             window.removeEventListener("beforeunload", cleanUpFunction);
         };
-    }, [mockDepoRoom, dispatch, depositionID, tracks]);
+    }, [mockDepoRoom, dispatch, depositionID]);
 
     useEffect(() => {
         if (depositionID) {
@@ -176,46 +182,49 @@ const InDepo = () => {
     }
 
     return mockDepoRoom ? (
-        <ThemeProvider theme={inDepoTheme}>
-            <StyledInDepoContainer data-testid="videoconference">
-                <StyledInDepoLayout>
-                    <Exhibits visible={exhibitsOpen} togglerExhibits={togglerExhibits} />
-                    {realTimeOpen && <RealTime timeZone={timeZone} transcriptions={transcriptions} />}
-                    <VideoConference
-                        localParticipant={mockDepoRoom.localParticipant}
-                        timeZone={timeZone}
-                        attendees={mockDepoRoom.participants}
-                        layoutSize={videoLayoutSize}
-                        atendeesVisibility={atendeesVisibility}
-                        enableMuteUnmute
+        <TranscriptionsProvider>
+            <ThemeProvider theme={inDepoTheme}>
+                <StyledInDepoContainer data-testid="videoconference">
+                    <StyledInDepoLayout>
+                        <Exhibits visible={exhibitsOpen} />
+                        {realTimeOpen && <RealTime timeZone={timeZone} />}
+                        <VideoConference
+                            localParticipant={mockDepoRoom.localParticipant}
+                            timeZone={timeZone}
+                            attendees={mockDepoRoom.participants}
+                            layoutSize={videoLayoutSize}
+                            atendeesVisibility={atendeesVisibility}
+                            enableMuteUnmute
+                        />
+                    </StyledInDepoLayout>
+                    <StyledRoomFooter>
+                        <ControlsBar
+                            isPreDepo
+                            breakrooms={breakrooms}
+                            leaveWithoutModal
+                            disableBreakrooms
+                            disableChat
+                            isRecording={isRecording}
+                            canEnd={false}
+                            canRecord={false}
+                            realTimeOpen={realTimeOpen}
+                            togglerRealTime={togglerRealTime}
+                            exhibitsOpen={exhibitsOpen}
+                            togglerExhibits={togglerExhibits}
+                            localParticipant={mockDepoRoom.localParticipant}
+                            initialAudioEnabled={initialAudioEnabled}
+                            jobNumber={jobNumber}
+                            settings={systemSettings}
+                        />
+                    </StyledRoomFooter>
+                    <StartMessage
+                        icon={CalendarIcon}
+                        title={getDepositionTime(startTime)}
+                        description={CONSTANTS.PRE_DEPOSITION_START_TIME_DESCRIPTION}
                     />
-                </StyledInDepoLayout>
-                <StyledRoomFooter>
-                    <ControlsBar
-                        isPreDepo
-                        breakrooms={breakrooms}
-                        leaveWithoutModal
-                        disableBreakrooms
-                        disableChat
-                        isRecording={isRecording}
-                        canEnd={false}
-                        canRecord={false}
-                        realTimeOpen={realTimeOpen}
-                        togglerRealTime={togglerRealTime}
-                        exhibitsOpen={exhibitsOpen}
-                        togglerExhibits={togglerExhibits}
-                        localParticipant={mockDepoRoom.localParticipant}
-                        initialAudioEnabled={initialAudioEnabled}
-                        jobNumber={jobNumber}
-                    />
-                </StyledRoomFooter>
-                <StartMessage
-                    icon={CalendarIcon}
-                    title={getDepositionTime(startTime)}
-                    description={CONSTANTS.PRE_DEPOSITION_START_TIME_DESCRIPTION}
-                />
-            </StyledInDepoContainer>
-        </ThemeProvider>
+                </StyledInDepoContainer>
+            </ThemeProvider>
+        </TranscriptionsProvider>
     ) : null;
 };
 

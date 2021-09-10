@@ -2,35 +2,51 @@ import { useCallback, useContext, useEffect, useState, Key, useMemo } from "reac
 import { TablePaginationConfig } from "antd/lib/table";
 import { useParams } from "react-router";
 import { SortOrder } from "antd/lib/table/interface";
-import uploadFile from "../../services/UploadService";
+import { uploadFileToS3 } from "../../services/UploadService";
 import { GlobalStateContext } from "../../state/GlobalState";
 import { ExhibitFile } from "../../types/ExhibitFile";
 import useAsyncCallback from "../useAsyncCallback";
 import * as CONSTANTS from "../../constants/exhibits";
 import actions from "../../state/InDepo/InDepoActions";
 import useSignalR from "../useSignalR";
-import { NotificationEntityType } from "../../types/Notification";
+import { Notification, NotificationAction, NotificationEntityType } from "../../types/Notification";
 import { convertToXfdf } from "../../helpers/convertToXfdf";
 import { AnnotationAction } from "../../types/Annotation";
 import { serializeToString } from "../../helpers/serializeToString";
+import { HTTP_METHOD } from "../../models/general";
+import Message from "../../components/Message";
 
 interface HandleFetchFilesSorterType {
     field?: Key | Key[];
     order?: SortOrder;
 }
 
-export const useUploadFile = (depositionID: string) => {
+export const useUploadFileToS3 = (depositionID: string) => {
     const { deps } = useContext(GlobalStateContext);
     const upload = useCallback(
         async ({ onSuccess, onError, file, onProgress }) => {
-            uploadFile(
-                `/api/Depositions/${depositionID}/exhibits`,
-                file,
-                (event) => onProgress({ percent: (event.loaded / event.total) * 100 }),
-                onSuccess,
-                onError,
-                deps
-            );
+            if (file.size > CONSTANTS.MY_EXHIBITS_UPLOAD_LIMIT_BYTES) {
+                onError([CONSTANTS.MY_EXHIBITS_UPLOAD_ERROR_SIZE_TEXT]);
+                return;
+            }
+            try {
+                const parseFile = new File([file], encodeURI(file.name), { type: file.type });
+                const preSignUploadExhibit = await deps.apiService.preSignUploadExhibit({
+                    depositionId: depositionID,
+                    filename: parseFile.name,
+                });
+                uploadFileToS3(
+                    preSignUploadExhibit.url,
+                    parseFile,
+                    (event) => onProgress({ percent: (event.loaded / event.total) * 100 }),
+                    onSuccess,
+                    onError,
+                    HTTP_METHOD.PUT,
+                    preSignUploadExhibit.headers
+                );
+            } catch (error) {
+                onError([CONSTANTS.MY_EXHIBITS_UPLOAD_ERROR_TEXT]);
+            }
         },
         [depositionID, deps]
     );
@@ -213,7 +229,25 @@ export const useCloseSharedExhibit = () => {
     const { state, deps, dispatch } = useContext(GlobalStateContext);
     const { depositionID } = useParams<{ depositionID: string }>();
     const { sendAnnotation } = useExhibitSendAnnotation();
-    const { dataTrack, message, currentExhibit, exhibitDocument, stampLabel, stamp, rawAnnotations } = state.room;
+    const { currentExhibit, exhibitDocument, stampLabel, stamp, rawAnnotations } = state.room;
+    const { subscribeToGroup, unsubscribeMethodFromGroup } = useSignalR("/depositionHub");
+
+    useEffect(() => {
+        const onReceiveClose = (message: Notification) => {
+            if (
+                message.action === NotificationAction.close &&
+                currentExhibit &&
+                currentExhibit.id === message.content
+            ) {
+                dispatch(actions.stopShareExhibit());
+            }
+        };
+        subscribeToGroup("ReceiveNotification", onReceiveClose);
+        return () => {
+            unsubscribeMethodFromGroup("ReceiveNotification", onReceiveClose);
+        };
+    }, [subscribeToGroup, unsubscribeMethodFromGroup, dispatch, currentExhibit]);
+
     const [closeSharedExhibit, pendingCloseSharedExhibit] = useAsyncCallback(async () => {
         if (stampLabel) {
             if (stamp) {
@@ -225,21 +259,14 @@ export const useCloseSharedExhibit = () => {
                     details: convertToXfdf(annotationString, AnnotationAction.Modify),
                 });
             }
+
             await deps.apiService.closeStampedExhibit({ depositionID, stampLabel });
             dispatch(actions.addStamp(null));
         } else {
             await deps.apiService.closeExhibit({ depositionID });
         }
         dispatch(actions.stopShareExhibit());
-        if (currentExhibit && dataTrack) {
-            dataTrack.send(JSON.stringify({ module: "closeSharedExhibit", value: currentExhibit }));
-        }
-    }, [exhibitDocument, stamp, stampLabel, dataTrack, rawAnnotations]);
-
-    if (message.module === "closeSharedExhibit" && message?.value?.id === currentExhibit?.id) {
-        dispatch(actions.stopShareExhibit());
-        message.module = null;
-    }
+    }, [exhibitDocument, stamp, stampLabel, rawAnnotations]);
 
     return {
         closeSharedExhibit,
@@ -306,4 +333,40 @@ export const useBringAllToMe = () => {
         setBringAllToPage,
         bringAllToMe,
     };
+};
+
+export const useStampMediaExhibits = (): ((stampLabel: string) => void) => {
+    const { dispatch } = useContext(GlobalStateContext);
+    const { depositionID } = useParams<{ depositionID: string }>();
+    const { subscribeToGroup, unsubscribeMethodFromGroup, signalR, isReconnected, sendMessage } =
+        useSignalR("/depositionHub");
+
+    useEffect(() => {
+        const onReceiveStamp = (message: Notification) => {
+            if (message.entityType === NotificationEntityType.stamp && message?.content?.stampLabel !== undefined) {
+                dispatch(actions.setStampLabel(message.content.stampLabel));
+            }
+            if (message.action === NotificationAction.error) {
+                Message({
+                    content: message?.content?.message || "",
+                    type: "error",
+                    duration: 3,
+                });
+            }
+        };
+        subscribeToGroup("ReceiveNotification", onReceiveStamp);
+        return () => {
+            unsubscribeMethodFromGroup("ReceiveNotification", onReceiveStamp);
+        };
+    }, [subscribeToGroup, unsubscribeMethodFromGroup, dispatch]);
+
+    return useCallback(
+        (stampLabel: string) => {
+            if ((signalR?.connectionState === "Connected" || isReconnected) && depositionID) {
+                dispatch(actions.setStampLabel(stampLabel));
+                sendMessage("UpdateMediaStamp", { depositionId: depositionID, stampLabel });
+            }
+        },
+        [depositionID, isReconnected, signalR?.connectionState, sendMessage, dispatch]
+    );
 };

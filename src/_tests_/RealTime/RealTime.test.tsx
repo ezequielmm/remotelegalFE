@@ -1,4 +1,3 @@
-import React from "react";
 import { screen, act } from "@testing-library/react";
 import { wait } from "../../helpers/wait";
 import RealTime from "../../routes/InDepo/RealTime";
@@ -11,8 +10,7 @@ import {
 } from "../mocks/transcription";
 import "mutationobserver-shim";
 import renderWithGlobalContext from "../utils/renderWithGlobalContext";
-
-window.HTMLElement.prototype.scrollIntoView = jest.fn();
+import { TranscriptionsContext } from "../../state/Transcriptions/TranscriptionsContext";
 
 jest.mock("audio-recorder-polyfill", () => {
     return jest.fn().mockImplementation(() => ({
@@ -43,34 +41,52 @@ describe("RealTime", () => {
     });
 
     it("shows no transcriptions when transcriptions are empty", async () => {
-        renderWithGlobalContext(<RealTime visible transcriptions={[]} timeZone={timeZone} />);
+        renderWithGlobalContext(
+            <TranscriptionsContext.Provider value={{ transcriptions: [] } as any}>
+                <RealTime timeZone={timeZone} />
+            </TranscriptionsContext.Provider>
+        );
         await wait(100);
         act(() => expect(screen.queryByTestId("transcription_text")).toBeFalsy());
         act(() => expect(screen.queryByTestId("transcription_title")).toBeFalsy());
     });
 
     test("shows transcriptions when transcriptions list is not empty", async () => {
-        renderWithGlobalContext(<RealTime visible transcriptions={[transcription]} timeZone={timeZone} />);
+        renderWithGlobalContext(
+            <TranscriptionsContext.Provider value={{ transcriptions: [transcription] } as any}>
+                <RealTime timeZone={timeZone} />
+            </TranscriptionsContext.Provider>
+        );
         await wait(100);
         act(() => expect(screen.getByTestId("transcription_text")).toBeTruthy());
         act(() => expect(screen.getByTestId("transcription_title")).toBeTruthy());
     });
 
     test("shows transcriptions with pause message", async () => {
-        renderWithGlobalContext(<RealTime visible transcriptions={getTranscriptionsWithPause()} timeZone={timeZone} />);
+        renderWithGlobalContext(
+            <TranscriptionsContext.Provider value={{ transcriptions: getTranscriptionsWithPause() } as any}>
+                <RealTime timeZone={timeZone} />
+            </TranscriptionsContext.Provider>
+        );
         await wait(100);
         act(() => expect(screen.getByTestId("transcription_paused")).toBeTruthy());
     });
     test("shows transcriptions with paused message", async () => {
         renderWithGlobalContext(
-            <RealTime visible transcriptions={getTranscriptionsWithPaused()} timeZone={timeZone} />
+            <TranscriptionsContext.Provider value={{ transcriptions: getTranscriptionsWithPaused() } as any}>
+                <RealTime timeZone={timeZone} />
+            </TranscriptionsContext.Provider>
         );
         await wait(100);
         act(() => expect(screen.getByTestId("transcription_currently_paused")).toBeTruthy());
     });
 
     test("renders only necessary transcriptions", async () => {
-        renderWithGlobalContext(<RealTime visible transcriptions={getVeryLongTranscription()} timeZone={timeZone} />);
+        renderWithGlobalContext(
+            <TranscriptionsContext.Provider value={{ transcriptions: getVeryLongTranscription() } as any}>
+                <RealTime timeZone={timeZone} />
+            </TranscriptionsContext.Provider>
+        );
         await wait(100);
         act(() => expect(screen.getAllByTestId("transcription_text").length).toBeLessThan(100));
     });

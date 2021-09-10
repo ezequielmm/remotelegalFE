@@ -113,8 +113,8 @@ export default function DepositionDetailsSummary({ setActiveKey, deposition }: I
     }, [recordingInfo]);
 
     const handleDownloadRecording = () => {
-        if (recordingInfo?.publicUrl) {
-            downloadFile(recordingInfo.publicUrl);
+        if (recordingInfo) {
+            downloadFile(recordingInfo.publicUrl, recordingInfo.fileName);
         }
     };
 
@@ -233,7 +233,7 @@ export default function DepositionDetailsSummary({ setActiveKey, deposition }: I
                                         transcriptionsWithoutEvents={transcriptionsWithoutEvents}
                                         manageTranscriptionClicked={duration > 0 && manageTranscriptionClicked}
                                         disableAutoscroll
-                                        transcriptions={transcriptions}
+                                        postDepoTranscripts={transcriptions}
                                         timeZone={deposition?.timeZone}
                                         playedTimeValue={currentTime * 1000}
                                         scrollToHighlighted

@@ -131,3 +131,15 @@ export const StyledTagSpace = styled.div`
         left: ${getREM(theme.default.spaces[6])};
     `}
 `;
+
+export const StyledMoreMenu = styled(Menu)`
+    .ant-menu-item {
+        &:hover {
+            background-color: ${({ theme }) => theme.colors.inDepoNeutrals[2]};
+        }
+    }
+`;
+
+export const StyledChatWrapper = styled.div`
+    text-align: center;
+`;

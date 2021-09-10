@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import dayjs from "dayjs";
 import Alert from "prp-components-library/src/components/Alert";
 import Icon from "prp-components-library/src/components/Icon";
@@ -6,6 +6,7 @@ import Space from "prp-components-library/src/components/Space";
 import Text from "prp-components-library/src/components/Text";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
+import AutoSizer from "react-virtualized-auto-sizer";
 import { ReactComponent as TimeIcon } from "../../../assets/icons/time.svg";
 import { ReactComponent as InfoIcon } from "../../../assets/icons/information.svg";
 import { ContainerProps, StyledLayoutContent, StyledLayoutCotainer } from "../styles";
@@ -15,8 +16,8 @@ import * as CONSTANTS from "../../../constants/inDepo";
 import ColorStatus from "../../../types/ColorStatus";
 import { mapTimeZone, TimeZones } from "../../../models/general";
 import { TranscriptionModel } from "../../../models";
-import useWindowSize from "../../../hooks/useWindowSize";
-import AutoSizer from "react-virtualized-auto-sizer";
+import { TranscriptionsContext } from "../../../state/Transcriptions/TranscriptionsContext";
+import { WindowSizeContext } from "../../../contexts/WindowSizeContext";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -25,7 +26,7 @@ const RealTime = ({
     disableAutoscroll,
     manageTranscriptionClicked,
     timeZone,
-    transcriptions,
+    postDepoTranscripts,
     playedTimeValue,
     scrollToHighlighted,
     transcriptionsWithoutEvents,
@@ -33,14 +34,17 @@ const RealTime = ({
     disableAutoscroll?: boolean;
     manageTranscriptionClicked?: (transcription: TranscriptionModel.Transcription) => void;
     timeZone: TimeZones;
-    transcriptions?: (TranscriptionModel.Transcription & TranscriptionModel.TranscriptionPause)[];
+    postDepoTranscripts?: (TranscriptionModel.Transcription & TranscriptionModel.TranscriptionPause)[];
     transcriptionsWithoutEvents?: TranscriptionModel.Transcription[];
     playedTimeValue?: number;
     scrollToHighlighted?: boolean;
 }) => {
     const layoutContentRef = useRef(null);
     const [currentTranscript, setCurrentTranscript] = useState(null);
-    const [windowWidth] = useWindowSize();
+    const [windowWidth] = useContext(WindowSizeContext);
+    const { transcriptions: contextTranscriptions } = useContext(TranscriptionsContext);
+
+    const transcriptions = postDepoTranscripts || contextTranscriptions;
 
     useEffect(() => {
         const highlightTranscript = () => {

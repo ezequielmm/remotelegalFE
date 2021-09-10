@@ -5,6 +5,7 @@ export type Device = {
     deviceId: {
         exact: string;
     };
+    label: string;
 };
 type videoDeviceError = {
     videoinput: {
@@ -52,6 +53,7 @@ const createDevices = (
                       deviceId: {
                           exact: videoInput.value,
                       },
+                      label: videoInput.label,
                   },
         audio:
             errors.audio || CONSTANTS.INVALID_VALUES.includes(audioInput.value)
@@ -61,6 +63,7 @@ const createDevices = (
                       deviceId: {
                           exact: audioInput.value,
                       },
+                      label: audioInput.label,
                   },
         speakers: CONSTANTS.INVALID_VALUES.includes(speakers.value) ? false : speakers.value,
     };

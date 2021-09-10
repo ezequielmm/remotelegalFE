@@ -16,3 +16,25 @@ window.matchMedia = function (query: string) {
         dispatchEvent: jest.fn(),
     };
 };
+
+window.HTMLElement.prototype.scrollIntoView = jest.fn();
+
+class ResizeObserver {
+    observe = jest.fn();
+
+    unobserve = jest.fn();
+
+    disconnect = jest.fn();
+}
+
+Object.defineProperty(global, "ResizeObserver", {
+    writable: true,
+    value: ResizeObserver,
+});
+
+Object.defineProperty(global.navigator, "mediaDevices", {
+    writable: true,
+    value: {
+        ondevicechange: jest.fn(),
+    },
+});

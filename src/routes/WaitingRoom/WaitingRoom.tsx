@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Redirect, useHistory, useParams } from "react-router";
 import Button from "prp-components-library/src/components/Button";
 import Modal from "prp-components-library/src/components/Modal";
@@ -18,8 +18,8 @@ import { useCheckUserStatus } from "../../hooks/preJoinDepo/hooks";
 import ErrorScreen from "../../components/ErrorScreen";
 import { NotificationEntityType } from "../../types/Notification";
 import getUserNameString from "../../helpers/getUserNameString";
-import useWindowSize from "../../hooks/useWindowSize";
 import { theme } from "../../constants/styles/theme";
+import { WindowSizeContext } from "../../contexts/WindowSizeContext";
 
 const WaitingRoom = () => {
     const [isAdmitted, setIsAdmitted] = useState<boolean>(undefined);
@@ -29,7 +29,7 @@ const WaitingRoom = () => {
     const { currentEmail, isAuthenticated } = useAuthentication();
     const [generateToken, generateTokenLoading, generateTokenError, generatedToken] = useGenerateDepositionToken();
     const [checkUserStatus, userStatusLoading, userStatusError, userStatus] = useCheckUserStatus();
-    const [windowWidth] = useWindowSize();
+    const [windowWidth] = useContext(WindowSizeContext);
 
     useEffect(() => {
         if (isAuthenticated !== null) {

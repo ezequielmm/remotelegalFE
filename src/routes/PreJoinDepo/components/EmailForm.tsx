@@ -31,7 +31,7 @@ const EmailForm = ({ loading, onSubmit, defaultEmailValue }: IEmailForm) => {
     };
 
     return (
-        <Form layout="vertical" onFinish={handleSubmit}>
+        <Form layout="vertical">
             <Form.Item label="Email" htmlFor="email">
                 <InputWrapper>
                     <Input

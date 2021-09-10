@@ -3,11 +3,14 @@ import { useHistory, useParams } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 import { Participant } from "twilio-video";
 import Spinner from "prp-components-library/src/components/Spinner";
+import { Row } from "antd/lib/grid";
+import Alert from "prp-components-library/src/components/Alert";
 import Exhibits from "./Exhibits";
 import RealTime from "./RealTime";
+import { ReactComponent as NoConnectionIcon } from "../../assets/in-depo/No-Connection.svg";
 import VideoConference from "./VideoConference";
 import ControlsBar from "../../components/ControlsBar";
-import { StyledInDepoContainer, StyledInDepoLayout, StyledRoomFooter } from "./styles";
+import { GlobalStylesInDepo, StyledInDepoContainer, StyledInDepoLayout, StyledRoomFooter } from "./styles";
 import { useJoinDeposition } from "../../hooks/InDepo/depositionLifeTimeHooks";
 import { GlobalStateContext } from "../../state/GlobalState";
 import disconnectFromDepo from "../../helpers/disconnectFromDepo";
@@ -20,7 +23,7 @@ import actions from "../../state/InDepo/InDepoActions";
 import signalRActions from "../../state/SignalR/SignalRActions";
 import generalUIActions from "../../state/GeneralUi/GeneralUiActions";
 import { ThemeMode } from "../../types/ThemeType";
-import { EventModel } from "../../models";
+import { EventModel, TranscriptionModel } from "../../models";
 import useSignalR from "../../hooks/useSignalR";
 import GuestRequests from "./GuestRequests";
 import { Roles } from "../../models/participant";
@@ -28,24 +31,36 @@ import { useAuthentication } from "../../hooks/auth";
 import LoadingScreen from "./LoadingScreen";
 import { NotificationEntityType } from "../../types/Notification";
 import stopAllTracks from "../../helpers/stopAllTracks";
+import TranscriptionsProvider from "../../state/Transcriptions/TranscriptionsContext";
+import { WindowSizeContext } from "../../contexts/WindowSizeContext";
+import useGetTranscriptions from "../../hooks/InDepo/useGetTranscriptions";
+import useGetEvents from "../../hooks/InDepo/useGetEvents";
+import { setTranscriptionMessages } from "../../helpers/formatTranscriptionsMessages";
+import { useExhibitFileInfo } from "../../hooks/exhibits/hooks";
+import useGetDepoSummaryInfo from "../../hooks/InDepo/useGetDepoSummaryInfo";
 
 const InDepo = () => {
+    const { depositionID } = useParams<DepositionID>();
     const isMounted = useRef(true);
     const inDepoTheme = { ...theme, mode: ThemeMode.inDepo };
     const { state, dispatch } = useContext(GlobalStateContext);
-    const [joinDeposition, loading, error] = useJoinDeposition();
+    const [initialTranscriptions, setInitialTranscriptions] = useState<TranscriptionModel.Transcription[]>([]);
+    const [joinDeposition, loading, error] = useJoinDeposition(setInitialTranscriptions);
+    const [getDepoSummaryInfo, , , depoSummaryInfo] = useGetDepoSummaryInfo();
+    const [getTranscriptions] = useGetTranscriptions();
+    const [getDepositionEvents] = useGetEvents();
     const {
         breakrooms,
         isRecording,
         message,
         currentRoom,
         permissions,
-        transcriptions,
         timeZone,
         dataTrack,
         currentExhibit,
         participants,
         userStatus,
+        systemSettings,
         shouldSendToPreDepo,
         currentExhibitPage,
         jobNumber,
@@ -53,16 +68,19 @@ const InDepo = () => {
     } = state.room;
 
     const { currentUser } = state?.user;
-    const { depositionID } = useParams<DepositionID>();
+    const [, windowHeight] = useContext(WindowSizeContext);
+    const { signalRConnectionStatus } = state?.signalR;
     const [realTimeOpen, togglerRealTime] = useState<boolean>(false);
     const [exhibitsOpen, togglerExhibits] = useState<boolean>(false);
     const [initialAudioEnabled, setInitialAudioEnabled] = useState<boolean>(true);
     const [videoLayoutSize, setVideoLayoutSize] = useState<number>(0);
     const [atendeesVisibility, setAtendeesVisibility] = useState<boolean>(true);
+    const [inDepoHeight, setInDepoHeight] = useState<number>();
     const history = useHistory();
+    const tracksRef = useRef(tracks);
     const { isAuthenticated } = useAuthentication();
-    const { sendMessage, signalR, subscribeToGroup, unsubscribeMethodFromGroup, isReconnected } =
-        useSignalR("/depositionHub");
+    const { sendMessage, signalR, subscribeToGroup, unsubscribeMethodFromGroup } = useSignalR("/depositionHub");
+    const [fetchExhibitFileInfo] = useExhibitFileInfo();
 
     useEffect(() => {
         dispatch(generalUIActions.toggleTheme(ThemeMode.inDepo));
@@ -70,10 +88,12 @@ const InDepo = () => {
     }, [dispatch]);
 
     useEffect(() => {
-        return () => {
-            isMounted.current = false;
-        };
-    }, []);
+        tracksRef.current = tracks;
+    }, [tracks]);
+
+    useEffect(() => {
+        setInDepoHeight(windowHeight || 0);
+    }, [windowHeight]);
 
     useEffect(() => {
         if (!signalR) {
@@ -87,15 +107,16 @@ const InDepo = () => {
 
     useEffect(() => {
         return () => {
-            stopAllTracks(tracks);
+            isMounted.current = false;
+            stopAllTracks(tracksRef.current);
         };
-    }, [tracks]);
+    }, []);
 
     useEffect(() => {
-        if ((signalR?.connectionState === "Connected" || isReconnected) && depositionID) {
+        if ((signalR?.connectionState === "Connected" || signalRConnectionStatus?.isReconnected) && depositionID) {
             sendMessage("SubscribeToDeposition", { depositionId: depositionID });
         }
-    }, [signalR, depositionID, sendMessage, isReconnected]);
+    }, [signalR, depositionID, sendMessage, signalRConnectionStatus?.isReconnected]);
 
     useEffect(() => {
         const handleRoomEndError = (_, roomError) => {
@@ -105,7 +126,7 @@ const InDepo = () => {
                     dispatch,
                     history,
                     depositionID,
-                    tracks,
+                    tracksRef.current,
                     currentRoom?.localParticipant?.identity &&
                         JSON.parse(currentRoom?.localParticipant?.identity).role === Roles.witness
                 );
@@ -119,7 +140,7 @@ const InDepo = () => {
             currentRoom.on("dominantSpeakerChanged", setDominantSpeaker);
         }
         const cleanUpFunction = () => {
-            disconnectFromDepo(currentRoom, dispatch, null, depositionID, tracks);
+            disconnectFromDepo(currentRoom, dispatch, null, depositionID, tracksRef.current);
         };
         window.addEventListener("beforeunload", cleanUpFunction);
 
@@ -131,7 +152,7 @@ const InDepo = () => {
 
             window.removeEventListener("beforeunload", cleanUpFunction);
         };
-    }, [currentRoom, dispatch, depositionID, tracks, history]);
+    }, [currentRoom, dispatch, depositionID, history]);
 
     useEffect(() => {
         if (depositionID && isAuthenticated !== null && currentUser) {
@@ -139,6 +160,38 @@ const InDepo = () => {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [depositionID, isAuthenticated, currentUser]);
+
+    useEffect(() => {
+        if (signalRConnectionStatus?.isReconnected) {
+            getDepoSummaryInfo();
+        }
+    }, [getDepoSummaryInfo, signalRConnectionStatus?.isReconnected]);
+
+    useEffect(() => {
+        (async () => {
+            if (signalRConnectionStatus?.isReconnected && depoSummaryInfo) {
+                dispatch(actions.setParticipantsData(depoSummaryInfo.participants));
+                dispatch(actions.setIsRecording(depoSummaryInfo.isOnTheRecord));
+                if (depoSummaryInfo.isSharing) {
+                    togglerExhibits(true);
+                    fetchExhibitFileInfo(depositionID);
+                } else {
+                    togglerExhibits(false);
+                }
+                const transcriptions = await getTranscriptions();
+                const events = await getDepositionEvents(depositionID);
+                setInitialTranscriptions(setTranscriptionMessages(transcriptions, events));
+            }
+        })();
+    }, [
+        depoSummaryInfo,
+        signalRConnectionStatus?.isReconnected,
+        depositionID,
+        dispatch,
+        getDepositionEvents,
+        getTranscriptions,
+        fetchExhibitFileInfo,
+    ]);
 
     useEffect(() => {
         setAtendeesVisibility((prev) => !prev);
@@ -149,7 +202,6 @@ const InDepo = () => {
     useEffect(() => {
         if (message.module === "recordDepo") {
             dispatch(actions.setIsRecording(message.value.eventType === EventModel.EventType.onTheRecord));
-            dispatch(actions.addTranscription(message.value));
         }
     }, [dispatch, message]);
 
@@ -217,11 +269,19 @@ const InDepo = () => {
         history,
         depositionID,
     ]);
-    if (loading && userStatus === null && shouldSendToPreDepo === null) {
+    if (
+        loading &&
+        userStatus === null &&
+        shouldSendToPreDepo === null &&
+        !signalRConnectionStatus?.isReconnected &&
+        !signalRConnectionStatus?.isReconnecting
+    ) {
         return <Spinner />;
     }
-    if (userStatus?.participant?.isAdmitted && loading && shouldSendToPreDepo === false) {
-        return <LoadingScreen />;
+    if (!signalRConnectionStatus?.isReconnected) {
+        if (userStatus?.participant?.isAdmitted && loading && shouldSendToPreDepo === false) {
+            return <LoadingScreen />;
+        }
     }
 
     if (error) {
@@ -238,18 +298,44 @@ const InDepo = () => {
             />
         );
     }
-    try {
-        return currentRoom && dataTrack ? (
+
+    return currentRoom && dataTrack ? (
+        <TranscriptionsProvider
+            initialTranscriptions={initialTranscriptions}
+            setInitialTranscriptions={setInitialTranscriptions}
+        >
             <ThemeProvider theme={inDepoTheme}>
-                <StyledInDepoContainer data-testid="videoconference">
+                <GlobalStylesInDepo />
+                <StyledInDepoContainer data-testid="videoconference" height={inDepoHeight}>
                     {(!!currentUser?.isAdmin ||
                         JSON.parse(currentRoom?.localParticipant?.identity || "{}").role === Roles.courtReporter) && (
                         <GuestRequests depositionID={depositionID} />
                     )}
                     <StyledInDepoLayout>
-                        <RecordPill on={isRecording} />
+                        <Row
+                            justify="space-around"
+                            align="middle"
+                            style={{
+                                position: "absolute",
+                                top: 0,
+                                width: "100%",
+                                zIndex: 1000,
+                            }}
+                        >
+                            {signalRConnectionStatus?.isReconnecting && (
+                                <Alert
+                                    data-testid={CONSTANTS.RECONNECTING_ALERT_MESSAGE_TEST_ID}
+                                    icon={<NoConnectionIcon />}
+                                    type="info"
+                                    style={{ maxWidth: "35%" }}
+                                    closable={false}
+                                    message={CONSTANTS.RECONNECTING_ALERT_MESSAGE}
+                                />
+                            )}
+                            <RecordPill on={isRecording} />
+                        </Row>
                         <Exhibits visible={exhibitsOpen} togglerExhibits={togglerExhibits} />
-                        {realTimeOpen && <RealTime timeZone={timeZone} transcriptions={transcriptions} />}
+                        {realTimeOpen && <RealTime timeZone={timeZone} />}
                         <VideoConference
                             localParticipant={currentRoom.localParticipant}
                             timeZone={timeZone}
@@ -279,14 +365,13 @@ const InDepo = () => {
                             localParticipant={currentRoom.localParticipant}
                             initialAudioEnabled={initialAudioEnabled}
                             jobNumber={jobNumber}
+                            settings={systemSettings}
                         />
                     </StyledRoomFooter>
                 </StyledInDepoContainer>
             </ThemeProvider>
-        ) : null;
-    } catch (runtimeError) {
-        console.error(runtimeError);
-    }
+        </TranscriptionsProvider>
+    ) : null;
 };
 
 export default InDepo;

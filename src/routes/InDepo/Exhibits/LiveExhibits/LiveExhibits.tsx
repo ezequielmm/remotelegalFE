@@ -3,7 +3,7 @@ import { Row, Col } from "antd";
 import Icon from "prp-components-library/src/components/Icon";
 import Result from "prp-components-library/src/components/Result";
 import { CustomStatus } from "prp-components-library/src/components/Result/Result";
-import { LIVE_EXHIBITS_SUBTITLE, LIVE_EXHIBITS_TITLE } from "../../../../constants/exhibits";
+import { EXHIBIT_TABS, LIVE_EXHIBITS_SUBTITLE, LIVE_EXHIBITS_TITLE } from "../../../../constants/exhibits";
 import { ReactComponent as LiveExhibitsIcon } from "../../../../assets/icons/LiveExhibits-empty.svg";
 import { ExhibitTabPaneSpacer } from "../styles";
 import { theme } from "../../../../constants/styles/theme";
@@ -14,7 +14,7 @@ import { GlobalStateContext } from "../../../../state/GlobalState";
 
 export default function LiveExhibits({ activeKey }: { activeKey: string }) {
     const { state } = useContext(GlobalStateContext);
-    const { currentExhibit } = state.room;
+    const { currentExhibit, currentExhibitTabName } = state.room;
     const { currentUser } = state.user;
     const { closeSharedExhibit, pendingCloseSharedExhibit } = useCloseSharedExhibit();
     const { sendAnnotation } = useExhibitSendAnnotation();
@@ -38,6 +38,8 @@ export default function LiveExhibits({ activeKey }: { activeKey: string }) {
                     readOnly={currentExhibit?.isPublic}
                     shouldGetAnnotations
                     realTimeAnnotations
+                    isActive={currentExhibitTabName === EXHIBIT_TABS.liveExhibits}
+                    canDownload
                 />
             )}
             {!currentExhibit && (

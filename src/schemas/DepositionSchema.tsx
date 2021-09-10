@@ -21,7 +21,7 @@ const getDepositionSchema = (isAdmin) =>
                         .nullable(),
                 }),
                 file: yup.mixed().test("is-pdf", CONSTANTS.PDF_ERROR, (value) => {
-                    return !value?.type || value.type === "application/pdf";
+                    return !value || value.type === "application/pdf";
                 }),
                 startTime: yup
                     .string()

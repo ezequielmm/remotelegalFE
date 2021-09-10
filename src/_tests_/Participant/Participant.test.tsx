@@ -4,6 +4,24 @@ import * as CONSTANTS from "../constants/InDepo";
 import getParticipant from "../mocks/participant";
 import renderWithGlobalContext from "../utils/renderWithGlobalContext";
 
+let participant;
+
+beforeEach(() => {
+    jest.useFakeTimers();
+    participant = getParticipant("test1", "Attorney");
+    participant.on.mockImplementation((arg, func) => {
+        if (arg === "networkQualityLevelChanged") {
+            return func(2);
+        }
+        return jest.fn();
+    });
+});
+
+afterEach(() => {
+    jest.runOnlyPendingTimers();
+    jest.useRealTimers();
+});
+
 test("Shows witness name and role if participant is a witness", () => {
     const participant = getParticipant("test1", "Witness");
     const { queryByText } = renderWithGlobalContext(<Participant participant={participant} isWitness />);
@@ -54,20 +72,17 @@ test("Expect muted microphone icon when the witness is muted", () => {
     expect(queryByTestId("participant_muted")).toBeTruthy();
 });
 
-test("Expect toast message when the network level is less than 3", async () => {
-    const participant = getParticipant("test1", "Witness");
-    participant.on.mockImplementation((arg, func) => {
-        if (arg === "networkQualityLevelChanged") {
-            return func(2);
-        }
-        return jest.fn();
-    });
-    renderWithGlobalContext(<Participant participant={participant} isMuted isLocal />);
-    await waitFor(() => expect(screen.getByText(CONSTANTS.CONNECTION_UNSTABLE)).toBeInTheDocument());
-});
-
 test("Expect show network indicator", async () => {
-    const participant = getParticipant("test1", "Witness");
     renderWithGlobalContext(<Participant participant={participant} isMuted />);
     await waitFor(() => expect(screen.getByTestId(CONSTANTS.NETWORK_INDICATOR_TEST_ID)).toBeInTheDocument());
+});
+// TODO: improve the test in order to avoid using this timeout
+jest.setTimeout(50000);
+test("Expect toast message when network level is less than 3 and for it to show again after 5 minutes", async () => {
+    renderWithGlobalContext(<Participant participant={participant} isMuted isLocal />);
+    await waitFor(() => expect(screen.getAllByText(CONSTANTS.CONNECTION_UNSTABLE)).toHaveLength(1));
+    await waitFor(() => expect(screen.queryByText(CONSTANTS.CONNECTION_UNSTABLE)).toBeFalsy());
+    await waitFor(() => expect(screen.getAllByText(CONSTANTS.CONNECTION_UNSTABLE)).toHaveLength(1), {
+        timeout: 50000,
+    });
 });

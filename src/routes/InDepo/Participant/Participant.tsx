@@ -40,6 +40,7 @@ const Participant = ({
     isSingle?: boolean;
 }) => {
     const { videoRef, audioRef, dataTracks, netWorkLevel } = useParticipantTracks(participant);
+    const [timeAlert, setTimeAlert] = useState(0);
     const [hasBorder, setHasBorder] = useState(false);
     const { state } = useContext(GlobalStateContext);
     const { dominantSpeaker } = state.room;
@@ -61,7 +62,23 @@ const Participant = ({
     }, [dominantSpeaker, participant]);
 
     useEffect(() => {
-        if (netWorkLevel <= 2 && netWorkLevel !== null && isLocal) {
+        let interval;
+        if (isLocal) {
+            interval = setInterval(() => {
+                if (timeAlert > 0) {
+                    setTimeAlert(timeAlert - 1);
+                }
+                return null;
+            }, 1000);
+        }
+        return () => {
+            clearInterval(interval);
+        };
+    }, [timeAlert, isLocal]);
+
+    useEffect(() => {
+        if (netWorkLevel <= 2 && netWorkLevel !== null && isLocal && timeAlert === 0) {
+            setTimeAlert(CONSTANTS.NETWORK_QUALITY_TIME_SECONDS);
             datadogLogs.logger.info("Network quality low", { netWorkLevel, user: identity });
             const args = {
                 message: CONSTANTS.CONNECTION_UNSTABLE,
@@ -70,7 +87,7 @@ const Participant = ({
             };
             addFloatingAlert(args, true);
         }
-    }, [netWorkLevel, addFloatingAlert, identity, isLocal]);
+    }, [netWorkLevel, addFloatingAlert, identity, isLocal, timeAlert]);
 
     return (
         <StyledParticipantMask highlight={hasBorder} isWitness={isWitness} isSingle={isSingle}>

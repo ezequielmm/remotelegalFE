@@ -20,6 +20,7 @@ import { DEPOSITION_INFO_MOCK } from "../constants/techInfo";
 
 export default (): Deps => ({
     apiService: {
+        sendParticipantDevices: jest.fn().mockResolvedValue({}),
         getDepositionInfo: jest.fn().mockResolvedValue(DEPOSITION_INFO_MOCK),
         fetchCaption: jest.fn().mockResolvedValue(CAPTION_MOCK),
         recordDeposition: jest.fn().mockResolvedValue(getRecordResponse(true)),
@@ -52,5 +53,10 @@ export default (): Deps => ({
         getDocumentsUrlList: jest.fn().mockResolvedValue(fileUrlList),
         notifyParties: jest.fn().mockResolvedValue({ notified: true }),
         frontEndContent: jest.fn().mockResolvedValue(getFrontEndContent()),
+        getSystemSettings: jest.fn().mockResolvedValue({
+            EnableBreakrooms: "enabled",
+            EnableRealTimeTab: "enabled",
+            EnableLiveTranscriptions: "enabled",
+        }),
     } as any,
 });

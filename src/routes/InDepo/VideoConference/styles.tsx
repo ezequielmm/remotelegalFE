@@ -1,12 +1,33 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { getPX, getREM } from "../../../constants/styles/utils";
+
+const scroll = (theme) => css`
+    padding-right: ${getREM(theme.default.spaces[3])};
+    scrollbar-color: ${theme.colors.inDepoNeutrals[9]} ${theme.colors.inDepoNeutrals[5]};
+    scrollbar-width: thin;
+    &::-webkit-scrollbar {
+        -webkit-appearance: none;
+        width: ${getPX(theme.default.spaces[2])};
+        height: ${getPX(theme.default.spaces[2])};
+        background-color: ${theme.colors.inDepoNeutrals[5]};
+    }
+    &::-webkit-scrollbar-track {
+        background-color: ${theme.colors.inDepoNeutrals[5]};
+        border-radius: ${getPX(theme.default.spaces[7])};
+    }
+    &::-webkit-scrollbar-thumb {
+        border-radius: ${getPX(theme.default.spaces[7])};
+        background: ${theme.colors.inDepoNeutrals[9]};
+    }
+`;
 
 export const StyledParticipantContainer = styled.div<{
     participantsLength: number;
     layout: string;
     isBreakrooms: boolean;
+    isWitness: boolean;
 }>`
-    ${({ participantsLength, layout, isBreakrooms, theme }) => {
+    ${({ participantsLength, layout, isBreakrooms, isWitness, theme }) => {
         const participantStyle = () => {
             if (participantsLength === 1) {
                 return `
@@ -39,10 +60,12 @@ export const StyledParticipantContainer = styled.div<{
                 default:
                     return !isBreakrooms
                         ? `
-                            &:nth-child(odd) {
-                                justify-content: flex-end;
-                                &:last-child {
-                                    justify-content: center;
+                            @media (min-width: ${theme.default.breakpoints.lg}) {
+                                &:nth-child(odd) {
+                                    justify-content: flex-end;
+                                    &:last-child {
+                                        justify-content: center;
+                                    }
                                 }
                             }
                         `
@@ -80,10 +103,19 @@ export const StyledParticipantContainer = styled.div<{
             flex: 1 0 45%;
             display: flex;
             margin: ${getREM(theme.default.spaces[3])};
+            order: ${isWitness ? -1 : 1};
 
             ${participantStyle()}
             ${layoutStyle()}
             ${breakroomsStyle()}
+
+            @media (max-width: ${theme.default.breakpoints.md}) {
+                height: calc(30vh - ${getREM(theme.default.spaces[6])});
+                flex: 1 0 100%;
+                justify-content: center;
+                margin-left: 0;
+                margin-right: 0;
+            }
         `;
     }}
 `;
@@ -113,16 +145,28 @@ export const StyledVideoConference = styled.div<{ show: boolean }>`
             left: 50%;
             transform: translate(-50%, -50%);
 
-            @supports not (aspect-ratio: 16 / 8) {
-                &::before {
-                    float: left;
-                    padding-top: 50%;
-                    content: "";
-                }
-                &::after {
-                    display: block;
-                    content: "";
-                    clear: both;
+            @media (max-width: ${({ theme }) => theme.default.breakpoints.md}) {
+                height: 100%;
+                aspect-ratio: unset;
+                overflow-y: auto;
+                overflow-x: hidden;
+                display: block;
+                padding: 0;
+                ${({ theme }) => scroll(theme)}
+            }
+
+            @media (min-width: ${({ theme }) => theme.default.breakpoints.lg}) {
+                @supports not (aspect-ratio: 16 / 8) {
+                    &::before {
+                        float: left;
+                        padding-top: 50%;
+                        content: "";
+                    }
+                    &::after {
+                        display: block;
+                        content: "";
+                        clear: both;
+                    }
                 }
             }
 
@@ -233,6 +277,10 @@ export const StyledDeponentContainer = styled.div<{ isSingle: boolean }>`
         flex: 1;
         justify-content: center;
     }
+
+    @media (max-width: ${({ theme }) => theme.default.breakpoints.md}) {
+        justify-content: center;
+    }
 `;
 
 export const StyledAttendeesContainer = styled.div<{ participantsLength: number; layout: string }>`
@@ -245,24 +293,15 @@ export const StyledAttendeesContainer = styled.div<{ participantsLength: number;
     align-content: ${({ participantsLength }) => (participantsLength > 8 ? "flex-start" : "center")};
     align-items: center;
     margin-left: ${({ theme }) => getREM(theme.default.spaces[3])};
-    ${({ participantsLength, layout, theme }) => {
-        const scroll = `
-            padding-right: ${getREM(theme.default.spaces[3])};
-            scrollbar-color: ${theme.colors.inDepoNeutrals[9]} ${theme.colors.inDepoNeutrals[5]};
-            scrollbar-width: thin;
-            &::-webkit-scrollbar {
-                width: ${getPX(theme.default.spaces[2])};
-            }
-            &::-webkit-scrollbar-track {
-                background-color: ${theme.colors.inDepoNeutrals[5]};
-                border-radius: ${getPX(theme.default.spaces[7])};
-            }
-            &::-webkit-scrollbar-thumb {
-                border-radius: ${getPX(theme.default.spaces[7])};
-                background: ${theme.colors.inDepoNeutrals[9]};
-            }
-        `;
 
+    @media (max-width: ${({ theme }) => theme.default.breakpoints.md}) {
+        flex: 1;
+        margin-left: 0;
+        align-content: ${({ participantsLength }) => (participantsLength > 3 ? "flex-start" : "center")};
+        overflow: hidden;
+    }
+
+    ${({ participantsLength, layout, theme }) => {
         const gridStyle =
             layout === "grid"
                 ? `
@@ -278,7 +317,7 @@ export const StyledAttendeesContainer = styled.div<{ participantsLength: number;
                     grid-gap: ${getREM(theme.default.spaces[6])};
                     margin-top: ${getREM(theme.default.spaces[6])};
                     margin-left: 0;
-                    ${participantsLength > 6 ? scroll : ""}
+                    ${participantsLength > 6 ? scroll(theme) : ""}
                 }
                 `
                 : "";
@@ -290,31 +329,33 @@ export const StyledAttendeesContainer = styled.div<{ participantsLength: number;
                     margin-top: ${getREM(theme.default.spaces[3])};
                     margin-left: 0;
                     flex: 4;
-                    ${participantsLength > 4 ? scroll : ""}
+                    ${participantsLength > 4 ? scroll(theme) : ""}
                 `
                 : "";
 
         const defaultStyle =
             layout === "default"
                 ? `
-                ${participantsLength > 8 ? scroll : ""}
+                @media (min-width: ${theme.default.breakpoints.lg}) {
+                    ${participantsLength > 8 ? scroll(theme) : ""}
 
-                ${StyledVideoConference}.breakrooms & {
-                    margin-left: 0;
-                    justify-content: center;
-                    ${participantsLength > 9 ? scroll : ""}
-                }
-                ${StyledVideoConference}.breakrooms.grid & {
-                    margin-top: 0;
-                    grid-auto-rows: minmax(calc(25% - ${getREM(theme.default.spaces[3])}), 1fr);
+                    ${StyledVideoConference}.breakrooms & {
+                        margin-left: 0;
+                        justify-content: center;
+                        ${participantsLength > 9 ? scroll(theme) : ""}
+                    }
+                    ${StyledVideoConference}.breakrooms.grid & {
+                        margin-top: 0;
+                        grid-auto-rows: minmax(calc(25% - ${getREM(theme.default.spaces[3])}), 1fr);
+                    }
                 }
                 `
                 : "";
 
         return `
-            ${defaultStyle}
-            ${gridStyle}
-            ${verticalStyle}
+                ${defaultStyle}
+                ${gridStyle}
+                ${verticalStyle}
         `;
     }}
 `;

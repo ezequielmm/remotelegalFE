@@ -316,6 +316,27 @@ it("show a file name when file is selected", async () => {
     expect(queryByText("file.pdf")).toBeTruthy();
 });
 
+it("show error message when selected file is an unkown type", async () => {
+    const { getByTestId } = renderWithGlobalContext(<CreateDeposition />, customDeps, {
+        ...rootReducer,
+        initialState: {
+            room: {
+                ...rootReducer.initialState.room,
+            },
+            user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+            signalR: { signalR: null },
+        },
+    });
+    const file = new File(["file"], "file.zzz", { type: "" });
+    const imageInput = await waitForElement(() => getByTestId("upload_button"));
+
+    await act(async () => {
+        await fireEvent.change(imageInput, { target: { files: [file] } });
+    });
+
+    expect(getByTestId("File must be a pdf")).toBeTruthy();
+});
+
 it("trigger validations when blur/change inputs on RequesterSection", async () => {
     const { getAllByPlaceholderText, queryByText } = renderWithGlobalContext(<CreateDeposition />, customDeps, {
         ...rootReducer,

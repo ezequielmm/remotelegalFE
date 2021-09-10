@@ -92,12 +92,13 @@ const StyledVolumeContainer = styled(Space)`
     width: ${getREM(5)};
 `;
 
-interface IVideoPlayer extends ReactPlayerProps {
+export interface IVideoPlayer extends ReactPlayerProps {
     fullScreen?: boolean;
     isOnlyAudio?: boolean;
+    onInit?: () => void;
 }
 
-const VideoPlayer = ({ fullScreen, fallback, isOnlyAudio, ...rest }: IVideoPlayer) => {
+const VideoPlayer = ({ fullScreen, fallback, isOnlyAudio, url, onInit, onReady, ...rest }: IVideoPlayer) => {
     const { dispatch, state } = useContext(GlobalStateContext);
     const { changeTime, currentTime, playing, duration } = state.postDepo;
 
@@ -108,6 +109,7 @@ const VideoPlayer = ({ fullScreen, fallback, isOnlyAudio, ...rest }: IVideoPlaye
 
     const player = useRef(null);
     const styledPlayerRef = useRef(null);
+    const currentUrl = useRef(null);
 
     const handleDuration = (newDuration) => {
         dispatch(actions.setDuration(newDuration));
@@ -161,6 +163,26 @@ const VideoPlayer = ({ fullScreen, fallback, isOnlyAudio, ...rest }: IVideoPlaye
         }
     }, [handleSliderChange, changeTime, styledPlayerRef]);
 
+    useEffect(() => {
+        if (onInit) onInit();
+    }, [onInit]);
+
+    useEffect(() => {
+        if (url && !currentUrl.current) {
+            currentUrl.current = url;
+        }
+        return () => {
+            currentUrl.current = null;
+        };
+    }, [url, currentUrl]);
+
+    const handleOnReady = (player) => {
+        setIsVideoReady(true);
+        if (player && onReady) {
+            onReady(player);
+        }
+    };
+
     return (
         <StyledVideoPlayer ref={styledPlayerRef} data-testid="video_player">
             {isOnlyAudio && (
@@ -181,9 +203,10 @@ const VideoPlayer = ({ fullScreen, fallback, isOnlyAudio, ...rest }: IVideoPlaye
                 width="100%"
                 height={isVideoReady ? "100%" : "0"}
                 progressInterval={250}
-                onReady={() => setIsVideoReady(true)}
+                onReady={handleOnReady}
                 volume={volume}
                 muted={muted}
+                url={currentUrl?.current}
                 {...rest}
             />
             {!isVideoReady && fallback}
@@ -211,7 +234,12 @@ const VideoPlayer = ({ fullScreen, fallback, isOnlyAudio, ...rest }: IVideoPlaye
                             </StyledTimeContainer>
                         </Space.Item>
                         <StyledVolumeContainer align="center" size={1}>
-                            <Icon size={7} onClick={muteVideo} icon={muted ? VolumeOffIcon : VolumeOnIcon} />
+                            <Icon
+                                size={7}
+                                color={theme.default.whiteColor}
+                                onClick={muteVideo}
+                                icon={muted ? VolumeOffIcon : VolumeOnIcon}
+                            />
                             <Space.Item flex="1 1">
                                 <Slider
                                     value={muted ? 0 : volume}
@@ -222,16 +250,16 @@ const VideoPlayer = ({ fullScreen, fallback, isOnlyAudio, ...rest }: IVideoPlaye
                                     trackStyle={{ backgroundColor: theme.default.whiteColor }}
                                 />
                             </Space.Item>
+                            {fullScreen && (
+                                <Space.Item>
+                                    <Icon
+                                        size={6}
+                                        icon={fullscreen ? ContractIcon : ExpandIcon}
+                                        onClick={handleFullScreen}
+                                    />
+                                </Space.Item>
+                            )}
                         </StyledVolumeContainer>
-                        {fullScreen && (
-                            <Space.Item>
-                                <Icon
-                                    size={6}
-                                    icon={fullscreen ? ContractIcon : ExpandIcon}
-                                    onClick={handleFullScreen}
-                                />
-                            </Space.Item>
-                        )}
                     </Space>
                 </StyledControls>
             )}

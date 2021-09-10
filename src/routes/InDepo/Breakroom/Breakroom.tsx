@@ -36,6 +36,7 @@ const Breakroom = () => {
     const [exhibitsOpen, togglerExhibits] = useState<boolean>(false);
     const [videoLayoutSize, setVideoLayoutSize] = useState<number>(0);
     const [atendeesVisibility, setAtendeesVisibility] = useState<boolean>(true);
+    const [inDepoHeight, setInDepoHeight] = useState<number>();
     const [isLocked, setIsLocked] = useState(false);
     const history = useHistory();
     const { signalR, sendMessage, subscribeToGroup, unsubscribeMethodFromGroup, isReconnected } =
@@ -94,6 +95,12 @@ const Breakroom = () => {
         dispatch(generalUIActions.toggleTheme(ThemeMode.inDepo));
         return () => dispatch(generalUIActions.toggleTheme(ThemeMode.default));
     }, [dispatch]);
+
+    useEffect(() => {
+        // Check when body height change
+        const resizeObserver = new ResizeObserver((entries) => setInDepoHeight(entries[0].target.clientHeight || 0));
+        resizeObserver.observe(document.body);
+    }, []);
 
     useEffect(() => {
         let cleanUpFunction;
@@ -176,7 +183,7 @@ const Breakroom = () => {
     try {
         return currentBreakroom && breakroomDataTrack ? (
             <ThemeProvider theme={inDepoTheme}>
-                <StyledInDepoContainer data-testid="videoconference_breakroom">
+                <StyledInDepoContainer data-testid="videoconference_breakroom" height={inDepoHeight}>
                     <StyledInDepoLayout>
                         <RecordPill on={false} />
                         <Exhibits visible={exhibitsOpen} />
@@ -204,7 +211,10 @@ const Breakroom = () => {
             </ThemeProvider>
         ) : null;
     } catch (runtimeError) {
-        console.error(runtimeError);
+        console.error(
+            `Error rendering Breakroom of breakroom ${breakroomID} and deposition ${depositionID}:`,
+            runtimeError
+        );
     }
 };
 

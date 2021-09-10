@@ -25,7 +25,7 @@ import {
 } from "./styles";
 import { Message } from "../../../models/general";
 import { theme } from "../../../constants/styles/theme";
-import useWindowSize from "../../../hooks/useWindowSize";
+import { WindowSizeContext } from "../../../contexts/WindowSizeContext";
 
 const ChatScreen = ({
     closePopOver,
@@ -51,7 +51,7 @@ const ChatScreen = ({
     const inputRef = useRef(null);
     const { state } = useContext(GlobalStateContext);
     const [textRows, setTextRows] = useState(1);
-    const [windowWidth] = useWindowSize();
+    const [windowWidth] = useContext(WindowSizeContext);
     const widthMorethanLg = windowWidth >= parseInt(theme.default.breakpoints.lg, 10);
 
     const { currentRoom, timeZone } = state.room;

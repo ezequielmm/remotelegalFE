@@ -4,10 +4,12 @@ import { createBrowserHistory } from "history";
 import ReactGA from "react-ga";
 import TagManager from "react-gtm-module";
 import "@datadog/browser-logs/bundle/datadog-logs";
+import watchRTC from "@testrtc/watchrtc-sdk";
 import { Route, Router, Switch } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 import { QueryClient, QueryClientProvider } from "react-query";
-import GlobalStyle from "./GlobalStyle";
+import GlobalStyle from "prp-components-library/src/components/GlobalStyle";
+import React from "react";
 import { theme } from "../constants/styles/theme";
 import MockInDepo from "../routes/MockInDepo";
 import Login from "../routes/Login";
@@ -33,6 +35,7 @@ import { FloatingAlertContextProvider } from "../contexts/FloatingAlertContext";
 import TroubleShootUserDevices from "../routes/TroubleShootUserDevices/TroubleShootUserDevices";
 import TechInfo from "../routes/TechInfo";
 import CacheBuster from "../helpers/cacheBuster";
+import withDDContext from "./WithDDContext";
 
 declare global {
     interface Window {
@@ -45,12 +48,28 @@ function App() {
         gtmId: "GTM-TMP4C9Q",
     };
 
+    if (process.env.REACT_APP_ENV !== "localhost" && process.env.REACT_APP_ENV !== "develop") {
+        watchRTC.init({
+            rtcApiKey: process.env.REACT_APP_RTC_API_KEY,
+            rtcRoomId: process.env.REACT_APP_ENV,
+        });
+    }
     window.DD_LOGS.init({
         clientToken: process.env.REACT_APP_DATADOG_TOKEN,
         site: process.env.REACT_APP_DATADOG_URL,
         forwardErrorsToLogs: true,
         sampleRate: 100,
         env: process.env.REACT_APP_ENV,
+        beforeSend: (log) => {
+            if (
+                log?.status === "error" &&
+                (log?.message === "cancelled" ||
+                    log?.error?.stack === "cancelled" ||
+                    log?.error?.stack === "TypeError: cancelled")
+            ) {
+                return false;
+            }
+        },
     });
 
     TagManager.initialize(tagManagerId);
@@ -96,18 +115,18 @@ function App() {
                                         <Route
                                             exact
                                             path="/deposition/pre-join/:depositionID"
-                                            component={PreJoinDepo}
+                                            component={withDDContext(PreJoinDepo)}
                                         />
                                         <Authenticator routesWithGuestToken={ROUTES_WITH_GUEST_TOKEN}>
                                             <Route
                                                 exact
                                                 path="/deposition/pre-join/troubleshoot-devices/:depositionID"
-                                                component={TroubleShootUserDevices}
+                                                component={withDDContext(TroubleShootUserDevices)}
                                             />
                                             <Route
                                                 exact
                                                 path="/deposition/tech_info/:depositionID"
-                                                component={TechInfo}
+                                                component={withDDContext(TechInfo)}
                                             />
                                             <RouteWithLayout exact path="/my-cases" component={MyCases} />
                                             <RouteWithLayout
@@ -120,25 +139,33 @@ function App() {
                                             <RouteWithLayout
                                                 exact
                                                 path="/deposition/post-depo-details/:depositionID"
-                                                component={DepositionDetails}
+                                                component={withDDContext(DepositionDetails)}
                                             />
                                             <RouteWithLayout
                                                 exact
                                                 path="/deposition/details/:depositionID"
-                                                component={ActiveDepositionDetails}
+                                                component={withDDContext(ActiveDepositionDetails)}
                                             />
                                             <Route
                                                 exact
                                                 path="/deposition/join/:depositionID/breakroom/:breakroomID"
-                                                component={Breakroom}
+                                                component={withDDContext(Breakroom)}
                                             />
                                             <Route exact path="/deposition/end" component={EndDepoScreen} />
-                                            <Route exact path="/deposition/join/:depositionID" component={InDepo} />
-                                            <Route exact path="/deposition/pre/:depositionID" component={MockInDepo} />
+                                            <Route
+                                                exact
+                                                path="/deposition/join/:depositionID"
+                                                component={withDDContext(InDepo)}
+                                            />
+                                            <Route
+                                                exact
+                                                path="/deposition/pre/:depositionID"
+                                                component={withDDContext(MockInDepo)}
+                                            />
                                             <Route
                                                 exact
                                                 path="/deposition/pre/:depositionID/waiting"
-                                                component={WaitingRoom}
+                                                component={withDDContext(WaitingRoom)}
                                             />
                                         </Authenticator>
                                     </Switch>
@@ -152,4 +179,4 @@ function App() {
     );
 }
 
-export default App;
+export default React.memo(App);

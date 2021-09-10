@@ -87,6 +87,8 @@ export default function EnteredExhibits({ activeKey }: { activeKey: string }) {
                     showShareButtonOnHeader
                     pdfTronDisableElements={[TOOLBAR_GROUP_ANNOTATE, TOOLBAR_GROUP_VIEW]}
                     readOnly
+                    isActive={currentExhibitTabName === EXHIBIT_TABS.enteredExhibits}
+                    canDownload
                 />
             )}
         </ExhibitTabPaneSpacer>

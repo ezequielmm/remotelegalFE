@@ -29,6 +29,7 @@ const EditCaseModal = ({ open, handleClose, currentCase, fetchCases }: IModalPro
     const [step, setStep] = useState(1);
     const [formState, setFormState] = useState(INITIAL_STATE);
     const caseNameErrorMessage = !formState.name && "Please enter case name";
+    const [editCaseErrorState, setEditCaseErrorState] = useState(null);
     const [editCase, editCaseLoading, editCaseError, editCaseData] = useEditCase();
 
     const addFloatingAlert = useFloatingAlertContext();
@@ -36,6 +37,7 @@ const EditCaseModal = ({ open, handleClose, currentCase, fetchCases }: IModalPro
     const handleCloseAndRedirect = useCallback(() => {
         handleClose();
         setStep(1);
+        setEditCaseErrorState(null);
     }, [handleClose]);
 
     useEffect(() => {
@@ -57,6 +59,10 @@ const EditCaseModal = ({ open, handleClose, currentCase, fetchCases }: IModalPro
             caseNumber: currentCase?.caseNumber,
         });
     }, [open, currentCase]);
+
+    useEffect(() => {
+        setEditCaseErrorState(editCaseError);
+    }, [editCaseError]);
 
     return (
         <>
@@ -132,7 +138,7 @@ const EditCaseModal = ({ open, handleClose, currentCase, fetchCases }: IModalPro
                     <div>
                         <Space direction="vertical" size="large" fullWidth>
                             <Space.Item fullWidth>
-                                {editCaseError && <Alert message={CONSTANTS.NETWORK_ERROR} type="error" />}
+                                {editCaseErrorState && <Alert message={CONSTANTS.NETWORK_ERROR} type="error" />}
                                 <Title level={4} weight="light" data-testid="confirm_title">
                                     {CONSTANTS.EDIT_CASE_CONFIRM_TITLE}
                                 </Title>
@@ -146,7 +152,6 @@ const EditCaseModal = ({ open, handleClose, currentCase, fetchCases }: IModalPro
                                         <Button
                                             data-testid="cancel_edit_case"
                                             type="text"
-                                            loading={editCaseLoading}
                                             disabled={editCaseLoading}
                                             onClick={handleCloseAndRedirect}
                                         >

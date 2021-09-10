@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import styled from "styled-components";
 import Icon from "prp-components-library/src/components/Icon";
 import Space from "prp-components-library/src/components/Space";
@@ -7,7 +7,7 @@ import { getREM, hexToRGBA } from "../../constants/styles/utils";
 import { theme } from "../../constants/styles/theme";
 import ColorStatus from "../../types/ColorStatus";
 import { ReactComponent as CalendarIcon } from "../../assets/icons/close.svg";
-import useWindowSize from "../../hooks/useWindowSize";
+import { WindowSizeContext } from "../../contexts/WindowSizeContext";
 
 export interface IStartMessageProps {
     title?: string;
@@ -42,9 +42,13 @@ const StyledCloseIcon = styled(Icon)`
     }
 `;
 
+const StyledTitleSpace = styled(Space)`
+    padding-right: ${getREM(theme.default.spaces[6])};
+`;
+
 const StartMessage = ({ title, description, icon, open = true, ...rest }: IStartMessageProps) => {
     const [isOpen, setIsOpen] = useState<boolean>(open);
-    const [windowWidth] = useWindowSize();
+    const [windowWidth] = useContext(WindowSizeContext);
 
     const closeMessage = () => {
         setIsOpen(false);
@@ -62,7 +66,7 @@ const StartMessage = ({ title, description, icon, open = true, ...rest }: IStart
                     />
                     {windowWidth < parseInt(theme.default.breakpoints.sm, 10) ? (
                         <>
-                            <Space>
+                            <StyledTitleSpace>
                                 <Space.Item>
                                     <Icon size={9} color={theme.default.primaryColor} icon={icon} />
                                 </Space.Item>
@@ -79,7 +83,7 @@ const StartMessage = ({ title, description, icon, open = true, ...rest }: IStart
                                         </Text>
                                     </Space>
                                 </Space.Item>
-                            </Space>
+                            </StyledTitleSpace>
                             <Text block size="small" ellipsis={false} state={ColorStatus.white}>
                                 {description}
                             </Text>

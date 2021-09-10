@@ -7,7 +7,7 @@ import { CustomStatus } from "prp-components-library/src/components/Result/Resul
 import Space from "prp-components-library/src/components/Space";
 import Text from "prp-components-library/src/components/Text";
 import { useParams } from "react-router-dom";
-import { useFileList, useUploadFile } from "../../../../hooks/exhibits/hooks";
+import { useFileList, useUploadFileToS3 } from "../../../../hooks/exhibits/hooks";
 import { MY_EXHIBITS_RESULT_SUBTITLE, MY_EXHIBITS_RESULT_TITLE, EXHIBIT_TABS } from "../../../../constants/exhibits";
 import { ReactComponent as MyExhibitsIcon } from "../../../../assets/icons/MyExhibits-empty.svg";
 import { ExhibitTabPaneSpacer, ScrollTableContainer } from "../styles";
@@ -22,11 +22,12 @@ import { getREM } from "../../../../constants/styles/utils";
 
 export default function MyExhibits({ activeKey }: { activeKey: string }) {
     const { depositionID } = useParams<{ depositionID: string }>();
-    const { upload } = useUploadFile(depositionID);
+    const { upload } = useUploadFileToS3(depositionID);
     const { handleFetchFiles, loading, errorFetchFiles, files, refreshList } = useFileList(depositionID);
     const [selectedFile, setSelectedFile] = useState<ExhibitFile>(null);
     const { state } = useContext(GlobalStateContext);
     const { currentExhibitTabName } = state.room;
+
     useEffect(() => {
         if (currentExhibitTabName === EXHIBIT_TABS.myExhibits) {
             handleFetchFiles();
@@ -44,7 +45,7 @@ export default function MyExhibits({ activeKey }: { activeKey: string }) {
                         <Badge style={{ lineHeight: getREM(1.72) }} count={files?.length || 0} />
                     </Space>
                     <ScrollTableContainer direction="vertical" size="large">
-                        <UploadButton onUpload={upload} onUploadCompleted={refreshList} />
+                        <UploadButton onUpload={upload} refreshList={refreshList} />
                         {files?.length > 0 && (
                             <FileListTable
                                 data-testid="file_list_table"
@@ -80,6 +81,7 @@ export default function MyExhibits({ activeKey }: { activeKey: string }) {
                     file={selectedFile}
                     onClose={() => setSelectedFile(null)}
                     showShareButtonOnHeader
+                    isActive={currentExhibitTabName === EXHIBIT_TABS.myExhibits}
                 />
             )}
         </ExhibitTabPaneSpacer>

@@ -13,6 +13,10 @@ const disconnectFromDepo = (
 ) => {
     const initialState = {
         info: null,
+        resetRecorder: false,
+        stopRecorder: false,
+        changeVideoSource: false,
+        changeAudioSource: false,
         stamp: null,
         startTime: "",
         mockDepoRoom: null,
@@ -29,7 +33,6 @@ const disconnectFromDepo = (
         message: { module: "", value: "" },
         isRecording: null,
         timeZone: null,
-        transcriptions: [],
         permissions: [],
         currentExhibit: null,
         currentExhibitPage: null,
@@ -43,6 +46,7 @@ const disconnectFromDepo = (
         token: null,
         isMuted: false,
         jobNumber: "",
+        publishedAudioTrackStatus: null,
     };
 
     if (tracks?.length) {

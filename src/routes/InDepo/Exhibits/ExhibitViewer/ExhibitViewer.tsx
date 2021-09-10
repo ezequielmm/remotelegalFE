@@ -1,10 +1,10 @@
 import { Col, Row } from "antd";
-import { ReactElement, useContext, useState } from "react";
+import { ReactElement, useCallback, useContext, useState } from "react";
 import Icon from "prp-components-library/src/components/Icon";
 import Result from "prp-components-library/src/components/Result";
 import Spinner from "prp-components-library/src/components/Spinner";
 import PDFTronViewer from "../../../../components/PDFTronViewer";
-import { useBringAllToMe, useSignedUrl } from "../../../../hooks/exhibits/hooks";
+import { useBringAllToMe, useSignedUrl, useStampMediaExhibits } from "../../../../hooks/exhibits/hooks";
 import { StyledExhibitViewerContainer } from "./styles";
 import ExhibitViewerHeader from "./ExhibitViewerHeader";
 import { ReactComponent as MyExhibitsIcon } from "../../../../assets/icons/EnteredExhibits-empty.svg";
@@ -18,12 +18,14 @@ import { ExhibitFile } from "../../../../types/ExhibitFile";
 import { GlobalStateContext } from "../../../../state/GlobalState";
 import { AnnotationPayload, PdfTronViewerProps } from "../../../../components/PDFTronViewer/PDFTronViewer";
 import { DepositionModel } from "../../../../models";
-import useWindowSize from "../../../../hooks/useWindowSize";
+import MediaViewer from "../../../../components/PDFTronViewer/components/MediaViewer";
+import isAudioOrVideoFileType from "../../../../helpers/isAudioOrVideoFileType";
+import isAudioFileType from "../../../../helpers/isAudioFileType";
+import { WindowSizeContext } from "../../../../contexts/WindowSizeContext";
 
 interface Props extends PdfTronViewerProps {
     file: ExhibitFile;
     onClose?: () => void;
-    onBringAllToMe?: () => void;
     onClosePending?: boolean;
     activeKey?: string;
     showBackButtonOnHeader?: boolean;
@@ -35,6 +37,8 @@ interface Props extends PdfTronViewerProps {
     onAnnotationChange?: (data: AnnotationPayload) => void;
     pdfTronDisableElements?: string[];
     readOnly?: boolean;
+    isActive?: boolean;
+    canDownload?: boolean;
 }
 
 export const ExhibitViewer = ({
@@ -51,13 +55,22 @@ export const ExhibitViewer = ({
     onAnnotationChange,
     pdfTronDisableElements = [],
     readOnly = false,
+    isActive = false,
+    canDownload = false,
 }: Props): ReactElement => {
     const { state } = useContext(GlobalStateContext);
     const { exhibitTab, permissions } = state.room;
     const { error, documentUrl, isPublic } = useSignedUrl(file, readOnly);
     const { setBringAllToPage, bringAllToMe } = useBringAllToMe();
     const [showSpinner, setShowSpinner] = useState(true);
-    const [windowWidth] = useWindowSize();
+    const [hasMediaError, setHasMediaError] = useState(false);
+    const [windowWidth] = useContext(WindowSizeContext);
+    const isAudioOrVideoDocument = isAudioOrVideoFileType(file?.name);
+    const stamp = useStampMediaExhibits();
+
+    const onMediaViewerInitHandler = useCallback(() => {
+        setShowSpinner(true);
+    }, []);
 
     return (
         <StyledExhibitViewerContainer>
@@ -66,6 +79,7 @@ export const ExhibitViewer = ({
                 <ExhibitViewerHeader
                     file={file}
                     onClose={onClose}
+                    onStamp={stamp}
                     onBringAllToMe={bringAllToMe}
                     onClosePending={onClosePending}
                     showBackButton={showBackButtonOnHeader}
@@ -73,9 +87,32 @@ export const ExhibitViewer = ({
                     showShareButton={showShareButtonOnHeader}
                     showBringAllToMeButton={showBringAllToMeButton}
                     readOnly={isPublic}
+                    canDownload={canDownload && isAudioOrVideoDocument && documentUrl}
+                    downloadUrl={documentUrl}
+                    canStamp={
+                        permissions.includes(DepositionModel.DepositionPermissionsTypes.stampExhibit) &&
+                        !isPublic &&
+                        isAudioOrVideoDocument &&
+                        exhibitTab === LIVE_EXHIBIT_TAB
+                    }
                 />
             )}
-            {documentUrl && (
+            {documentUrl && isAudioOrVideoDocument && isActive && (
+                <MediaViewer
+                    url={documentUrl}
+                    stampLabelFromFile={file?.stampLabel}
+                    isOnlyAudio={isAudioFileType(file?.name)}
+                    readOnly={isPublic}
+                    onMediaReady={() => setShowSpinner(false)}
+                    onInit={onMediaViewerInitHandler}
+                    onError={() => {
+                        setHasMediaError(true);
+                        setShowSpinner(false);
+                    }}
+                    onStamp={stamp}
+                />
+            )}
+            {documentUrl && !isAudioOrVideoDocument && (
                 <PDFTronViewer
                     activeKey={activeKey}
                     showSpinner={showSpinner}
@@ -95,7 +132,7 @@ export const ExhibitViewer = ({
                     setPage={setBringAllToPage}
                 />
             )}
-            {!!error && (
+            {(!!error || hasMediaError) && (
                 <Row justify="center" align="middle" style={{ height: "100%" }}>
                     <Col sm={18} lg={14} xl={13} xxl={9}>
                         <Result

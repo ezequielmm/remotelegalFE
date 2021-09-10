@@ -16,6 +16,7 @@ import * as CONSTANTS from "../../constants/preJoinDepo";
 import ErrorScreen from "../../components/ErrorScreen";
 import normalizedRoles from "../../constants/roles";
 import removeWhiteSpace from "../../helpers/removeWhitespace";
+import useFloatingAlertContext from "../../hooks/useFloatingAlertContext";
 
 const PreJoinDepo = () => {
     const { depositionID } = useParams<DepositionID>();
@@ -32,6 +33,7 @@ const PreJoinDepo = () => {
         useRegisterParticipant();
     const history = useHistory();
     const { getFrontEndContent, frontEndContent } = useFrontEndContent();
+    const addAlert = useFloatingAlertContext();
 
     useEffect(() => {
         getFrontEndContent();
@@ -57,11 +59,14 @@ const PreJoinDepo = () => {
 
     useEffect(() => {
         if (userStatusError || (registerParticipantError && registerParticipantError !== 400)) {
-            Message({
-                content: CONSTANTS.NETWORK_ERROR,
-                type: "error",
-                duration: 3,
-            });
+            addAlert(
+                {
+                    message: CONSTANTS.NETWORK_ERROR,
+                    type: "error",
+                    duration: 3,
+                },
+                true
+            );
         }
         if (registerParticipantError === 400 || addParticipantError === 400) {
             setWitnessAlreadyExistsError(true);
@@ -73,7 +78,7 @@ const PreJoinDepo = () => {
                 duration: 3,
             });
         }
-    }, [userStatusError, registerParticipantError, loginError, addParticipantError]);
+    }, [userStatusError, registerParticipantError, loginError, addParticipantError, addAlert]);
 
     useEffect(() => {
         if (userStatus) {

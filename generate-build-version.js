@@ -13,7 +13,7 @@ const jsonContent = JSON.stringify(hashData);
 // eslint-disable-next-line consistent-return
 fs.writeFile("./public/meta.json", jsonContent, "utf8", (err) => {
     if (err) {
-        console.log("An error occured while writing JSON Object to meta.json");
+        console.log("An error occurred while writing JSON Object to meta.json");
         return console.log(err);
     }
 

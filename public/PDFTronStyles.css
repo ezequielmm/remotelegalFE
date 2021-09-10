@@ -1,6 +1,9 @@
 .HeaderItems {
     justify-content: center;
 }
+.ribbons-container {
+    position: relative;
+}
 
 @media (max-width: 640px) {
     .HeaderItems .divider{

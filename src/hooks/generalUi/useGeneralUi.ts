@@ -6,8 +6,8 @@ import actions from "../../state/GeneralUi/GeneralUiActions";
 
 export const useToggleSider = () => {
     const { dispatch } = useContext(GlobalStateContext);
-    const toggleSlider = () => dispatch(actions.changeSiderStatus());
-    return { toggleSlider };
+    const toggleSider = () => dispatch(actions.changeSiderStatus());
+    return { toggleSider };
 };
 
 export default useToggleSider;

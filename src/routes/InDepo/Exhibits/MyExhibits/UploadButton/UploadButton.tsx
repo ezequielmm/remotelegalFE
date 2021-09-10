@@ -13,10 +13,10 @@ import ColorStatus from "../../../../../types/ColorStatus";
 export type IUploadStatus = "success" | "pending" | "fail" | "initial";
 interface IUploadButton {
     onUpload?: (options: any) => void;
-    onUploadCompleted?: () => void;
+    refreshList?: () => void;
 }
 
-export default function UploadButton({ onUpload, onUploadCompleted }: IUploadButton): ReactElement {
+export default function UploadButton({ onUpload, refreshList }: IUploadButton): ReactElement {
     const [disabled, setDisabled] = useState(false);
     return (
         <Dragger
@@ -28,13 +28,18 @@ export default function UploadButton({ onUpload, onUploadCompleted }: IUploadBut
             name="file"
             customRequest={onUpload}
             onChange={({ file }) => {
-                if (file.status === "done") {
-                    onUploadCompleted();
-                }
                 setDisabled(file.status === "uploading");
             }}
             progress={{ strokeWidth: 8, showInfo: false, className: "progress" }}
-            itemRender={(n, f) => <ProgressBarRender errors={f?.error} percent={f.percent} status={f.status} />}
+            itemRender={(_, file) => (
+                <ProgressBarRender
+                    errors={file?.error}
+                    percent={file.percent}
+                    status={file.status}
+                    fileName={file.name}
+                    refreshList={refreshList}
+                />
+            )}
         >
             <Space size="middle" justify="center" align="center" fullWidth>
                 <Icon icon={uploadIcon} size="2.5rem" />

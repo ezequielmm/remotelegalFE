@@ -7,6 +7,8 @@ export enum NotificationEntityType {
     joinResponse = "joinResponse",
     lockBreakRoom = "lockBreakRoom",
     endDeposition = "endDeposition",
+    exhibit = "exhibit",
+    stamp = "stamp",
 }
 
 export enum NotificationAction {
@@ -14,15 +16,11 @@ export enum NotificationAction {
     update = "update",
     delete = "delete",
     start = "start",
+    error = "error",
+    close = "close",
 }
-
-export interface NotificationParticipantStatusContent {
-    isMuted: boolean;
-    email: string;
-}
-
-export type Notification = {
+export interface Notification {
     entityType: NotificationEntityType;
     action: NotificationAction;
-    content: NotificationParticipantStatusContent;
-};
+    content: Record<string, any>;
+}

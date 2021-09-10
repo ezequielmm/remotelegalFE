@@ -1,4 +1,4 @@
-import { NotificationEntityType } from "../../types/Notification";
+import { NotificationAction, NotificationEntityType } from "../../types/Notification";
 
 export const annotationsNotificationMessageWithContent = {
     entityType: NotificationEntityType.annotation,
@@ -36,5 +36,20 @@ export const bringToMeMessageWithNoDetails = {
         author: {
             id: "1",
         },
+    },
+};
+
+export const stampNotificationMessageWithContent = {
+    entityType: NotificationEntityType.stamp,
+    content: {
+        stampLabel: "stampLabel",
+    },
+};
+
+export const stampNotificationMessageWithError = {
+    entityType: NotificationEntityType.stamp,
+    action: NotificationAction.error,
+    content: {
+        message: "Error",
     },
 };

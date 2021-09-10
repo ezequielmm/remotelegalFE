@@ -1,4 +1,4 @@
-import React, { ReactElement, useEffect, useState, useCallback } from "react";
+import React, { ReactElement, useEffect, useState, useCallback, useContext } from "react";
 import { useHistory, useParams } from "react-router";
 import Badge from "prp-components-library/src/components/Badge";
 import Button from "prp-components-library/src/components/Button";
@@ -54,6 +54,7 @@ import Control from "../Control/Control";
 import Logo from "../Logo";
 import CopyLink from "./components/CopyLink";
 import EndDepoModal from "./components/EndDepoModal";
+import { WindowSizeContext } from "../../contexts/WindowSizeContext";
 import getLeaveModalTextContent from "./helpers/getLeaveModalTextContent";
 import {
     LockedMenuItem,
@@ -65,10 +66,11 @@ import {
     StyledDrawerSpace,
     StyledEndButton,
     StyledMobileMenu,
+    StyledMoreMenu,
+    StyledChatWrapper,
 } from "./styles";
 import HelpModal from "./components/HelpModal";
 import TroubleShootDevicesModal from "../../routes/TroubleShootUserDevices/components/TroubleShootDevicesModal";
-import useWindowSize from "../../hooks/useWindowSize";
 import MobileMoreMenu from "./components/MobileMoreMenu";
 
 interface IControlsBar {
@@ -90,6 +92,11 @@ interface IControlsBar {
     handleJoinBreakroom?: (roomNumber: string) => void;
     initialAudioEnabled?: boolean;
     jobNumber?: string;
+    settings?: {
+        EnableBreakrooms: string;
+        EnableRealTimeTab: string;
+        EnableLiveTranscriptions: string;
+    };
 }
 
 export default function ControlsBar({
@@ -111,13 +118,15 @@ export default function ControlsBar({
     handleJoinBreakroom,
     initialAudioEnabled,
     jobNumber,
+    settings = { EnableRealTimeTab: "disabled", EnableBreakrooms: "disabled", EnableLiveTranscriptions: "disabled" },
 }: IControlsBar): ReactElement {
+    const { EnableBreakrooms, EnableRealTimeTab, EnableLiveTranscriptions } = settings;
     const { videoTracks, audioTracks } = useParticipantTracks(localParticipant);
     const { isAudioEnabled, isCameraEnabled, setAudioEnabled, setCameraEnabled } = useTracksStatus(
         audioTracks as LocalAudioTrack[],
         videoTracks as LocalVideoTrack[]
     );
-    const { startPauseRecording, loadingStartPauseRecording } = useRecording(!isRecording);
+    const { startPauseRecording, loadingStartPauseRecording } = useRecording(!isRecording, EnableLiveTranscriptions);
     const [chatOpen, togglerChat] = useState(false);
     const [showSettings, setSettings] = useState(false);
     const [unreadedChats, setUnreadedChats] = useState(0);
@@ -135,7 +144,7 @@ export default function ControlsBar({
     const history = useHistory();
     const { isAuthenticated } = useAuthentication();
     const leaveModalTextContent = getLeaveModalTextContent(isRecording, isWitness);
-    const [windowWidth] = useWindowSize();
+    const [windowWidth] = useContext(WindowSizeContext);
     const [drawerVisible, setDrawerVisible] = useState(false);
     const { depositionID } = useParams<DepositionID>();
     const widthMorethanLg = windowWidth >= parseInt(theme.default.breakpoints.lg, 10);
@@ -195,7 +204,7 @@ export default function ControlsBar({
             }));
     }, [chatOpen]);
 
-    useStreamAudio(isAudioEnabled, audioTracks, isPreDepo);
+    useStreamAudio(EnableLiveTranscriptions === "enabled" && isAudioEnabled, audioTracks, isPreDepo);
 
     const handleRedirection = () => {
         return isWitness && !isAuthenticated
@@ -293,7 +302,14 @@ export default function ControlsBar({
 
     return (
         <StyledContainer pl={6} pr={3} align="center" data-testid="controls_container">
-            <TroubleShootDevicesModal onClose={toggleSettingsModal} isDepo visible={showSettings} />
+            <TroubleShootDevicesModal
+                onClose={toggleSettingsModal}
+                isDepo
+                visible={showSettings}
+                videoTracks={videoTracks}
+                audioTracks={audioTracks}
+                shouldUseCurrentStream
+            />
             <Confirm
                 visible={breakroomModal}
                 title={CONSTANTS.BREAKROOM_ON_THE_RECORD_TITLE}
@@ -411,15 +427,18 @@ export default function ControlsBar({
                                 label={CONSTANTS.CONTROLS_BAR_EXHIBITS_LABEL}
                                 icon={<Icon icon={ExhibitsIcon} size="1.625rem" />}
                             />
-                            <Control
-                                data-testid="realtime"
-                                isActive={realTimeOpen}
-                                onClick={toggleRealTime}
-                                type="simple"
-                                label={CONSTANTS.CONTROLS_BAR_REAL_TIME_LABEL}
-                                icon={<Icon icon={RealTimeIcon} size="1.625rem" />}
-                            />
-                            {breakrooms && !!breakrooms.length && (
+                            {EnableRealTimeTab === "enabled" && (
+                                <Control
+                                    data-testid="realtime"
+                                    isActive={realTimeOpen}
+                                    onClick={toggleRealTime}
+                                    type="simple"
+                                    label={CONSTANTS.CONTROLS_BAR_REAL_TIME_LABEL}
+                                    icon={<Icon icon={RealTimeIcon} size="1.625rem" />}
+                                />
+                            )}
+
+                            {EnableBreakrooms === "enabled" && breakrooms && !!breakrooms.length && (
                                 <Dropdown
                                     onVisibleChange={toggleBreakrooms}
                                     visible={breakroomsOpen}
@@ -529,18 +548,7 @@ export default function ControlsBar({
                                 onVisibleChange={toggleMore}
                                 visible={moreOpen}
                                 overlay={
-                                    <Menu selectable={false}>
-                                        <Menu.Item key="0" onClick={() => setHelpModal(true)}>
-                                            <Button
-                                                icon={<Icon icon={SupportIcon} size={8} color={ColorStatus.white} />}
-                                                data-testid="support_button"
-                                                type="link"
-                                            >
-                                                <Text state={ColorStatus.white} size="small">
-                                                    {CONSTANTS.CONTROLS_BAR_SUPPORT_LABEL}
-                                                </Text>
-                                            </Button>
-                                        </Menu.Item>
+                                    <StyledMoreMenu selectable={false}>
                                         <Menu.Item key="1" onClick={toggleSettingsModal}>
                                             <Button
                                                 icon={<Icon icon={SettingsIcon} size={8} color={ColorStatus.white} />}
@@ -572,7 +580,18 @@ export default function ControlsBar({
                                                 </Link>
                                             </Menu.Item>
                                         )}
-                                    </Menu>
+                                        <Menu.Item key="0" onClick={handleHelpModal}>
+                                            <Button
+                                                icon={<Icon icon={SupportIcon} size={8} color={ColorStatus.white} />}
+                                                data-testid="support_button"
+                                                type="link"
+                                            >
+                                                <Text state={ColorStatus.white} size="small">
+                                                    {CONSTANTS.CONTROLS_BAR_SUPPORT_LABEL}
+                                                </Text>
+                                            </Button>
+                                        </Menu.Item>
+                                    </StyledMoreMenu>
                                 }
                                 arrow
                                 styled
@@ -644,7 +663,7 @@ export default function ControlsBar({
                                         icon={<Icon icon={ExhibitsIcon} size="1.625rem" />}
                                     />
                                 </Col>
-                                {breakrooms && !!breakrooms.length && (
+                                {EnableBreakrooms === "enabled" && breakrooms && !!breakrooms.length && (
                                     <>
                                         <Col xs={8}>
                                             <Control
@@ -667,82 +686,86 @@ export default function ControlsBar({
                                         </Drawer>
                                     </>
                                 )}
-                                <Col xs={8}>
-                                    <Popover
-                                        overlay={
-                                            <Space size="0" direction="vertical">
-                                                <Text weight="bold" state={ColorStatus.white}>
-                                                    {newMessageObj.author}
-                                                </Text>
-                                                <Text state={ColorStatus.white}>{newMessageObj.lastMessage}</Text>
-                                            </Space>
-                                        }
-                                        trigger="click"
-                                        dataTestId={CONSTANTS.POPOVER_NEW_MESSAGE}
-                                        visible={newMessagePopUp.show}
-                                        closable
-                                        onClose={() =>
-                                            setNewMessagePopUp((prevState) => ({
-                                                ...prevState,
-                                                show: false,
-                                                unreadedChats,
-                                            }))
-                                        }
-                                    >
-                                        <Dropdown
-                                            dataTestId={CONSTANTS.CHAT_DROPDOWN_TEST_ID}
+                                {!disableChat && (
+                                    <Col xs={8}>
+                                        <Popover
                                             overlay={
-                                                <ThemeProvider theme={summaryTheme}>
-                                                    <Drawer
-                                                        visible={chatOpen}
-                                                        onClose={toggleChat}
-                                                        placement="bottom"
-                                                        height="100%"
-                                                        closable={false}
-                                                        bodyStyle={{ padding: "0" }}
-                                                    >
-                                                        <Chat
-                                                            closePopOver={toggleChat}
-                                                            open={chatOpen}
-                                                            height={"100%"}
-                                                            messages={messages}
-                                                            sendMessage={sendMessage}
-                                                            loadClient={loadClient}
-                                                            loadingClient={loadingClient}
-                                                            errorLoadingClient={errorLoadingClient}
-                                                        />
-                                                    </Drawer>
-                                                </ThemeProvider>
+                                                <Space size="0" direction="vertical">
+                                                    <Text weight="bold" state={ColorStatus.white}>
+                                                        {newMessageObj.author}
+                                                    </Text>
+                                                    <Text state={ColorStatus.white}>{newMessageObj.lastMessage}</Text>
+                                                </Space>
                                             }
-                                            placement="topCenter"
-                                            onVisibleChange={toggleChat}
-                                            visible={chatOpen}
-                                            trigger={["click"]}
-                                            arrow
-                                            styled
-                                            overlayStyle={{ width: getREM(theme.default.spaces[6] * 23) }}
-                                            theme={summaryTheme}
+                                            trigger="click"
+                                            dataTestId={CONSTANTS.POPOVER_NEW_MESSAGE}
+                                            visible={newMessagePopUp.show}
+                                            closable
+                                            onClose={() =>
+                                                setNewMessagePopUp((prevState) => ({
+                                                    ...prevState,
+                                                    show: false,
+                                                    unreadedChats,
+                                                }))
+                                            }
                                         >
-                                            <Control
-                                                data-testid={CONSTANTS.CHAT_CONTROL_TEST_ID}
-                                                isActive={chatOpen}
-                                                type="simple"
-                                                label={CONSTANTS.CONTROLS_BAR_CHAT_LABEL}
-                                                icon={
-                                                    <Badge
-                                                        data-testid={CONSTANTS.UNREADED_CHATS_TEST_ID}
-                                                        count={unreadedChats}
-                                                        size="small"
-                                                        color={ColorStatus.error}
-                                                        rounded
-                                                    >
-                                                        <Icon icon={ChatIcon} size="1.625rem" />
-                                                    </Badge>
-                                                }
-                                            />
-                                        </Dropdown>
-                                    </Popover>
-                                </Col>
+                                            <StyledChatWrapper>
+                                                <Dropdown
+                                                    dataTestId={CONSTANTS.CHAT_DROPDOWN_TEST_ID}
+                                                    overlay={
+                                                        <ThemeProvider theme={summaryTheme}>
+                                                            <Drawer
+                                                                visible={chatOpen}
+                                                                onClose={toggleChat}
+                                                                placement="bottom"
+                                                                height="100%"
+                                                                closable={false}
+                                                                bodyStyle={{ padding: "0", height: "100%" }}
+                                                            >
+                                                                <Chat
+                                                                    closePopOver={toggleChat}
+                                                                    open={chatOpen}
+                                                                    height={"100%"}
+                                                                    messages={messages}
+                                                                    sendMessage={sendMessage}
+                                                                    loadClient={loadClient}
+                                                                    loadingClient={loadingClient}
+                                                                    errorLoadingClient={errorLoadingClient}
+                                                                />
+                                                            </Drawer>
+                                                        </ThemeProvider>
+                                                    }
+                                                    placement="topCenter"
+                                                    onVisibleChange={toggleChat}
+                                                    visible={chatOpen}
+                                                    trigger={["click"]}
+                                                    arrow
+                                                    styled
+                                                    overlayStyle={{ width: getREM(theme.default.spaces[6] * 23) }}
+                                                    theme={summaryTheme}
+                                                >
+                                                    <Control
+                                                        data-testid={CONSTANTS.CHAT_CONTROL_TEST_ID}
+                                                        isActive={chatOpen}
+                                                        type="simple"
+                                                        label={CONSTANTS.CONTROLS_BAR_CHAT_LABEL}
+                                                        icon={
+                                                            <Badge
+                                                                data-testid={CONSTANTS.UNREADED_CHATS_TEST_ID}
+                                                                count={unreadedChats}
+                                                                size="small"
+                                                                color={ColorStatus.error}
+                                                                rounded
+                                                            >
+                                                                <Icon icon={ChatIcon} size="1.625rem" />
+                                                            </Badge>
+                                                        }
+                                                    />
+                                                </Dropdown>
+                                            </StyledChatWrapper>
+                                        </Popover>
+                                    </Col>
+                                )}
                                 <Col xs={8}>
                                     <Control
                                         isActive={summaryOpen}
