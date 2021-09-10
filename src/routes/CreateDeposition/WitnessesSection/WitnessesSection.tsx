@@ -8,7 +8,7 @@ import { ReactComponent as AddIcon } from "../../../assets/general/Add.svg";
 import * as CONSTANTS from "../../../constants/createDeposition";
 import WitnessItem from "./WitnessItem";
 
-const WitnessesSection = () => {
+const WitnessesSection = ({ addWitnessIsEnabled = false }: { addWitnessIsEnabled: boolean }) => {
     const { errors, control, trigger } = useFormContext();
     const { append, fields, remove } = useFieldArray({ control, name: "depositions" });
 
@@ -26,15 +26,17 @@ const WitnessesSection = () => {
                     {fields.length > index + 1 && <Divider />}
                 </Fragment>
             ))}
-            <Button
-                data-testid="add_witness_button"
-                disabled={fields.length === CONSTANTS.WITNESSES_LIMIT}
-                onClick={handleAddDeposition}
-                type="ghost"
-                icon={<Icon icon={AddIcon} size={8} />}
-            >
-                Add Witness
-            </Button>
+            {addWitnessIsEnabled && (
+                <Button
+                    data-testid={CONSTANTS.ADD_WITNESS_BUTTON_TEST_ID}
+                    disabled={fields.length === CONSTANTS.WITNESSES_LIMIT}
+                    onClick={handleAddDeposition}
+                    type="ghost"
+                    icon={<Icon icon={AddIcon} size={8} />}
+                >
+                    Add Witness
+                </Button>
+            )}
         </Card>
     );
 };

@@ -103,4 +103,5 @@ export const TIME_PICKER_PROPS = {
 };
 
 export const WITNESSES_LIMIT = 10;
+export const ADD_WITNESS_BUTTON_TEST_ID = "add_witness_button";
 export const INVALID_CASE_MESSAGE = "Please select a Case";

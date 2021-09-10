@@ -646,6 +646,31 @@ it("shows error and try again button when current user is null", async () => {
     });
 });
 
+it("hides add witness button for non-admin users", async () => {
+    customDeps.apiService.fetchCases = jest.fn().mockImplementation(() => []);
+    const { queryByTestId } = renderWithGlobalContext(<CreateDeposition />, customDeps, {
+        ...rootReducer,
+        initialState: {
+            room: {
+                ...rootReducer.initialState.room,
+            },
+            user: {
+                currentUser: {
+                    firstName: "First Name",
+                    lastName: "Last Name",
+                    emailAddress: "test@test.com",
+                    isAdmin: false,
+                },
+            },
+            signalR: { signalR: null },
+        },
+    });
+
+    const addWitnessButton = queryByTestId(CONSTANTS.ADD_WITNESS_BUTTON_TEST_ID);
+
+    expect(addWitnessButton).toBeNull();
+});
+
 it("shows validations when click on add witness button", async () => {
     customDeps.apiService.fetchCases = jest.fn().mockImplementation(() => []);
     const { getByText, getByTestId } = renderWithGlobalContext(<CreateDeposition />, customDeps, {
@@ -654,12 +679,12 @@ it("shows validations when click on add witness button", async () => {
             room: {
                 ...rootReducer.initialState.room,
             },
-            user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+            user: { currentUser: { firstName: "First Name", lastName: "Last Name", isAdmin: true } },
             signalR: { signalR: null },
         },
     });
 
-    const addWitnessButton = await waitForElement(() => getByTestId("add_witness_button"));
+    const addWitnessButton = await waitForElement(() => getByTestId(CONSTANTS.ADD_WITNESS_BUTTON_TEST_ID));
     await act(async () => await fireEvent.click(addWitnessButton));
     expect(getByText(CONSTANTS.DATE_ERROR)).toBeTruthy();
     expect(getByText(CONSTANTS.OPTION_ERROR)).toBeTruthy();
@@ -674,7 +699,7 @@ it("add a witness when click on add witness button and the required fields are f
                 room: {
                     ...rootReducer.initialState.room,
                 },
-                user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+                user: { currentUser: { firstName: "First Name", lastName: "Last Name", isAdmin: true } },
                 signalR: { signalR: null },
             },
         });
@@ -710,7 +735,7 @@ it("add a witness when click on add witness button and the required fields are f
         await userEvent.click(radioButtonOption);
     });
 
-    const addWitnessButton = await waitForElement(() => getByTestId("add_witness_button"));
+    const addWitnessButton = await waitForElement(() => getByTestId(CONSTANTS.ADD_WITNESS_BUTTON_TEST_ID));
     await act(async () => userEvent.click(addWitnessButton));
 
     expect(await waitForElement(() => getAllByTestId("witness_title").length)).toBe(2);
@@ -731,7 +756,7 @@ it("deletes a witness when click on Delete Witness button", async () => {
             room: {
                 ...rootReducer.initialState.room,
             },
-            user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+            user: { currentUser: { firstName: "First Name", lastName: "Last Name", isAdmin: true } },
             signalR: { signalR: null },
         },
     });
@@ -769,7 +794,7 @@ it("deletes a witness when click on Delete Witness button", async () => {
 
     expect(queryByTestId("witness_delete_button")).toBeFalsy();
 
-    const addWitnessButton = await waitForElement(() => getByTestId("add_witness_button"));
+    const addWitnessButton = await waitForElement(() => getByTestId(CONSTANTS.ADD_WITNESS_BUTTON_TEST_ID));
     await act(async () => userEvent.click(addWitnessButton));
 
     // DELETE FIRST WITNESS
@@ -1037,14 +1062,14 @@ it(`add up to ${CONSTANTS.WITNESSES_LIMIT} witnesses and try to add another with
                 room: {
                     ...rootReducer.initialState.room,
                 },
-                user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+                user: { currentUser: { firstName: "First Name", lastName: "Last Name", isAdmin: true } },
                 signalR: { signalR: null },
             },
         }
     );
     const { depositions } = TEST_CONSTANTS.getDepositions();
 
-    const addWitnessButton = await waitForElement(() => getByTestId("add_witness_button"));
+    const addWitnessButton = await waitForElement(() => getByTestId(CONSTANTS.ADD_WITNESS_BUTTON_TEST_ID));
 
     Array.from(Array(CONSTANTS.WITNESSES_LIMIT - 1).keys()).map(() => {
         // DATE FILL

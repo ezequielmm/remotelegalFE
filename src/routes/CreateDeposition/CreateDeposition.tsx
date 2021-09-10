@@ -109,7 +109,7 @@ const CreateDeposition = () => {
                         loadingCases={loadingCases}
                         fetchingError={fetchingCasesError}
                     />
-                    <WitnessesSection />
+                    <WitnessesSection addWitnessIsEnabled={!!currentUser?.isAdmin} />
                     <OtherParticipantsSection />
                     <DetailsSection />
                     {!!currentUser?.isAdmin && <RequesterSection invalidRequester={error === 404 && "Invalid email"} />}
