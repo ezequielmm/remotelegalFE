@@ -421,7 +421,10 @@ describe("Exhibits", () => {
                     room: {
                         ...rootReducer.initialState.room,
                     },
-                    signalR: { signalR: null },
+                    signalR: {
+                        signalR: null,
+                        signalRConnectionStatus: { isReconnected: false, isReconnecting: false },
+                    },
                 },
             }
         );
@@ -455,7 +458,10 @@ describe("Exhibits", () => {
                         ...rootReducer.initialState.room,
                         isRecording: true,
                     },
-                    signalR: { signalR: null },
+                    signalR: {
+                        signalR: null,
+                        signalRConnectionStatus: { isReconnected: false, isReconnecting: false },
+                    },
                 },
             }
         );
@@ -651,7 +657,10 @@ describe("Exhibits", () => {
                         duration: 1,
                     },
                     user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
-                    signalR: { signalR: null },
+                    signalR: {
+                        signalR: null,
+                        signalRConnectionStatus: { isReconnected: false, isReconnecting: false },
+                    },
                 },
             }
         );
@@ -697,7 +706,10 @@ describe("Exhibits", () => {
                         playing: true,
                         duration: 1,
                     },
-                    signalR: { signalR: null },
+                    signalR: {
+                        signalR: null,
+                        signalRConnectionStatus: { isReconnected: false, isReconnecting: false },
+                    },
                 },
             }
         );
@@ -892,7 +904,10 @@ describe("Exhibits", () => {
                         playing: true,
                         duration: 1,
                     },
-                    signalR: { signalR: null },
+                    signalR: {
+                        signalR: null,
+                        signalRConnectionStatus: { isReconnected: false, isReconnecting: false },
+                    },
                 },
             }
         );

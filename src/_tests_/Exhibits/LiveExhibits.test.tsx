@@ -39,6 +39,7 @@ test("Should display the close confirmation modal if the shared exhibit is not i
             initialState: {
                 signalR: {
                     signalR: null,
+                    signalRConnectionStatus: { isReconnected: false, isReconnecting: false },
                 },
                 room: {
                     ...rootReducer.initialState.room,
@@ -73,6 +74,7 @@ test("Should not display the close confirmation modal if the shared exhibit is i
             initialState: {
                 signalR: {
                     signalR: null,
+                    signalRConnectionStatus: { isReconnected: false, isReconnecting: false },
                 },
                 room: {
                     ...rootReducer.initialState.room,
@@ -108,6 +110,7 @@ test("Should not call getSignedUrl or getPrivateSignedUrl when the current exhib
             initialState: {
                 signalR: {
                     signalR: null,
+                    signalRConnectionStatus: { isReconnected: false, isReconnecting: false },
                 },
                 room: {
                     ...rootReducer.initialState.room,
@@ -138,6 +141,7 @@ test("Should call getSignedUrl and not getPrivateSignedUrl when the current exhi
             initialState: {
                 signalR: {
                     signalR: null,
+                    signalRConnectionStatus: { isReconnected: false, isReconnecting: false },
                 },
                 room: {
                     ...rootReducer.initialState.room,
@@ -168,6 +172,7 @@ test("Should call getPrivateSignedUrl and not getSignedUrl when the current exhi
             initialState: {
                 signalR: {
                     signalR: null,
+                    signalRConnectionStatus: { isReconnected: false, isReconnecting: false },
                 },
                 room: {
                     ...rootReducer.initialState.room,
@@ -197,6 +202,7 @@ test("should display the close shared exhibit button when has the allowed permis
             initialState: {
                 signalR: {
                     signalR: null,
+                    signalRConnectionStatus: { isReconnected: false, isReconnecting: false },
                 },
                 room: {
                     ...rootReducer.initialState.room,
@@ -228,6 +234,7 @@ test("should not display the close shared exhibit button when has not the allowe
             initialState: {
                 signalR: {
                     signalR: null,
+                    signalRConnectionStatus: { isReconnected: false, isReconnecting: false },
                 },
                 room: {
                     ...rootReducer.initialState.room,
@@ -259,6 +266,7 @@ test("should display the close shared exhibit modal when after click the button"
             initialState: {
                 signalR: {
                     signalR: null,
+                    signalRConnectionStatus: { isReconnected: false, isReconnecting: false },
                 },
                 room: {
                     ...rootReducer.initialState.room,
@@ -292,6 +300,7 @@ test("should display the close shared exhibit document modal with not stamped ex
             initialState: {
                 signalR: {
                     signalR: null,
+                    signalRConnectionStatus: { isReconnected: false, isReconnecting: false },
                 },
                 room: {
                     ...rootReducer.initialState.room,
@@ -331,6 +340,7 @@ test("should display the close shared exhibit document modal with stamped exhibi
             initialState: {
                 signalR: {
                     signalR: null,
+                    signalRConnectionStatus: { isReconnected: false, isReconnecting: false },
                 },
                 room: {
                     ...rootReducer.initialState.room,
@@ -370,6 +380,7 @@ test("should display the bring all to me button when the user is the owner of th
             initialState: {
                 signalR: {
                     signalR: null,
+                    signalRConnectionStatus: { isReconnected: false, isReconnecting: false },
                 },
                 room: {
                     ...rootReducer.initialState.room,
@@ -409,6 +420,7 @@ test("should not display the bring all to me button when the user is the owner o
             initialState: {
                 signalR: {
                     signalR: null,
+                    signalRConnectionStatus: { isReconnected: false, isReconnecting: false },
                 },
                 room: {
                     ...rootReducer.initialState.room,
@@ -448,6 +460,7 @@ test("should not display the bring all to me button when has not any shared exhi
             initialState: {
                 signalR: {
                     signalR: null,
+                    signalRConnectionStatus: { isReconnected: false, isReconnecting: false },
                 },
                 room: {
                     ...rootReducer.initialState.room,

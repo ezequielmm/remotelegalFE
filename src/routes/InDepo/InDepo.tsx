@@ -5,6 +5,7 @@ import { Participant, connect } from "twilio-video";
 import Spinner from "prp-components-library/src/components/Spinner";
 import { Row } from "antd/lib/grid";
 import Alert from "prp-components-library/src/components/Alert";
+import { HubConnectionState } from "@microsoft/signalr";
 import Exhibits from "./Exhibits";
 import RealTime from "./RealTime";
 import { ReactComponent as NoConnectionIcon } from "../../assets/in-depo/No-Connection.svg";
@@ -83,7 +84,7 @@ const InDepo = () => {
 
     const { currentUser } = state?.user;
     const [windowWidth, windowHeight] = useContext(WindowSizeContext);
-    const { signalRConnectionStatus } = state?.signalR;
+    const { isReconnected, isReconnecting } = state?.signalR.signalRConnectionStatus;
     const [realTimeOpen, togglerRealTime] = useState<boolean>(false);
     const [exhibitsOpen, togglerExhibits] = useState<boolean>(false);
     const [initialAudioEnabled, setInitialAudioEnabled] = useState<boolean>(true);
@@ -129,10 +130,10 @@ const InDepo = () => {
     }, []);
 
     useEffect(() => {
-        if ((signalR?.connectionState === "Connected" || signalRConnectionStatus?.isReconnected) && depositionID) {
+        if (signalR?.connectionState === HubConnectionState.Connected && depositionID) {
             sendMessage("SubscribeToDeposition", { depositionId: depositionID });
         }
-    }, [signalR, depositionID, sendMessage, signalRConnectionStatus?.isReconnected]);
+    }, [signalR?.connectionState, depositionID, sendMessage]);
 
     useEffect(() => {
         const handleReconnection = (error) => {
@@ -225,19 +226,20 @@ const InDepo = () => {
     }, [depositionID, isAuthenticated, currentUser]);
 
     useEffect(() => {
-        if (signalRConnectionStatus?.isReconnected) {
+        if (isReconnected) {
             getDepoSummaryInfo();
         }
-    }, [getDepoSummaryInfo, signalRConnectionStatus?.isReconnected]);
+    }, [getDepoSummaryInfo, isReconnected]);
 
     useEffect(() => {
-        (async () => {
-            if (signalRConnectionStatus?.isReconnected && depoSummaryInfo) {
+        const fetchDepoData = async () => {
+            if (isReconnected && depoSummaryInfo) {
                 dispatch(actions.setParticipantsData(depoSummaryInfo.participants));
                 dispatch(actions.setIsRecording(depoSummaryInfo.isOnTheRecord));
                 if (depoSummaryInfo.isSharing) {
-                    togglerExhibits(true);
+                    dispatch(actions.setSharedExhibit(null));
                     fetchExhibitFileInfo(depositionID);
+                    togglerExhibits(true);
                 } else {
                     togglerExhibits(false);
                 }
@@ -245,10 +247,11 @@ const InDepo = () => {
                 const events = await getDepositionEvents(depositionID);
                 setInitialTranscriptions(setTranscriptionMessages(transcriptions, events));
             }
-        })();
+        };
+        fetchDepoData();
     }, [
         depoSummaryInfo,
-        signalRConnectionStatus?.isReconnected,
+        isReconnected,
         depositionID,
         dispatch,
         getDepositionEvents,
@@ -332,16 +335,10 @@ const InDepo = () => {
         history,
         depositionID,
     ]);
-    if (
-        loading &&
-        userStatus === null &&
-        shouldSendToPreDepo === null &&
-        !signalRConnectionStatus?.isReconnected &&
-        !signalRConnectionStatus?.isReconnecting
-    ) {
+    if (loading && userStatus === null && shouldSendToPreDepo === null && !isReconnected && !isReconnecting) {
         return <Spinner />;
     }
-    if (!signalRConnectionStatus?.isReconnected) {
+    if (!isReconnected) {
         if (userStatus?.participant?.isAdmitted && loading && shouldSendToPreDepo === false) {
             return <LoadingScreen />;
         }
@@ -376,7 +373,7 @@ const InDepo = () => {
                     )}
                     <StyledInDepoLayout>
                         <StyledAlertRow justify="space-around" align="middle">
-                            {(depoRoomReconnecting || signalRConnectionStatus?.isReconnecting) && (
+                            {(depoRoomReconnecting || isReconnecting) && (
                                 <StyledAlert
                                     data-testid={CONSTANTS.RECONNECTING_ALERT_MESSAGE_TEST_ID}
                                     icon={<NoConnectionIcon />}

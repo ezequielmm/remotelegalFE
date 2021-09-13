@@ -193,7 +193,7 @@ test("spinner is shown on mount", async () => {
                     ...rootReducer.initialState.room,
                 },
                 user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
-                signalR: { signalR: null },
+                signalR: { signalR: null, signalRConnectionStatus: { isReconnected: false, isReconnecting: false } },
             },
         },
         history
@@ -215,7 +215,7 @@ test("Error screen is shown when fetch fails", async () => {
                     ...rootReducer.initialState.room,
                 },
                 user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
-                signalR: { signalR: null },
+                signalR: { signalR: null, signalRConnectionStatus: { isReconnected: false, isReconnecting: false } },
             },
         },
         history
@@ -240,7 +240,7 @@ test("VideoConference is shown if fetch is successful", async () => {
                     ...rootReducer.initialState.room,
                 },
                 user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
-                signalR: { signalR: null },
+                signalR: { signalR: null, signalRConnectionStatus: { isReconnected: false, isReconnecting: false } },
             },
         },
         history
@@ -263,7 +263,7 @@ test("Logger is not called if option isn´t enabled", async () => {
                     ...rootReducer.initialState.room,
                 },
                 user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
-                signalR: { signalR: null },
+                signalR: { signalR: null, signalRConnectionStatus: { isReconnected: false, isReconnecting: false } },
             },
         } as any,
         history
@@ -291,7 +291,7 @@ test("Logger is called if option is enabled", async () => {
                     ...rootReducer.initialState.room,
                 },
                 user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
-                signalR: { signalR: null },
+                signalR: { signalR: null, signalRConnectionStatus: { isReconnected: false, isReconnecting: false } },
             },
         } as any,
         history
@@ -314,7 +314,7 @@ test("Off the record is shown when isOnTheRecord is false", async () => {
                     ...rootReducer.initialState.room,
                 },
                 user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
-                signalR: { signalR: null },
+                signalR: { signalR: null, signalRConnectionStatus: { isReconnected: false, isReconnecting: false } },
             },
         },
         history
@@ -337,7 +337,7 @@ test("On the record is shown when clicking the record button", async () => {
                     ...rootReducer.initialState.room,
                 },
                 user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
-                signalR: { signalR: null },
+                signalR: { signalR: null, signalRConnectionStatus: { isReconnected: false, isReconnecting: false } },
             },
         },
         history
@@ -365,7 +365,7 @@ test("On the record is shown when isOnTheRecord is true", async () => {
                     ...rootReducer.initialState.room,
                 },
                 user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
-                signalR: { signalR: null },
+                signalR: { signalR: null, signalRConnectionStatus: { isReconnected: false, isReconnecting: false } },
             },
         },
         history
@@ -388,7 +388,7 @@ test("End depo modal shows when clicking End Deposition button", async () => {
                     ...rootReducer.initialState.room,
                 },
                 user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
-                signalR: { signalR: null },
+                signalR: { signalR: null, signalRConnectionStatus: { isReconnected: false, isReconnecting: false } },
             },
         },
         history
@@ -417,7 +417,7 @@ test("Cancel button on End Depo modal closes the modal", async () => {
                     ...rootReducer.initialState.room,
                 },
                 user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
-                signalR: { signalR: null },
+                signalR: { signalR: null, signalRConnectionStatus: { isReconnected: false, isReconnecting: false } },
             },
         },
         history
@@ -444,7 +444,7 @@ test("Record button and end deposition are shown", async () => {
                     ...rootReducer.initialState.room,
                 },
                 user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
-                signalR: { signalR: null },
+                signalR: { signalR: null, signalRConnectionStatus: { isReconnected: false, isReconnecting: false } },
             },
         },
         history
@@ -469,7 +469,7 @@ test("Record button and end deposition are not shown", async () => {
                     ...rootReducer.initialState.room,
                 },
                 user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
-                signalR: { signalR: null },
+                signalR: { signalR: null, signalRConnectionStatus: { isReconnected: false, isReconnecting: false } },
             },
         },
         history
@@ -498,7 +498,7 @@ test("Redirects to PreDepo if shouldSendToPreDepo is true", async () => {
                     ...rootReducer.initialState.room,
                 },
                 user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
-                signalR: { signalR: null },
+                signalR: { signalR: null, signalRConnectionStatus: { isReconnected: false, isReconnecting: false } },
             },
         },
         history
@@ -529,7 +529,7 @@ test("Redirects to waiting room if shouldSendToPreDepo is false and isAdmitted i
                     ...rootReducer.initialState.room,
                 },
                 user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
-                signalR: { signalR: null },
+                signalR: { signalR: null, signalRConnectionStatus: { isReconnected: false, isReconnecting: false } },
             },
         },
         history
@@ -565,7 +565,10 @@ describe("InDepo -> RealTime", () => {
                         ...rootReducer.initialState.room,
                     },
                     user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
-                    signalR: { signalR: null },
+                    signalR: {
+                        signalR: null,
+                        signalRConnectionStatus: { isReconnected: false, isReconnecting: false },
+                    },
                 },
             },
             history
@@ -588,7 +591,10 @@ describe("InDepo -> RealTime", () => {
                         ...rootReducer.initialState.room,
                     },
                     user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
-                    signalR: { signalR: null },
+                    signalR: {
+                        signalR: null,
+                        signalRConnectionStatus: { isReconnected: false, isReconnecting: false },
+                    },
                 },
             },
             history
@@ -613,7 +619,10 @@ describe("InDepo -> RealTime", () => {
                         ...rootReducer.initialState.room,
                     },
                     user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
-                    signalR: { signalR: null },
+                    signalR: {
+                        signalR: null,
+                        signalRConnectionStatus: { isReconnected: false, isReconnecting: false },
+                    },
                 },
             },
             history
@@ -638,7 +647,10 @@ describe("InDepo -> RealTime", () => {
                         ...rootReducer.initialState.room,
                     },
                     user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
-                    signalR: { signalR: null },
+                    signalR: {
+                        signalR: null,
+                        signalRConnectionStatus: { isReconnected: false, isReconnecting: false },
+                    },
                 },
             },
             history
@@ -665,7 +677,10 @@ describe("InDepo -> RealTime", () => {
                         ...rootReducer.initialState.room,
                     },
                     user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
-                    signalR: { signalR: null },
+                    signalR: {
+                        signalR: null,
+                        signalRConnectionStatus: { isReconnected: false, isReconnecting: false },
+                    },
                 },
             },
             history
@@ -700,7 +715,10 @@ describe("inDepo -> Exhibits view with a shared exhibit", () => {
                         ...rootReducer.initialState.room,
                     },
                     user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
-                    signalR: { signalR: null },
+                    signalR: {
+                        signalR: null,
+                        signalRConnectionStatus: { isReconnected: false, isReconnecting: false },
+                    },
                 },
             },
             history
@@ -740,7 +758,10 @@ describe("inDepo -> Exhibits view with a shared exhibit", () => {
                         currentExhibit,
                     },
                     user: { currentUser: null },
-                    signalR: { signalR: null },
+                    signalR: {
+                        signalR: null,
+                        signalRConnectionStatus: { isReconnected: false, isReconnecting: false },
+                    },
                 },
             },
             history
@@ -782,7 +803,10 @@ describe("inDepo -> Exhibits view with a shared exhibit", () => {
                         currentExhibit,
                     },
                     user: { currentUser: null },
-                    signalR: { signalR: null },
+                    signalR: {
+                        signalR: null,
+                        signalRConnectionStatus: { isReconnected: false, isReconnecting: false },
+                    },
                 },
             },
             history
@@ -827,7 +851,10 @@ describe("inDepo -> Exhibits view with a shared exhibit", () => {
                         currentExhibit,
                     },
                     user: { currentUser: null },
-                    signalR: { signalR: null },
+                    signalR: {
+                        signalR: null,
+                        signalRConnectionStatus: { isReconnected: false, isReconnecting: false },
+                    },
                 },
             },
             history
@@ -871,7 +898,10 @@ describe("inDepo -> Exhibits view with a shared exhibit", () => {
                         currentExhibit,
                     },
                     user: { currentUser: null },
-                    signalR: { signalR: null },
+                    signalR: {
+                        signalR: null,
+                        signalRConnectionStatus: { isReconnected: false, isReconnecting: false },
+                    },
                 },
             },
             history
@@ -896,7 +926,7 @@ it("calls createLocalTracks with the devices if they exist in localStorage", asy
                     ...rootReducer.initialState.room,
                 },
                 user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
-                signalR: { signalR: null },
+                signalR: { signalR: null, signalRConnectionStatus: { isReconnected: false, isReconnecting: false } },
             },
         },
         history
@@ -923,7 +953,7 @@ it("calls sendParticipantDevices with updated devices if they are blocked", asyn
                     ...rootReducer.initialState.room,
                 },
                 user: { currentUser: { firstName: "First Name", lastName: "Last Name" } } as any,
-                signalR: { signalR: null },
+                signalR: { signalR: null, signalRConnectionStatus: { isReconnected: false, isReconnecting: false } },
             } as any,
         },
         history
@@ -962,7 +992,7 @@ it("doesn´t call create Tracks if the devices don´t exist in localStorage", as
                     ...rootReducer.initialState.room,
                 },
                 user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
-                signalR: { signalR: null },
+                signalR: { signalR: null, signalRConnectionStatus: { isReconnected: false, isReconnecting: false } },
             },
         },
         history
@@ -1011,7 +1041,7 @@ it("shows alert if depo room is reconnecting", async () => {
                     depoRoomReconnecting: true,
                 },
                 user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
-                signalR: { signalR: null },
+                signalR: { signalR: null, signalRConnectionStatus: { isReconnected: false, isReconnecting: true } },
             },
         },
         history
