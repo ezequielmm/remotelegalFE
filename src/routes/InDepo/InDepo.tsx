@@ -98,6 +98,7 @@ const InDepo = () => {
     const { isAuthenticated } = useAuthentication();
     const { sendMessage, signalR, subscribeToGroup, unsubscribeMethodFromGroup } = useSignalR("/depositionHub");
     const [fetchExhibitFileInfo] = useExhibitFileInfo();
+    const readyToBeRendered = currentRoom && dataTrack;
 
     useEffect(() => {
         dispatch(generalUIActions.toggleTheme(ThemeMode.inDepo));
@@ -226,14 +227,14 @@ const InDepo = () => {
     }, [depositionID, isAuthenticated, currentUser]);
 
     useEffect(() => {
-        if (isReconnected) {
+        if (isReconnected || readyToBeRendered) {
             getDepoSummaryInfo();
         }
-    }, [getDepoSummaryInfo, isReconnected]);
+    }, [getDepoSummaryInfo, isReconnected, readyToBeRendered]);
 
     useEffect(() => {
         const fetchDepoData = async () => {
-            if (isReconnected && depoSummaryInfo) {
+            if ((isReconnected || readyToBeRendered) && depoSummaryInfo) {
                 dispatch(actions.setParticipantsData(depoSummaryInfo.participants));
                 dispatch(actions.setIsRecording(depoSummaryInfo.isOnTheRecord));
                 if (depoSummaryInfo.isSharing) {
@@ -254,6 +255,7 @@ const InDepo = () => {
         isReconnected,
         depositionID,
         dispatch,
+        readyToBeRendered,
         getDepositionEvents,
         getTranscriptions,
         fetchExhibitFileInfo,
@@ -359,7 +361,7 @@ const InDepo = () => {
         );
     }
 
-    return currentRoom && dataTrack ? (
+    return readyToBeRendered ? (
         <TranscriptionsProvider
             initialTranscriptions={initialTranscriptions}
             setInitialTranscriptions={setInitialTranscriptions}
