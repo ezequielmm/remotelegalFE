@@ -28,3 +28,14 @@ export type Notification = {
     action: NotificationAction;
     content: NotificationParticipantStatusContent;
 };
+
+interface UploadNotificationContent {
+    data: string;
+    message: string;
+}
+
+export interface UploadNotification {
+    entityType: NotificationEntityType;
+    action: NotificationAction;
+    content: UploadNotificationContent;
+}

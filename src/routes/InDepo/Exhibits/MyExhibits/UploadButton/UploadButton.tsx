@@ -10,7 +10,6 @@ import ProgressBarRender from "./ProgressBarRender";
 import { MY_EXHIBITS_ALLOWED_FILE_TYPES } from "../../../../../constants/exhibits";
 import ColorStatus from "../../../../../types/ColorStatus";
 
-export type IUploadStatus = "success" | "pending" | "fail" | "initial";
 interface IUploadButton {
     onUpload?: (options: any) => void;
     refreshList?: () => void;
@@ -36,7 +35,7 @@ export default function UploadButton({ onUpload, refreshList }: IUploadButton): 
                     errors={file?.error}
                     percent={file.percent}
                     status={file.status}
-                    fileName={file.name}
+                    uploadId={file.uid}
                     refreshList={refreshList}
                 />
             )}

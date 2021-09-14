@@ -11,3 +11,9 @@ export interface IPreSignUploadExhibit {
     url: string;
     headers: IPreSignUploadExhibitHeader;
 }
+
+export interface IPayloadPreSignUploadExhibit {
+    depositionId: string;
+    filename: string;
+    resourceId: string;
+}

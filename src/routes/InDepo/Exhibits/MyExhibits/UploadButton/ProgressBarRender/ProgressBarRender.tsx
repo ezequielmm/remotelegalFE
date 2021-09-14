@@ -4,12 +4,12 @@ import ProgressBar from "prp-components-library/src/components/ProgressBar";
 import { GlobalStateContext } from "../../../../../../state/GlobalState";
 import * as CONSTANTS from "../../../../../../constants/exhibits";
 import useSignalR from "../../../../../../hooks/useSignalR";
-import { Notification, NotificationEntityType, NotificationAction } from "../../../../../../types/Notification";
+import { NotificationEntityType, NotificationAction, UploadNotification } from "../../../../../../types/Notification";
 
 interface Props {
     percent: number;
     status: UploadFileStatus;
-    fileName: string;
+    uploadId: string;
     timeToCloseAfterComplete?: number;
     timeToCloseAfterError?: number;
     errors?: string[];
@@ -19,7 +19,7 @@ interface Props {
 export default function ProgressBarRender({
     percent,
     status,
-    fileName,
+    uploadId,
     timeToCloseAfterComplete = CONSTANTS.MY_EXHIBITS_TIME_TO_CLOSE_AFTER_COMPLETE,
     timeToCloseAfterError = CONSTANTS.MY_EXHIBITS_TIME_TO_CLOSE_AFTER_ERROR,
     errors = [],
@@ -100,13 +100,13 @@ export default function ProgressBarRender({
     useEffect(() => {
         let onFileUploadComplete;
         if (signalR && subscribeToGroup && unsubscribeMethodFromGroup) {
-            onFileUploadComplete = (message: Notification) => {
+            onFileUploadComplete = (message: UploadNotification) => {
                 if (message?.entityType === NotificationEntityType.exhibit) {
-                    if (message?.action === NotificationAction.create) {
+                    if (message.action === NotificationAction.create && message.content?.data === uploadId) {
                         setFileUploadStatus(CONSTANTS.UPLOAD_STATE.COMPLETE);
                         refreshList();
                     }
-                    if (message?.action === NotificationAction.error && String(message?.content).includes(fileName)) {
+                    if (message.action === NotificationAction.error && message.content?.data === uploadId) {
                         setFileUploadStatus(CONSTANTS.UPLOAD_STATE.ERROR);
                     }
                 }
@@ -118,7 +118,7 @@ export default function ProgressBarRender({
                 unsubscribeMethodFromGroup("ReceiveNotification", onFileUploadComplete);
             }
         };
-    }, [signalR, subscribeToGroup, unsubscribeMethodFromGroup, refreshList, fileName]);
+    }, [signalR, subscribeToGroup, unsubscribeMethodFromGroup, refreshList, uploadId]);
 
     if (hide) return null;
     return (
