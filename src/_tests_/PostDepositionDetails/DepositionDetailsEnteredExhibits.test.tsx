@@ -1,5 +1,5 @@
 import React from "react";
-import { waitForDomChange, waitForElement, fireEvent } from "@testing-library/react";
+import { waitForDomChange, waitForElement, fireEvent, waitFor, act } from "@testing-library/react";
 import DepositionDetailsEnteredExhibits from "../../routes/DepositionDetails/DepositionDetailsEnteredExhibits/DepositionDetailsEnteredExhibits";
 import getMockDeps from "../utils/getMockDeps";
 import renderWithGlobalContext from "../utils/renderWithGlobalContext";
@@ -9,6 +9,7 @@ import { wait } from "../../helpers/wait";
 import enteredExhibitsMock from "../mocks/EnteredExhibits";
 import * as TEST_CONSTANTS from "../constants/depositionDetails";
 import "mutationobserver-shim";
+import fileUrlList from "../mocks/fileUrlList";
 
 jest.mock("../../helpers/downloadFile", () => ({
     __esModule: true,
@@ -57,8 +58,79 @@ describe("DepositionDetailsEnteredExhibits", () => {
         expect(customDeps.apiService.getDocumentsUrlList).toHaveBeenCalledWith(
             TEST_CONSTANTS.DEPOSITION_DETAILS_EXHIBITS_DOWNLOAD_BODY
         );
-        expect(downloadFile).toHaveBeenCalledWith(TEST_CONSTANTS.DEPOSITION_DETAILS_TRANSCRIPT_DOWNLOAD_FILE_URL);
+        expect(downloadFile).toHaveBeenCalledWith(
+            TEST_CONSTANTS.DEPOSITION_DETAILS_TRANSCRIPT_DOWNLOAD_FILE_URL,
+            null,
+            expect.any(Function)
+        );
     });
+
+    it("the download button should be disabled when the download is on progress", async () => {
+        customDeps.apiService.getEnteredExhibits = jest.fn().mockResolvedValue(enteredExhibitsMock);
+        customDeps.apiService.getDocumentsUrlList = jest.fn().mockResolvedValue(fileUrlList);
+        const { getByTestId, getAllByTestId, getAllByRole } = renderWithGlobalContext(
+            <DepositionDetailsEnteredExhibits />,
+            customDeps
+        );
+        (downloadFile as jest.Mock).mockImplementation(async (fileUrl, fileName, callback) => {
+            return callback("pending");
+        });
+        await waitFor(() => expect(getAllByTestId("entered_exhibit_display_name")).toHaveLength(2));
+        act(() => {
+            fireEvent.click(getAllByRole("checkbox")[0]);
+        });
+        await waitFor(() => expect(getByTestId(CONSTANTS.DETAILS_TRANSCRIPT_BUTTON_TEST_ID)).toBeEnabled());
+        act(() => {
+            fireEvent.click(getByTestId(CONSTANTS.DETAILS_TRANSCRIPT_BUTTON_TEST_ID));
+        });
+        await wait(500);
+        await waitFor(() => expect(getByTestId(CONSTANTS.DETAILS_TRANSCRIPT_BUTTON_TEST_ID)).toBeDisabled());
+    });
+
+    it("the download button should be disabled when the download has an error", async () => {
+        customDeps.apiService.getEnteredExhibits = jest.fn().mockResolvedValue(enteredExhibitsMock);
+        customDeps.apiService.getDocumentsUrlList = jest.fn().mockResolvedValue(fileUrlList);
+        const { getByTestId, getAllByTestId, getAllByRole } = renderWithGlobalContext(
+            <DepositionDetailsEnteredExhibits />,
+            customDeps
+        );
+        (downloadFile as jest.Mock).mockImplementation(async (fileUrl, fileName, callback) => {
+            return callback("error");
+        });
+        await waitFor(() => expect(getAllByTestId("entered_exhibit_display_name")).toHaveLength(2));
+        act(() => {
+            fireEvent.click(getAllByRole("checkbox")[0]);
+        });
+        await waitFor(() => expect(getByTestId(CONSTANTS.DETAILS_TRANSCRIPT_BUTTON_TEST_ID)).toBeEnabled());
+        act(() => {
+            fireEvent.click(getByTestId(CONSTANTS.DETAILS_TRANSCRIPT_BUTTON_TEST_ID));
+        });
+        await wait(500);
+        await waitFor(() => expect(getByTestId(CONSTANTS.DETAILS_TRANSCRIPT_BUTTON_TEST_ID)).toBeDisabled());
+    });
+
+    it("the download button should not be disabled when the download is completed", async () => {
+        customDeps.apiService.getEnteredExhibits = jest.fn().mockResolvedValue(enteredExhibitsMock);
+        customDeps.apiService.getDocumentsUrlList = jest.fn().mockResolvedValue(fileUrlList);
+        const { getByTestId, getAllByTestId, getAllByRole } = renderWithGlobalContext(
+            <DepositionDetailsEnteredExhibits />,
+            customDeps
+        );
+        (downloadFile as jest.Mock).mockImplementation(async (fileUrl, fileName, callback) => {
+            return callback("completed");
+        });
+        await waitFor(() => expect(getAllByTestId("entered_exhibit_display_name")).toHaveLength(2));
+        act(() => {
+            fireEvent.click(getAllByRole("checkbox")[0]);
+        });
+        await waitFor(() => expect(getByTestId(CONSTANTS.DETAILS_TRANSCRIPT_BUTTON_TEST_ID)).toBeEnabled());
+        act(() => {
+            fireEvent.click(getByTestId(CONSTANTS.DETAILS_TRANSCRIPT_BUTTON_TEST_ID));
+        });
+        await wait(500);
+        await waitFor(() => expect(getByTestId(CONSTANTS.DETAILS_TRANSCRIPT_BUTTON_TEST_ID)).toBeEnabled());
+    });
+
     it("shows error toast if download fails", async () => {
         customDeps.apiService.getDocumentsUrlList = jest.fn().mockRejectedValue(async () => {
             throw Error("Something wrong");

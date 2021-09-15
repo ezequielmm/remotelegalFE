@@ -20,7 +20,7 @@ import { ReactComponent as DownloadIcon } from "../../../assets/icons/download.s
 import { ReactComponent as MessageIcon } from "../../../assets/icons/Messages.svg";
 import * as CONSTANTS from "../../../constants/depositionDetails";
 import UploadButton from "./UploadButton";
-import downloadFile from "../../../helpers/downloadFile";
+import downloadFile, { DownloadStatusType } from "../../../helpers/downloadFile";
 import { ReactComponent as DeleteIcon } from "../../../assets/icons/delete.svg";
 import ColorStatus from "../../../types/ColorStatus";
 import { TranscriptFile } from "../../../types/TranscriptFile";
@@ -34,6 +34,7 @@ const DepositionDetailsTranscripts = () => {
     const [disableNotifyButton, setDisableNotifyButton] = useState(true);
     const [showProgressBar, setShowProgressBar] = useState(false);
     const [openDeleteModal, setOpenDeleteModal] = useState(false);
+    const [downloadTranscriptStatus, setDownloadTranscriptStatus] = useState<DownloadStatusType>(null);
     const tableRef = useRef(null);
     const { depositionID } = useParams<{ depositionID: string }>();
     const { upload } = useUploadFile(depositionID);
@@ -91,7 +92,7 @@ const DepositionDetailsTranscripts = () => {
     useEffect(() => {
         if (documentsUrlList && !errorGetTranscriptsUrlList) {
             documentsUrlList.urLs.forEach((url) => {
-                downloadFile(url);
+                downloadFile(url, null, (status) => setDownloadTranscriptStatus(status));
             });
         }
         if (errorGetTranscriptsUrlList) {
@@ -212,8 +213,12 @@ const DepositionDetailsTranscripts = () => {
                             data-testid={CONSTANTS.DETAILS_TRANSCRIPT_BUTTON_TEST_ID}
                             icon={<Icon icon={DownloadIcon} size={9} />}
                             size="middle"
-                            disabled={isDownloadDisabled}
-                            loading={pendingGetTranscriptsUrlList}
+                            disabled={
+                                isDownloadDisabled ||
+                                downloadTranscriptStatus === "pending" ||
+                                downloadTranscriptStatus === "error"
+                            }
+                            loading={pendingGetTranscriptsUrlList || downloadTranscriptStatus === "pending"}
                             onClick={handleDownload}
                         >
                             {CONSTANTS.DETAILS_TRANSCRIPT_BUTTON_DOWNLOAD}

@@ -8,12 +8,13 @@ import { DEPOSITION_DETAILS_ENTERED_EXHIBITS_TITLE } from "../../../constants/de
 import { useEnteredExhibit } from "../../../hooks/useEnteredExhibits";
 import { ReactComponent as DownloadIcon } from "../../../assets/icons/download.svg";
 import EnteredExhibitsTable from "./EnteredExhibitsTable";
-import downloadFile from "../../../helpers/downloadFile";
+import downloadFile, { DownloadStatusType } from "../../../helpers/downloadFile";
 import { useGetDocumentsUrlList } from "../../../hooks/transcripts/hooks";
 import Message from "../../../components/Message";
 import * as CONSTANTS from "../../../constants/depositionDetails";
 
 export default function DepositionDetailsEnteredExhibits() {
+    const [downloadEnteredExhibitsStatus, setDownloadEnteredExhibitsStatus] = useState<DownloadStatusType>(null);
     const { handleFetchFiles, enteredExhibits, enteredExhibitsPending } = useEnteredExhibit();
     const { getDocumentsUrlList, errorGetTranscriptsUrlList, documentsUrlList, pendingGetTranscriptsUrlList } =
         useGetDocumentsUrlList();
@@ -38,7 +39,7 @@ export default function DepositionDetailsEnteredExhibits() {
     useEffect(() => {
         if (documentsUrlList && !errorGetTranscriptsUrlList) {
             documentsUrlList.urLs.forEach((url) => {
-                downloadFile(url);
+                downloadFile(url, null, (status) => setDownloadEnteredExhibitsStatus(status));
             });
         }
         if (errorGetTranscriptsUrlList) {
@@ -63,8 +64,12 @@ export default function DepositionDetailsEnteredExhibits() {
                     data-testid={CONSTANTS.DETAILS_TRANSCRIPT_BUTTON_TEST_ID}
                     icon={<Icon icon={DownloadIcon} size={8} />}
                     size="middle"
-                    disabled={isDownloadDisabled}
-                    loading={pendingGetTranscriptsUrlList}
+                    disabled={
+                        isDownloadDisabled ||
+                        downloadEnteredExhibitsStatus === "pending" ||
+                        downloadEnteredExhibitsStatus === "error"
+                    }
+                    loading={pendingGetTranscriptsUrlList || downloadEnteredExhibitsStatus === "pending"}
                     onClick={handleDownload}
                 >
                     {CONSTANTS.DETAILS_TRANSCRIPT_BUTTON_DOWNLOAD}

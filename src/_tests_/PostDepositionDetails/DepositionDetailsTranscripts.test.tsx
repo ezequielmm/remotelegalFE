@@ -1,4 +1,4 @@
-import { waitForElement, waitForDomChange, fireEvent, act } from "@testing-library/react";
+import { waitForElement, waitForDomChange, fireEvent, act, waitFor } from "@testing-library/react";
 import React from "react";
 import { uploadFile } from "../../services/UploadService";
 import renderWithGlobalContext from "../utils/renderWithGlobalContext";
@@ -164,7 +164,11 @@ describe("Deposition Details Transcripts", () => {
         expect(customDeps.apiService.getDocumentsUrlList).toHaveBeenCalledWith(
             TEST_CONSTANTS.DEPOSITION_DETAILS_TRANSCRIPT_DOWNLOAD_RESPONSE_BODY
         );
-        expect(downloadFile).toHaveBeenCalledWith(TEST_CONSTANTS.DEPOSITION_DETAILS_TRANSCRIPT_DOWNLOAD_FILE_URL);
+        expect(downloadFile).toHaveBeenCalledWith(
+            TEST_CONSTANTS.DEPOSITION_DETAILS_TRANSCRIPT_DOWNLOAD_FILE_URL,
+            null,
+            expect.any(Function)
+        );
     });
     it("shows error toast if download fails", async () => {
         customDeps.apiService.getDocumentsUrlList = jest.fn().mockRejectedValue(async () => {
@@ -253,5 +257,77 @@ describe("Deposition Details Transcripts", () => {
         const { queryByTestId } = renderWithGlobalContext(<DepositionDetailsTranscript />, customDeps);
         await waitForDomChange();
         expect(queryByTestId(mockDataTestId)).toBeFalsy();
+    });
+
+    it("the download button should be disabled when the download is on progress", async () => {
+        const transcripts = getTranscriptFileList();
+        customDeps.apiService.fetchTranscriptsFiles = jest.fn().mockResolvedValue(getTranscriptFileList());
+        customDeps.apiService.currentUser = jest.fn().mockResolvedValue(SIGN_UP_CONSTANTS.getUser1());
+
+        const { getByTestId, queryAllByText, getAllByRole } = renderWithGlobalContext(
+            <DepositionDetailsTranscript />,
+            customDeps
+        );
+        (downloadFile as jest.Mock).mockImplementation(async (fileUrl, fileName, callback) => {
+            return callback("pending");
+        });
+        await waitFor(() => expect(queryAllByText(transcripts[0].displayName).length > 0));
+        act(() => {
+            fireEvent.click(getAllByRole("checkbox")[0]);
+        });
+        await waitFor(() => expect(getByTestId(CONSTANTS.DETAILS_TRANSCRIPT_BUTTON_TEST_ID)).toBeEnabled());
+        act(() => {
+            fireEvent.click(getByTestId(CONSTANTS.DETAILS_TRANSCRIPT_BUTTON_TEST_ID));
+        });
+        await wait(500);
+        await waitFor(() => expect(getByTestId(CONSTANTS.DETAILS_TRANSCRIPT_BUTTON_TEST_ID)).toBeDisabled());
+    });
+
+    it("the download button should be disabled when the download has an error", async () => {
+        const transcripts = getTranscriptFileList();
+        customDeps.apiService.fetchTranscriptsFiles = jest.fn().mockResolvedValue(getTranscriptFileList());
+        customDeps.apiService.currentUser = jest.fn().mockResolvedValue(SIGN_UP_CONSTANTS.getUser1());
+
+        const { getByTestId, queryAllByText, getAllByRole } = renderWithGlobalContext(
+            <DepositionDetailsTranscript />,
+            customDeps
+        );
+        (downloadFile as jest.Mock).mockImplementation(async (fileUrl, fileName, callback) => {
+            return callback("error");
+        });
+        await waitFor(() => expect(queryAllByText(transcripts[0].displayName).length > 0));
+        act(() => {
+            fireEvent.click(getAllByRole("checkbox")[0]);
+        });
+        await waitFor(() => expect(getByTestId(CONSTANTS.DETAILS_TRANSCRIPT_BUTTON_TEST_ID)).toBeEnabled());
+        act(() => {
+            fireEvent.click(getByTestId(CONSTANTS.DETAILS_TRANSCRIPT_BUTTON_TEST_ID));
+        });
+        await wait(500);
+        await waitFor(() => expect(getByTestId(CONSTANTS.DETAILS_TRANSCRIPT_BUTTON_TEST_ID)).toBeDisabled());
+    });
+
+    it("the download button should not be disabled when the download is completed", async () => {
+        const transcripts = getTranscriptFileList();
+        customDeps.apiService.fetchTranscriptsFiles = jest.fn().mockResolvedValue(getTranscriptFileList());
+        customDeps.apiService.currentUser = jest.fn().mockResolvedValue(SIGN_UP_CONSTANTS.getUser1());
+
+        const { getByTestId, queryAllByText, getAllByRole } = renderWithGlobalContext(
+            <DepositionDetailsTranscript />,
+            customDeps
+        );
+        (downloadFile as jest.Mock).mockImplementation(async (fileUrl, fileName, callback) => {
+            return callback("completed");
+        });
+        await waitFor(() => expect(queryAllByText(transcripts[0].displayName).length > 0));
+        act(() => {
+            fireEvent.click(getAllByRole("checkbox")[0]);
+        });
+        await waitFor(() => expect(getByTestId(CONSTANTS.DETAILS_TRANSCRIPT_BUTTON_TEST_ID)).toBeEnabled());
+        act(() => {
+            fireEvent.click(getByTestId(CONSTANTS.DETAILS_TRANSCRIPT_BUTTON_TEST_ID));
+        });
+        await wait(500);
+        await waitFor(() => expect(getByTestId(CONSTANTS.DETAILS_TRANSCRIPT_BUTTON_TEST_ID)).toBeEnabled());
     });
 });

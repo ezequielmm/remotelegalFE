@@ -19,7 +19,7 @@ import ExhibitClosingModal from "../ExhibitClosingModal";
 import * as CONSTANTS from "../../../../../constants/exhibits";
 import StampModal from "../../../../../components/PDFTronViewer/components/StampModal";
 import actions from "../../../../../state/InDepo/InDepoActions";
-import downloadFile from "../../../../../helpers/downloadFile";
+import downloadFile, { DownloadStatusType } from "../../../../../helpers/downloadFile";
 import Message from "../../../../../components/Message";
 
 const StyledSpaceItem = styled(Space.Item)`
@@ -57,6 +57,7 @@ export default function ExhibitViewerHeader({
 }: Props): ReactElement {
     const [sharingModalOpen, setSharingModalOpen] = useState(false);
     const [closingModalOpen, setClosingModalOpen] = useState(false);
+    const [downloadExhibitStatus, setDownloadExhibitStatus] = useState<DownloadStatusType>(null);
     const [openStampModal, setStampModal] = useState(false);
     const { shareExhibit, shareExhibitPending, sharedExhibit } = useShareExhibitFile();
     const { state, dispatch } = useContext(GlobalStateContext);
@@ -77,7 +78,7 @@ export default function ExhibitViewerHeader({
 
     const onHandlerDownloadExhibit = () => {
         if (downloadUrl) {
-            downloadFile(downloadUrl);
+            downloadFile(downloadUrl, null, (status) => setDownloadExhibitStatus(status));
         }
     };
 
@@ -131,7 +132,7 @@ export default function ExhibitViewerHeader({
                             onClick={onHandlerDownloadExhibit}
                             type="ghost"
                             size="small"
-                            loading={shareExhibitPending}
+                            loading={shareExhibitPending || downloadExhibitStatus === "pending"}
                             data-testid="view_document_download"
                         >
                             <Icon icon={downloadIcon} size={8} />
