@@ -45,6 +45,16 @@ export const ACCESS_DENIED_BUTTON_TEST_ID = "access_denied_button";
 export const WAITING_ROOM_SUBTITLE = "The Court Reporter will let you enter soon.";
 export const LOADING_DEPOSITION_TITLE = "Loading deposition.";
 export const LOADING_DEPOSITION_SUBTITLE = "Please wait.";
+export const ORIENTATION_SCREEN = {
+    LANDSCAPE: {
+        title: "Please rotate your phone.",
+        subtitle: "We don't support this view yet. Thanks for understanding.",
+    },
+    PORTRAIT: {
+        title: "Please rotate your device.",
+        subtitle: "We don't support this view yet. Thanks for understanding.",
+    },
+};
 export const FORGOT_PASSWORD_LINK_TEXT = "Forgot password?";
 export const PREJOIN_CERTIFY_INFORMATION_TEXT = ["I ", " certify", " that the above information is true and correct"];
 export const PREJOIN_AGREE_TERMS_AND_CONDITION_TEXT = "I agree to Remote Legal ";

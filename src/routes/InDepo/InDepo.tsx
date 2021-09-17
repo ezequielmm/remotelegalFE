@@ -33,11 +33,14 @@ import { NotificationEntityType } from "../../types/Notification";
 import stopAllTracks from "../../helpers/stopAllTracks";
 import TranscriptionsProvider from "../../state/Transcriptions/TranscriptionsContext";
 import { WindowSizeContext } from "../../contexts/WindowSizeContext";
+import useWindowOrientation from "../../hooks/useWindowOrientation";
 import useGetTranscriptions from "../../hooks/InDepo/useGetTranscriptions";
 import useGetEvents from "../../hooks/InDepo/useGetEvents";
 import { setTranscriptionMessages } from "../../helpers/formatTranscriptionsMessages";
 import { useExhibitFileInfo } from "../../hooks/exhibits/hooks";
 import useGetDepoSummaryInfo from "../../hooks/InDepo/useGetDepoSummaryInfo";
+import WrongOrientationScreen from "./WrongOrientationScreen/WrongOrientationScreen";
+import ORIENTATION_STATE from "../../types/orientation";
 
 const InDepo = () => {
     const { depositionID } = useParams<DepositionID>();
@@ -68,7 +71,8 @@ const InDepo = () => {
     } = state.room;
 
     const { currentUser } = state?.user;
-    const [, windowHeight] = useContext(WindowSizeContext);
+    const [windowWidth, windowHeight] = useContext(WindowSizeContext);
+    const orientation = useWindowOrientation();
     const { signalRConnectionStatus } = state?.signalR;
     const [realTimeOpen, togglerRealTime] = useState<boolean>(false);
     const [exhibitsOpen, togglerExhibits] = useState<boolean>(false);
@@ -81,6 +85,7 @@ const InDepo = () => {
     const { isAuthenticated } = useAuthentication();
     const { sendMessage, signalR, subscribeToGroup, unsubscribeMethodFromGroup } = useSignalR("/depositionHub");
     const [fetchExhibitFileInfo] = useExhibitFileInfo();
+    console.log(WindowSizeContext);
 
     useEffect(() => {
         dispatch(generalUIActions.toggleTheme(ThemeMode.inDepo));
@@ -269,6 +274,14 @@ const InDepo = () => {
         history,
         depositionID,
     ]);
+
+    if (
+        (windowWidth < parseInt(theme.default.breakpoints.lg, 10) && orientation === ORIENTATION_STATE.LANDSCAPE) ||
+        (windowWidth > parseInt(theme.default.breakpoints.sm, 10) && orientation === ORIENTATION_STATE.PORTRAIT)
+    ) {
+        return <WrongOrientationScreen orientation={orientation} />;
+    }
+
     if (
         loading &&
         userStatus === null &&
