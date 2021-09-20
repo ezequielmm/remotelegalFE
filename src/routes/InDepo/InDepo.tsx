@@ -42,6 +42,7 @@ import { useExhibitFileInfo } from "../../hooks/exhibits/hooks";
 import useGetDepoSummaryInfo from "../../hooks/InDepo/useGetDepoSummaryInfo";
 import WrongOrientationScreen from "./WrongOrientationScreen/WrongOrientationScreen";
 import ORIENTATION_STATE from "../../types/orientation";
+import { IS_MOBILE_OR_TABLET } from "../../constants/general";
 import useFloatingAlertContext from "../../hooks/useFloatingAlertContext";
 
 const StyledAlertRow = styled(Row)`
@@ -255,13 +256,14 @@ const InDepo = () => {
                 } else {
                     togglerExhibits(false);
                 }
-                const transcriptions = await getTranscriptions();
+                const transcriptions = !isMobileOrTablet ? await getTranscriptions() : [];
                 const events = await getDepositionEvents(depositionID);
                 setInitialTranscriptions(setTranscriptionMessages(transcriptions, events));
             }
         };
         fetchDepoData();
     }, [
+        windowWidth,
         depoSummaryInfo,
         isReconnected,
         depositionID,
