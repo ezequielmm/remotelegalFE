@@ -2,14 +2,15 @@ import AudioRecorder from "audio-recorder-polyfill";
 import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router";
 import { GlobalStateContext } from "../state/GlobalState";
+import actions from "../state/InDepo/InDepoActions";
 import { DepositionID } from "../state/types";
 import useTranscriptAudio from "./InDepo/useTranscriptAudio";
 
 export default (isAudioEnabled: boolean, audioTracks, doNotConnectToSocket = false) => {
     const [recorder, setRecorder] = useState(null);
     const [sampleRate, setSampleRate] = useState<number>(undefined);
-    const { state } = useContext(GlobalStateContext);
-    const { isRecording, depoRoomReconnecting } = state.room;
+    const { state, dispatch } = useContext(GlobalStateContext);
+    const { isRecording, stopRecorder, resetRecorder, depoRoomReconnecting } = state.room;
     const { depositionID } = useParams<DepositionID>();
     const { transcriptAudio, sendMessage } = useTranscriptAudio(doNotConnectToSocket, sampleRate);
     const recorderRef = useRef(null);
@@ -121,7 +122,6 @@ export default (isAudioEnabled: boolean, audioTracks, doNotConnectToSocket = fal
             const mediaTracks = audioTracks
                 .filter((track) => track.kind === "audio")
                 .map((trackPublication) => trackPublication?.mediaStreamTrack);
-
             const stream = new MediaStream(mediaTracks);
             const newRecorder = new AudioRecorder(stream);
             newRecorder.start(1000);
@@ -131,18 +131,36 @@ export default (isAudioEnabled: boolean, audioTracks, doNotConnectToSocket = fal
         return null;
     };
 
+    const restartRecorder = () => {
+        if (recorder) {
+            recorder.stop();
+            recorder.stream.getTracks().forEach((track) => track.stop());
+        }
+        const mediaTracks = audioTracks
+            .filter((track) => track.kind === "audio")
+            .map((trackPublication) => trackPublication?.mediaStreamTrack);
+        const stream = new MediaStream(mediaTracks);
+        const newRecorder = new AudioRecorder(stream);
+        newRecorder.start(1000);
+        dispatch(actions.resetRecorder(false));
+        return setRecorder(newRecorder);
+    };
+
     const toggleMicrophone = (start) => {
-        if (!start) {
+        if (!start && !resetRecorder) {
             stopMicrophone();
-        } else {
+        }
+        if (start && resetRecorder) {
+            restartRecorder();
+        } else if (start) {
             getMicrophone();
         }
     };
 
     useEffect(() => {
-        toggleMicrophone(isRecording && isAudioEnabled);
+        toggleMicrophone(isRecording && isAudioEnabled && !stopRecorder && audioTracks.length);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isRecording, isAudioEnabled, audioTracks]);
+    }, [isRecording, isAudioEnabled, audioTracks, resetRecorder, stopRecorder]);
 
     return toggleMicrophone;
 };

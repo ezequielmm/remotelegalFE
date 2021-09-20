@@ -139,3 +139,7 @@ export const StyledMoreMenu = styled(Menu)`
         }
     }
 `;
+
+export const StyledChatWrapper = styled.div`
+    text-align: center;
+`;

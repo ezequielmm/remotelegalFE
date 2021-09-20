@@ -4,7 +4,7 @@ import Icon from "prp-components-library/src/components/Icon";
 import Result from "prp-components-library/src/components/Result";
 import Spinner from "prp-components-library/src/components/Spinner";
 import PDFTronViewer from "../../../../components/PDFTronViewer";
-import { useBringAllToMe, useSignedUrl } from "../../../../hooks/exhibits/hooks";
+import { useBringAllToMe, useSignedUrl, useStampMediaExhibits } from "../../../../hooks/exhibits/hooks";
 import { StyledExhibitViewerContainer } from "./styles";
 import ExhibitViewerHeader from "./ExhibitViewerHeader";
 import { ReactComponent as MyExhibitsIcon } from "../../../../assets/icons/EnteredExhibits-empty.svg";
@@ -66,6 +66,7 @@ export const ExhibitViewer = ({
     const [hasMediaError, setHasMediaError] = useState(false);
     const [windowWidth] = useContext(WindowSizeContext);
     const isAudioOrVideoDocument = isAudioOrVideoFileType(file?.name);
+    const stamp = useStampMediaExhibits();
 
     const onMediaViewerInitHandler = useCallback(() => {
         setShowSpinner(true);
@@ -78,6 +79,7 @@ export const ExhibitViewer = ({
                 <ExhibitViewerHeader
                     file={file}
                     onClose={onClose}
+                    onStamp={stamp}
                     onBringAllToMe={bringAllToMe}
                     onClosePending={onClosePending}
                     showBackButton={showBackButtonOnHeader}
@@ -107,6 +109,7 @@ export const ExhibitViewer = ({
                         setHasMediaError(true);
                         setShowSpinner(false);
                     }}
+                    onStamp={stamp}
                 />
             )}
             {documentUrl && !isAudioOrVideoDocument && (

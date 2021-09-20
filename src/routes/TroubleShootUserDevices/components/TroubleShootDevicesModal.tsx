@@ -325,6 +325,7 @@ const TroubleShootDevicesModal = ({
                 } else {
                     const localVideoTrack = await createLocalVideoTrack({ deviceId });
                     await availableRoom.localParticipant.publishTrack(localVideoTrack);
+                    dispatch(actions.changeVideoSource(true));
                     dispatch(actions.setInitialCameraStatus(true));
                     tracksCopy.push(localVideoTrack);
                 }
@@ -344,6 +345,7 @@ const TroubleShootDevicesModal = ({
                     const localAudioTrack = await createLocalAudioTrack({ deviceId });
                     await availableRoom.localParticipant.publishTrack(localAudioTrack);
                     await sendToggledMuted(false);
+                    dispatch(actions.changeAudioSource(true));
                     dispatch(actions.setPublishedAudioTrackStatus(true));
                     tracksCopy.push(localAudioTrack);
                 }

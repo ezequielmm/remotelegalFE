@@ -18,7 +18,6 @@ import { StyledCloseButton } from "./styles";
 import ExhibitClosingModal from "../ExhibitClosingModal";
 import * as CONSTANTS from "../../../../../constants/exhibits";
 import StampModal from "../../../../../components/PDFTronViewer/components/StampModal";
-import actions from "../../../../../state/InDepo/InDepoActions";
 import downloadFile, { DownloadStatusType } from "../../../../../helpers/downloadFile";
 import Message from "../../../../../components/Message";
 
@@ -30,6 +29,7 @@ interface Props {
     file: ExhibitFile;
     onClose?: () => void;
     onBringAllToMe?: () => void;
+    onStamp?: (stampLabel: string) => void;
     onClosePending?: boolean;
     showBackButton?: boolean;
     showCloseButton?: boolean;
@@ -45,6 +45,7 @@ export default function ExhibitViewerHeader({
     file,
     onClose,
     onBringAllToMe,
+    onStamp,
     onClosePending = false,
     showBackButton = true,
     showCloseButton = true,
@@ -60,7 +61,7 @@ export default function ExhibitViewerHeader({
     const [downloadExhibitStatus, setDownloadExhibitStatus] = useState<DownloadStatusType>(null);
     const [openStampModal, setStampModal] = useState(false);
     const { shareExhibit, shareExhibitPending, sharedExhibit } = useShareExhibitFile();
-    const { state, dispatch } = useContext(GlobalStateContext);
+    const { state } = useContext(GlobalStateContext);
     const { isRecording, stampLabel, timeZone } = state.room;
 
     const onShareOkHandler = () => {
@@ -73,7 +74,7 @@ export default function ExhibitViewerHeader({
     };
 
     const stampDocument = (_, stampLabel: string) => {
-        dispatch(actions.setStampLabel(stampLabel));
+        onStamp(stampLabel);
     };
 
     const onHandlerDownloadExhibit = () => {

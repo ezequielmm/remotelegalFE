@@ -24,6 +24,7 @@ import {
     useExhibitSendAnnotation,
     useBringAllToMe,
     useCloseSharedExhibit,
+    useStampMediaExhibits,
 } from "../../hooks/exhibits/hooks";
 import LiveExhibits from "../../routes/InDepo/Exhibits/LiveExhibits";
 import EnteredExhibits from "../../routes/InDepo/Exhibits/EnteredExhibits";
@@ -44,6 +45,7 @@ jest.mock("../../hooks/exhibits/hooks", () => ({
     useExhibitSendAnnotation: jest.fn(),
     useBringAllToMe: jest.fn(),
     useCloseSharedExhibit: jest.fn(),
+    useStampMediaExhibits: jest.fn(),
 }));
 
 jest.mock("../../helpers/downloadFile", () => ({
@@ -112,6 +114,7 @@ beforeEach(() => {
         closeSharedExhibit: jest.fn(),
         pendingCloseSharedExhibit: false,
     }));
+    useStampMediaExhibits.mockImplementation(() => jest.fn());
 });
 
 describe("Exhibits", () => {

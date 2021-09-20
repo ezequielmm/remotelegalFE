@@ -4,6 +4,7 @@ import {
     DataTrack,
     LocalDataTrack,
     LocalParticipant,
+    LocalTrack,
     RemoteDataTrack,
     RemoteParticipant,
     RemoteVideoTrack,
@@ -12,13 +13,14 @@ import {
 import changeSpeakers from "../../helpers/changeSpeakers";
 import trackpubsToTracks from "../../helpers/trackPubsToTracks";
 import { GlobalStateContext } from "../../state/GlobalState";
+import actions from "../../state/InDepo/InDepoActions";
+import { MediaStreamTypes } from "../useUserTracks";
 
 const useParticipantTracks = (participant: LocalParticipant | RemoteParticipant) => {
-    const { state } = useContext(GlobalStateContext);
-    const { newSpeaker, tracks } = state.room;
+    const { state, dispatch } = useContext(GlobalStateContext);
+    const { newSpeaker, changeVideoSource, changeAudioSource } = state.room;
     const [dataTracks, setDataTracks] = useState<DataTrack[]>([]);
     const [videoTracks, setVideoTracks] = useState<VideoTrack[]>([]);
-    const [videoDisabled, setVideoDisabled] = useState<boolean>(false);
     const [audioTracks, setAudioTracks] = useState<AudioTrack[]>([]);
     const [netWorkLevel, setNetWorkLevel] = useState<number>(null);
     const audioRef = useRef<HTMLAudioElement & AudioTrack>();
@@ -26,13 +28,13 @@ const useParticipantTracks = (participant: LocalParticipant | RemoteParticipant)
     const localParticipantVideoTrackRef = useRef<VideoTrack>(null);
 
     const trackSubscribed = (track: AudioTrack | VideoTrack | LocalDataTrack | RemoteDataTrack) => {
-        if (track.kind === "video") {
+        if (track.kind === MediaStreamTypes.videoinput) {
             if (videoRef.current) {
                 videoRef.current.style.display = "block";
             }
             return setVideoTracks((video) => [...video, track]);
         }
-        if (track.kind === "audio") {
+        if (track.kind === MediaStreamTypes.audioinput) {
             return setAudioTracks((audio) => [...audio, track]);
         }
         return setDataTracks((data) => [...data, track]);
@@ -41,13 +43,13 @@ const useParticipantTracks = (participant: LocalParticipant | RemoteParticipant)
     const trackUnsubscribed = (
         track: AudioTrack | LocalDataTrack | RemoteDataTrack | VideoTrack | RemoteVideoTrack
     ) => {
-        if (track.kind === "video") {
+        if (track.kind === MediaStreamTypes.videoinput) {
             if (videoRef.current) {
                 videoRef.current.style.display = track.name === videoRef.current.name ? "none" : "block";
             }
             return setVideoTracks((video) => video.filter((v) => v !== track));
         }
-        if (track.kind === "audio") {
+        if (track.kind === MediaStreamTypes.audioinput) {
             return setAudioTracks((audio) => audio.filter((a) => a !== track));
         }
 
@@ -55,27 +57,39 @@ const useParticipantTracks = (participant: LocalParticipant | RemoteParticipant)
     };
 
     const trackDisabled = (track: AudioTrack | LocalDataTrack | RemoteDataTrack | VideoTrack | RemoteVideoTrack) => {
-        if (track.kind === "video") {
-            setVideoDisabled(true);
+        if (track.kind === MediaStreamTypes.videoinput) {
             if (videoRef.current) videoRef.current.style.display = "none";
         }
     };
 
     const trackEnabled = (track: AudioTrack | LocalDataTrack | RemoteDataTrack | VideoTrack | RemoteVideoTrack) => {
-        if (track.kind === "video") {
-            setVideoDisabled(false);
+        if (track.kind === MediaStreamTypes.videoinput) {
             if (videoRef.current) videoRef.current.style.display = "block";
         }
     };
 
     useEffect(() => {
-        const resetVideoRefStylesOnReconnection = () => {
-            if (videoRef.current) {
-                // We have to do this because, for some reason, the reconnected event gets
-                // triggered on first load
-                if (localParticipantVideoTrackRef.current?.isEnabled) {
-                    videoRef.current.style.display = "block";
-                }
+        if (changeVideoSource && participant) {
+            setVideoTracks((oldTracks) => [...trackpubsToTracks(participant.videoTracks), ...oldTracks]);
+        }
+    }, [changeVideoSource, participant]);
+
+    useEffect(() => {
+        if (changeAudioSource && participant) {
+            setAudioTracks((oldTracks) => [...trackpubsToTracks(participant.audioTracks), ...oldTracks]);
+        }
+    }, [changeAudioSource, participant]);
+
+    useEffect(() => {
+        const stopRecorder = (track: LocalTrack) => {
+            if (track.kind === MediaStreamTypes.audioinput) {
+                dispatch(actions.stopRecorder(true));
+            }
+        };
+        const resetRecorder = (track: LocalTrack) => {
+            if (track.kind === MediaStreamTypes.audioinput) {
+                dispatch(actions.resetRecorder(true));
+                dispatch(actions.stopRecorder(false));
             }
         };
         const onReconnecting = (remoteParticipant: RemoteParticipant) => {
@@ -93,15 +107,17 @@ const useParticipantTracks = (participant: LocalParticipant | RemoteParticipant)
                     )
                 );
             }
-            return null;
         };
         if (!participant) {
             return;
         }
+        setAudioTracks(trackpubsToTracks(participant.audioTracks));
+        setVideoTracks(trackpubsToTracks(participant.videoTracks));
         setDataTracks(trackpubsToTracks(participant.dataTracks));
         participant.on("trackSubscribed", trackSubscribed);
         participant.on("reconnecting", onReconnecting);
-        participant.on("reconnected", resetVideoRefStylesOnReconnection);
+        participant.on("trackStopped", stopRecorder);
+        participant.on("trackStarted", resetRecorder);
         participant.on("networkQualityLevelChanged", setNetWorkLevel);
         participant.on("trackUnsubscribed", trackUnsubscribed);
         participant.on("trackDisabled", trackDisabled);
@@ -110,18 +126,7 @@ const useParticipantTracks = (participant: LocalParticipant | RemoteParticipant)
         return () => {
             participant?.removeAllListeners();
         };
-    }, [participant]);
-
-    useEffect(() => {
-        const setParticipantTracks = () => {
-            setVideoTracks((oldTracks) => [...trackpubsToTracks(participant.videoTracks), ...oldTracks]);
-            setAudioTracks((oldTracks) => [...trackpubsToTracks(participant.audioTracks), ...oldTracks]);
-        };
-        if (!participant) {
-            return;
-        }
-        setParticipantTracks();
-    }, [participant, tracks]);
+    }, [participant, dispatch]);
 
     useEffect(() => {
         const videoTrack = videoTracks[0];
@@ -136,7 +141,7 @@ const useParticipantTracks = (participant: LocalParticipant | RemoteParticipant)
         return () => {
             videoTrack?.detach();
         };
-    }, [videoTracks]);
+    }, [videoTracks, participant]);
 
     useEffect(() => {
         const audioTrack = audioTracks[0];
@@ -151,13 +156,13 @@ const useParticipantTracks = (participant: LocalParticipant | RemoteParticipant)
         return () => {
             audioTrack?.detach();
         };
-    }, [audioTracks]);
+    }, [audioTracks, participant]);
 
     useEffect(() => {
         if (newSpeaker && audioRef.current) {
             changeSpeakers(audioRef.current, newSpeaker);
         }
     }, [newSpeaker]);
-    return { videoDisabled, videoRef, audioRef, dataTracks, audioTracks, videoTracks, netWorkLevel };
+    return { videoRef, audioRef, dataTracks, audioTracks, videoTracks, netWorkLevel };
 };
 export default useParticipantTracks;

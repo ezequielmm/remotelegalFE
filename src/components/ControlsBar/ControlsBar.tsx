@@ -67,6 +67,7 @@ import {
     StyledEndButton,
     StyledMobileMenu,
     StyledMoreMenu,
+    StyledChatWrapper,
 } from "./styles";
 import HelpModal from "./components/HelpModal";
 import TroubleShootDevicesModal from "../../routes/TroubleShootUserDevices/components/TroubleShootDevicesModal";
@@ -662,7 +663,7 @@ export default function ControlsBar({
                                         icon={<Icon icon={ExhibitsIcon} size="1.625rem" />}
                                     />
                                 </Col>
-                                {breakrooms && !!breakrooms.length && (
+                                {EnableBreakrooms === "enabled" && breakrooms && !!breakrooms.length && (
                                     <>
                                         <Col xs={8}>
                                             <Control
@@ -708,58 +709,60 @@ export default function ControlsBar({
                                                 }))
                                             }
                                         >
-                                            <Dropdown
-                                                dataTestId={CONSTANTS.CHAT_DROPDOWN_TEST_ID}
-                                                overlay={
-                                                    <ThemeProvider theme={summaryTheme}>
-                                                        <Drawer
-                                                            visible={chatOpen}
-                                                            onClose={toggleChat}
-                                                            placement="bottom"
-                                                            height="100%"
-                                                            closable={false}
-                                                            bodyStyle={{ padding: "0", height: "100%" }}
-                                                        >
-                                                            <Chat
-                                                                closePopOver={toggleChat}
-                                                                open={chatOpen}
-                                                                height={"100%"}
-                                                                messages={messages}
-                                                                sendMessage={sendMessage}
-                                                                loadClient={loadClient}
-                                                                loadingClient={loadingClient}
-                                                                errorLoadingClient={errorLoadingClient}
-                                                            />
-                                                        </Drawer>
-                                                    </ThemeProvider>
-                                                }
-                                                placement="topCenter"
-                                                onVisibleChange={toggleChat}
-                                                visible={chatOpen}
-                                                trigger={["click"]}
-                                                arrow
-                                                styled
-                                                overlayStyle={{ width: getREM(theme.default.spaces[6] * 23) }}
-                                                theme={summaryTheme}
-                                            >
-                                                <Control
-                                                    data-testid={CONSTANTS.CHAT_CONTROL_TEST_ID}
-                                                    isActive={chatOpen}
-                                                    type="simple"
-                                                    label={CONSTANTS.CONTROLS_BAR_CHAT_LABEL}
-                                                    icon={
-                                                        <Badge
-                                                            data-testid={CONSTANTS.UNREADED_CHATS_TEST_ID}
-                                                            count={unreadedChats}
-                                                            size="small"
-                                                            color={ColorStatus.error}
-                                                            rounded
-                                                        >
-                                                            <Icon icon={ChatIcon} size="1.625rem" />
-                                                        </Badge>
+                                            <StyledChatWrapper>
+                                                <Dropdown
+                                                    dataTestId={CONSTANTS.CHAT_DROPDOWN_TEST_ID}
+                                                    overlay={
+                                                        <ThemeProvider theme={summaryTheme}>
+                                                            <Drawer
+                                                                visible={chatOpen}
+                                                                onClose={toggleChat}
+                                                                placement="bottom"
+                                                                height="100%"
+                                                                closable={false}
+                                                                bodyStyle={{ padding: "0", height: "100%" }}
+                                                            >
+                                                                <Chat
+                                                                    closePopOver={toggleChat}
+                                                                    open={chatOpen}
+                                                                    height={"100%"}
+                                                                    messages={messages}
+                                                                    sendMessage={sendMessage}
+                                                                    loadClient={loadClient}
+                                                                    loadingClient={loadingClient}
+                                                                    errorLoadingClient={errorLoadingClient}
+                                                                />
+                                                            </Drawer>
+                                                        </ThemeProvider>
                                                     }
-                                                />
-                                            </Dropdown>
+                                                    placement="topCenter"
+                                                    onVisibleChange={toggleChat}
+                                                    visible={chatOpen}
+                                                    trigger={["click"]}
+                                                    arrow
+                                                    styled
+                                                    overlayStyle={{ width: getREM(theme.default.spaces[6] * 23) }}
+                                                    theme={summaryTheme}
+                                                >
+                                                    <Control
+                                                        data-testid={CONSTANTS.CHAT_CONTROL_TEST_ID}
+                                                        isActive={chatOpen}
+                                                        type="simple"
+                                                        label={CONSTANTS.CONTROLS_BAR_CHAT_LABEL}
+                                                        icon={
+                                                            <Badge
+                                                                data-testid={CONSTANTS.UNREADED_CHATS_TEST_ID}
+                                                                count={unreadedChats}
+                                                                size="small"
+                                                                color={ColorStatus.error}
+                                                                rounded
+                                                            >
+                                                                <Icon icon={ChatIcon} size="1.625rem" />
+                                                            </Badge>
+                                                        }
+                                                    />
+                                                </Dropdown>
+                                            </StyledChatWrapper>
                                         </Popover>
                                     </Col>
                                 )}
