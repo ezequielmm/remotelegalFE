@@ -27,7 +27,7 @@ import DepositionDetailsVideoSection from "./DepositionDetailsVideoSection";
 import { useGetRecordingInfo } from "../../../hooks/useGetRecordingInfo";
 import { useEnteredExhibit } from "../../../hooks/useEnteredExhibits";
 import { ReactComponent as DownloadIcon } from "../../../assets/icons/download.svg";
-import downloadFile from "../../../helpers/downloadFile";
+import downloadFile, { DownloadStatusType } from "../../../helpers/downloadFile";
 import { useTranscriptFileList, useGetSignedUrl } from "../../../hooks/transcripts/hooks";
 import { StyledSummaryLayout, StyledCard, StyledRealTimeWrapper } from "./styles";
 import { useFetchParticipants } from "../../../hooks/activeDepositionDetails/hooks";
@@ -47,6 +47,7 @@ export default function DepositionDetailsSummary({ setActiveKey, deposition }: I
     const { handleFetchFiles: handleFetchExhibitsFiles, enteredExhibits } = useEnteredExhibit();
     const [courtReporterName, setCourtReporterName] = useState("");
     const [downloadRecordingDisabled, setDownloadRecordingDisabled] = useState<boolean>(true);
+    const [downloadRecordingStatus, setDownloadRecordingStatus] = useState<DownloadStatusType>(null);
     const [downloadTranscripDisabled, setDownloadTranscripDisabled] = useState<boolean>(true);
     const { handleFetchFiles: handleFetchTranscriptFileList, transcriptFileList } = useTranscriptFileList(depositionID);
     const { getSignedUrl, documentData: transcriptFileData } = useGetSignedUrl();
@@ -114,7 +115,9 @@ export default function DepositionDetailsSummary({ setActiveKey, deposition }: I
 
     const handleDownloadRecording = () => {
         if (recordingInfo) {
-            downloadFile(recordingInfo.publicUrl, recordingInfo.fileName);
+            downloadFile(recordingInfo.publicUrl, recordingInfo.fileName, (status) =>
+                setDownloadRecordingStatus(status)
+            );
         }
     };
 
@@ -179,6 +182,7 @@ export default function DepositionDetailsSummary({ setActiveKey, deposition }: I
                             icon={<Icon icon={DownloadIcon} size={9} />}
                             onClick={handleDownloadRecording}
                             disabled={downloadRecordingDisabled}
+                            loading={downloadRecordingStatus === "pending"}
                         >
                             {CONSTANTS.DEPOSITION_DETAILS_SUMMARY_DOWNLOAD_RECORDING_TITLE}
                         </Button>

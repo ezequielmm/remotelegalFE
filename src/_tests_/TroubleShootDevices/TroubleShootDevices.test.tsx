@@ -526,3 +526,53 @@ test("it publishes new tracks", async () => {
         expect(onClose).toHaveBeenCalled();
     });
 });
+
+test("Should show toast if depo room is reconnecting", async () => {
+    const onClose = jest.fn();
+    localStorage.setItem(
+        "selectedDevices",
+        JSON.stringify({
+            audio: false,
+            video: false,
+            speakers: false,
+        })
+    );
+
+    const initialState = {
+        ...rootReducer,
+        initialState: {
+            depositionsList: {
+                sorting: "",
+                pageNumber: 0,
+                filter: undefined,
+            } as any,
+            user: { ...rootReducer.initialState.user },
+            postDepo: { ...rootReducer.initialState.postDepo },
+            signalR: { ...rootReducer.initialState.signalR },
+            generalUi: { ...rootReducer.initialState.generalUi },
+            room: {
+                ...rootReducer.initialState.room,
+                newSpeaker: null,
+                depoRoomReconnecting: true,
+                mockDepoRoom: {
+                    localParticipant: {
+                        publishTrack: publishTrackMock,
+                        videoTracks: new Map().set("item1", []),
+                        audioTracks: new Map().set("item2", []),
+                    },
+                } as any,
+            },
+        },
+    };
+    renderWithGlobalContext(<TroubleShootDevicesModal onClose={onClose} visible isDepo />, customDeps, initialState);
+    await waitFor(() => screen.getAllByText(TEST_CONSTANTS.DEVICES_LIST_MOCK[4].label));
+    await act(async () => {
+        userEvent.click(screen.getAllByText(TEST_CONSTANTS.DEVICES_LIST_MOCK[4].label)[0]);
+        const videoDevice = await waitFor(() => screen.getByTestId(TEST_CONSTANTS.DEVICES_LIST_MOCK[5].label));
+        userEvent.click(videoDevice);
+    });
+    fireEvent.click(screen.getByText(MODULE_CONSTANTS.CHANGE_DEVICES_LABEL));
+    await waitFor(() => {
+        expect(screen.getByText(MODULE_CONSTANTS.NOT_CONNECTED_TO_DEPO)).toBeInTheDocument();
+    });
+});

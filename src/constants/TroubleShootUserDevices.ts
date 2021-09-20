@@ -19,3 +19,4 @@ export enum DevicesStatus {
     blocked = "blocked",
     enabled = "enabled",
 }
+export const NOT_CONNECTED_TO_DEPO = "Please wait until you are reconnected to the deposition, and try again";

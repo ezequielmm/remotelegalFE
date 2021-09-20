@@ -1,7 +1,8 @@
 import { Slider } from "antd";
-import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import ReactPlayer, { ReactPlayerProps } from "react-player";
 import screenfull from "screenfull";
+import { isIOS } from "react-device-detect";
 import styled from "styled-components";
 import Icon from "prp-components-library/src/components/Icon";
 import Space from "prp-components-library/src/components/Space";
@@ -43,10 +44,10 @@ const StyledControls = styled.div`
     }
     .ant-slider{
         .ant-slider-track{
-            background-color ${theme.default.primaryColor};
+            background-color: ${theme.default.primaryColor};
         }
         .ant-slider-rail{
-            background-color ${hexToRGBA(theme.default.whiteColor, 0.2)};
+            background-color: ${hexToRGBA(theme.default.whiteColor, 0.2)};
         }
         .ant-slider-handle{
             opacity: 0;
@@ -95,10 +96,19 @@ const StyledVolumeContainer = styled(Space)`
 export interface IVideoPlayer extends ReactPlayerProps {
     fullScreen?: boolean;
     isOnlyAudio?: boolean;
-    onInit?: () => void;
+    showVolume?: boolean;
 }
 
-const VideoPlayer = ({ fullScreen, fallback, isOnlyAudio, url, onInit, onReady, ...rest }: IVideoPlayer) => {
+const VideoPlayer = ({
+    fullScreen,
+    fallback,
+    isOnlyAudio,
+    url,
+    onInit,
+    onReady,
+    showVolume = true,
+    ...rest
+}: IVideoPlayer) => {
     const { dispatch, state } = useContext(GlobalStateContext);
     const { changeTime, currentTime, playing, duration } = state.postDepo;
 
@@ -233,33 +243,35 @@ const VideoPlayer = ({ fullScreen, fallback, isOnlyAudio, url, onInit, onReady, 
                                 <Duration seconds={duration} />
                             </StyledTimeContainer>
                         </Space.Item>
-                        <StyledVolumeContainer align="center" size={1}>
-                            <Icon
-                                size={7}
-                                color={theme.default.whiteColor}
-                                onClick={muteVideo}
-                                icon={muted ? VolumeOffIcon : VolumeOnIcon}
-                            />
-                            <Space.Item flex="1 1">
-                                <Slider
-                                    value={muted ? 0 : volume}
-                                    onChange={handleVolumeChange}
-                                    step={0.1}
-                                    max={1}
-                                    tooltipVisible={false}
-                                    trackStyle={{ backgroundColor: theme.default.whiteColor }}
+                        {!isIOS && showVolume && (
+                            <StyledVolumeContainer align="center" size={1}>
+                                <Icon
+                                    size={7}
+                                    color={theme.default.whiteColor}
+                                    onClick={muteVideo}
+                                    icon={muted ? VolumeOffIcon : VolumeOnIcon}
                                 />
-                            </Space.Item>
-                            {fullScreen && (
-                                <Space.Item>
-                                    <Icon
-                                        size={6}
-                                        icon={fullscreen ? ContractIcon : ExpandIcon}
-                                        onClick={handleFullScreen}
+                                <Space.Item flex="1 1">
+                                    <Slider
+                                        value={muted ? 0 : volume}
+                                        onChange={handleVolumeChange}
+                                        step={0.1}
+                                        max={1}
+                                        tooltipVisible={false}
+                                        trackStyle={{ backgroundColor: theme.default.whiteColor }}
                                     />
                                 </Space.Item>
-                            )}
-                        </StyledVolumeContainer>
+                            </StyledVolumeContainer>
+                        )}
+                        {fullScreen && (
+                            <Space.Item>
+                                <Icon
+                                    size={6}
+                                    icon={fullscreen ? ContractIcon : ExpandIcon}
+                                    onClick={handleFullScreen}
+                                />
+                            </Space.Item>
+                        )}
                     </Space>
                 </StyledControls>
             )}

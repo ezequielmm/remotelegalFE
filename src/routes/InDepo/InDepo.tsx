@@ -1,10 +1,11 @@
 import { useState, useEffect, useContext, useRef } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import { ThemeProvider } from "styled-components";
-import { Participant } from "twilio-video";
+import styled, { ThemeProvider } from "styled-components";
+import { Participant, connect } from "twilio-video";
 import Spinner from "prp-components-library/src/components/Spinner";
 import { Row } from "antd/lib/grid";
 import Alert from "prp-components-library/src/components/Alert";
+import { HubConnectionState } from "@microsoft/signalr";
 import Exhibits from "./Exhibits";
 import RealTime from "./RealTime";
 import { ReactComponent as NoConnectionIcon } from "../../assets/in-depo/No-Connection.svg";
@@ -41,6 +42,18 @@ import { useExhibitFileInfo } from "../../hooks/exhibits/hooks";
 import useGetDepoSummaryInfo from "../../hooks/InDepo/useGetDepoSummaryInfo";
 import WrongOrientationScreen from "./WrongOrientationScreen/WrongOrientationScreen";
 import ORIENTATION_STATE from "../../types/orientation";
+import useFloatingAlertContext from "../../hooks/useFloatingAlertContext";
+
+const StyledAlertRow = styled(Row)`
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+`;
+
+const StyledAlert = styled(Alert)`
+    max-width: 35%;
+`;
 
 const InDepo = () => {
     const { depositionID } = useParams<DepositionID>();
@@ -53,6 +66,7 @@ const InDepo = () => {
     const [getTranscriptions] = useGetTranscriptions();
     const [getDepositionEvents] = useGetEvents();
     const {
+        token,
         breakrooms,
         isRecording,
         message,
@@ -68,24 +82,27 @@ const InDepo = () => {
         currentExhibitPage,
         jobNumber,
         tracks,
+        depoRoomReconnecting,
     } = state.room;
 
     const { currentUser } = state?.user;
     const [windowWidth, windowHeight] = useContext(WindowSizeContext);
     const orientation = useWindowOrientation();
-    const { signalRConnectionStatus } = state?.signalR;
+    const { isReconnected, isReconnecting } = state?.signalR.signalRConnectionStatus;
     const [realTimeOpen, togglerRealTime] = useState<boolean>(false);
     const [exhibitsOpen, togglerExhibits] = useState<boolean>(false);
     const [initialAudioEnabled, setInitialAudioEnabled] = useState<boolean>(true);
     const [videoLayoutSize, setVideoLayoutSize] = useState<number>(0);
     const [atendeesVisibility, setAtendeesVisibility] = useState<boolean>(true);
+    const addAlert = useFloatingAlertContext();
+    const tries = useRef(0);
     const [inDepoHeight, setInDepoHeight] = useState<number>();
     const history = useHistory();
     const tracksRef = useRef(tracks);
     const { isAuthenticated } = useAuthentication();
     const { sendMessage, signalR, subscribeToGroup, unsubscribeMethodFromGroup } = useSignalR("/depositionHub");
     const [fetchExhibitFileInfo] = useExhibitFileInfo();
-    console.log(WindowSizeContext);
+    const readyToBeRendered = currentRoom && dataTrack;
 
     useEffect(() => {
         dispatch(generalUIActions.toggleTheme(ThemeMode.inDepo));
@@ -118,13 +135,54 @@ const InDepo = () => {
     }, []);
 
     useEffect(() => {
-        if ((signalR?.connectionState === "Connected" || signalRConnectionStatus?.isReconnected) && depositionID) {
+        if (signalR?.connectionState === HubConnectionState.Connected && depositionID) {
             sendMessage("SubscribeToDeposition", { depositionId: depositionID });
         }
-    }, [signalR, depositionID, sendMessage, signalRConnectionStatus?.isReconnected]);
+    }, [signalR?.connectionState, depositionID, sendMessage]);
 
     useEffect(() => {
-        const handleRoomEndError = (_, roomError) => {
+        const handleReconnection = (error) => {
+            if (!error) {
+                dispatch(actions.setInDepoReconnecting(false));
+                console.error("Reconnected to Twilio´s room");
+            }
+            if (error?.code === 53001 || error?.code === 53405) {
+                dispatch(actions.setInDepoReconnecting(true));
+                console.error("Reconnecting Twilio", error.message);
+            }
+        };
+        const handleRoomEndError = async (_, roomError) => {
+            if ((roomError?.code === 53000 || roomError?.code === 53002) && isMounted.current) {
+                const connectToRoom = async () => {
+                    try {
+                        await connect(token, {
+                            ...CONSTANTS.TWILIO_VIDEO_CONFIG,
+                            name: depositionID,
+                            tracks: tracksRef.current,
+                        });
+                        tries.current = 0;
+                        return dispatch(actions.setInDepoReconnecting(false));
+                    } catch {
+                        tries.current += 1;
+                        if (tries.current === 3) {
+                            addAlert({
+                                message: CONSTANTS.DISCONNECTED_FROM_DEPO,
+                                closable: true,
+                                type: "info",
+                                duration: 3,
+                                dataTestId: "depo_disconnected_toast",
+                            });
+                            console.error("Couldn´t reconnect to deposition");
+                            return history.push(`/deposition/pre-join/troubleshoot-devices/${depositionID}`);
+                        }
+                        connectToRoom();
+                        console.error("Couldn´t reconnect to deposition");
+                    }
+                    return null;
+                };
+                console.error("Signaling reconnection failed", roomError.message);
+                return connectToRoom();
+            }
             if (roomError?.code === 53118 && isMounted.current) {
                 disconnectFromDepo(
                     currentRoom,
@@ -136,11 +194,14 @@ const InDepo = () => {
                         JSON.parse(currentRoom?.localParticipant?.identity).role === Roles.witness
                 );
             }
+            return null;
         };
         const setDominantSpeaker = (participant: Participant | null) =>
             dispatch(actions.setAddDominantSpeaker(participant));
 
         if (currentRoom) {
+            currentRoom.on("reconnected", handleReconnection);
+            currentRoom.on("reconnecting", handleReconnection);
             currentRoom.on("disconnected", handleRoomEndError);
             currentRoom.on("dominantSpeakerChanged", setDominantSpeaker);
         }
@@ -151,35 +212,39 @@ const InDepo = () => {
 
         return () => {
             if (currentRoom) {
+                currentRoom.off("reconnected", handleReconnection);
+                currentRoom.off("reconnecting", handleReconnection);
                 currentRoom.off("disconnected", handleRoomEndError);
                 currentRoom.off("dominantSpeakerChange", setDominantSpeaker);
             }
 
             window.removeEventListener("beforeunload", cleanUpFunction);
         };
-    }, [currentRoom, dispatch, depositionID, history]);
+    }, [currentRoom, dispatch, depositionID, history, token, addAlert]);
 
     useEffect(() => {
+        const isMobile = windowWidth <= CONSTANTS.MAX_MOBILE_SIZE;
         if (depositionID && isAuthenticated !== null && currentUser) {
-            joinDeposition(depositionID);
+            joinDeposition(depositionID, isMobile);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [depositionID, isAuthenticated, currentUser]);
 
     useEffect(() => {
-        if (signalRConnectionStatus?.isReconnected) {
+        if (isReconnected || readyToBeRendered) {
             getDepoSummaryInfo();
         }
-    }, [getDepoSummaryInfo, signalRConnectionStatus?.isReconnected]);
+    }, [getDepoSummaryInfo, isReconnected, readyToBeRendered]);
 
     useEffect(() => {
-        (async () => {
-            if (signalRConnectionStatus?.isReconnected && depoSummaryInfo) {
+        const fetchDepoData = async () => {
+            if ((isReconnected || readyToBeRendered) && depoSummaryInfo) {
                 dispatch(actions.setParticipantsData(depoSummaryInfo.participants));
                 dispatch(actions.setIsRecording(depoSummaryInfo.isOnTheRecord));
                 if (depoSummaryInfo.isSharing) {
-                    togglerExhibits(true);
+                    dispatch(actions.setSharedExhibit(null));
                     fetchExhibitFileInfo(depositionID);
+                    togglerExhibits(true);
                 } else {
                     togglerExhibits(false);
                 }
@@ -187,12 +252,14 @@ const InDepo = () => {
                 const events = await getDepositionEvents(depositionID);
                 setInitialTranscriptions(setTranscriptionMessages(transcriptions, events));
             }
-        })();
+        };
+        fetchDepoData();
     }, [
         depoSummaryInfo,
-        signalRConnectionStatus?.isReconnected,
+        isReconnected,
         depositionID,
         dispatch,
+        readyToBeRendered,
         getDepositionEvents,
         getTranscriptions,
         fetchExhibitFileInfo,
@@ -282,16 +349,10 @@ const InDepo = () => {
         return <WrongOrientationScreen orientation={orientation} />;
     }
 
-    if (
-        loading &&
-        userStatus === null &&
-        shouldSendToPreDepo === null &&
-        !signalRConnectionStatus?.isReconnected &&
-        !signalRConnectionStatus?.isReconnecting
-    ) {
+    if (loading && userStatus === null && shouldSendToPreDepo === null && !isReconnected && !isReconnecting) {
         return <Spinner />;
     }
-    if (!signalRConnectionStatus?.isReconnected) {
+    if (!isReconnected) {
         if (userStatus?.participant?.isAdmitted && loading && shouldSendToPreDepo === false) {
             return <LoadingScreen />;
         }
@@ -312,7 +373,7 @@ const InDepo = () => {
         );
     }
 
-    return currentRoom && dataTrack ? (
+    return readyToBeRendered ? (
         <TranscriptionsProvider
             initialTranscriptions={initialTranscriptions}
             setInitialTranscriptions={setInitialTranscriptions}
@@ -325,28 +386,18 @@ const InDepo = () => {
                         <GuestRequests depositionID={depositionID} />
                     )}
                     <StyledInDepoLayout>
-                        <Row
-                            justify="space-around"
-                            align="middle"
-                            style={{
-                                position: "absolute",
-                                top: 0,
-                                width: "100%",
-                                zIndex: 1000,
-                            }}
-                        >
-                            {signalRConnectionStatus?.isReconnecting && (
-                                <Alert
+                        <StyledAlertRow justify="space-around" align="middle">
+                            {(depoRoomReconnecting || isReconnecting) && (
+                                <StyledAlert
                                     data-testid={CONSTANTS.RECONNECTING_ALERT_MESSAGE_TEST_ID}
                                     icon={<NoConnectionIcon />}
                                     type="info"
-                                    style={{ maxWidth: "35%" }}
                                     closable={false}
                                     message={CONSTANTS.RECONNECTING_ALERT_MESSAGE}
                                 />
                             )}
                             <RecordPill on={isRecording} />
-                        </Row>
+                        </StyledAlertRow>
                         <Exhibits visible={exhibitsOpen} togglerExhibits={togglerExhibits} />
                         {realTimeOpen && <RealTime timeZone={timeZone} />}
                         <VideoConference

@@ -10,7 +10,7 @@ export default (isAudioEnabled: boolean, audioTracks, doNotConnectToSocket = fal
     const [recorder, setRecorder] = useState(null);
     const [sampleRate, setSampleRate] = useState<number>(undefined);
     const { state, dispatch } = useContext(GlobalStateContext);
-    const { isRecording, stopRecorder, resetRecorder } = state.room;
+    const { isRecording, stopRecorder, resetRecorder, depoRoomReconnecting } = state.room;
     const { depositionID } = useParams<DepositionID>();
     const { transcriptAudio, sendMessage } = useTranscriptAudio(doNotConnectToSocket, sampleRate);
     const recorderRef = useRef(null);
@@ -51,7 +51,7 @@ export default (isAudioEnabled: boolean, audioTracks, doNotConnectToSocket = fal
             noise = createNoise();
         }
         if (noise) {
-            interval = setInterval(() => transcriptAudio(noise, !sampleRate ?? 48000), 120000);
+            interval = setInterval(() => transcriptAudio(noise, sampleRate ?? 48000), 120000);
         }
         return () => {
             clearInterval(interval);
@@ -77,7 +77,7 @@ export default (isAudioEnabled: boolean, audioTracks, doNotConnectToSocket = fal
 
     React.useEffect(() => {
         let dataAvailableHandler;
-        if (recorder && isRecording && isAudioEnabled) {
+        if (recorder && isRecording && isAudioEnabled && !depoRoomReconnecting) {
             dataAvailableHandler = (e) => {
                 const fileReader = new FileReader();
                 fileReader.onload = (event) => {
@@ -103,7 +103,16 @@ export default (isAudioEnabled: boolean, audioTracks, doNotConnectToSocket = fal
                 recorder.removeEventListener("dataavailable", dataAvailableHandler);
             }
         };
-    }, [recorder, transcriptAudio, isRecording, isAudioEnabled, sampleRate, sendMessage, depositionID]);
+    }, [
+        recorder,
+        transcriptAudio,
+        isRecording,
+        isAudioEnabled,
+        sampleRate,
+        sendMessage,
+        depositionID,
+        depoRoomReconnecting,
+    ]);
 
     const getMicrophone = () => {
         if (recorder) {

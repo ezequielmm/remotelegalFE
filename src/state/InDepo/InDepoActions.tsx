@@ -8,6 +8,7 @@ import { ExhibitFile } from "../../types/ExhibitFile";
 
 export enum ACTION_TYPE {
     ADD_STAMP = "ADD_STAMP",
+    IN_DEPO_RECONNECTING = "IN_DEPO_RECONNECTING",
     STOP_RECORDER = "STOP_RECORDER",
     RESET_RECORDER = "RESET_RECORDER",
     CHANGE_VIDEO_SOURCE = "CHANGE_VIDEO_SOURCE",
@@ -122,6 +123,10 @@ const actions = {
     }),
     setSharedExhibit: (payload: ExhibitFile) => ({
         type: ACTION_TYPE.IN_DEPO_START_SHARE_EXHIBIT,
+        payload,
+    }),
+    setInDepoReconnecting: (payload: boolean) => ({
+        type: ACTION_TYPE.IN_DEPO_RECONNECTING,
         payload,
     }),
     stopShareExhibit: () => ({

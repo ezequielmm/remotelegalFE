@@ -1,6 +1,6 @@
 import { ReactElement, useState } from "react";
-// TODO: fix this interface request
-// import { RcCustomRequestOptions } from "antd/lib/upload/interface";
+import { datadogLogs } from "@datadog/browser-logs";
+import { UploadRequestOption } from "rc-upload/lib/interface";
 import Dragger from "prp-components-library/src/components/Dragger";
 import Icon from "prp-components-library/src/components/Icon";
 import Space from "prp-components-library/src/components/Space";
@@ -10,9 +10,8 @@ import ProgressBarRender from "./ProgressBarRender";
 import { MY_EXHIBITS_ALLOWED_FILE_TYPES } from "../../../../../constants/exhibits";
 import ColorStatus from "../../../../../types/ColorStatus";
 
-export type IUploadStatus = "success" | "pending" | "fail" | "initial";
 interface IUploadButton {
-    onUpload?: (options: any) => void;
+    onUpload?: (options: UploadRequestOption<any>) => void;
     refreshList?: () => void;
 }
 
@@ -36,10 +35,16 @@ export default function UploadButton({ onUpload, refreshList }: IUploadButton): 
                     errors={file?.error}
                     percent={file.percent}
                     status={file.status}
-                    fileName={file.name}
+                    uploadId={file.uid}
                     refreshList={refreshList}
                 />
             )}
+            beforeUpload={(file, FileList) => {
+                if (file.uid === FileList[0].uid) {
+                    const fileNames = Array.from(FileList, (f) => f.name);
+                    datadogLogs.logger.info(`Uploaded ${FileList.length} exhibit files`, { fileNames });
+                }
+            }}
         >
             <Space size="middle" justify="center" align="center" fullWidth>
                 <Icon icon={uploadIcon} size="2.5rem" />

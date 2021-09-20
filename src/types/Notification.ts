@@ -19,6 +19,16 @@ export enum NotificationAction {
     error = "error",
     close = "close",
 }
+
+interface UploadNotificationContent {
+    data: string;
+    message: string;
+}
+export interface UploadNotification {
+    entityType: NotificationEntityType;
+    action: NotificationAction;
+    content: UploadNotificationContent;
+}
 export interface Notification {
     entityType: NotificationEntityType;
     action: NotificationAction;

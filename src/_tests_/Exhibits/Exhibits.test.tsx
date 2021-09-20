@@ -3,6 +3,7 @@ import { act, fireEvent, waitFor, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { ThemeProvider } from "styled-components";
 import * as CONSTANTS from "../../constants/exhibits";
+import downloadFile from "../../helpers/downloadFile";
 import { theme } from "../../constants/styles/theme";
 import Exhibits from "../../routes/InDepo/Exhibits";
 import { ExhibitTabData } from "../../routes/InDepo/Exhibits/ExhibitTabs/ExhibitTabs";
@@ -45,6 +46,11 @@ jest.mock("../../hooks/exhibits/hooks", () => ({
     useBringAllToMe: jest.fn(),
     useCloseSharedExhibit: jest.fn(),
     useStampMediaExhibits: jest.fn(),
+}));
+
+jest.mock("../../helpers/downloadFile", () => ({
+    __esModule: true,
+    default: jest.fn(),
 }));
 
 jest.mock("react-router-dom", () => ({
@@ -424,7 +430,10 @@ describe("Exhibits", () => {
                     room: {
                         ...rootReducer.initialState.room,
                     },
-                    signalR: { signalR: null },
+                    signalR: {
+                        signalR: null,
+                        signalRConnectionStatus: { isReconnected: false, isReconnecting: false },
+                    },
                 },
             }
         );
@@ -458,7 +467,10 @@ describe("Exhibits", () => {
                         ...rootReducer.initialState.room,
                         isRecording: true,
                     },
-                    signalR: { signalR: null },
+                    signalR: {
+                        signalR: null,
+                        signalRConnectionStatus: { isReconnected: false, isReconnecting: false },
+                    },
                 },
             }
         );
@@ -654,7 +666,10 @@ describe("Exhibits", () => {
                         duration: 1,
                     },
                     user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
-                    signalR: { signalR: null },
+                    signalR: {
+                        signalR: null,
+                        signalRConnectionStatus: { isReconnected: false, isReconnecting: false },
+                    },
                 },
             }
         );
@@ -700,7 +715,10 @@ describe("Exhibits", () => {
                         playing: true,
                         duration: 1,
                     },
-                    signalR: { signalR: null },
+                    signalR: {
+                        signalR: null,
+                        signalRConnectionStatus: { isReconnected: false, isReconnecting: false },
+                    },
                 },
             }
         );
@@ -895,7 +913,10 @@ describe("Exhibits", () => {
                         playing: true,
                         duration: 1,
                     },
-                    signalR: { signalR: null },
+                    signalR: {
+                        signalR: null,
+                        signalRConnectionStatus: { isReconnected: false, isReconnecting: false },
+                    },
                 },
             }
         );
@@ -953,5 +974,164 @@ describe("Exhibits", () => {
         await waitFor(() =>
             expect(screen.queryByText("Please delete the existing stamp and try again")).toBeInTheDocument()
         );
+    });
+
+    it("the download button should have the class pending when the download is on progress", async () => {
+        useSignedUrl.mockImplementation(() => ({
+            documentUrl: "documentId",
+            pending: false,
+            isPublic: false,
+            stampLabel: "stamp-label",
+        }));
+
+        (downloadFile as jest.Mock).mockImplementation(async (fileUrl, fileName, callback) => {
+            return callback("pending");
+        });
+
+        renderWithGlobalContext(
+            <ThemeProvider theme={theme}>
+                <LiveExhibits />
+            </ThemeProvider>,
+            customDeps,
+            {
+                ...rootReducer,
+                initialState: {
+                    room: {
+                        ...rootReducer.initialState.room,
+                        isRecording: true,
+                        currentExhibitTabName: CONSTANTS.EXHIBIT_TABS.liveExhibits,
+                        exhibitTab: CONSTANTS.EXHIBIT_TABS.liveExhibits,
+                        permissions: ["StampExhibit"],
+                        currentExhibit: {
+                            name: "name.mp4",
+                            displayName: "name.mp4",
+                            id: "documentId",
+                            size: 1,
+                            stampLabel: "stamp-label",
+                        },
+                    },
+                    signalR: {},
+                    postDepo: {
+                        changeTime: { time: 1 },
+                        currentTime: 1,
+                        playing: true,
+                        duration: 1,
+                    },
+                    user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+                },
+            }
+        );
+        await waitFor(() => expect(screen.queryByTestId("view_document_download")).toBeInTheDocument());
+        act(() => {
+            fireEvent.click(screen.queryByTestId("view_document_download"));
+        });
+
+        await waitFor(() => expect(screen.queryByTestId("view_document_download")).toHaveClass("ant-btn-loading"));
+    });
+
+    it("the download button should not to have the class pending when the download is completed", async () => {
+        useSignedUrl.mockImplementation(() => ({
+            documentUrl: "documentId",
+            pending: false,
+            isPublic: false,
+            stampLabel: "stamp-label",
+        }));
+
+        (downloadFile as jest.Mock).mockImplementation(async (fileUrl, fileName, callback) => {
+            return callback("completed");
+        });
+
+        renderWithGlobalContext(
+            <ThemeProvider theme={theme}>
+                <LiveExhibits />
+            </ThemeProvider>,
+            customDeps,
+            {
+                ...rootReducer,
+                initialState: {
+                    room: {
+                        ...rootReducer.initialState.room,
+                        isRecording: true,
+                        currentExhibitTabName: CONSTANTS.EXHIBIT_TABS.liveExhibits,
+                        exhibitTab: CONSTANTS.EXHIBIT_TABS.liveExhibits,
+                        permissions: ["StampExhibit"],
+                        currentExhibit: {
+                            name: "name.mp4",
+                            displayName: "name.mp4",
+                            id: "documentId",
+                            size: 1,
+                            stampLabel: "stamp-label",
+                        },
+                    },
+                    signalR: {},
+                    postDepo: {
+                        changeTime: { time: 1 },
+                        currentTime: 1,
+                        playing: true,
+                        duration: 1,
+                    },
+                    user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+                },
+            }
+        );
+        await waitFor(() => expect(screen.queryByTestId("view_document_download")).toBeInTheDocument());
+        act(() => {
+            fireEvent.click(screen.queryByTestId("view_document_download"));
+        });
+
+        await waitFor(() => expect(screen.queryByTestId("view_document_download")).not.toHaveClass("ant-btn-loading"));
+    });
+
+    it("the download button should not to have the class pending when the download has an error", async () => {
+        useSignedUrl.mockImplementation(() => ({
+            documentUrl: "documentId",
+            pending: false,
+            isPublic: false,
+            stampLabel: "stamp-label",
+        }));
+
+        (downloadFile as jest.Mock).mockImplementation(async (fileUrl, fileName, callback) => {
+            return callback("error");
+        });
+
+        renderWithGlobalContext(
+            <ThemeProvider theme={theme}>
+                <LiveExhibits />
+            </ThemeProvider>,
+            customDeps,
+            {
+                ...rootReducer,
+                initialState: {
+                    room: {
+                        ...rootReducer.initialState.room,
+                        isRecording: true,
+                        currentExhibitTabName: CONSTANTS.EXHIBIT_TABS.liveExhibits,
+                        exhibitTab: CONSTANTS.EXHIBIT_TABS.liveExhibits,
+                        permissions: ["StampExhibit"],
+                        currentExhibit: {
+                            name: "name.mp4",
+                            displayName: "name.mp4",
+                            id: "documentId",
+                            size: 1,
+                            stampLabel: "stamp-label",
+                        },
+                    },
+                    signalR: {},
+                    postDepo: {
+                        changeTime: { time: 1 },
+                        currentTime: 1,
+                        playing: true,
+                        duration: 1,
+                    },
+                    user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+                },
+            }
+        );
+        await waitFor(() => expect(screen.queryByTestId("view_document_download")).toBeInTheDocument());
+        act(() => {
+            fireEvent.click(screen.queryByTestId("view_document_download"));
+        });
+
+        await waitFor(() => expect(screen.queryByTestId("view_document_download")).not.toHaveClass("ant-btn-loading"));
     });
 });

@@ -34,6 +34,7 @@ export const useUploadFileToS3 = (depositionID: string) => {
                 const preSignUploadExhibit = await deps.apiService.preSignUploadExhibit({
                     depositionId: depositionID,
                     filename: parseFile.name,
+                    resourceId: file.uid,
                 });
                 uploadFileToS3(
                     preSignUploadExhibit.url,

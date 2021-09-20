@@ -22,6 +22,22 @@ export const TWILIO_VIDEO_CONFIG: ConnectOptions = {
     networkQuality: { local: 1, remote: 1 },
     dominantSpeaker: true,
 };
+export const TWILIO_MOBILE_CONFIG: ConnectOptions = {
+    audio: true,
+    video: { height: 480, frameRate: 24, width: 640 },
+    bandwidthProfile: {
+        video: {
+            mode: "collaboration",
+            maxSubscriptionBitrate: 2500000,
+            dominantSpeakerPriority: "standard",
+        },
+    },
+    dominantSpeaker: true,
+    maxAudioBitrate: 16000,
+    preferredVideoCodecs: [{ codec: "VP8", simulcast: true }],
+    networkQuality: { local: 1, remote: 1 },
+};
+export const MAX_MOBILE_SIZE = 400;
 export const CONNECTION_UNSTABLE = "Your connection is unstable";
 export const NETWORK_INDICATOR_TEST_ID = "NETWORK_INDICATOR";
 export const FETCH_ERROR_RESULT_TITLE = "Sorry! We couldn't connect to the deposition.";
@@ -124,5 +140,7 @@ export const BREAKROOM_IS_UNLOCKED = "Breakroom unlocked - Other participants wi
 export const BREAKROOM_LOCK_ERROR = "Something went wrong. Please try again.";
 export const BREAKROOM_LOCK_ALERT_DURATION = 4;
 export const NETWORK_QUALITY_TIME_SECONDS = 300;
-export const RECONNECTING_ALERT_MESSAGE = "Your connection is unstable. Some actions may not be working properly.";
+export const DISCONNECTED_FROM_DEPO =
+    "You have been disconnected from the deposition due to network issues. Please join again";
 export const RECONNECTING_ALERT_MESSAGE_TEST_ID = "SIGNALR_DISCONNECTED";
+export const RECONNECTING_ALERT_MESSAGE = "Your connection is unstable. Some actions may not work properly.";

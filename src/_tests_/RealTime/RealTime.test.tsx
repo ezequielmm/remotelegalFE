@@ -90,4 +90,19 @@ describe("RealTime", () => {
         await wait(100);
         act(() => expect(screen.getAllByTestId("transcription_text").length).toBeLessThan(100));
     });
+
+    test("Container is scrolled to bottom", async () => {
+        renderWithGlobalContext(
+            <TranscriptionsContext.Provider value={{ transcriptions: getVeryLongTranscription() } as any}>
+                <RealTime timeZone={timeZone} />
+            </TranscriptionsContext.Provider>
+        );
+        await wait(100);
+        const transcriptionsContainer = screen.getByTestId("transcriptions_container");
+        const isScrolled =
+            Math.ceil(transcriptionsContainer.scrollHeight - transcriptionsContainer.scrollTop) ===
+            transcriptionsContainer.clientHeight;
+
+        expect(isScrolled).toBe(true);
+    });
 });

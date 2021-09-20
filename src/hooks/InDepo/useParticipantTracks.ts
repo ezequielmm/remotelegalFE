@@ -25,6 +25,7 @@ const useParticipantTracks = (participant: LocalParticipant | RemoteParticipant)
     const [netWorkLevel, setNetWorkLevel] = useState<number>(null);
     const audioRef = useRef<HTMLAudioElement & AudioTrack>();
     const videoRef = useRef<HTMLVideoElement & VideoTrack>();
+    const localParticipantVideoTrackRef = useRef<VideoTrack>(null);
 
     const trackSubscribed = (track: AudioTrack | VideoTrack | LocalDataTrack | RemoteDataTrack) => {
         if (track.kind === MediaStreamTypes.videoinput) {
@@ -131,6 +132,7 @@ const useParticipantTracks = (participant: LocalParticipant | RemoteParticipant)
         const videoTrack = videoTracks[0];
 
         if (videoTrack) {
+            localParticipantVideoTrackRef.current = videoTrack;
             if (videoRef.current) {
                 videoRef.current.name = videoTrack.name;
             }

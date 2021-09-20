@@ -19,6 +19,7 @@ const disconnectFromDepo = (
         changeAudioSource: false,
         stamp: null,
         startTime: "",
+        depoRoomReconnecting: false,
         mockDepoRoom: null,
         initialCameraStatus: null,
         shouldSendToPreDepo: null,

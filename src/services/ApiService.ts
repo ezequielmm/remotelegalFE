@@ -521,7 +521,9 @@ export class ApiService {
         });
     };
 
-    preSignUploadExhibit = (payload): Promise<ExhibitsModel.IPreSignUploadExhibit> => {
+    preSignUploadExhibit = (
+        payload: ExhibitsModel.IPayloadPreSignUploadExhibit
+    ): Promise<ExhibitsModel.IPreSignUploadExhibit> => {
         return this.request({
             path: "/api/documents/PreSignUploadExhibit",
             payload,
