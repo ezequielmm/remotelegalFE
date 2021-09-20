@@ -39,6 +39,7 @@ import useGetEvents from "../../hooks/InDepo/useGetEvents";
 import { setTranscriptionMessages } from "../../helpers/formatTranscriptionsMessages";
 import { useExhibitFileInfo } from "../../hooks/exhibits/hooks";
 import useGetDepoSummaryInfo from "../../hooks/InDepo/useGetDepoSummaryInfo";
+import { IS_MOBILE_OR_TABLET } from "../../constants/general";
 import useFloatingAlertContext from "../../hooks/useFloatingAlertContext";
 
 const StyledAlertRow = styled(Row)`
@@ -251,13 +252,14 @@ const InDepo = () => {
                 } else {
                     togglerExhibits(false);
                 }
-                const transcriptions = await getTranscriptions();
+                const transcriptions = !isMobileOrTablet ? await getTranscriptions() : [];
                 const events = await getDepositionEvents(depositionID);
                 setInitialTranscriptions(setTranscriptionMessages(transcriptions, events));
             }
         };
         fetchDepoData();
     }, [
+        windowWidth,
         depoSummaryInfo,
         isReconnected,
         depositionID,
