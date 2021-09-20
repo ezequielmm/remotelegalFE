@@ -81,6 +81,15 @@ const useParticipantTracks = (participant: LocalParticipant | RemoteParticipant)
     }, [changeAudioSource, participant]);
 
     useEffect(() => {
+        const resetVideoRefStylesOnReconnection = () => {
+            if (videoRef.current) {
+                // We have to do this because, for some reason, the reconnected event gets
+                // triggered on first load
+                if (localParticipantVideoTrackRef.current?.isEnabled) {
+                    videoRef.current.style.display = "block";
+                }
+            }
+        };
         const stopRecorder = (track: LocalTrack) => {
             if (track.kind === MediaStreamTypes.audioinput) {
                 dispatch(actions.stopRecorder(true));
@@ -116,6 +125,7 @@ const useParticipantTracks = (participant: LocalParticipant | RemoteParticipant)
         setDataTracks(trackpubsToTracks(participant.dataTracks));
         participant.on("trackSubscribed", trackSubscribed);
         participant.on("reconnecting", onReconnecting);
+        participant.on("reconnected", resetVideoRefStylesOnReconnection);
         participant.on("trackStopped", stopRecorder);
         participant.on("trackStarted", resetRecorder);
         participant.on("networkQualityLevelChanged", setNetWorkLevel);
