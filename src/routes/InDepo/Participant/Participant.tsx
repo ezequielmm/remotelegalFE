@@ -20,7 +20,7 @@ import ColorStatus from "../../../types/ColorStatus";
 import { theme } from "../../../constants/styles/theme";
 import { GlobalStateContext } from "../../../state/GlobalState";
 import { ReactComponent as MuteIcon } from "../../../assets/in-depo/Participant.muted.svg";
-import AspectRatio from "../../../assets/in-depo/aspect-ratio-16-9.svg";
+import AspectRatio from "../../../assets/in-depo/participant-16-9.svg";
 import normalizedRoles from "../../../constants/roles";
 import useFloatingAlertContext from "../../../hooks/useFloatingAlertContext";
 
