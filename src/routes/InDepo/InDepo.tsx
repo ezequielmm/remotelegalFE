@@ -256,7 +256,7 @@ const InDepo = () => {
                 } else {
                     togglerExhibits(false);
                 }
-                const transcriptions = !isMobileOrTablet ? await getTranscriptions() : [];
+                const transcriptions = !IS_MOBILE_OR_TABLET ? await getTranscriptions() : [];
                 const events = await getDepositionEvents(depositionID);
                 setInitialTranscriptions(setTranscriptionMessages(transcriptions, events));
             }
