@@ -38,3 +38,4 @@ Object.defineProperty(global.navigator, "mediaDevices", {
         ondevicechange: jest.fn(),
     },
 });
+global.innerWidth = 1400;
