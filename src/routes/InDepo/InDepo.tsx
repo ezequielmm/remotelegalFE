@@ -149,7 +149,10 @@ const InDepo = () => {
         };
         const handleRoomEndError = async (_, roomError) => {
             if (
-                (roomError?.code === 53000 || roomError?.code === 53002 || roomError?.code === 53001) &&
+                (roomError?.code === 53000 ||
+                    roomError?.code === 53002 ||
+                    roomError?.code === 53001 ||
+                    roomError?.code === 53405) &&
                 isMounted.current
             ) {
                 const connectToRoom = async () => {

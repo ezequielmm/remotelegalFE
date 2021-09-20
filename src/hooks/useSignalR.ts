@@ -19,6 +19,17 @@ const useSignalR = (
     const [newSignalRInstance, setNewSignalR] = useState<HubConnection>(null);
     const [isReconnected, setIsReconnected] = useState(false);
 
+    useEffect(() => {
+        return () => {
+            dispatch(
+                actions.setSignalRConnectionStatus({
+                    isReconnected: false,
+                    isReconnecting: false,
+                })
+            );
+        };
+    }, [dispatch]);
+
     const [connect] = useAsyncCallback(async () => {
         if (doNotConnectToSocket) {
             return null;
