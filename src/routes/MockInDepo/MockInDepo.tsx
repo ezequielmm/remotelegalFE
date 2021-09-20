@@ -3,6 +3,7 @@ import { useHistory, useParams } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 import { Participant } from "twilio-video";
 import Spinner from "prp-components-library/src/components/Spinner";
+import { HubConnectionState } from "@microsoft/signalr";
 import Exhibits from "../InDepo/Exhibits";
 import RealTime from "../InDepo/RealTime";
 import VideoConference from "../InDepo/VideoConference";
@@ -53,7 +54,7 @@ const InDepo = () => {
     const [initialAudioEnabled, setInitialAudioEnabled] = useState<boolean>(true);
     const [videoLayoutSize, setVideoLayoutSize] = useState<number>(0);
     const [atendeesVisibility, setAtendeesVisibility] = useState<boolean>(true);
-    const { subscribeToGroup, signalR, sendMessage, isReconnected } = useSignalR("/depositionHub");
+    const { subscribeToGroup, signalR, sendMessage } = useSignalR("/depositionHub");
     const history = useHistory();
     const { currentEmail, isAuthenticated } = useAuthentication();
     const [checkUserStatus, , userStatusError, userStatus] = useCheckUserStatus();
@@ -70,10 +71,10 @@ const InDepo = () => {
     }, []);
 
     useEffect(() => {
-        if (isReconnected && depositionID) {
+        if (signalR?.connectionState === HubConnectionState.Connected && depositionID) {
             sendMessage("SubscribeToDeposition", { depositionId: depositionID });
         }
-    }, [isReconnected, depositionID, sendMessage]);
+    }, [signalR?.connectionState, depositionID, sendMessage]);
 
     useEffect(() => {
         if (signalR?.connectionState === "Connected" && depositionID) {

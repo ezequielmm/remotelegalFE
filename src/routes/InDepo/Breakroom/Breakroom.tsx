@@ -4,6 +4,7 @@ import { ThemeProvider } from "styled-components";
 import { Participant } from "twilio-video";
 import Icon from "prp-components-library/src/components/Icon";
 import Spinner from "prp-components-library/src/components/Spinner";
+import { HubConnectionState } from "@microsoft/signalr";
 import BreakroomControlsBar from "../../../components/BreakroomControlsBar";
 import ErrorScreen from "../../../components/ErrorScreen";
 import RecordPill from "../../../components/RecordPill";
@@ -39,8 +40,7 @@ const Breakroom = () => {
     const [inDepoHeight, setInDepoHeight] = useState<number>();
     const [isLocked, setIsLocked] = useState(false);
     const history = useHistory();
-    const { signalR, sendMessage, subscribeToGroup, unsubscribeMethodFromGroup, isReconnected } =
-        useSignalR("/depositionHub");
+    const { signalR, sendMessage, subscribeToGroup, unsubscribeMethodFromGroup } = useSignalR("/depositionHub");
     const [shouldShowAlert, setShouldShowAlert] = useState(false);
     const addAlert = useFloatingAlertContext();
 
@@ -73,10 +73,10 @@ const Breakroom = () => {
     }, [signalR, currentBreakroomData]);
 
     useEffect(() => {
-        if ((signalR?.connectionState === "Connected" || isReconnected) && depositionID) {
+        if (signalR?.connectionState === HubConnectionState.Connected && depositionID) {
             sendMessage("SubscribeToDeposition", { depositionId: depositionID });
         }
-    }, [signalR, depositionID, sendMessage, isReconnected]);
+    }, [signalR?.connectionState, depositionID, sendMessage]);
 
     useEffect(() => {
         if (!exhibitsOpen) return;

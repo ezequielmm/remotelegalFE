@@ -1,5 +1,6 @@
 import { useContext, useEffect } from "react";
 import { useParams } from "react-router";
+import { HubConnectionState } from "@microsoft/signalr";
 import { GlobalStateContext } from "../../state/GlobalState";
 import { DepositionID } from "../../state/types";
 import useAsyncCallback from "../useAsyncCallback";
@@ -14,7 +15,7 @@ const useTranscriptAudio = (doNotConnectToSocket = false, sampleRate: number) =>
     const { depositionID } = useParams<DepositionID>();
     const { TRANSCRIPT_URL } = ENV.API;
     const transcriptHubUrl = `/transcriptionHub?depositionId=${depositionID}`;
-    const { sendMessage, unsubscribeMethodFromGroup, subscribeToGroup, signalR, isReconnected } = useSignalR(
+    const { sendMessage, unsubscribeMethodFromGroup, subscribeToGroup, signalR } = useSignalR(
         transcriptHubUrl,
         TRANSCRIPT_URL,
         true,
@@ -23,10 +24,10 @@ const useTranscriptAudio = (doNotConnectToSocket = false, sampleRate: number) =>
     );
 
     useEffect(() => {
-        if ((signalR?.connectionState === "Connected" || isReconnected) && depositionID) {
+        if (signalR?.connectionState === HubConnectionState.Connected && depositionID) {
             sendMessage("SubscribeToDeposition", { depositionId: depositionID });
         }
-    }, [signalR, depositionID, sendMessage, isReconnected]);
+    }, [signalR?.connectionState, depositionID, sendMessage]);
 
     useEffect(() => {
         if (!signalR) {
