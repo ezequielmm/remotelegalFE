@@ -1053,7 +1053,10 @@ describe("inDepo -> Block not supported resolutions", () => {
                         ...rootReducer.initialState.room,
                     },
                     user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
-                    signalR: { signalR: null },
+                    signalR: {
+                        signalR: null,
+                        signalRConnectionStatus: { isReconnected: false, isReconnecting: false },
+                    },
                 },
             },
             history
@@ -1079,7 +1082,10 @@ describe("inDepo -> Block not supported resolutions", () => {
                         ...rootReducer.initialState.room,
                     },
                     user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
-                    signalR: { signalR: null },
+                    signalR: {
+                        signalR: null,
+                        signalRConnectionStatus: { isReconnected: false, isReconnecting: false },
+                    },
                 },
             },
             history
