@@ -2,7 +2,7 @@ const downloadFile = async (fileUrl: string, fileName?: string) => {
     let url = fileUrl;
     const params = new URLSearchParams(url);
     const queryParamFilename = params.get("response-content-disposition");
-    const queryParamsFilenameString = queryParamFilename.substring(queryParamFilename.indexOf("=") + 1);
+    const queryParamsFilenameString = queryParamFilename?.substring(queryParamFilename.indexOf("=") + 1);
     try {
         const blob = await fetch(fileUrl).then((r) => r.blob());
         url = window.URL.createObjectURL(new Blob([blob]));
