@@ -2,14 +2,17 @@ import { useContext, useEffect } from "react";
 import { useParams } from "react-router";
 import { HubConnectionState } from "@microsoft/signalr";
 import { GlobalStateContext } from "../../state/GlobalState";
+import { WindowSizeContext } from "../../contexts/WindowSizeContext";
 import { DepositionID } from "../../state/types";
 import useAsyncCallback from "../useAsyncCallback";
 import useSignalR from "../useSignalR";
 import ENV from "../../constants/env";
+import { IS_MOBILE_OR_TABLET } from "../../constants/general";
 import { TranscriptionsContext } from "../../state/Transcriptions/TranscriptionsContext";
 
 const useTranscriptAudio = (doNotConnectToSocket = false, sampleRate: number) => {
     const { dispatch, state } = useContext(GlobalStateContext);
+    const [windowWidth] = useContext(WindowSizeContext);
     const { addNewTranscription } = useContext(TranscriptionsContext);
     const { isRecording } = state.room;
     const { depositionID } = useParams<DepositionID>();
@@ -49,8 +52,9 @@ const useTranscriptAudio = (doNotConnectToSocket = false, sampleRate: number) =>
     }, [sendMessage, isRecording, signalR, depositionID, sampleRate]);
 
     useEffect(() => {
+        const isMobileOrTablet = windowWidth <= IS_MOBILE_OR_TABLET;
         let manageReceiveNotification;
-        if (dispatch && signalR && unsubscribeMethodFromGroup && subscribeToGroup) {
+        if (dispatch && signalR && unsubscribeMethodFromGroup && subscribeToGroup && !isMobileOrTablet) {
             manageReceiveNotification = (message) => {
                 const { id, transcriptDateTime, text, userName } = message.content;
                 if (!text) return;
@@ -70,7 +74,7 @@ const useTranscriptAudio = (doNotConnectToSocket = false, sampleRate: number) =>
         return () => {
             if (manageReceiveNotification) unsubscribeMethodFromGroup("ReceiveNotification", manageReceiveNotification);
         };
-    }, [signalR, subscribeToGroup, dispatch, unsubscribeMethodFromGroup, addNewTranscription]);
+    }, [signalR, subscribeToGroup, dispatch, unsubscribeMethodFromGroup, addNewTranscription, windowWidth]);
 
     const [transcriptAudio] = useAsyncCallback(
         async (audio: ArrayBuffer, sampleRate: number) => {

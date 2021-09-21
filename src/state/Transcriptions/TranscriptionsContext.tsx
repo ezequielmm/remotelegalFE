@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useMemo, useContext, useCallback, useRef } from "react";
+import { IS_MOBILE_OR_TABLET } from "../../constants/general";
+import { WindowSizeContext } from "../../contexts/WindowSizeContext";
 import { addTranscriptionMessages } from "../../helpers/formatTranscriptionsMessages";
 import { TranscriptionModel } from "../../models";
 import { GlobalStateContext } from "../GlobalState";
@@ -26,18 +28,20 @@ const TranscriptionsProvider = ({
     const { isRecording, message } = state.room;
     const [transcriptions, setTranscriptions] = useState<TranscriptionModel.Transcription[]>([]);
     const recordingRef = useRef(isRecording);
+    const [windowWidth] = useContext(WindowSizeContext);
 
     useEffect(() => {
         recordingRef.current = isRecording;
     }, [isRecording]);
 
     useEffect(() => {
-        if (initialTranscriptions?.length && setInitialTranscriptions) {
+        const isMobileOrTablet = windowWidth <= IS_MOBILE_OR_TABLET;
+        if (initialTranscriptions?.length && setInitialTranscriptions && !isMobileOrTablet) {
             setTranscriptions(initialTranscriptions);
             // We do this to delete the initial array from memory
             setInitialTranscriptions([]);
         }
-    }, [initialTranscriptions, setInitialTranscriptions]);
+    }, [initialTranscriptions, setInitialTranscriptions, windowWidth]);
 
     const addNewTranscription = useCallback(
         (newTranscription: TranscriptionModel.Transcription, isRecording?: boolean) => {
