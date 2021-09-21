@@ -13,7 +13,7 @@ import ENV from "../constants/env";
 import { wait } from "../helpers/wait";
 import { EventModel, CaseModel, DepositionModel, UserModel, ParticipantModel, ExhibitsModel } from "../models";
 import { HTTP_METHOD, ITokenSet } from "../models/general";
-import TEMP_TOKEN from "../constants/ApiService";
+import TEMP_TOKEN, { CORRELATION_ID } from "../constants/ApiService";
 import getBrowserInfo from "../helpers/browserInfo";
 
 interface RequestParams {
@@ -638,6 +638,7 @@ export class ApiService {
                 method,
                 body,
                 headers: {
+                    "rl-correlation-id": CORRELATION_ID,
                     Authorization: jwt,
                     ...contentType,
                 },
