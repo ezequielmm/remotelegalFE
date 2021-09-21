@@ -17,6 +17,7 @@ const disconnectFromDepo = (
         stopRecorder: false,
         changeVideoSource: false,
         changeAudioSource: false,
+        changeAudioDevice: false,
         stamp: null,
         startTime: "",
         depoRoomReconnecting: false,

@@ -329,16 +329,8 @@ export const useJoinDeposition = (setTranscriptions: React.Dispatch<Transcriptio
             const events = await getDepositionEvents(depositionID);
             const settings = await getSystemSettings();
             dispatch(actions.setSystemSettings(settings));
-            const tracks = [];
-            if (isSharing) {
-                fetchExhibitFileInfo(depositionID);
-            }
-            try {
-                if (devices?.audio) {
-                    const audioTrack = await createLocalAudioTrack(devices.audio);
-                    tracks.push(audioTrack);
-                }
-            } catch (error) {
+
+            const sendUserAudioInfoWhenFailedToProduceTracks = async (error) => {
                 console.error(
                     `useJoinDeposition hook: error creating local audio track of deposition ${depositionID}:`,
                     error
@@ -356,6 +348,45 @@ export const useJoinDeposition = (setTranscriptions: React.Dispatch<Transcriptio
                     console.error(
                         `Couldn't send system user info of deposition ${depositionID} because of: ${sendParticipantDevicesError}`
                     );
+                }
+            };
+            const tracks = [];
+            if (isSharing) {
+                fetchExhibitFileInfo(depositionID);
+            }
+            try {
+                if (devices?.audio) {
+                    const audioTrack = await createLocalAudioTrack(devices.audio);
+                    tracks.push(audioTrack);
+                }
+            } catch (error) {
+                if (error.message === "Permission denied") {
+                    await sendUserAudioInfoWhenFailedToProduceTracks(error);
+                } else {
+                    try {
+                        const devices = await navigator.mediaDevices.enumerateDevices();
+                        const audioTrack = await createLocalAudioTrack();
+                        const oldDevices = JSON.parse(localStorage.getItem("selectedDevices"));
+                        if (oldDevices) {
+                            const newDevices = {
+                                ...oldDevices,
+                                microphoneForBE: {
+                                    name: devices[0].label,
+                                },
+                                audio: {
+                                    label: devices[0].label,
+                                    groupId: devices[0].groupId,
+                                    deviceId: {
+                                        exact: devices[0].deviceId,
+                                    },
+                                },
+                            };
+                            localStorage.setItem("selectedDevices", JSON.stringify(newDevices));
+                        }
+                        tracks.push(audioTrack);
+                    } catch (error) {
+                        await sendUserAudioInfoWhenFailedToProduceTracks(error);
+                    }
                 }
             }
             try {

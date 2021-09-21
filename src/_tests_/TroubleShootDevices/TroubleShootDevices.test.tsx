@@ -295,6 +295,7 @@ test("it calls setParticipantStatus with the right params and sets the devices i
         ...TEST_CONSTANTS.GET_AUDIO_EXPECTED_MOCK({
             label: TEST_CONSTANTS.DEVICES_LIST_MOCK[0].label,
             deviceId: { exact: TEST_CONSTANTS.DEVICES_LIST_MOCK[0].deviceId },
+            groupId: TEST_CONSTANTS.DEVICES_LIST_MOCK[0].groupId,
         }),
         ...TEST_CONSTANTS.GET_VIDEO_EXPECTED_MOCK({
             label: TEST_CONSTANTS.DEVICES_LIST_MOCK[4].label,
@@ -372,16 +373,19 @@ test("it changes devices", async () => {
                     kind: TEST_CONSTANTS.DEVICES_LIST_MOCK[5].kind as "videoinput",
                     label: TEST_CONSTANTS.DEVICES_LIST_MOCK[5].label,
                     value: TEST_CONSTANTS.DEVICES_LIST_MOCK[5].deviceId,
+                    groupId: TEST_CONSTANTS.DEVICES_LIST_MOCK[5].groupId,
                 },
                 audioinput: {
                     kind: TEST_CONSTANTS.DEVICES_LIST_MOCK[1].kind as "audioinput",
                     value: TEST_CONSTANTS.DEVICES_LIST_MOCK[1].deviceId,
                     label: TEST_CONSTANTS.DEVICES_LIST_MOCK[1].label,
+                    groupId: TEST_CONSTANTS.DEVICES_LIST_MOCK[1].groupId,
                 },
                 audiooutput: {
                     kind: TEST_CONSTANTS.DEVICES_LIST_MOCK[3].kind as "audiooutput",
                     value: TEST_CONSTANTS.DEVICES_LIST_MOCK[3].deviceId,
                     label: TEST_CONSTANTS.DEVICES_LIST_MOCK[3].label,
+                    groupId: TEST_CONSTANTS.DEVICES_LIST_MOCK[3].groupId,
                 },
             }
         )
@@ -464,16 +468,19 @@ test("it publishes new tracks", async () => {
                     kind: TEST_CONSTANTS.DEVICES_LIST_MOCK[5].kind as "videoinput",
                     label: TEST_CONSTANTS.DEVICES_LIST_MOCK[5].label,
                     value: TEST_CONSTANTS.DEVICES_LIST_MOCK[5].deviceId,
+                    groupId: TEST_CONSTANTS.DEVICES_LIST_MOCK[5].groupId,
                 },
                 audioinput: {
                     kind: TEST_CONSTANTS.DEVICES_LIST_MOCK[1].kind as "audioinput",
                     value: TEST_CONSTANTS.DEVICES_LIST_MOCK[1].deviceId,
                     label: TEST_CONSTANTS.DEVICES_LIST_MOCK[1].label,
+                    groupId: TEST_CONSTANTS.DEVICES_LIST_MOCK[1].groupId,
                 },
                 audiooutput: {
                     kind: TEST_CONSTANTS.DEVICES_LIST_MOCK[3].kind as "audiooutput",
                     value: TEST_CONSTANTS.DEVICES_LIST_MOCK[3].deviceId,
                     label: TEST_CONSTANTS.DEVICES_LIST_MOCK[3].label,
+                    groupId: TEST_CONSTANTS.DEVICES_LIST_MOCK[5].groupId,
                 },
             }
         )

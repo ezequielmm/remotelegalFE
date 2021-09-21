@@ -16,6 +16,7 @@ export type StreamOption = {
     label: string;
     kind: "audioinput" | "videoinput" | "audiooutput";
     value: string;
+    groupId: string;
 };
 export enum MediaStreamTypes {
     audioinput = "audio",
@@ -74,7 +75,7 @@ const useUserTracks = (
         errorsRef.current = errors;
     }, [errors]);
 
-    const stopOldTrackAndSetNewTrack = useCallback(async (incomingStream: StreamOption) => {
+    const stopOldTrackAndSetNewTrack = useCallback(async (incomingStream: StreamOption, doNotKill?) => {
         let oldErrorsFiltered = [];
         if (errorsRef.current.length) {
             oldErrorsFiltered = errorsRef.current.filter((error) => !error[incomingStream.kind]);
@@ -82,7 +83,9 @@ const useUserTracks = (
         }
         const { stream } = activeStreamsRef.current[incomingStream.kind];
         if (stream) {
-            stopAllTracks(stream.getTracks());
+            if (!doNotKill) {
+                stopAllTracks(stream.getTracks());
+            }
             setActiveStreams((oldActiveStreams) => ({
                 ...oldActiveStreams,
                 [incomingStream.kind]: {
@@ -130,8 +133,10 @@ const useUserTracks = (
                         label: currentStream.label,
                         kind: currentStream.kind,
                         value: currentStream.deviceId,
+                        groupId: currentStream.groupId,
                     };
                     return {
+                        groupId: currentStream.groupId,
                         label: currentStream.label,
                         kind: currentStream.kind,
                         value: currentStream.deviceId,
@@ -139,7 +144,12 @@ const useUserTracks = (
                 }
                 initialOptions[currentStream.kind] = [
                     ...(initialOptions[currentStream.kind] as StreamOption[]),
-                    { label: currentStream.label, value: currentStream.deviceId, kind: currentStream.kind },
+                    {
+                        label: currentStream.label,
+                        value: currentStream.deviceId,
+                        groupId: currentStream.groupId,
+                        kind: currentStream.kind,
+                    },
                 ];
                 return initialOptions[currentStream.kind];
             });
@@ -201,6 +211,7 @@ const useUserTracks = (
                         value: "",
                         label: "Default Speakers",
                         kind: "audiooutput",
+                        groupId: "",
                     },
                 ];
             }
@@ -220,7 +231,9 @@ const useUserTracks = (
                 audiooutput: previouslySelectedSpeaker || initialOptions.audiooutput[0],
             });
             setGettingTracks(false);
-            navigator.mediaDevices.ondevicechange = listDevices;
+            if (!shouldUseCurrentStream) {
+                navigator.mediaDevices.ondevicechange = listDevices;
+            }
         };
         if (getTracks) {
             getUserStreams();

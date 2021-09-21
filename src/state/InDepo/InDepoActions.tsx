@@ -11,6 +11,7 @@ export enum ACTION_TYPE {
     IN_DEPO_RECONNECTING = "IN_DEPO_RECONNECTING",
     STOP_RECORDER = "STOP_RECORDER",
     RESET_RECORDER = "RESET_RECORDER",
+    CHANGE_AUDIO_DEVICE = "CHANGE_AUDIO_DEVICE",
     CHANGE_VIDEO_SOURCE = "CHANGE_VIDEO_SOURCE",
     CHANGE_AUDIO_SOURCE = "CHANGE_AUDIO_SOURCE",
     ADD_SYSTEM_SETTINGS = "ADD_SYSTEM_SETTINGS",
@@ -219,6 +220,10 @@ const actions = {
     }),
     resetRecorder: (payload: boolean) => ({
         type: ACTION_TYPE.RESET_RECORDER,
+        payload,
+    }),
+    changeAudioDevice: (payload: MediaDeviceInfo) => ({
+        type: ACTION_TYPE.CHANGE_AUDIO_DEVICE,
         payload,
     }),
 };

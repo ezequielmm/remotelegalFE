@@ -2,6 +2,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import {
     AudioTrack,
     DataTrack,
+    LocalAudioTrack,
     LocalDataTrack,
     LocalParticipant,
     LocalTrack,
@@ -10,13 +11,17 @@ import {
     RemoteVideoTrack,
     VideoTrack,
 } from "twilio-video";
+import Icon from "prp-components-library/src/components/Icon";
+import { ReactComponent as UnmuteIcon } from "../../assets/in-depo/Unmute.svg";
 import changeSpeakers from "../../helpers/changeSpeakers";
 import trackpubsToTracks from "../../helpers/trackPubsToTracks";
 import { GlobalStateContext } from "../../state/GlobalState";
 import actions from "../../state/InDepo/InDepoActions";
+import useFloatingAlertContext from "../useFloatingAlertContext";
 import { MediaStreamTypes } from "../useUserTracks";
+import debounce from "../../helpers/debounce";
 
-const useParticipantTracks = (participant: LocalParticipant | RemoteParticipant) => {
+const useParticipantTracks = (participant: LocalParticipant | RemoteParticipant, isLocal?: boolean) => {
     const { state, dispatch } = useContext(GlobalStateContext);
     const { newSpeaker, changeVideoSource, changeAudioSource } = state.room;
     const [dataTracks, setDataTracks] = useState<DataTrack[]>([]);
@@ -25,7 +30,96 @@ const useParticipantTracks = (participant: LocalParticipant | RemoteParticipant)
     const [netWorkLevel, setNetWorkLevel] = useState<number>(null);
     const audioRef = useRef<HTMLAudioElement & AudioTrack>();
     const videoRef = useRef<HTMLVideoElement & VideoTrack>();
+    const changedAudioDeviceIdRef = useRef({ groupId: "", label: "" });
     const localParticipantVideoTrackRef = useRef<VideoTrack>(null);
+    const addAlert = useFloatingAlertContext();
+    const userDevicesRef = useRef<string[]>([]);
+
+    useEffect(() => {
+        const getUserDevices = async () => {
+            try {
+                const devices = await navigator.mediaDevices.enumerateDevices();
+                const microphones = devices.filter((device) => device.kind === "audioinput");
+                const microphonesLabels = microphones.map((item) => item.label);
+                userDevicesRef.current = microphonesLabels;
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        if (participant && isLocal) {
+            const selectedAudioDevice = JSON.parse(localStorage.getItem("selectedDevices"))?.audio;
+            if (selectedAudioDevice) {
+                changedAudioDeviceIdRef.current = {
+                    label: selectedAudioDevice.label,
+                    groupId: selectedAudioDevice.groupId,
+                };
+            }
+            getUserDevices();
+        }
+    }, [isLocal, participant]);
+
+    useEffect(() => {
+        if (participant && addAlert && isLocal) {
+            const getPluggedInDeviceOrDefault = async () => {
+                try {
+                    const newDevices = await navigator.mediaDevices.enumerateDevices();
+                    const newMicrophones = newDevices.filter((newDevice) => newDevice.kind === "audioinput");
+                    const newLabels = newMicrophones.map((microphone) => microphone.label);
+                    const differences = newLabels.filter(
+                        (label) =>
+                            !userDevicesRef.current.includes(label) && label !== changedAudioDeviceIdRef.current.label
+                    );
+                    const oldTrack: LocalAudioTrack | undefined = trackpubsToTracks(participant.audioTracks)[0];
+                    const newMicrophone =
+                        newMicrophones.find((newMicrophone) => differences.includes(newMicrophone.label)) ||
+                        newMicrophones[0];
+                    const shouldChangeDevice =
+                        newMicrophone && oldTrack && newMicrophone.groupId !== changedAudioDeviceIdRef.current.groupId;
+                    if (shouldChangeDevice) {
+                        changedAudioDeviceIdRef.current = {
+                            label: newMicrophone.label,
+                            groupId: newMicrophone.groupId,
+                        };
+                        const oldDevices = localStorage.getItem("selectedDevices");
+                        const { deviceId, label } = newMicrophone;
+                        await oldTrack.restart({
+                            deviceId,
+                        });
+                        dispatch(actions.changeAudioDevice(newMicrophone));
+                        addAlert({
+                            message: `${label} connected`,
+                            type: "info",
+                            duration: 3,
+                            dataTestId: "new_microphone_connected",
+                            icon: <Icon icon={UnmuteIcon} />,
+                        });
+                        if (oldDevices) {
+                            const { label, deviceId, groupId } = newMicrophone;
+                            const parsedJSON = JSON.parse(oldDevices);
+                            const newDevices = {
+                                ...parsedJSON,
+                                microphoneForBE: {
+                                    name: label,
+                                },
+                                audio: {
+                                    label,
+                                    deviceId: {
+                                        exact: deviceId,
+                                    },
+                                    groupId,
+                                },
+                            };
+                            localStorage.setItem("selectedDevices", JSON.stringify(newDevices));
+                        }
+                    }
+                } catch (error) {
+                    console.log(error);
+                }
+            };
+            // We need to debounce this function call, because ondevicechange calls it more than once
+            navigator.mediaDevices.ondevicechange = debounce(getPluggedInDeviceOrDefault, 500);
+        }
+    }, [participant, addAlert, isLocal, dispatch]);
 
     const trackSubscribed = (track: AudioTrack | VideoTrack | LocalDataTrack | RemoteDataTrack) => {
         if (track.kind === MediaStreamTypes.videoinput) {
@@ -120,27 +214,28 @@ const useParticipantTracks = (participant: LocalParticipant | RemoteParticipant)
         if (!participant) {
             return;
         }
-        setAudioTracks(trackpubsToTracks(participant.audioTracks));
-        setVideoTracks(trackpubsToTracks(participant.videoTracks));
-        setDataTracks(trackpubsToTracks(participant.dataTracks));
-        participant.on("trackSubscribed", trackSubscribed);
-        participant.on("reconnecting", onReconnecting);
-        participant.on("reconnected", resetVideoRefStylesOnReconnection);
-        participant.on("trackStopped", stopRecorder);
-        participant.on("trackStarted", resetRecorder);
-        participant.on("networkQualityLevelChanged", setNetWorkLevel);
-        participant.on("trackUnsubscribed", trackUnsubscribed);
-        participant.on("trackDisabled", trackDisabled);
-        participant.on("trackEnabled", trackEnabled);
-        // eslint-disable-next-line consistent-return
-        return () => {
-            participant?.removeAllListeners();
-        };
-    }, [participant, dispatch]);
+        if (addAlert && dispatch) {
+            setAudioTracks(trackpubsToTracks(participant.audioTracks));
+            setVideoTracks(trackpubsToTracks(participant.videoTracks));
+            setDataTracks(trackpubsToTracks(participant.dataTracks));
+            participant.on("trackSubscribed", trackSubscribed);
+            participant.on("reconnecting", onReconnecting);
+            participant.on("reconnected", resetVideoRefStylesOnReconnection);
+            participant.on("trackStopped", stopRecorder);
+            participant.on("trackStarted", resetRecorder);
+            participant.on("networkQualityLevelChanged", setNetWorkLevel);
+            participant.on("trackUnsubscribed", trackUnsubscribed);
+            participant.on("trackDisabled", trackDisabled);
+            participant.on("trackEnabled", trackEnabled);
+            // eslint-disable-next-line consistent-return
+            return () => {
+                participant?.removeAllListeners();
+            };
+        }
+    }, [participant, dispatch, addAlert]);
 
     useEffect(() => {
         const videoTrack = videoTracks[0];
-
         if (videoTrack) {
             localParticipantVideoTrackRef.current = videoTrack;
             if (videoRef.current) {
@@ -157,11 +252,12 @@ const useParticipantTracks = (participant: LocalParticipant | RemoteParticipant)
         const audioTrack = audioTracks[0];
         const speakers =
             localStorage.getItem("selectedDevices") && JSON.parse(localStorage.getItem("selectedDevices")).speakers;
+
         if (audioTrack) {
             audioTrack.attach(audioRef.current);
-            if (speakers) {
-                changeSpeakers(audioRef.current, speakers);
-            }
+        }
+        if (speakers) {
+            changeSpeakers(audioRef.current, speakers);
         }
         return () => {
             audioTrack?.detach();
