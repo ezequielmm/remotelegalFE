@@ -36,7 +36,7 @@ Object.defineProperty(global.navigator, "mediaDevices", {
     writable: true,
     value: {
         ondevicechange: jest.fn(),
-        enumerateDevices: jest.fn(),
+        enumerateDevices: jest.fn().mockResolvedValue([]),
     },
 });
 global.innerWidth = 1400;
