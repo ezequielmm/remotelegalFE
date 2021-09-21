@@ -158,7 +158,7 @@ export default (isAudioEnabled: boolean, audioTracks, doNotConnectToSocket = fal
     };
 
     useEffect(() => {
-        toggleMicrophone(isRecording && isAudioEnabled && !stopRecorder && audioTracks.length);
+        toggleMicrophone(isRecording && isAudioEnabled && !stopRecorder && audioTracks.length >= 1);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isRecording, isAudioEnabled, audioTracks, resetRecorder, stopRecorder]);
 

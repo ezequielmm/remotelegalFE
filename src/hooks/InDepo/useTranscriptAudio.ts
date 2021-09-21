@@ -2,11 +2,13 @@ import { useContext, useEffect } from "react";
 import { useParams } from "react-router";
 import { HubConnectionState } from "@microsoft/signalr";
 import { GlobalStateContext } from "../../state/GlobalState";
+import { WindowSizeContext } from "../../contexts/WindowSizeContext";
 import { DepositionID } from "../../state/types";
 import { WindowSizeContext } from "../../contexts/WindowSizeContext";
 import useAsyncCallback from "../useAsyncCallback";
 import useSignalR from "../useSignalR";
 import ENV from "../../constants/env";
+import { IS_MOBILE_OR_TABLET } from "../../constants/general";
 import { TranscriptionsContext } from "../../state/Transcriptions/TranscriptionsContext";
 import { IS_MOBILE_OR_TABLET } from "../../constants/general";
 

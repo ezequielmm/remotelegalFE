@@ -15,12 +15,12 @@ export const STREAM_MOCK = {
     ]),
 };
 export const DEVICES_LIST_MOCK = [
-    { label: "audioinput_test", kind: "audioinput", deviceId: "audioinput_id" },
-    { label: "audioinput2_test", kind: "audioinput", deviceId: "audioinput2_id" },
-    { label: "audioutput_test", kind: "audiooutput", deviceId: "audiooutput_id" },
-    { label: "audioutput2_test", kind: "audiooutput", deviceId: "audiooutput2_id" },
-    { label: "camera_test", kind: "videoinput", deviceId: "videoinput_id" },
-    { label: "camera2_test", kind: "videoinput", deviceId: "videoinput2_id" },
+    { label: "audioinput_test", kind: "audioinput", deviceId: "audioinput_id", groupId: "1" },
+    { label: "audioinput2_test", kind: "audioinput", deviceId: "audioinput2_id", groupId: "2" },
+    { label: "audioutput_test", kind: "audiooutput", deviceId: "audiooutput_id", groupId: "3" },
+    { label: "audioutput2_test", kind: "audiooutput", deviceId: "audiooutput2_id", groupId: "4" },
+    { label: "camera_test", kind: "videoinput", deviceId: "videoinput_id", groupId: "5" },
+    { label: "camera2_test", kind: "videoinput", deviceId: "videoinput2_id", groupId: "6" },
 ];
 
 export const GET_VIDEO_EXPECTED_MOCK = (additional?) => ({

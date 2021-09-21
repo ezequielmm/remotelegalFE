@@ -63,6 +63,7 @@ const createDevices = (
                       deviceId: {
                           exact: audioInput.value,
                       },
+                      groupId: audioInput.groupId,
                       label: audioInput.label,
                   },
         speakers: CONSTANTS.INVALID_VALUES.includes(speakers.value) ? false : speakers.value,

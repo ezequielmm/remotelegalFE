@@ -120,15 +120,15 @@ export default function ControlsBar({
     jobNumber,
     settings = { EnableRealTimeTab: "disabled", EnableBreakrooms: "disabled", EnableLiveTranscriptions: "disabled" },
 }: IControlsBar): ReactElement {
+    const [showSettings, setSettings] = useState(false);
     const { EnableBreakrooms, EnableRealTimeTab, EnableLiveTranscriptions } = settings;
-    const { videoTracks, audioTracks } = useParticipantTracks(localParticipant);
+    const { videoTracks, audioTracks } = useParticipantTracks(localParticipant, true);
     const { isAudioEnabled, isCameraEnabled, setAudioEnabled, setCameraEnabled } = useTracksStatus(
         audioTracks as LocalAudioTrack[],
         videoTracks as LocalVideoTrack[]
     );
     const { startPauseRecording, loadingStartPauseRecording } = useRecording(!isRecording, EnableLiveTranscriptions);
     const [chatOpen, togglerChat] = useState(false);
-    const [showSettings, setSettings] = useState(false);
     const [unreadedChats, setUnreadedChats] = useState(0);
     const [summaryOpen, togglerSummary] = useState(false);
     const [moreOpen, togglerMore] = useState(false);

@@ -23,6 +23,7 @@ import ORIENTATION_STATE from "../../types/orientation";
 import { theme } from "../../constants/styles/theme";
 
 jest.mock("@microsoft/signalr");
+const mockEnumerateDevices = jest.fn();
 
 jest.mock("@twilio/conversations", () => {
     return jest.fn().mockImplementation(() => ({
@@ -43,6 +44,7 @@ jest.mock("audio-recorder-polyfill");
 
 (global.navigator as any).mediaDevices = {
     getUserMedia: jest.fn().mockResolvedValue(true),
+    enumerateDevices: mockEnumerateDevices,
 };
 
 let customDeps;
@@ -1095,5 +1097,49 @@ describe("inDepo -> Block not supported resolutions", () => {
         await waitFor(() => {
             expect(screen.getByTestId("deposition_orientation_screen")).toBeInTheDocument();
         });
+    });
+});
+it("calls createLocalAudioTrack with default value if first time if fails", async () => {
+    const expectedNewLocalStorageObject = {
+        ...TESTS_CONSTANTS.DEVICES_MOCK,
+        microphoneForBE: {
+            name: "test",
+        },
+        audio: {
+            deviceId: {
+                exact: "test",
+            },
+            groupId: "test",
+            label: "test",
+        },
+    };
+    customDeps.apiService.joinDeposition = jest.fn().mockResolvedValue(TESTS_CONSTANTS.JOIN_DEPOSITION_MOCK);
+    localStorage.setItem("selectedDevices", JSON.stringify(TESTS_CONSTANTS.DEVICES_MOCK));
+    const oldLocalStorageItem = JSON.parse(localStorage.getItem("selectedDevices"));
+    mockAudioTracks.mockRejectedValueOnce({ message: "this is a test" });
+    mockEnumerateDevices.mockResolvedValue([{ label: "test", deviceId: "test", kind: "audioinput", groupId: "test" }]);
+    renderWithGlobalContext(
+        <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,
+        customDeps,
+        {
+            ...rootReducer,
+            initialState: {
+                room: {
+                    ...rootReducer.initialState.room,
+                },
+                user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+                signalR: { signalR: null, signalRConnectionStatus: { isReconnected: false, isReconnecting: true } },
+            },
+        },
+        history
+    );
+    history.push(TESTS_CONSTANTS.TEST_ROUTE);
+    await waitFor(() => {
+        expect(mockAudioTracks).toHaveBeenCalledWith(oldLocalStorageItem.audio);
+    });
+    mockAudioTracks.mockResolvedValue({});
+    await waitFor(() => {
+        expect(mockAudioTracks).toHaveBeenCalled();
+        expect(JSON.parse(localStorage.getItem("selectedDevices"))).toEqual(expectedNewLocalStorageObject);
     });
 });

@@ -5,6 +5,9 @@ export enum TRACK_TYPE {
 
 const buildTrack = (kind: TRACK_TYPE, isEnabled): any => ({
     kind,
+    mediaStreamTrack: {
+        onended: jest.fn(),
+    },
     setSinkId: jest.fn(),
     restart: jest.fn(),
     attach: jest.fn(),

@@ -123,7 +123,7 @@ const TroubleShootDevicesModal = ({
     const [isMuted, setMuted] = useState(true);
     const history = useHistory();
     const { dispatch, state } = useContext(GlobalStateContext);
-    const { mockDepoRoom, currentRoom, tracks, depoRoomReconnecting } = state.room;
+    const { mockDepoRoom, currentRoom, tracks, changeAudioDevice, depoRoomReconnecting } = state.room;
     const oldDevices = localStorage.getItem("selectedDevices") && JSON.parse(localStorage.getItem("selectedDevices"));
     const availableRoom: Room = currentRoom || mockDepoRoom;
     const { depositionID } = useParams<{ depositionID: string }>();
@@ -175,6 +175,15 @@ const TroubleShootDevicesModal = ({
             setAudioStream(stream);
         }
     }, [visible, audioTracks]);
+
+    useEffect(() => {
+        if (changeAudioDevice) {
+            stopOldTrackAndSetNewTrack(changeAudioDevice, true);
+            setSelectedOptions((oldSelectedOptions) => {
+                return { ...oldSelectedOptions, [changeAudioDevice.kind]: changeAudioDevice };
+            });
+        }
+    }, [changeAudioDevice, stopOldTrackAndSetNewTrack, setSelectedOptions]);
 
     useEffect(() => {
         const cameraError = errors.length >= 1 && errors.filter((error) => error?.videoinput)[0];
