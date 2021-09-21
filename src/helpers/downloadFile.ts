@@ -14,7 +14,7 @@ const downloadFile = async (fileUrl: string, fileName?: string) => {
     document.body.appendChild(link);
 
     link.setAttribute("target", "_blank");
-    link.setAttribute("download", fileName || queryParamsFilenameString);
+    link.setAttribute("download", fileName || queryParamsFilenameString || fileUrl.split("/").pop().split("?")[0]);
     setTimeout(() => {
         link.click();
         document.body.removeChild(link);
