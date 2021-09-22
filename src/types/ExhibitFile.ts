@@ -9,6 +9,7 @@ export type ExhibitFile = {
     name: string;
     displayName: string;
     size: number;
+    key?: string;
     preSignedUrl?: string;
     addedBy?: AddedBy;
     close?: boolean;

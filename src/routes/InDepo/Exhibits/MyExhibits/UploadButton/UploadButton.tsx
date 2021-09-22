@@ -51,6 +51,7 @@ export default function UploadButton({ onUpload, refreshList }: IUploadButton): 
                     FileList.forEach((file) => {
                         const { name, size, uid } = file;
                         newPendingFiles.push({
+                            key: uid,
                             id: null,
                             name,
                             displayName: encodeURI(name),
