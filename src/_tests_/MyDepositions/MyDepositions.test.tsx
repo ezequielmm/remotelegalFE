@@ -1,4 +1,4 @@
-import { act, fireEvent, waitFor } from "@testing-library/react";
+import { act, fireEvent, waitFor, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { createMemoryHistory } from "history";
 import React from "react";
@@ -773,5 +773,51 @@ describe("MyDepositions", () => {
         expect(queryAllByTitle(disabledNextYearAndMonthDate.format("YYYY-MM-DD"))[0]).toHaveClass(
             "ant-picker-cell-disabled"
         );
+    });
+
+    it("should show the 'created on' column when the user is admin", async () => {
+        const deposition = CONSTANTS.getDepositionWithOverrideValues({ status: "Completed" });
+        const depositions = [deposition];
+        const totalUpcoming = 1;
+        const totalPast = 1;
+        customDeps.apiService.fetchDepositions = jest.fn().mockResolvedValue({ depositions, totalUpcoming, totalPast });
+        customDeps.apiService.currentUser = jest.fn().mockResolvedValue(SIGN_UP_CONSTANTS.getUser1());
+        renderWithGlobalContext(<MyDepositions />, customDeps, {
+            ...rootReducer,
+            initialState: {
+                room: {
+                    ...rootReducer.initialState.room,
+                },
+                user: { currentUser: { firstName: "First Name", lastName: "Last Name", isAdmin: true } },
+                signalR: { signalR: null },
+                depositionsList: {
+                    pageNumber: 1,
+                },
+            },
+        });
+        await waitFor(() => expect(screen.queryByText("CREATED ON")).toBeInTheDocument());
+    });
+
+    it("should show the 'created on' column when the user is end user", async () => {
+        const deposition = CONSTANTS.getDepositionWithOverrideValues({ status: "Completed" });
+        const depositions = [deposition];
+        const totalUpcoming = 1;
+        const totalPast = 1;
+        customDeps.apiService.fetchDepositions = jest.fn().mockResolvedValue({ depositions, totalUpcoming, totalPast });
+        customDeps.apiService.currentUser = jest.fn().mockResolvedValue(SIGN_UP_CONSTANTS.getUser1());
+        renderWithGlobalContext(<MyDepositions />, customDeps, {
+            ...rootReducer,
+            initialState: {
+                room: {
+                    ...rootReducer.initialState.room,
+                },
+                user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+                signalR: { signalR: null },
+                depositionsList: {
+                    pageNumber: 1,
+                },
+            },
+        });
+        await waitFor(() => expect(screen.queryByText("CREATED ON")).toBeInTheDocument());
     });
 });

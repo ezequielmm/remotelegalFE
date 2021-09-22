@@ -20,8 +20,8 @@ export const STATUS_COLUMN = {
     title: "STATUS",
     field: "status",
     ellipsis: true,
-    render: (text) => <StatusPill status={text} />,
-    width: 120,
+    render: (text) => <StatusPill status={text} onlyIcon />,
+    width: 88,
 };
 export const REQUESTER_BY_COLUMN = {
     title: "REQUESTER",
@@ -45,6 +45,23 @@ export const LAW_COLUMN = {
         </Tooltip>
     ),
 };
+
+export const CREATED_ON = {
+    title: "CREATED ON",
+    field: "creationDate",
+    ellipsis: true,
+    width: "15%",
+    render: ({ date, time }: { date: string; time: string }) => (
+        <Text>
+            <>
+                {date}
+                <br />
+                {time}
+            </>
+        </Text>
+    ),
+};
+
 export const CASE_COLUMN = {
     title: "CASE",
     field: "caseName",
@@ -126,6 +143,7 @@ export const getDepositionColumns = (history: History, isAdmin?: boolean) =>
         ? [
               STATUS_COLUMN,
               LAW_COLUMN,
+              CREATED_ON,
               REQUESTER_BY_COLUMN,
               CASE_COLUMN,
               DATE_COLUMN,
@@ -136,6 +154,7 @@ export const getDepositionColumns = (history: History, isAdmin?: boolean) =>
           ]
         : [
               STATUS_COLUMN,
+              CREATED_ON,
               CASE_COLUMN,
               WITNESS_COLUMN,
               DATE_COLUMN,

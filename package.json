@@ -33,7 +33,7 @@
         "dayjs": "^1.10.5",
         "fs": "^0.0.1-security",
         "husky": "^4.3.0",
-        "prp-components-library": "ssh://git@github.com/PrecisionReporters/prp-components-library.git#develop",
+        "prp-components-library": "ssh://git@github.com/PrecisionReporters/prp-components-library.git#release25",
         "rc-queue-anim": "^1.8.5",
         "react": "^17.0.2",
         "react-device-detect": "^1.17.0",

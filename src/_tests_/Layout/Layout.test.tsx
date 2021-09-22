@@ -1,4 +1,5 @@
 import React from "react";
+import { fireEvent, waitFor, screen } from "@testing-library/react";
 import { Route, Switch, BrowserRouter } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 import userEvent from "@testing-library/user-event";
@@ -9,7 +10,6 @@ import getMockDeps from "../utils/getMockDeps";
 import { rootReducer } from "../../state/GlobalState";
 import state from "../mocks/state";
 import actions from "../../state/Depositions/DepositionsListActions";
-import { fireEvent, waitFor } from "@testing-library/react";
 
 const { dispatch } = state;
 
@@ -52,7 +52,7 @@ test("click on schedule deposition takes me to deposition", async () => {
             </BrowserRouter>
         </ThemeProvider>
     );
-    const button = getByText("Schedule deposition");
+    const button = screen.getByTestId("schedule_deposition");
     userEvent.click(button);
     expect(getByText("NEW DEPOSITION")).toBeInTheDocument();
 });

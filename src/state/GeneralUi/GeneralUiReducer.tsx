@@ -8,7 +8,7 @@ export interface IGeneralUi {
 }
 
 export const GeneralUiReducerInitialState: IGeneralUi = {
-    isSiderCollapsed: false,
+    isSiderCollapsed: true,
     theme: "default",
 };
 
