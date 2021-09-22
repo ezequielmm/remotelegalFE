@@ -20,9 +20,13 @@ export enum NotificationAction {
     close = "close",
 }
 
+interface UploadNotificationData {
+    resourceId: string;
+    documentId: string;
+}
 interface UploadNotificationContent {
-    data: string;
     message: string;
+    data: UploadNotificationData;
 }
 export interface UploadNotification {
     entityType: NotificationEntityType;

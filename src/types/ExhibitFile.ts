@@ -15,4 +15,6 @@ export type ExhibitFile = {
     sharedAt?: string;
     isPublic?: boolean;
     stampLabel?: string;
+    resourceId?: string;
+    isPending?: boolean;
 };

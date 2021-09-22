@@ -43,6 +43,7 @@ export interface IRoom {
     isCurrentExhibitOwner?: boolean;
     exhibitTab?: string | EXHIBIT_TAB;
     currentExhibitTabName?: string;
+    myExhibits?: ExhibitFile[];
     rawAnnotations?: string;
     lastAnnotationId?: string;
     stampLabel?: string;
@@ -88,6 +89,7 @@ export const RoomReducerInitialState: IRoom = {
     isCurrentExhibitOwner: false,
     exhibitTab: "myExhibits",
     currentExhibitTabName: "",
+    myExhibits: [],
     lastAnnotationId: "",
     stampLabel: "",
     exhibitDocument: null,
@@ -192,6 +194,11 @@ const RoomReducer: Reducer<IRoom, IAction> = (state: IRoom, action: IAction): IR
             return {
                 ...state,
                 currentExhibit: action.payload,
+            };
+        case ACTION_TYPE.IN_DEPO_SET_MY_EXHIBITS:
+            return {
+                ...state,
+                myExhibits: action.payload,
             };
         case ACTION_TYPE.IN_DEPO_STOP_SHARE_EXHIBIT:
             return {
