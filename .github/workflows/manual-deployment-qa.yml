@@ -6,9 +6,6 @@ on:
 jobs:
     build-test:
         runs-on: ubuntu-latest
-        if: contains('
-            refs/heads/qa
-            ', github.ref)        
         env:
           CLEAN_NODE_MODULES: ${{ secrets.CLEAN_NODE_MODULES }}
           ENABLE_CACHE: secrets.ENABLE_CACHE
@@ -67,9 +64,6 @@ jobs:
 
     pack-deploy:
         runs-on: ubuntu-latest
-        if: contains('
-            refs/heads/qa
-            ', github.ref)
         needs: [build-test]
         steps:
             - uses: actions/checkout@v2
