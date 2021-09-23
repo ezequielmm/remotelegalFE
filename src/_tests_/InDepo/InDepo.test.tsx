@@ -19,6 +19,8 @@ import * as AUTH from "../mocks/Auth";
 import { getUserDepoStatusWithParticipantAdmitted } from "../constants/preJoinDepo";
 import "mutationobserver-shim";
 import { DevicesStatus } from "../../constants/TroubleShootUserDevices";
+import ORIENTATION_STATE from "../../types/orientation";
+import { theme } from "../../constants/styles/theme";
 
 jest.mock("@microsoft/signalr");
 const mockEnumerateDevices = jest.fn();
@@ -143,6 +145,13 @@ jest.mock("twilio-video", () => ({
             removeAllListeners: jest.fn(),
         }),
     }),
+}));
+
+let mockWindowOrientation;
+
+jest.mock("../../hooks/useWindowOrientation", () => ({
+    __esModule: true,
+    default: () => mockWindowOrientation,
 }));
 
 beforeEach(() => {
@@ -1096,5 +1105,59 @@ it("calls createLocalAudioTrack with default value if first time if fails", asyn
     await waitFor(() => {
         expect(mockAudioTracks).toHaveBeenCalled();
         expect(JSON.parse(localStorage.getItem("selectedDevices"))).toEqual(expectedNewLocalStorageObject);
+    });
+});
+
+describe("inDepo -> Block not supported resolutions", () => {
+    it("Should render the WrongOrientationScreen on landscape mode and smaller screens than the lg breakpoint 1024px", async () => {
+        mockWindowOrientation = ORIENTATION_STATE.LANDSCAPE;
+        global.innerWidth = parseInt(theme.default.breakpoints.lg, 10) - 100;
+        customDeps.apiService.joinDeposition = jest.fn().mockResolvedValue(TESTS_CONSTANTS.JOIN_DEPOSITION_MOCK);
+        renderWithGlobalContext(
+            <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,
+            customDeps,
+            {
+                ...rootReducer,
+                initialState: {
+                    room: {
+                        ...rootReducer.initialState.room,
+                    },
+                    user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+                    signalR: { signalR: null, signalRConnectionStatus: { isReconnected: false, isReconnecting: true } },
+                },
+            },
+            history
+        );
+
+        history.push(TESTS_CONSTANTS.TEST_ROUTE);
+        await waitFor(() => {
+            expect(screen.getByTestId("deposition_orientation_screen")).toBeInTheDocument();
+        });
+    });
+
+    it("Should render the WrongOrientationScreen on portrait mode in bigger screens than the sm breakpoint 640px", async () => {
+        mockWindowOrientation = ORIENTATION_STATE.PORTRAIT;
+        global.innerWidth = parseInt(theme.default.breakpoints.sm, 10) + 100;
+        customDeps.apiService.joinDeposition = jest.fn().mockResolvedValue(TESTS_CONSTANTS.JOIN_DEPOSITION_MOCK);
+        renderWithGlobalContext(
+            <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,
+            customDeps,
+            {
+                ...rootReducer,
+                initialState: {
+                    room: {
+                        ...rootReducer.initialState.room,
+                    },
+                    user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
+                    signalR: { signalR: null, signalRConnectionStatus: { isReconnected: false, isReconnecting: true } },
+                },
+            },
+            history
+        );
+
+        history.push(TESTS_CONSTANTS.TEST_ROUTE);
+        await waitFor(() => {
+            expect(screen.getByTestId("deposition_orientation_screen")).toBeInTheDocument();
+        });
     });
 });
