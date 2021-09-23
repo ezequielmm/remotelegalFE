@@ -44,6 +44,8 @@ import WrongOrientationScreen from "./WrongOrientationScreen/WrongOrientationScr
 import ORIENTATION_STATE from "../../types/orientation";
 import { IS_MOBILE_OR_TABLET } from "../../constants/general";
 import useFloatingAlertContext from "../../hooks/useFloatingAlertContext";
+import WrongOrientationScreen from "./WrongOrientationScreen/WrongOrientationScreen";
+import ORIENTATION_STATE from "../../types/orientation";
 
 const StyledAlertRow = styled(Row)`
     position: absolute;
