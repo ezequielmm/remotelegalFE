@@ -5,6 +5,7 @@ import { GlobalStateContext } from "../../../../../../state/GlobalState";
 import * as CONSTANTS from "../../../../../../constants/exhibits";
 import useSignalR from "../../../../../../hooks/useSignalR";
 import { NotificationEntityType, NotificationAction, UploadNotification } from "../../../../../../types/Notification";
+import actions from "../../../../../../state/InDepo/InDepoActions";
 
 interface Props {
     percent: number;
@@ -31,7 +32,7 @@ export default function ProgressBarRender({
     const [fileUploadStatus, setFileUploadStatus] = useState<CONSTANTS.UPLOAD_STATE>(CONSTANTS.UPLOAD_STATE.PENDING);
     const errorsRef = useRef(errors);
     const uploadTimeOut = useRef(null);
-    const { state } = useContext(GlobalStateContext);
+    const { state, dispatch } = useContext(GlobalStateContext);
     const { isReconnecting, isReconnected } = state?.signalR?.signalRConnectionStatus;
     const { subscribeToGroup, unsubscribeMethodFromGroup, signalR } = useSignalR("/depositionHub");
     useEffect(() => {
@@ -54,7 +55,6 @@ export default function ProgressBarRender({
             clearTimeout(uploadTimeOut.current);
             onError(CONSTANTS.MY_EXHIBITS_UPLOAD_ERROR_TEXT);
             delayHide = hideTimeOut(timeToCloseAfterError);
-            refreshList();
         } else {
             switch (status) {
                 case "done":
@@ -102,11 +102,18 @@ export default function ProgressBarRender({
         if (signalR && subscribeToGroup && unsubscribeMethodFromGroup) {
             onFileUploadComplete = (message: UploadNotification) => {
                 if (message?.entityType === NotificationEntityType.exhibit) {
-                    if (message.action === NotificationAction.create && message.content?.data === uploadId) {
+                    if (
+                        message.action === NotificationAction.create &&
+                        message.content?.data?.resourceId === uploadId
+                    ) {
                         setFileUploadStatus(CONSTANTS.UPLOAD_STATE.COMPLETE);
-                        refreshList();
+                        const myExhibitsList = [...state.room.myExhibits];
+                        const index = myExhibitsList.findIndex((e) => e.resourceId === message.content.data.resourceId);
+                        myExhibitsList[index].id = message.content.data.documentId;
+                        myExhibitsList[index].isPending = false;
+                        dispatch(actions.setMyExhibits(myExhibitsList));
                     }
-                    if (message.action === NotificationAction.error && message.content?.data === uploadId) {
+                    if (message.action === NotificationAction.error && message.content?.data?.resourceId === uploadId) {
                         setFileUploadStatus(CONSTANTS.UPLOAD_STATE.ERROR);
                     }
                 }
@@ -118,7 +125,7 @@ export default function ProgressBarRender({
                 unsubscribeMethodFromGroup("ReceiveNotification", onFileUploadComplete);
             }
         };
-    }, [signalR, subscribeToGroup, unsubscribeMethodFromGroup, refreshList, uploadId]);
+    }, [signalR, subscribeToGroup, unsubscribeMethodFromGroup, uploadId, state.room.myExhibits, dispatch]);
 
     if (hide) return null;
     return (

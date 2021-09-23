@@ -23,7 +23,8 @@ import { getREM } from "../../../../constants/styles/utils";
 export default function MyExhibits({ activeKey }: { activeKey: string }) {
     const { depositionID } = useParams<{ depositionID: string }>();
     const { upload } = useUploadFileToS3(depositionID);
-    const { handleFetchFiles, loading, errorFetchFiles, files, refreshList } = useFileList(depositionID);
+    const { handleFetchFiles, loading, errorFetchFiles, refreshList } = useFileList(depositionID);
+    const [myExhibits, setMyExhibits] = useState<ExhibitFile[]>([]);
     const [selectedFile, setSelectedFile] = useState<ExhibitFile>(null);
     const { state } = useContext(GlobalStateContext);
     const { currentExhibitTabName } = state.room;
@@ -34,6 +35,10 @@ export default function MyExhibits({ activeKey }: { activeKey: string }) {
         }
     }, [handleFetchFiles, currentExhibitTabName]);
 
+    useEffect(() => {
+        setMyExhibits(state.room.myExhibits.filter((e) => !e.isPending));
+    }, [state.room.myExhibits]);
+
     return (
         <ExhibitTabPaneSpacer direction="vertical" size="large">
             {!selectedFile && (
@@ -42,15 +47,15 @@ export default function MyExhibits({ activeKey }: { activeKey: string }) {
                         <Text size="large" state={ColorStatus.white}>
                             My Exhibits
                         </Text>
-                        <Badge style={{ lineHeight: getREM(1.72) }} count={files?.length || 0} />
+                        <Badge style={{ lineHeight: getREM(1.72) }} count={myExhibits?.length || 0} />
                     </Space>
                     <ScrollTableContainer direction="vertical" size="large">
                         <UploadButton onUpload={upload} refreshList={refreshList} />
-                        {files?.length > 0 && (
+                        {myExhibits?.length > 0 && (
                             <FileListTable
                                 data-testid="file_list_table"
                                 loading={loading}
-                                dataSource={files}
+                                dataSource={myExhibits}
                                 pagination={false}
                                 sortDirections={["descend", "ascend"]}
                                 onClickViewFile={setSelectedFile}
@@ -58,7 +63,7 @@ export default function MyExhibits({ activeKey }: { activeKey: string }) {
                                 onOptionsConfirmOk={handleFetchFiles}
                             />
                         )}
-                        {(files?.length === 0 || errorFetchFiles) && (
+                        {(myExhibits?.length === 0 || errorFetchFiles) && (
                             <Row justify="center" align="middle" style={{ height: "100%" }}>
                                 <Col sm={18} lg={14} xl={13} xxl={9}>
                                     <Result

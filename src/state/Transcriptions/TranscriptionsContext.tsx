@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useContext, useCallback, useRef } from "react";
-import { IS_MOBILE_OR_TABLET } from "../../constants/general";
+import { isMobile as isDeviceMobileOrTablet } from "react-device-detect";
 import { WindowSizeContext } from "../../contexts/WindowSizeContext";
 import { addTranscriptionMessages } from "../../helpers/formatTranscriptionsMessages";
 import { TranscriptionModel } from "../../models";
@@ -35,8 +35,7 @@ const TranscriptionsProvider = ({
     }, [isRecording]);
 
     useEffect(() => {
-        const isMobileOrTablet = windowWidth <= IS_MOBILE_OR_TABLET;
-        if (initialTranscriptions?.length && setInitialTranscriptions && !isMobileOrTablet) {
+        if (initialTranscriptions?.length && setInitialTranscriptions && !isDeviceMobileOrTablet) {
             setTranscriptions(initialTranscriptions);
             // We do this to delete the initial array from memory
             setInitialTranscriptions([]);

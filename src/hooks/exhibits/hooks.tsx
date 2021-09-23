@@ -65,18 +65,18 @@ export const useFileList = (
     ) => void;
     loading: boolean;
     errorFetchFiles;
-    files: ExhibitFile[];
     sortDirection;
     sortedField;
     refreshList;
 } => {
     const [sortedField, setSortedField] = useState();
     const [sortDirection, setSortDirection] = useState();
-    const { deps } = useContext(GlobalStateContext);
+    const { deps, dispatch } = useContext(GlobalStateContext);
 
-    const [fetchFiles, loading, errorFetchFiles, files] = useAsyncCallback(async (payload) => {
+    const [fetchFiles, loading, errorFetchFiles] = useAsyncCallback(async (payload) => {
         const depositionFiles = await deps.apiService.fetchDepositionsFiles({ depositionID, ...payload });
-        return depositionFiles.map((file) => ({ key: file.id, ...file }));
+        const files = depositionFiles.map((file) => ({ key: file.id, ...file }));
+        dispatch(actions.setMyExhibits(files));
     }, []);
 
     const handleFetchFiles = useCallback(
@@ -101,7 +101,7 @@ export const useFileList = (
         fetchFiles({});
     }, [fetchFiles]);
 
-    return { handleFetchFiles, loading, errorFetchFiles, files, sortDirection, sortedField, refreshList };
+    return { handleFetchFiles, loading, errorFetchFiles, sortDirection, sortedField, refreshList };
 };
 
 export const useSignedUrl = (file: ExhibitFile, isPublic?: boolean) => {

@@ -9,10 +9,13 @@ export type ExhibitFile = {
     name: string;
     displayName: string;
     size: number;
+    key?: string;
     preSignedUrl?: string;
     addedBy?: AddedBy;
     close?: boolean;
     sharedAt?: string;
     isPublic?: boolean;
     stampLabel?: string;
+    resourceId?: string;
+    isPending?: boolean;
 };

@@ -61,9 +61,28 @@ jest.mock("react-router-dom", () => ({
 }));
 
 let customDeps;
+let customRootReducer;
 
 beforeEach(() => {
     customDeps = getMockDeps();
+    customRootReducer = {
+        ...rootReducer,
+        initialState: {
+            room: {
+                ...rootReducer.initialState.room,
+                isRecording: true,
+                currentExhibitTabName: CONSTANTS.EXHIBIT_TABS.myExhibits,
+                myExhibits: [{ displayName: "fileName.jpg", id: "123456", name: "fileName.jpg", size: 2232 }],
+            },
+            signalR: { signalR: null, signalRConnectionStatus: { isReconnected: false, isReconnecting: false } },
+            postDepo: {
+                changeTime: { time: 1 },
+                currentTime: 1,
+                playing: true,
+                duration: 1,
+            },
+        },
+    };
     useUploadFileToS3.mockImplementation(() => ({
         upload: jest.fn(),
     }));
@@ -71,7 +90,7 @@ beforeEach(() => {
         handleFetchFiles: jest.fn(),
         loading: false,
         errorFetchFiles: false,
-        files: [],
+        myExhibits: [],
         refreshList: jest.fn(),
     }));
     useShareExhibitFile.mockImplementation(() => ({
@@ -190,12 +209,15 @@ describe("Exhibits", () => {
 
     it("should display the file list when has more than one file in the list", async () => {
         useFileList.mockImplementation(() => ({
-            files: [{ displayName: "fileName" }],
+            myExhibits: [{ displayName: "fileName.jpg", id: "123456", name: "fileName.jpg", size: 2232 }],
+            handleFetchFiles: jest.fn(),
         }));
         renderWithGlobalContext(
             <ThemeProvider theme={theme}>
                 <MyExhibits />
-            </ThemeProvider>
+            </ThemeProvider>,
+            customDeps,
+            customRootReducer
         );
         const fileListTable = screen.queryByTestId("file_list_table");
         expect(fileListTable).toBeInTheDocument();
@@ -203,12 +225,23 @@ describe("Exhibits", () => {
 
     it("should not display the file list when has zero file in the list", async () => {
         useFileList.mockImplementation(() => ({
-            files: [],
+            myExhibits: [],
+            handleFetchFiles: jest.fn(),
         }));
         renderWithGlobalContext(
             <ThemeProvider theme={theme}>
                 <MyExhibits />
-            </ThemeProvider>
+            </ThemeProvider>,
+            customDeps,
+            {
+                ...customRootReducer,
+                initialState: {
+                    room: {
+                        ...rootReducer.initialState.room,
+                        myExhibits: [],
+                    },
+                },
+            }
         );
         const fileListTable = screen.queryByTestId("file_list_table");
         expect(fileListTable).not.toBeInTheDocument();
@@ -216,12 +249,15 @@ describe("Exhibits", () => {
 
     it("should not display the empty state component when has more than file in the list", async () => {
         useFileList.mockImplementation(() => ({
-            files: [{ displayName: "fileName" }],
+            myExhibits: [{ displayName: "fileName.jpg", id: "123456", name: "fileName.jpg", size: 2232 }],
+            handleFetchFiles: jest.fn(),
         }));
         renderWithGlobalContext(
             <ThemeProvider theme={theme}>
                 <MyExhibits />
-            </ThemeProvider>
+            </ThemeProvider>,
+            customDeps,
+            customRootReducer
         );
         const fileListTable = screen.queryByTestId("file_list_table");
         const noExhibitComponent = screen.queryByText("No exhibits added yet");
@@ -231,12 +267,24 @@ describe("Exhibits", () => {
 
     it("should not display the empty state component when has zero file in the list", async () => {
         useFileList.mockImplementation(() => ({
-            files: [],
+            myExhibits: [],
+            handleFetchFiles: jest.fn(),
         }));
         renderWithGlobalContext(
             <ThemeProvider theme={theme}>
                 <MyExhibits />
-            </ThemeProvider>
+            </ThemeProvider>,
+            customDeps,
+            {
+                ...rootReducer,
+                initialState: {
+                    room: {
+                        ...rootReducer.initialState.room,
+                        myExhibits: [],
+                    },
+                    signalR: {},
+                },
+            }
         );
         const fileListTable = screen.queryByTestId("file_list_table");
         const noExhibitComponent = screen.queryByText("No exhibits added yet");
@@ -246,12 +294,15 @@ describe("Exhibits", () => {
 
     it("should not display the view document by default", () => {
         useFileList.mockImplementation(() => ({
-            files: [{ displayName: "fileName.jpg", preSignedURL: "preSignedURL" }],
+            myExhibits: [{ displayName: "fileName.jpg", preSignedUrl: "preSignedURL" }],
+            handleFetchFiles: jest.fn(),
         }));
         renderWithGlobalContext(
             <ThemeProvider theme={theme}>
                 <MyExhibits />
-            </ThemeProvider>
+            </ThemeProvider>,
+            customDeps,
+            customRootReducer
         );
         const fileViewButton = screen.queryByTestId("file_list_view_button");
         expect(fileViewButton).toBeInTheDocument();
@@ -261,7 +312,16 @@ describe("Exhibits", () => {
 
     it("should display the view document component when click on a file view button", () => {
         useFileList.mockImplementation(() => ({
-            files: [{ displayName: "fileName.jpg", preSignedURL: "preSignedURL" }],
+            myExhibits: [
+                {
+                    displayName: "fileName.jpg",
+                    id: "123456",
+                    name: "fileName.jpg",
+                    size: 2232,
+                    preSignedUrl: "preSignedURL",
+                },
+            ],
+            handleFetchFiles: jest.fn(),
         }));
         useSignedUrl.mockImplementation(() => ({
             documentUrl: "documentId",
@@ -270,7 +330,9 @@ describe("Exhibits", () => {
         renderWithGlobalContext(
             <ThemeProvider theme={theme}>
                 <MyExhibits />
-            </ThemeProvider>
+            </ThemeProvider>,
+            customDeps,
+            customRootReducer
         );
         const fileViewButton = screen.queryByTestId("file_list_view_button");
         expect(fileViewButton).toBeInTheDocument();
@@ -281,7 +343,8 @@ describe("Exhibits", () => {
 
     it("should spinner be displayed when pending load document", () => {
         useFileList.mockImplementation(() => ({
-            files: [{ displayName: "fileName.jpg", preSignedURL: "preSignedURL" }],
+            myExhibits: [{ displayName: "fileName.jpg", preSignedUrl: "preSignedURL" }],
+            handleFetchFiles: jest.fn(),
         }));
         useSignedUrl.mockImplementation(() => ({
             pending: true,
@@ -289,7 +352,9 @@ describe("Exhibits", () => {
         renderWithGlobalContext(
             <ThemeProvider theme={theme}>
                 <MyExhibits />
-            </ThemeProvider>
+            </ThemeProvider>,
+            customDeps,
+            customRootReducer
         );
         const fileViewButton = screen.queryByTestId("file_list_view_button");
         expect(fileViewButton).toBeInTheDocument();
@@ -301,7 +366,8 @@ describe("Exhibits", () => {
 
     it("should display file list again after click on the view document's back button", () => {
         useFileList.mockImplementation(() => ({
-            files: [{ displayName: "fileName.jpg", preSignedURL: "preSignedURL", id: "documentId" }],
+            myExhibits: [{ displayName: "fileName.jpg", preSignedUrl: "preSignedURL", id: "documentId" }],
+            handleFetchFiles: jest.fn(),
         }));
         useSignedUrl.mockImplementation(() => ({
             documentUrl: "documentId",
@@ -310,7 +376,9 @@ describe("Exhibits", () => {
         renderWithGlobalContext(
             <ThemeProvider theme={theme}>
                 <MyExhibits />
-            </ThemeProvider>
+            </ThemeProvider>,
+            customDeps,
+            customRootReducer
         );
         const fileViewButton = screen.queryByTestId("file_list_view_button");
         expect(fileViewButton).toBeInTheDocument();
@@ -327,7 +395,7 @@ describe("Exhibits", () => {
 
     it("should display the share document component when click on a file share button", () => {
         useFileList.mockImplementation(() => ({
-            files: [{ displayName: "fileName.jpg", preSignedURL: "preSignedURL" }],
+            myExhibits: [{ displayName: "fileName.jpg", preSignedUrl: "preSignedURL" }],
         }));
         useSignedUrl.mockImplementation(() => ({
             documentUrl: "documentId",
@@ -344,6 +412,7 @@ describe("Exhibits", () => {
                     room: {
                         ...rootReducer.initialState.room,
                         isRecording: true,
+                        myExhibits: [{ displayName: "fileName.jpg", id: "123456", name: "fileName.jpg", size: 2232 }],
                     },
                     signalR: {},
                 },
@@ -358,7 +427,7 @@ describe("Exhibits", () => {
 
     it("should display the share exhibit button disabled when isRecording is false", () => {
         useFileList.mockImplementation(() => ({
-            files: [{ displayName: "fileName.jpg", preSignedURL: "preSignedURL" }],
+            myExhibits: [{ displayName: "fileName.jpg", preSignedUrl: "preSignedURL" }],
         }));
         useSignedUrl.mockImplementation(() => ({
             documentUrl: "documentId",
@@ -374,6 +443,7 @@ describe("Exhibits", () => {
                 initialState: {
                     room: {
                         ...rootReducer.initialState.room,
+                        myExhibits: [{ displayName: "fileName.jpg", id: "123456", name: "fileName.jpg", size: 2232 }],
                     },
                     signalR: {},
                 },
@@ -385,7 +455,7 @@ describe("Exhibits", () => {
 
     it("should display the share exhibit button enabled when isRecording is true", () => {
         useFileList.mockImplementation(() => ({
-            files: [{ displayName: "fileName.jpg", preSignedURL: "preSignedURL" }],
+            myExhibits: [{ displayName: "fileName.jpg", preSignedUrl: "preSignedURL" }],
         }));
         useSignedUrl.mockImplementation(() => ({
             documentUrl: "documentId",
@@ -402,6 +472,7 @@ describe("Exhibits", () => {
                     room: {
                         ...rootReducer.initialState.room,
                         isRecording: true,
+                        myExhibits: [{ displayName: "fileName.jpg", id: "123456", name: "fileName.jpg", size: 2232 }],
                     },
                     signalR: {},
                 },
@@ -413,7 +484,7 @@ describe("Exhibits", () => {
 
     it("should display the share exhibit button on exhibit viewer disabled when isRecording is false", () => {
         useFileList.mockImplementation(() => ({
-            files: [{ displayName: "fileName.jpg", preSignedURL: "preSignedURL", id: "documentId" }],
+            myExhibits: [{ displayName: "fileName.jpg", preSignedUrl: "preSignedURL", id: "documentId" }],
         }));
         useSignedUrl.mockImplementation(() => ({
             documentUrl: "documentId",
@@ -429,6 +500,7 @@ describe("Exhibits", () => {
                 initialState: {
                     room: {
                         ...rootReducer.initialState.room,
+                        myExhibits: [{ displayName: "fileName.jpg", id: "123456", name: "fileName.jpg", size: 2232 }],
                     },
                     signalR: {
                         signalR: null,
@@ -449,7 +521,7 @@ describe("Exhibits", () => {
 
     it("should display the share exhibit button on exhibit viewer enabled when isRecording is true", () => {
         useFileList.mockImplementation(() => ({
-            files: [{ displayName: "fileName.jpg", preSignedURL: "preSignedURL", id: "documentId" }],
+            myExhibits: [{ displayName: "fileName.jpg", preSignedUrl: "preSignedURL", id: "documentId" }],
         }));
         useSignedUrl.mockImplementation(() => ({
             documentUrl: "documentId",
@@ -466,6 +538,7 @@ describe("Exhibits", () => {
                     room: {
                         ...rootReducer.initialState.room,
                         isRecording: true,
+                        myExhibits: [{ displayName: "fileName.jpg", id: "123456", name: "fileName.jpg", size: 2232 }],
                     },
                     signalR: {
                         signalR: null,
@@ -488,12 +561,13 @@ describe("Exhibits", () => {
         "should display custom video player if the exhibit extension is %s",
         async (ext) => {
             useFileList.mockImplementation(() => ({
-                files: [
+                myExhibits: [
                     {
                         name: `fileName.${ext}`,
                         displayName: `fileName.${ext}`,
-                        preSignedURL: "preSignedURL",
+                        preSignedUrl: "preSignedURL",
                         id: "documentId",
+                        size: 2232,
                     },
                 ],
                 handleFetchFiles: () => {},
@@ -514,6 +588,15 @@ describe("Exhibits", () => {
                             ...rootReducer.initialState.room,
                             isRecording: true,
                             currentExhibitTabName: CONSTANTS.EXHIBIT_TABS.myExhibits,
+                            myExhibits: [
+                                {
+                                    name: `fileName.${ext}`,
+                                    displayName: `fileName.${ext}`,
+                                    preSignedUrl: "preSignedURL",
+                                    id: "documentId",
+                                    size: 2232,
+                                },
+                            ],
                         },
                         signalR: {},
                         postDepo: {
