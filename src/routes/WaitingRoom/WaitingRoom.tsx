@@ -118,17 +118,14 @@ const WaitingRoom = () => {
                             <Logo version="dark" />
                         </Space>
                         <Space align="center" direction="vertical" fullWidth mt={10}>
-                            <Text size="large" dataTestId="waiting_room_title">
-                                {getUserNameString(userStatus)}
-                            </Text>
                             <Title
-                                dataTestId={CONSTANTS.WAITING_ROOM_SUBTITLE}
+                                dataTestId="waiting_room_title"
                                 textAlign="center"
                                 ellipsis={false}
                                 level={windowWidth < parseInt(theme.default.breakpoints.sm, 10) ? 5 : 4}
                                 weight="light"
                             >
-                                {CONSTANTS.WAITING_ROOM_SUBTITLE}
+                                {getUserNameString(userStatus) + CONSTANTS.WAITING_ROOM_MESSAGE}
                             </Title>
                         </Space>
                     </Space>

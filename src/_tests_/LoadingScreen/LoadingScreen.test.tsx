@@ -2,13 +2,9 @@ import React from "react";
 import LoadingScreen from "../../routes/InDepo/LoadingScreen";
 import { rootReducer } from "../../state/GlobalState";
 import renderWithGlobalContext from "../utils/renderWithGlobalContext";
+import { LOADING_DEPOSITION_MESSAGE } from "../../constants/preJoinDepo";
 
 test("Should display proper text", async () => {
-    const { getByText } = renderWithGlobalContext(<LoadingScreen />);
-    expect(getByText(/Loading deposition. Please wait./)).toBeInTheDocument();
-});
-
-test("Should display user name", async () => {
     const reducer: any = {
         reducer: rootReducer,
         initialState: {
@@ -22,5 +18,5 @@ test("Should display user name", async () => {
         },
     };
     const { getByText } = renderWithGlobalContext(<LoadingScreen />, undefined, reducer);
-    expect(getByText("test1,")).toBeInTheDocument();
+    expect(getByText(`test1,${LOADING_DEPOSITION_MESSAGE}`)).toBeInTheDocument();
 });

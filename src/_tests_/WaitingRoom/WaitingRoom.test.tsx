@@ -82,8 +82,11 @@ test("Shows proper text when isAdmitted is null", async () => {
     );
     history.push(TESTS_CONSTANTS.WAITING_ROUTE);
     await waitForDomChange();
-    expect(getByText(MODULE_CONSTANTS.WAITING_ROOM_SUBTITLE)).toBeInTheDocument();
-    expect(getByText(`${getUserDepoStatusWithParticipantAdmitted().participant.name},`)).toBeInTheDocument();
+    expect(
+        getByText(
+            `${getUserDepoStatusWithParticipantAdmitted().participant.name},${MODULE_CONSTANTS.WAITING_ROOM_MESSAGE}`
+        )
+    ).toBeInTheDocument();
 });
 test("Shows proper text when isAdmitted is false", async () => {
     customDeps.apiService.checkUserDepoStatus = jest
