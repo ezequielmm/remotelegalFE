@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { connect, createLocalAudioTrack, createLocalVideoTrack, LocalDataTrack, Room, Logger } from "twilio-video";
 import { useHistory, useParams } from "react-router";
+import { isMobile as isDeviceMobileOrTablet } from "react-device-detect";
 import useSound from "use-sound";
 import { GlobalStateContext } from "../../state/GlobalState";
 import configParticipantListeners from "../../helpers/configParticipantListeners";
@@ -25,8 +26,6 @@ import { setTranscriptionMessages } from "../../helpers/formatTranscriptionsMess
 import { TranscriptionModel } from "../../models";
 import { useSystemSetting } from "./useSystemSettings";
 import { DevicesStatus } from "../../constants/TroubleShootUserDevices";
-import { WindowSizeContext } from "../../contexts/WindowSizeContext";
-import { IS_MOBILE_OR_TABLET } from "../../constants/general";
 
 export const useKillDepo = () => {
     const { deps } = useContext(GlobalStateContext);
@@ -271,12 +270,10 @@ export const useJoinDeposition = (setTranscriptions: React.Dispatch<Transcriptio
     const [getTranscriptions] = useGetTranscriptions();
     const [getBreakrooms] = useGetBreakrooms();
     const [getDepositionEvents] = useGetEvents();
-    const [windowWidth] = useContext(WindowSizeContext);
     const [checkUserStatus] = useCheckUserStatus();
     const history = useHistory();
     const { currentEmail } = useAuthentication();
     const devices = JSON.parse(localStorage.getItem("selectedDevices"));
-    const isMobileOrTablet = windowWidth <= IS_MOBILE_OR_TABLET;
 
     return useAsyncCallback(
         async (depositionID: string, isMobile: boolean) => {
@@ -324,7 +321,7 @@ export const useJoinDeposition = (setTranscriptions: React.Dispatch<Transcriptio
             }
 
             const { permissions } = await getDepositionPermissions();
-            const transcriptions = !isMobileOrTablet ? await getTranscriptions() : [];
+            const transcriptions = !isDeviceMobileOrTablet ? await getTranscriptions() : [];
             const breakrooms = await getBreakrooms();
             const events = await getDepositionEvents(depositionID);
             const settings = await getSystemSettings();

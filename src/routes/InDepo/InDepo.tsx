@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext, useRef } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import styled, { ThemeProvider } from "styled-components";
+import { isMobile as isDeviceMobileOrTablet } from "react-device-detect";
 import { Participant, connect } from "twilio-video";
 import Spinner from "prp-components-library/src/components/Spinner";
 import { Row } from "antd/lib/grid";
@@ -40,7 +41,6 @@ import useGetEvents from "../../hooks/InDepo/useGetEvents";
 import { setTranscriptionMessages } from "../../helpers/formatTranscriptionsMessages";
 import { useExhibitFileInfo } from "../../hooks/exhibits/hooks";
 import useGetDepoSummaryInfo from "../../hooks/InDepo/useGetDepoSummaryInfo";
-import { IS_MOBILE_OR_TABLET } from "../../constants/general";
 import useFloatingAlertContext from "../../hooks/useFloatingAlertContext";
 import WrongOrientationScreen from "./WrongOrientationScreen/WrongOrientationScreen";
 import ORIENTATION_STATE from "../../types/orientation";
@@ -87,8 +87,8 @@ const InDepo = () => {
     } = state.room;
 
     const { currentUser } = state?.user;
-    const [windowWidth, windowHeight] = useContext(WindowSizeContext);
     const orientation = useWindowOrientation();
+    const [windowWidth, windowHeight] = useContext(WindowSizeContext);
     const { isReconnected, isReconnecting } = state?.signalR.signalRConnectionStatus;
     const [realTimeOpen, togglerRealTime] = useState<boolean>(false);
     const [exhibitsOpen, togglerExhibits] = useState<boolean>(false);
@@ -231,9 +231,8 @@ const InDepo = () => {
     }, [currentRoom, dispatch, depositionID, history, token, addAlert]);
 
     useEffect(() => {
-        const isMobile = windowWidth <= CONSTANTS.MAX_MOBILE_SIZE;
         if (depositionID && isAuthenticated !== null && currentUser) {
-            joinDeposition(depositionID, isMobile);
+            joinDeposition(depositionID, isDeviceMobileOrTablet);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [depositionID, isAuthenticated, currentUser]);
@@ -256,14 +255,13 @@ const InDepo = () => {
                 } else {
                     togglerExhibits(false);
                 }
-                const transcriptions = !IS_MOBILE_OR_TABLET ? await getTranscriptions() : [];
+                const transcriptions = !isDeviceMobileOrTablet ? await getTranscriptions() : [];
                 const events = await getDepositionEvents(depositionID);
                 setInitialTranscriptions(setTranscriptionMessages(transcriptions, events));
             }
         };
         fetchDepoData();
     }, [
-        windowWidth,
         depoSummaryInfo,
         isReconnected,
         depositionID,

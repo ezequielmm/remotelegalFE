@@ -1,13 +1,13 @@
 import { useContext, useEffect } from "react";
 import { useParams } from "react-router";
 import { HubConnectionState } from "@microsoft/signalr";
+import { isMobile as isDeviceMobileOrTablet } from "react-device-detect";
 import { GlobalStateContext } from "../../state/GlobalState";
 import { WindowSizeContext } from "../../contexts/WindowSizeContext";
 import { DepositionID } from "../../state/types";
 import useAsyncCallback from "../useAsyncCallback";
 import useSignalR from "../useSignalR";
 import ENV from "../../constants/env";
-import { IS_MOBILE_OR_TABLET } from "../../constants/general";
 import { TranscriptionsContext } from "../../state/Transcriptions/TranscriptionsContext";
 
 const useTranscriptAudio = (doNotConnectToSocket = false, sampleRate: number) => {
@@ -52,9 +52,8 @@ const useTranscriptAudio = (doNotConnectToSocket = false, sampleRate: number) =>
     }, [sendMessage, isRecording, signalR, depositionID, sampleRate]);
 
     useEffect(() => {
-        const isMobileOrTablet = windowWidth <= IS_MOBILE_OR_TABLET;
         let manageReceiveNotification;
-        if (dispatch && signalR && unsubscribeMethodFromGroup && subscribeToGroup && !isMobileOrTablet) {
+        if (dispatch && signalR && unsubscribeMethodFromGroup && subscribeToGroup && !isDeviceMobileOrTablet) {
             manageReceiveNotification = (message) => {
                 const { id, transcriptDateTime, text, userName } = message.content;
                 if (!text) return;

@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext, useRef } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
+import { isMobile as isDeviceMobileOrTablet } from "react-device-detect";
 import { Participant } from "twilio-video";
 import Spinner from "prp-components-library/src/components/Spinner";
 import { HubConnectionState } from "@microsoft/signalr";
@@ -29,7 +30,6 @@ import { NotificationAction, NotificationEntityType } from "../../types/Notifica
 import stopAllTracks from "../../helpers/stopAllTracks";
 import generalUIActions from "../../state/GeneralUi/GeneralUiActions";
 import TranscriptionsProvider from "../../state/Transcriptions/TranscriptionsContext";
-import { WindowSizeContext } from "../../contexts/WindowSizeContext";
 
 const InDepo = () => {
     const isMounted = useRef(true);
@@ -48,7 +48,6 @@ const InDepo = () => {
         systemSettings,
     } = state.room;
     const { depositionID } = useParams<DepositionID>();
-    const [windowWidth] = useContext(WindowSizeContext);
     const [realTimeOpen, togglerRealTime] = useState<boolean>(false);
     const [exhibitsOpen, togglerExhibits] = useState<boolean>(false);
     const [initialAudioEnabled, setInitialAudioEnabled] = useState<boolean>(true);
@@ -143,9 +142,8 @@ const InDepo = () => {
     }, [mockDepoRoom, dispatch, depositionID]);
 
     useEffect(() => {
-        const isMobile = windowWidth <= CONSTANTS.MAX_MOBILE_SIZE;
         if (depositionID) {
-            joinDeposition(depositionID, isMobile);
+            joinDeposition(depositionID, isDeviceMobileOrTablet);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [depositionID]);
