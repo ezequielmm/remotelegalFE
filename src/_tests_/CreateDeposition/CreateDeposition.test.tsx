@@ -316,8 +316,8 @@ it("show a file name when file is selected", async () => {
     expect(queryByText("file.pdf")).toBeTruthy();
 });
 
-it("show error message when selected file is an unkown type", async () => {
-    const { getByTestId } = renderWithGlobalContext(<CreateDeposition />, customDeps, {
+it("show error message when selected file is an unknown type", async () => {
+    const { getByTestId, getByText } = renderWithGlobalContext(<CreateDeposition />, customDeps, {
         ...rootReducer,
         initialState: {
             room: {
@@ -334,7 +334,7 @@ it("show error message when selected file is an unkown type", async () => {
         await fireEvent.change(imageInput, { target: { files: [file] } });
     });
 
-    expect(getByTestId("File must be a pdf")).toBeTruthy();
+    expect(getByText(CONSTANTS.PDF_ERROR)).toBeTruthy();
 });
 
 it("trigger validations when blur/change inputs on RequesterSection", async () => {
