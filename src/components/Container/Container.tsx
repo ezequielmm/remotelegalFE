@@ -11,7 +11,9 @@ const Container = ({ children }: ContainerProps) => (
     <StyledContainer>
         <StyledHeaderSection>
             <header>
-                <Logo version="light" width={getREM(theme.default.spaces[8] * 20)} />
+                <a href="/">
+                    <Logo version="light" width={getREM(theme.default.spaces[8] * 20)} />
+                </a>
             </header>
         </StyledHeaderSection>
         <StyledFormContainer>{children}</StyledFormContainer>

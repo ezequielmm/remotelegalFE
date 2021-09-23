@@ -70,7 +70,9 @@ const AppLayout = ({ children }: DashboardProps) => {
         <Layout style={{ height: "100vh" }}>
             <Header>
                 <Space justify="space-between" align="center">
-                    <Logo height="2.25rem" />
+                    <a href="/">
+                        <Logo height="2.25rem" />
+                    </a>
                     <Space size="large" align="flex-start">
                         {currentUser && (
                             <Dropdown
