@@ -1,4 +1,4 @@
-import { waitForDomChange } from "@testing-library/react";
+import { waitFor } from "@testing-library/react";
 import { createMemoryHistory } from "history";
 import React from "react";
 import { Route } from "react-router-dom";
@@ -17,6 +17,7 @@ test("should display the help text", async () => {
         history
     );
     history.push(TESTS_CONSTANTS.TEST_ROUTE);
-    await waitForDomChange();
-    expect(queryByText(HELP_TITLE)).toBeInTheDocument();
+    await waitFor(() => {
+        expect(queryByText(HELP_TITLE)).toBeInTheDocument();
+    });
 });

@@ -6,6 +6,7 @@ import Result from "prp-components-library/src/components/Result";
 import Space from "prp-components-library/src/components/Space";
 import Text from "prp-components-library/src/components/Text";
 import Drawer from "prp-components-library/src/components/Drawer";
+import Button from "prp-components-library/src/components/Button";
 import { ReactComponent as HelpIcon } from "../../../assets/layout/Help.svg";
 import * as CONSTANTS from "../../../constants/help";
 import { theme } from "../../../constants/styles/theme";
@@ -28,13 +29,17 @@ const HelpResult = ({ jobNumber }: IModalProps) => {
                     <Text state={ColorStatus.disabled} ellipsis={false}>
                         <>
                             {CONSTANTS.HELP_MODAL_CONTENT1}
-                            <Text size="large" state={ColorStatus.disabled} weight="bold" ellipsis={false}>
-                                {CONSTANTS.HELP_CONTENT2}
-                            </Text>{" "}
+                            <Button type="link" href={`mailto:${CONSTANTS.HELP_CONTENT2}`}>
+                                <Text state={ColorStatus.disabled} weight="bold" ellipsis={false}>
+                                    {CONSTANTS.HELP_CONTENT2}
+                                </Text>
+                            </Button>{" "}
                             {CONSTANTS.HELP_CONTENT3}
-                            <Text size="large" state={ColorStatus.disabled} weight="bold" ellipsis={false}>
-                                {CONSTANTS.HELP_CONTENT4}
-                            </Text>
+                            <Button type="link" href={`tel:${CONSTANTS.HELP_CONTENT4}`}>
+                                <Text state={ColorStatus.disabled} weight="bold" ellipsis={false}>
+                                    {CONSTANTS.HELP_CONTENT4}
+                                </Text>
+                            </Button>
                             .
                         </>
                     </Text>

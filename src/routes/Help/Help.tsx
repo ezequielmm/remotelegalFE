@@ -1,4 +1,5 @@
 import { Col, Row } from "antd";
+import Button from "prp-components-library/src/components/Button";
 import Card from "prp-components-library/src/components/Card";
 import Icon from "prp-components-library/src/components/Icon";
 import Result from "prp-components-library/src/components/Result";
@@ -20,13 +21,17 @@ const Help = () => {
                                 <Text state={ColorStatus.disabled} ellipsis={false}>
                                     <>
                                         {CONSTANTS.HELP_CONTENT1}
-                                        <Text size="large" state={ColorStatus.disabled} weight="bold" ellipsis={false}>
-                                            {CONSTANTS.HELP_CONTENT2}
-                                        </Text>{" "}
+                                        <Button type="link" href={`mailto:${CONSTANTS.HELP_CONTENT2}`}>
+                                            <Text state={ColorStatus.disabled} weight="bold" ellipsis={false}>
+                                                {CONSTANTS.HELP_CONTENT2}
+                                            </Text>{" "}
+                                        </Button>
                                         {CONSTANTS.HELP_CONTENT3}
-                                        <Text size="large" state={ColorStatus.disabled} weight="bold" ellipsis={false}>
-                                            {CONSTANTS.HELP_CONTENT4}
-                                        </Text>
+                                        <Button type="link" href={`tel:${CONSTANTS.HELP_CONTENT4}`}>
+                                            <Text state={ColorStatus.disabled} weight="bold" ellipsis={false}>
+                                                {CONSTANTS.HELP_CONTENT4}
+                                            </Text>
+                                        </Button>
                                         .
                                     </>
                                 </Text>

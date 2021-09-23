@@ -92,13 +92,17 @@ const WaitingRoom = () => {
                         >
                             <>
                                 {`${CONSTANTS.ACCESS_DENIED_DETAILS_START}`}
-                                <Text state={ColorStatus.disabled} ellipsis={false} weight="bold">
-                                    {CONSTANTS.ACCESS_DENIED_DETAILS_EMAIL}
-                                </Text>
+                                <Button type="link" href={`mailto:${CONSTANTS.ACCESS_DENIED_DETAILS_EMAIL}`}>
+                                    <Text state={ColorStatus.disabled} weight="bold" ellipsis={false}>
+                                        {CONSTANTS.ACCESS_DENIED_DETAILS_EMAIL}
+                                    </Text>
+                                </Button>
                                 {`${CONSTANTS.ACCESS_DENIED_DETAILS_MIDDLE}`}
-                                <Text state={ColorStatus.disabled} ellipsis={false} weight="bold">
-                                    {CONSTANTS.ACCESS_DENIED_DETAILS_NUMBER}
-                                </Text>
+                                <Button type="link" href={`mailto:${CONSTANTS.ACCESS_DENIED_DETAILS_NUMBER}`}>
+                                    <Text state={ColorStatus.disabled} weight="bold" ellipsis={false}>
+                                        {CONSTANTS.ACCESS_DENIED_DETAILS_NUMBER}
+                                    </Text>
+                                </Button>
                             </>
                         </Text>
                         <Space justify="flex-end" fullWidth>
