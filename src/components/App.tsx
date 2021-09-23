@@ -36,7 +36,6 @@ import TroubleShootUserDevices from "../routes/TroubleShootUserDevices/TroubleSh
 import TechInfo from "../routes/TechInfo";
 import CacheBuster from "../helpers/cacheBuster";
 import withDDContext from "./WithDDContext";
-import { CORRELATION_ID } from "../constants/ApiService";
 
 declare global {
     interface Window {
@@ -73,7 +72,7 @@ function App() {
             return log;
         },
     });
-    window.DD_LOGS.addLoggerGlobalContext("correlation_id", CORRELATION_ID);
+
     TagManager.initialize(tagManagerId);
 
     ReactGA.initialize(tagManagerId.gtmId);

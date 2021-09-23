@@ -13,8 +13,9 @@ import ENV from "../constants/env";
 import { wait } from "../helpers/wait";
 import { EventModel, CaseModel, DepositionModel, UserModel, ParticipantModel, ExhibitsModel } from "../models";
 import { HTTP_METHOD, ITokenSet } from "../models/general";
-import TEMP_TOKEN, { CORRELATION_ID } from "../constants/ApiService";
+import TEMP_TOKEN from "../constants/ApiService";
 import getBrowserInfo from "../helpers/browserInfo";
+import generateUUID from "../helpers/generateUUID";
 
 interface RequestParams {
     path: string;
@@ -32,6 +33,8 @@ export class ApiService {
     private apiUrl: string = ENV.API.URL;
 
     private tokenSet: ITokenSet;
+
+    private correlationId = generateUUID();
 
     private httpStatusCodeRetryRegex = ENV.API.API_RETRY_REQUEST_STATUS_CODE_RANGES_REGEX;
 
@@ -619,6 +622,7 @@ export class ApiService {
         basePath = this.apiUrl,
     }: RequestParams): Promise<T> => {
         if (withToken) await this.getTokenSet();
+        this.correlationId = generateUUID();
         const jwt = withToken ? `Bearer ${this.tokenSet.accessToken}` : undefined;
         const queryParams =
             Object.entries(payload).length &&
@@ -638,7 +642,7 @@ export class ApiService {
                 method,
                 body,
                 headers: {
-                    "rl-correlation-id": CORRELATION_ID,
+                    "rl-correlation-id": this.correlationId,
                     Authorization: jwt,
                     ...contentType,
                 },
@@ -656,6 +660,7 @@ export class ApiService {
         attemptsLeft: number
     ): Promise<T> => {
         try {
+            window.DD_LOGS.addLoggerGlobalContext("correlation_id", this.correlationId);
             const response = await this.http(path, options);
             const contentType = response.headers.get("content-type");
             const parsedResponse =
@@ -684,6 +689,7 @@ export class ApiService {
 
     private logFetchError = async (errorResponse: Response) => {
         try {
+            window.DD_LOGS.addLoggerGlobalContext("correlation_id", this.correlationId);
             const stackTrace = await this.getErrorFromResponse(errorResponse);
             datadogLogs.logger.error(`ApiService fetch error`, {
                 errorStatus: errorResponse?.status || "",
