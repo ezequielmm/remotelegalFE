@@ -41,6 +41,7 @@ export interface MappedDeposition {
     requester: string;
     caseName: string;
     startDate: { date: string; time: string };
+    creationDate?: { date: string; time: string };
     witness?: string;
     courtReporter?: string;
     details?: string;
@@ -52,6 +53,13 @@ const parseDate = ({ startDate, endDate }): { date: string; time: string } => {
     const startTime = date.format("hh:mm A");
     const endTime = endDate ? ` to ${dayjs(endDate).local().format("hh:mm A")}` : "";
     return { date: dateFormat, time: `${startTime}${endTime}` };
+};
+
+const parseCreationDate = (creationDate: string): { date: string; time: string } => {
+    const date = dayjs(creationDate).local();
+    const dateFormat = date.format("ddd MMM DD YYYY");
+    const startTime = date.format("hh:mm A");
+    return { date: dateFormat, time: startTime };
 };
 
 const { RangePicker } = DatePicker;
@@ -78,23 +86,29 @@ const MyDepositions = () => {
 
     const mappedDepositions = useMemo(
         () =>
-            depositions?.map(({ id, details, status, requester, witness, participants, job, ...depositionsData }) => {
-                const courtReporter = participants.find((participant) => participant.role === Roles.courtReporter);
-                return {
-                    id,
-                    status,
-                    company: requester?.companyName,
-                    requester: `${requester.firstName} ${requester.lastName}`,
-                    caseName: `${depositionsData.caseName} ${depositionsData.caseNumber}`,
-                    startDate: parseDate({ startDate: depositionsData?.startDate, endDate: depositionsData?.endDate }),
-                    witness: witness?.user?.firstName
-                        ? `${witness?.user?.firstName} ${witness?.user?.lastName}`
-                        : witness?.name,
-                    courtReporter: courtReporter?.name,
-                    job,
-                    details: "-",
-                } as MappedDeposition;
-            }),
+            depositions?.map(
+                ({ id, details, status, requester, witness, participants, job, creationDate, ...depositionsData }) => {
+                    const courtReporter = participants.find((participant) => participant.role === Roles.courtReporter);
+                    return {
+                        id,
+                        status,
+                        company: requester?.companyName,
+                        requester: `${requester.firstName} ${requester.lastName}`,
+                        caseName: `${depositionsData.caseName} ${depositionsData.caseNumber}`,
+                        startDate: parseDate({
+                            startDate: depositionsData?.startDate,
+                            endDate: depositionsData?.endDate,
+                        }),
+                        witness: witness?.user?.firstName
+                            ? `${witness?.user?.firstName} ${witness?.user?.lastName}`
+                            : witness?.name,
+                        courtReporter: courtReporter?.name,
+                        job,
+                        details: "-",
+                        creationDate: parseCreationDate(creationDate),
+                    } as MappedDeposition;
+                }
+            ),
         [depositions]
     );
 

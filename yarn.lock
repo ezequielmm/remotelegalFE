@@ -13785,9 +13785,9 @@ proxy-addr@~2.0.5:
     forwarded "0.2.0"
     ipaddr.js "1.9.1"
 
-"prp-components-library@ssh://git@github.com/PrecisionReporters/prp-components-library.git#develop":
+"prp-components-library@ssh://git@github.com/PrecisionReporters/prp-components-library.git#release25":
   version "0.1.0"
-  resolved "ssh://git@github.com/PrecisionReporters/prp-components-library.git#31e471ee695169265a5801ec0dec37642cc474a5"
+  resolved "ssh://git@github.com/PrecisionReporters/prp-components-library.git#b2630cb2c344ba38b8ed7134ab728a39baaeefc4"
   dependencies:
     "@craco/craco" "^6.1.2"
     "@hookform/resolvers" "^1.0.1"
