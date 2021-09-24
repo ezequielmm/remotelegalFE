@@ -1040,65 +1040,6 @@ it("should show a toast when SignalR is trying to reconnect", async () => {
     });
 });
 
-describe("inDepo -> Block not supported resolutions", () => {
-    it("Should render the WrongOrientationScreen on landscape mode and smaller screens than the lg breakpoint 1024px", async () => {
-        mockWindowOrientation = ORIENTATION_STATE.LANDSCAPE;
-        global.innerWidth = parseInt(theme.default.breakpoints.lg, 10) - 100;
-        customDeps.apiService.joinDeposition = jest.fn().mockResolvedValue(TESTS_CONSTANTS.JOIN_DEPOSITION_MOCK);
-        renderWithGlobalContext(
-            <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,
-            customDeps,
-            {
-                ...rootReducer,
-                initialState: {
-                    room: {
-                        ...rootReducer.initialState.room,
-                    },
-                    user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
-                    signalR: {
-                        signalR: null,
-                        signalRConnectionStatus: { isReconnected: false, isReconnecting: false },
-                    },
-                },
-            },
-            history
-        );
-
-        history.push(TESTS_CONSTANTS.TEST_ROUTE);
-        await waitFor(() => {
-            expect(screen.getByTestId("deposition_orientation_screen")).toBeInTheDocument();
-        });
-    });
-
-    it("Should render the WrongOrientationScreen on portrait mode in bigger screens than the sm breakpoint 640px", async () => {
-        mockWindowOrientation = ORIENTATION_STATE.PORTRAIT;
-        global.innerWidth = parseInt(theme.default.breakpoints.sm, 10) + 100;
-        customDeps.apiService.joinDeposition = jest.fn().mockResolvedValue(TESTS_CONSTANTS.JOIN_DEPOSITION_MOCK);
-        renderWithGlobalContext(
-            <Route exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,
-            customDeps,
-            {
-                ...rootReducer,
-                initialState: {
-                    room: {
-                        ...rootReducer.initialState.room,
-                    },
-                    user: { currentUser: { firstName: "First Name", lastName: "Last Name" } },
-                    signalR: {
-                        signalR: null,
-                        signalRConnectionStatus: { isReconnected: false, isReconnecting: false },
-                    },
-                },
-            },
-            history
-        );
-
-        history.push(TESTS_CONSTANTS.TEST_ROUTE);
-        await waitFor(() => {
-            expect(screen.getByTestId("deposition_orientation_screen")).toBeInTheDocument();
-        });
-    });
-});
 it("calls createLocalAudioTrack with default value if first time if fails", async () => {
     const expectedNewLocalStorageObject = {
         ...TESTS_CONSTANTS.DEVICES_MOCK,
