@@ -207,7 +207,7 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
 
     const handleChangeStartTime = (current: dayjs.Dayjs) => {
         const concatenatedDate = formStatus.calendarDate.hour(current.hour()).minute(current.minute());
-        setFormStatus({ ...formStatus, startDate: dayjs(concatenatedDate).tz(mapTimeZone[deposition.timeZone], true) });
+        setFormStatus({ ...formStatus, startDate: dayjs(concatenatedDate) });
         if (
             dayjs(concatenatedDate).isBefore(
                 dayjs(new Date()).tz(mapTimeZone[deposition.timeZone], true).subtract(5, "m")
@@ -230,7 +230,7 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
         }
         const concatenatedDate = formStatus.calendarDate.hour(current.hour()).minute(current.minute());
 
-        setFormStatus({ ...formStatus, endDate: dayjs(concatenatedDate).tz(mapTimeZone[deposition.timeZone], true) });
+        setFormStatus({ ...formStatus, endDate: dayjs(concatenatedDate) });
         const isEndTimeSameOrBeforeStartTime =
             current &&
             dayjs(formStatus.startDate.tz(mapTimeZone[formStatus.timeZone], true))
