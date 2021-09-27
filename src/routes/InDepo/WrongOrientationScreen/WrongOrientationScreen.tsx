@@ -10,6 +10,11 @@ import ORIENTATION_STATE from "../../../types/orientation";
 
 const WrapperStyled = styled.div`
     height: 100vh;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999;
     background: ${({ theme }) => theme.colors.inDepoNeutrals[10]};
 `;
 

@@ -349,13 +349,6 @@ const InDepo = () => {
         depositionID,
     ]);
 
-    // if (
-    //     (windowWidth < parseInt(theme.default.breakpoints.lg, 10) && orientation === ORIENTATION_STATE.LANDSCAPE) ||
-    //     (windowWidth > parseInt(theme.default.breakpoints.sm, 10) && orientation === ORIENTATION_STATE.PORTRAIT)
-    // ) {
-    //     return <WrongOrientationScreen orientation={orientation} />;
-    // }
-
     if (loading && userStatus === null && shouldSendToPreDepo === null && !isReconnected && !isReconnecting) {
         return <Spinner />;
     }
@@ -440,6 +433,12 @@ const InDepo = () => {
                         />
                     </StyledRoomFooter>
                 </StyledInDepoContainer>
+                {((windowWidth < parseInt(theme.default.breakpoints.lg, 10) &&
+                    orientation === ORIENTATION_STATE.LANDSCAPE) ||
+                    (windowWidth > parseInt(theme.default.breakpoints.sm, 10) &&
+                        orientation === ORIENTATION_STATE.PORTRAIT)) && (
+                    <WrongOrientationScreen orientation={orientation} />
+                )}
             </ThemeProvider>
         </TranscriptionsProvider>
     ) : null;
