@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext, useRef } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import styled, { ThemeProvider } from "styled-components";
-import { isMobile as isDeviceMobileOrTablet } from "react-device-detect";
+import { isMobile as isDeviceMobileOrTablet, isMobileOnly } from "react-device-detect";
 import { Participant, connect } from "twilio-video";
 import Spinner from "prp-components-library/src/components/Spinner";
 import { Row } from "antd/lib/grid";
@@ -255,7 +255,7 @@ const InDepo = () => {
                 } else {
                     togglerExhibits(false);
                 }
-                const transcriptions = !isDeviceMobileOrTablet ? await getTranscriptions() : [];
+                const transcriptions = !isMobileOnly ? await getTranscriptions() : [];
                 const events = await getDepositionEvents(depositionID);
                 setInitialTranscriptions(setTranscriptionMessages(transcriptions, events));
             }
