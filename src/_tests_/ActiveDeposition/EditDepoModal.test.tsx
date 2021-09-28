@@ -15,6 +15,7 @@ import renderWithGlobalContext from "../utils/renderWithGlobalContext";
 import ActiveDepositionDetails from "../../routes/ActiveDepoDetails";
 import { TimeZones, mapTimeZone } from "../../models/general";
 import getModalTextContent from "../../routes/ActiveDepoDetails/helpers/getModalTextContent";
+import { rootReducer } from "../../state/GlobalState";
 
 dayjs.extend(weekday);
 dayjs.extend(localeData);
@@ -37,7 +38,20 @@ describe("Tests Edit Deposition Modal", () => {
         const modalText = getModalTextContent(Status.confirmed, fullDeposition);
         const { getAllByTestId, getAllByText, getByTestId, getByText } = renderWithGlobalContext(
             <ActiveDepositionDetails />,
-            customDeps
+            customDeps,
+            {
+                ...rootReducer,
+                initialState: {
+                    user: {
+                        currentUser: {
+                            firstName: "First Name",
+                            lastName: "Last Name",
+                            emailAddress: "test@test.com",
+                            isAdmin: true,
+                        },
+                    },
+                },
+            }
         );
         await waitFor(() => {
             const editButton = getAllByTestId(CONSTANTS.DEPOSITION_CARD_DETAILS_EDIT_BUTTON_DATA_TEST_ID);
@@ -106,7 +120,20 @@ describe("Tests Edit Deposition Modal", () => {
         const modalText = getModalTextContent(Status.canceled, fullDeposition);
         const { getAllByTestId, getAllByText, getByTestId, getByText } = renderWithGlobalContext(
             <ActiveDepositionDetails />,
-            customDeps
+            customDeps,
+            {
+                ...rootReducer,
+                initialState: {
+                    user: {
+                        currentUser: {
+                            firstName: "First Name",
+                            lastName: "Last Name",
+                            emailAddress: "test@test.com",
+                            isAdmin: true,
+                        },
+                    },
+                },
+            }
         );
         await waitFor(() => {
             const editButton = getAllByTestId(CONSTANTS.DEPOSITION_CARD_DETAILS_EDIT_BUTTON_DATA_TEST_ID);
@@ -140,7 +167,20 @@ describe("Tests Edit Deposition Modal", () => {
         });
         const { getAllByTestId, getByTestId, getByText } = renderWithGlobalContext(
             <ActiveDepositionDetails />,
-            customDeps
+            customDeps,
+            {
+                ...rootReducer,
+                initialState: {
+                    user: {
+                        currentUser: {
+                            firstName: "First Name",
+                            lastName: "Last Name",
+                            emailAddress: "test@test.com",
+                            isAdmin: true,
+                        },
+                    },
+                },
+            }
         );
         await waitFor(() => {
             const editButton = getAllByTestId(CONSTANTS.DEPOSITION_CARD_DETAILS_EDIT_BUTTON_DATA_TEST_ID);
@@ -172,7 +212,20 @@ describe("Tests Edit Deposition Modal", () => {
         });
         const { getAllByTestId, getAllByText, getByTestId } = renderWithGlobalContext(
             <ActiveDepositionDetails />,
-            customDeps
+            customDeps,
+            {
+                ...rootReducer,
+                initialState: {
+                    user: {
+                        currentUser: {
+                            firstName: "First Name",
+                            lastName: "Last Name",
+                            emailAddress: "test@test.com",
+                            isAdmin: true,
+                        },
+                    },
+                },
+            }
         );
         await waitFor(() => {
             const editButton = getAllByTestId(CONSTANTS.DEPOSITION_CARD_DETAILS_EDIT_BUTTON_DATA_TEST_ID);
@@ -191,7 +244,20 @@ describe("Tests Edit Deposition Modal", () => {
         });
         const { getAllByTestId, queryByTestId, getAllByRole } = renderWithGlobalContext(
             <ActiveDepositionDetails />,
-            customDeps
+            customDeps,
+            {
+                ...rootReducer,
+                initialState: {
+                    user: {
+                        currentUser: {
+                            firstName: "First Name",
+                            lastName: "Last Name",
+                            emailAddress: "test@test.com",
+                            isAdmin: true,
+                        },
+                    },
+                },
+            }
         );
         await waitFor(() => {
             const editButton = getAllByTestId(CONSTANTS.DEPOSITION_CARD_DETAILS_EDIT_BUTTON_DATA_TEST_ID);
@@ -226,7 +292,20 @@ describe("Tests Edit Deposition Modal", () => {
         });
         const { getAllByTestId, queryByTestId, getAllByRole } = renderWithGlobalContext(
             <ActiveDepositionDetails />,
-            customDeps
+            customDeps,
+            {
+                ...rootReducer,
+                initialState: {
+                    user: {
+                        currentUser: {
+                            firstName: "First Name",
+                            lastName: "Last Name",
+                            emailAddress: "test@test.com",
+                            isAdmin: true,
+                        },
+                    },
+                },
+            }
         );
         await waitFor(() => {
             const editButton = getAllByTestId(CONSTANTS.DEPOSITION_CARD_DETAILS_EDIT_BUTTON_DATA_TEST_ID);
@@ -271,7 +350,19 @@ describe("Tests Edit Deposition Modal", () => {
         customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
             return fullDeposition;
         });
-        renderWithGlobalContext(<ActiveDepositionDetails />, customDeps);
+        renderWithGlobalContext(<ActiveDepositionDetails />, customDeps, {
+            ...rootReducer,
+            initialState: {
+                user: {
+                    currentUser: {
+                        firstName: "First Name",
+                        lastName: "Last Name",
+                        emailAddress: "test@test.com",
+                        isAdmin: true,
+                    },
+                },
+            },
+        });
         await waitFor(() => {
             const editButton = screen.getAllByTestId(CONSTANTS.DEPOSITION_CARD_DETAILS_EDIT_BUTTON_DATA_TEST_ID);
             fireEvent.click(editButton[0]);

@@ -22,6 +22,8 @@ import { Roles } from "../../models/participant";
 import getModalTextContent from "../../routes/ActiveDepoDetails/helpers/getModalTextContent";
 import { PARTICIPANT_MOCK, PARTICIPANT_MOCK_NAME } from "../constants/preJoinDepo";
 import { mapTimeZone, TimeZones } from "../../models/general";
+import { getUser1, getUserNotAdmin } from "../constants/signUp";
+import { rootReducer } from "../../state/GlobalState";
 
 dayjs.extend(timezone);
 dayjs.extend(Do);
@@ -62,7 +64,19 @@ test("Calls caption endpoint with proper params and helper function", async () =
     customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
         return fullDeposition;
     });
-    const { getByText } = renderWithGlobalContext(<ActiveDepositionDetails />, customDeps);
+    const { getByText } = renderWithGlobalContext(<ActiveDepositionDetails />, customDeps, {
+        ...rootReducer,
+        initialState: {
+            user: {
+                currentUser: {
+                    firstName: "First Name",
+                    lastName: "Last Name",
+                    emailAddress: "test@test.com",
+                    isAdmin: true,
+                },
+            },
+        },
+    });
     await waitFor(() => {
         fireEvent.click(getByText(fullDeposition.caption.displayName));
         expect(customDeps.apiService.fetchCaption).toHaveBeenCalledWith(fullDeposition.id);
@@ -138,25 +152,84 @@ test("Shows spinner on mount", async () => {
         await wait(100);
         return [];
     });
-    const { getByTestId } = renderWithGlobalContext(<ActiveDepositionDetails />, customDeps);
+    const { getByTestId } = renderWithGlobalContext(<ActiveDepositionDetails />, customDeps, {
+        ...rootReducer,
+        initialState: {
+            user: {
+                currentUser: {
+                    firstName: "First Name",
+                    lastName: "Last Name",
+                    emailAddress: "test@test.com",
+                    isAdmin: true,
+                },
+            },
+        },
+    });
     expect(getByTestId("spinner")).toBeInTheDocument();
 });
 test("Shows error when fetch fails", async () => {
     customDeps.apiService.fetchDeposition = jest.fn().mockRejectedValue(async () => {
         throw Error("Something wrong");
     });
-    const { getByText } = renderWithGlobalContext(<ActiveDepositionDetails />, customDeps);
+    const { getByText } = renderWithGlobalContext(<ActiveDepositionDetails />, customDeps, {
+        ...rootReducer,
+        initialState: {
+            user: {
+                currentUser: {
+                    firstName: "First Name",
+                    lastName: "Last Name",
+                    emailAddress: "test@test.com",
+                    isAdmin: true,
+                },
+            },
+        },
+    });
     await waitFor(() => {
         expect(getByText(ERRORS_CONSTANTS.FETCH_ERROR_MODAL_TITLE)).toBeInTheDocument();
         expect(getByText(ERRORS_CONSTANTS.FETCH_ERROR_MODAL_BODY)).toBeInTheDocument();
         expect(getByText(ERRORS_CONSTANTS.FETCH_ERROR_MODAL_BODY)).toBeInTheDocument();
     });
 });
+
+test("Shows error when the current user is not admin", async () => {
+    customDeps.apiService.currentUser = jest.fn().mockRejectedValue(async () => getUserNotAdmin());
+    const { getByText } = renderWithGlobalContext(<ActiveDepositionDetails />, customDeps, {
+        ...rootReducer,
+        initialState: {
+            user: {
+                currentUser: {
+                    firstName: "First Name",
+                    lastName: "Last Name",
+                    emailAddress: "test@test.com",
+                    isAdmin: true,
+                },
+            },
+        },
+    });
+    await waitFor(() => {
+        expect(getByText(ERRORS_CONSTANTS.FETCH_ERROR_MODAL_TITLE)).toBeInTheDocument();
+        expect(getByText(ERRORS_CONSTANTS.FETCH_ERROR_MODAL_BODY)).toBeInTheDocument();
+        expect(getByText(ERRORS_CONSTANTS.FETCH_ERROR_MODAL_BODY)).toBeInTheDocument();
+    });
+});
+
 test("Shows correct info if fetch succeeds", async () => {
     customDeps.apiService.fetchDeposition = jest.fn().mockRejectedValue(async () => {
         throw Error("Something wrong");
     });
-    const { getByText } = renderWithGlobalContext(<ActiveDepositionDetails />, customDeps);
+    const { getByText } = renderWithGlobalContext(<ActiveDepositionDetails />, customDeps, {
+        ...rootReducer,
+        initialState: {
+            user: {
+                currentUser: {
+                    firstName: "First Name",
+                    lastName: "Last Name",
+                    emailAddress: "test@test.com",
+                    isAdmin: true,
+                },
+            },
+        },
+    });
     await waitFor(() => {
         expect(getByText(ERRORS_CONSTANTS.FETCH_ERROR_MODAL_TITLE)).toBeInTheDocument();
         expect(getByText(ERRORS_CONSTANTS.FETCH_ERROR_MODAL_BODY)).toBeInTheDocument();
@@ -201,7 +274,19 @@ test("Loads proper headers with proper texts when full info is available", async
     customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
         return fullDeposition;
     });
-    const { getByText, getAllByText, getByTestId } = renderWithGlobalContext(<ActiveDepositionDetails />, customDeps);
+    const { getByText, getAllByText, getByTestId } = renderWithGlobalContext(<ActiveDepositionDetails />, customDeps, {
+        ...rootReducer,
+        initialState: {
+            user: {
+                currentUser: {
+                    firstName: "First Name",
+                    lastName: "Last Name",
+                    emailAddress: "test@test.com",
+                    isAdmin: true,
+                },
+            },
+        },
+    });
     await waitFor(() => {
         expect(getByText(fullDeposition.caseName)).toBeInTheDocument();
         expect(getByText(fullDeposition.caseNumber)).toBeInTheDocument();
@@ -262,7 +347,19 @@ test("Loads to be defined when witness, court reporter and job are missing", asy
     customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
         return fullDeposition;
     });
-    const { getAllByText } = renderWithGlobalContext(<ActiveDepositionDetails />, customDeps);
+    const { getAllByText } = renderWithGlobalContext(<ActiveDepositionDetails />, customDeps, {
+        ...rootReducer,
+        initialState: {
+            user: {
+                currentUser: {
+                    firstName: "First Name",
+                    lastName: "Last Name",
+                    emailAddress: "test@test.com",
+                    isAdmin: true,
+                },
+            },
+        },
+    });
     await waitFor(() => {
         expect(getAllByText(CONSTANTS.DEPOSITION_NO_PARTICIPANT_TEXT)).toHaveLength(4);
     });
@@ -281,7 +378,19 @@ test("Loads none when details, captions and requester notes are missing and fals
     customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
         return fullDeposition;
     });
-    const { getAllByText, getByText } = renderWithGlobalContext(<ActiveDepositionDetails />, customDeps);
+    const { getAllByText, getByText } = renderWithGlobalContext(<ActiveDepositionDetails />, customDeps, {
+        ...rootReducer,
+        initialState: {
+            user: {
+                currentUser: {
+                    firstName: "First Name",
+                    lastName: "Last Name",
+                    emailAddress: "test@test.com",
+                    isAdmin: true,
+                },
+            },
+        },
+    });
     await waitFor(() => {
         expect(getAllByText(CONSTANTS.DEPOSITION_NO_TEXT)).toHaveLength(3);
         expect(getByText(CONSTANTS.DEPOSITION_VIDEO_RECORDING_FALSE_TEXT)).toBeInTheDocument();
@@ -295,7 +404,19 @@ test("complete date is not shown if completed date is missing", async () => {
     customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
         return fullDeposition;
     });
-    const { queryByText, getByText } = renderWithGlobalContext(<ActiveDepositionDetails />, customDeps);
+    const { queryByText, getByText } = renderWithGlobalContext(<ActiveDepositionDetails />, customDeps, {
+        ...rootReducer,
+        initialState: {
+            user: {
+                currentUser: {
+                    firstName: "First Name",
+                    lastName: "Last Name",
+                    emailAddress: "test@test.com",
+                    isAdmin: true,
+                },
+            },
+        },
+    });
     await waitFor(() => {
         const startDate = dayjs(fullDeposition.startDate)
             .tz(mapTimeZone[fullDeposition.timeZone])
@@ -329,7 +450,19 @@ test("Shows toast if caption endpoint fails", async () => {
     customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
         return fullDeposition;
     });
-    const { findByText } = renderWithGlobalContext(<ActiveDepositionDetails />, customDeps);
+    const { findByText } = renderWithGlobalContext(<ActiveDepositionDetails />, customDeps, {
+        ...rootReducer,
+        initialState: {
+            user: {
+                currentUser: {
+                    firstName: "First Name",
+                    lastName: "Last Name",
+                    emailAddress: "test@test.com",
+                    isAdmin: true,
+                },
+            },
+        },
+    });
     fireEvent.click(await findByText(fullDeposition.caption.displayName));
     expect(await findByText(CONSTANTS.CAPTION_NETWORK_ERROR)).toBeInTheDocument();
 });
@@ -479,7 +612,20 @@ test("Should validate add participant form", async () => {
     const deposition = getDepositionWithOverrideValues();
     const { findByText, findByTestId } = renderWithGlobalContext(
         <ParticipantListTable deposition={deposition} activeKey={CONSTANTS.DEPOSITION_DETAILS_TABS[1]} />,
-        customDeps
+        customDeps,
+        {
+            ...rootReducer,
+            initialState: {
+                user: {
+                    currentUser: {
+                        firstName: "First Name",
+                        lastName: "Last Name",
+                        emailAddress: "test@test.com",
+                        isAdmin: true,
+                    },
+                },
+            },
+        }
     );
 
     fireEvent.click(await findByText(CONSTANTS.DEPOSITION_DETAILS_ADD_PARTICIPANT_BUTTON));
@@ -510,7 +656,20 @@ test("Should add participant and display toast", async () => {
     const deposition = getDepositionWithOverrideValues();
     const { findByTestId, findByText, findAllByText } = renderWithGlobalContext(
         <ParticipantListTable deposition={deposition} activeKey={CONSTANTS.DEPOSITION_DETAILS_TABS[1]} />,
-        customDeps
+        customDeps,
+        {
+            ...rootReducer,
+            initialState: {
+                user: {
+                    currentUser: {
+                        firstName: "First Name",
+                        lastName: "Last Name",
+                        emailAddress: "test@test.com",
+                        isAdmin: true,
+                    },
+                },
+            },
+        }
     );
     fireEvent.click(await findByText(CONSTANTS.DEPOSITION_DETAILS_ADD_PARTICIPANT_BUTTON));
     userEvent.click(await findByText(CONSTANTS.DEPOSITION_DETAILS_ADD_PARTICIPANT_MODAL_ROLE_SELECT_PLACEHOLDER));
@@ -547,7 +706,20 @@ test("Should display error toast if participant has been added already", async (
     const deposition = getDepositionWithOverrideValues();
     const { findByTestId, findByText, findAllByText } = renderWithGlobalContext(
         <ParticipantListTable deposition={deposition} activeKey={CONSTANTS.DEPOSITION_DETAILS_TABS[1]} />,
-        customDeps
+        customDeps,
+        {
+            ...rootReducer,
+            initialState: {
+                user: {
+                    currentUser: {
+                        firstName: "First Name",
+                        lastName: "Last Name",
+                        emailAddress: "test@test.com",
+                        isAdmin: true,
+                    },
+                },
+            },
+        }
     );
     fireEvent.click(await findByText(CONSTANTS.DEPOSITION_DETAILS_ADD_PARTICIPANT_BUTTON));
     userEvent.click(await findByText(CONSTANTS.DEPOSITION_DETAILS_ADD_PARTICIPANT_MODAL_ROLE_SELECT_PLACEHOLDER));
@@ -569,7 +741,20 @@ test("Court Reporter shouldn´t be an option in Add Participant Modal if there i
     const deposition = getDepositionWithOverrideValues();
     const { findByText, findAllByText } = renderWithGlobalContext(
         <ParticipantListTable deposition={deposition} activeKey={CONSTANTS.DEPOSITION_DETAILS_TABS[1]} />,
-        customDeps
+        customDeps,
+        {
+            ...rootReducer,
+            initialState: {
+                user: {
+                    currentUser: {
+                        firstName: "First Name",
+                        lastName: "Last Name",
+                        emailAddress: "test@test.com",
+                        isAdmin: true,
+                    },
+                },
+            },
+        }
     );
     expect(await findByText("Court Reporter")).toBeInTheDocument();
     fireEvent.click(await findByText(CONSTANTS.DEPOSITION_DETAILS_ADD_PARTICIPANT_BUTTON));
@@ -585,7 +770,20 @@ test("Add participant button shouldn´t be present if there are 22 participants"
     const deposition = getDepositionWithOverrideValues();
     const { queryByText } = renderWithGlobalContext(
         <ParticipantListTable deposition={deposition} activeKey={CONSTANTS.DEPOSITION_DETAILS_TABS[1]} />,
-        customDeps
+        customDeps,
+        {
+            ...rootReducer,
+            initialState: {
+                user: {
+                    currentUser: {
+                        firstName: "First Name",
+                        lastName: "Last Name",
+                        emailAddress: "test@test.com",
+                        isAdmin: true,
+                    },
+                },
+            },
+        }
     );
     await waitFor(() => {
         expect(queryByText(CONSTANTS.DEPOSITION_DETAILS_ADD_PARTICIPANT_BUTTON)).toBeNull();
@@ -599,7 +797,20 @@ test("Shows correct info when modal pops up after clicking the edit icon on the 
     });
     const { findAllByTestId, findAllByText, findByTestId } = renderWithGlobalContext(
         <ActiveDepositionDetails />,
-        customDeps
+        customDeps,
+        {
+            ...rootReducer,
+            initialState: {
+                user: {
+                    currentUser: {
+                        firstName: "First Name",
+                        lastName: "Last Name",
+                        emailAddress: "test@test.com",
+                        isAdmin: true,
+                    },
+                },
+            },
+        }
     );
     const editButton = await findAllByTestId(CONSTANTS.DEPOSITION_CARD_DETAILS_EDIT_BUTTON_DATA_TEST_ID);
     fireEvent.click(editButton[0]);
@@ -625,7 +836,20 @@ test("Active deposition details should display a back button", async () => {
         <Router history={history}>
             <ActiveDepositionDetails />
         </Router>,
-        customDeps
+        customDeps,
+        {
+            ...rootReducer,
+            initialState: {
+                user: {
+                    currentUser: {
+                        firstName: "First Name",
+                        lastName: "Last Name",
+                        emailAddress: "test@test.com",
+                        isAdmin: true,
+                    },
+                },
+            },
+        }
     );
 
     const backButton = await findByTestId("depo_active_detail_back_button");
@@ -641,7 +865,19 @@ test("Shows correct info when modal pops up after clicking the edit icon on the 
     customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
         return fullDeposition;
     });
-    const { findAllByTestId, findByTestId } = renderWithGlobalContext(<ActiveDepositionDetails />, customDeps);
+    const { findAllByTestId, findByTestId } = renderWithGlobalContext(<ActiveDepositionDetails />, customDeps, {
+        ...rootReducer,
+        initialState: {
+            user: {
+                currentUser: {
+                    firstName: "First Name",
+                    lastName: "Last Name",
+                    emailAddress: "test@test.com",
+                    isAdmin: true,
+                },
+            },
+        },
+    });
     const editButton = await findAllByTestId(CONSTANTS.DEPOSITION_CARD_DETAILS_EDIT_BUTTON_DATA_TEST_ID);
     fireEvent.click(editButton[1]);
     await waitFor(async () => {
@@ -660,7 +896,20 @@ test("Shows toast when submitting", async () => {
     });
     const { findAllByTestId, findByTestId, findAllByText } = renderWithGlobalContext(
         <ActiveDepositionDetails />,
-        customDeps
+        customDeps,
+        {
+            ...rootReducer,
+            initialState: {
+                user: {
+                    currentUser: {
+                        firstName: "First Name",
+                        lastName: "Last Name",
+                        emailAddress: "test@test.com",
+                        isAdmin: true,
+                    },
+                },
+            },
+        }
     );
     const editButton = await findAllByTestId(CONSTANTS.DEPOSITION_CARD_DETAILS_EDIT_BUTTON_DATA_TEST_ID);
     fireEvent.click(editButton[1]);
@@ -686,7 +935,20 @@ test("Shows error toast if fetch fails", async () => {
     });
     const { findAllByTestId, findByTestId, findAllByText } = renderWithGlobalContext(
         <ActiveDepositionDetails />,
-        customDeps
+        customDeps,
+        {
+            ...rootReducer,
+            initialState: {
+                user: {
+                    currentUser: {
+                        firstName: "First Name",
+                        lastName: "Last Name",
+                        emailAddress: "test@test.com",
+                        isAdmin: true,
+                    },
+                },
+            },
+        }
     );
     const editButton = await findAllByTestId(CONSTANTS.DEPOSITION_CARD_DETAILS_EDIT_BUTTON_DATA_TEST_ID);
     fireEvent.click(editButton[1]);
@@ -708,7 +970,20 @@ test("Shows toast when properly canceled and depo status is pending", async () =
     });
     const { findAllByTestId, findAllByText, findByText, findByTestId } = renderWithGlobalContext(
         <ActiveDepositionDetails />,
-        customDeps
+        customDeps,
+        {
+            ...rootReducer,
+            initialState: {
+                user: {
+                    currentUser: {
+                        firstName: "First Name",
+                        lastName: "Last Name",
+                        emailAddress: "test@test.com",
+                        isAdmin: true,
+                    },
+                },
+            },
+        }
     );
     const editButton = await findAllByTestId(CONSTANTS.DEPOSITION_CARD_DETAILS_EDIT_BUTTON_DATA_TEST_ID);
     fireEvent.click(editButton[0]);
@@ -732,7 +1007,20 @@ test("Shows validation error message if start date is invalid", async () => {
     });
     const { findAllByTestId, findAllByText, findByText, findByTestId } = renderWithGlobalContext(
         <ActiveDepositionDetails />,
-        customDeps
+        customDeps,
+        {
+            ...rootReducer,
+            initialState: {
+                user: {
+                    currentUser: {
+                        firstName: "First Name",
+                        lastName: "Last Name",
+                        emailAddress: "test@test.com",
+                        isAdmin: true,
+                    },
+                },
+            },
+        }
     );
     const editButton = await findAllByTestId(CONSTANTS.DEPOSITION_CARD_DETAILS_EDIT_BUTTON_DATA_TEST_ID);
     fireEvent.click(editButton[0]);
@@ -756,7 +1044,20 @@ test("Shows error toast if cancel endpoint fails and depo status is pending", as
     });
     const { findAllByTestId, findAllByText, findByText, findByTestId } = renderWithGlobalContext(
         <ActiveDepositionDetails />,
-        customDeps
+        customDeps,
+        {
+            ...rootReducer,
+            initialState: {
+                user: {
+                    currentUser: {
+                        firstName: "First Name",
+                        lastName: "Last Name",
+                        emailAddress: "test@test.com",
+                        isAdmin: true,
+                    },
+                },
+            },
+        }
     );
     const editButton = await findAllByTestId(CONSTANTS.DEPOSITION_CARD_DETAILS_EDIT_BUTTON_DATA_TEST_ID);
     fireEvent.click(editButton[0]);
@@ -780,7 +1081,20 @@ test("Shows modal when canceling a confirmed depo and a toast if the cancel succ
     });
     const { findAllByTestId, findAllByText, findByText, findByTestId } = renderWithGlobalContext(
         <ActiveDepositionDetails />,
-        customDeps
+        customDeps,
+        {
+            ...rootReducer,
+            initialState: {
+                user: {
+                    currentUser: {
+                        firstName: "First Name",
+                        lastName: "Last Name",
+                        emailAddress: "test@test.com",
+                        isAdmin: true,
+                    },
+                },
+            },
+        }
     );
     const editButton = await findAllByTestId(CONSTANTS.DEPOSITION_CARD_DETAILS_EDIT_BUTTON_DATA_TEST_ID);
     fireEvent.click(editButton[0]);
@@ -810,7 +1124,20 @@ test("Shows modal when canceling a confirmed depo and a toast if the cancel endp
     });
     const { findAllByTestId, findAllByText, findByText, findByTestId } = renderWithGlobalContext(
         <ActiveDepositionDetails />,
-        customDeps
+        customDeps,
+        {
+            ...rootReducer,
+            initialState: {
+                user: {
+                    currentUser: {
+                        firstName: "First Name",
+                        lastName: "Last Name",
+                        emailAddress: "test@test.com",
+                        isAdmin: true,
+                    },
+                },
+            },
+        }
     );
     const editButton = await findAllByTestId(CONSTANTS.DEPOSITION_CARD_DETAILS_EDIT_BUTTON_DATA_TEST_ID);
     fireEvent.click(editButton[0]);
@@ -840,7 +1167,20 @@ test("Shows modal when reverting a canceled depo and a toast if the revert fails
     });
     const { findAllByTestId, findAllByText, findByText, findByTestId } = renderWithGlobalContext(
         <ActiveDepositionDetails />,
-        customDeps
+        customDeps,
+        {
+            ...rootReducer,
+            initialState: {
+                user: {
+                    currentUser: {
+                        firstName: "First Name",
+                        lastName: "Last Name",
+                        emailAddress: "test@test.com",
+                        isAdmin: true,
+                    },
+                },
+            },
+        }
     );
     const editButton = await findAllByTestId(CONSTANTS.DEPOSITION_CARD_DETAILS_EDIT_BUTTON_DATA_TEST_ID);
     fireEvent.click(editButton[0]);
@@ -879,7 +1219,20 @@ test("Shows modal when reverting a canceled depo and a toast if the revert succe
     });
     const { findAllByTestId, findAllByText, findByText, findByTestId } = renderWithGlobalContext(
         <ActiveDepositionDetails />,
-        customDeps
+        customDeps,
+        {
+            ...rootReducer,
+            initialState: {
+                user: {
+                    currentUser: {
+                        firstName: "First Name",
+                        lastName: "Last Name",
+                        emailAddress: "test@test.com",
+                        isAdmin: true,
+                    },
+                },
+            },
+        }
     );
     const editButton = await findAllByTestId(CONSTANTS.DEPOSITION_CARD_DETAILS_EDIT_BUTTON_DATA_TEST_ID);
     fireEvent.click(editButton[0]);
@@ -918,7 +1271,20 @@ test("Shows modal when reverting a canceled depo to confirmed and a toast if the
     });
     const { findAllByTestId, findAllByText, findByText, findByTestId } = renderWithGlobalContext(
         <ActiveDepositionDetails />,
-        customDeps
+        customDeps,
+        {
+            ...rootReducer,
+            initialState: {
+                user: {
+                    currentUser: {
+                        firstName: "First Name",
+                        lastName: "Last Name",
+                        emailAddress: "test@test.com",
+                        isAdmin: true,
+                    },
+                },
+            },
+        }
     );
     const editButton = await findAllByTestId(CONSTANTS.DEPOSITION_CARD_DETAILS_EDIT_BUTTON_DATA_TEST_ID);
     fireEvent.click(editButton[0]);
@@ -962,7 +1328,20 @@ test("Shows modal when reverting a canceled depo to confirmed and a toast if the
     });
     const { findAllByTestId, findAllByText, findByText, findByTestId } = renderWithGlobalContext(
         <ActiveDepositionDetails />,
-        customDeps
+        customDeps,
+        {
+            ...rootReducer,
+            initialState: {
+                user: {
+                    currentUser: {
+                        firstName: "First Name",
+                        lastName: "Last Name",
+                        emailAddress: "test@test.com",
+                        isAdmin: true,
+                    },
+                },
+            },
+        }
     );
     const editButton = await findAllByTestId(CONSTANTS.DEPOSITION_CARD_DETAILS_EDIT_BUTTON_DATA_TEST_ID);
     fireEvent.click(editButton[0]);
@@ -997,7 +1376,19 @@ test("Fields are disabled if depo is canceled", async () => {
     customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
         return fullDeposition;
     });
-    const { findAllByTestId, findByTestId } = renderWithGlobalContext(<ActiveDepositionDetails />, customDeps);
+    const { findAllByTestId, findByTestId } = renderWithGlobalContext(<ActiveDepositionDetails />, customDeps, {
+        ...rootReducer,
+        initialState: {
+            user: {
+                currentUser: {
+                    firstName: "First Name",
+                    lastName: "Last Name",
+                    emailAddress: "test@test.com",
+                    isAdmin: true,
+                },
+            },
+        },
+    });
     const testIds = [
         CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_DATA_TEST_ID_JOB,
         CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_CAPTION_BUTTON_TEST_ID,
@@ -1016,7 +1407,20 @@ test("shouldn´t revert a depo if the file is invalid", async () => {
     customDeps.apiService.revertCancelDeposition = jest.fn().mockImplementation(async () => {});
     const { findAllByTestId, findAllByText, findByTestId } = renderWithGlobalContext(
         <ActiveDepositionDetails />,
-        customDeps
+        customDeps,
+        {
+            ...rootReducer,
+            initialState: {
+                user: {
+                    currentUser: {
+                        firstName: "First Name",
+                        lastName: "Last Name",
+                        emailAddress: "test@test.com",
+                        isAdmin: true,
+                    },
+                },
+            },
+        }
     );
     await waitFor(async () => {
         const editButton = await findAllByTestId(CONSTANTS.DEPOSITION_CARD_DETAILS_EDIT_BUTTON_DATA_TEST_ID);
@@ -1051,15 +1455,28 @@ test("Redirects to post-depo is deposition status is completed", async () => {
     customDeps.apiService.fetchDeposition = jest.fn().mockImplementation(async () => {
         return fullDeposition;
     });
-    const { findByText } = renderWithGlobalContext(
+    customDeps.apiService.currentUser = jest.fn().mockResolvedValue(getUser1());
+    const { queryByText } = renderWithGlobalContext(
         <Switch>
             <Route exact path={TEST_CONSTANTS.ACTIVE_DEPO_DETAILS_ROUTE} component={ActiveDepositionDetails} />
             <Route exact path={TEST_CONSTANTS.ACTIVE_POST_DEPO_DETAILS_ROUTE} component={POST_DEPO_DETAILS} />
         </Switch>,
         customDeps,
-        undefined,
+        {
+            ...rootReducer,
+            initialState: {
+                user: {
+                    currentUser: {
+                        firstName: "First Name",
+                        lastName: "Last Name",
+                        emailAddress: "test@test.com",
+                        isAdmin: true,
+                    },
+                },
+            },
+        },
         history
     );
     history.push(TEST_CONSTANTS.ACTIVE_DEPO_DETAILS_ROUTE);
-    expect(await findByText("POST-DEPO")).toBeInTheDocument();
+    await waitFor(() => expect(queryByText("POST-DEPO")).toBeInTheDocument());
 });

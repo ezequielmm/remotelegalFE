@@ -3,7 +3,6 @@ import { useQuery } from "react-query";
 import { useParams } from "react-router";
 import { DEPOSITIONS_COUNT_PER_PAGE } from "../../constants/depositions";
 import { DepositionModel } from "../../models";
-import { IDeposition } from "../../models/deposition";
 import actions from "../../state/Depositions/DepositionsListActions";
 import { GlobalStateContext } from "../../state/GlobalState";
 import useAsyncCallback from "../useAsyncCallback";
@@ -27,9 +26,11 @@ export const useFetchDeposition = () => {
     >(() => {
         return deps.apiService.fetchDeposition(depositionID);
     }, []);
+
     React.useEffect(() => {
         if (error) console.error(`Error fetching deposition ${depositionID}.`);
     }, [error, depositionID]);
+
     return { fetchDeposition, loading, deposition: data, error };
 };
 

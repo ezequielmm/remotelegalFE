@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import Space from "prp-components-library/src/components/Space";
 import Spinner from "prp-components-library/src/components/Spinner";
@@ -14,16 +14,20 @@ import ActiveDepositionDetailsTabs from "./components/ActiveDepoDetailsTabs";
 import * as CONSTANTS from "../../constants/activeDepositionDetails";
 import { StyledLink } from "../DepositionDetails/styles";
 import { DEPOSITION_BACK_TO_DEPOSITIONS } from "../../constants/depositionDetails";
+import { IUser } from "../../models/user";
+import { GlobalStateContext } from "../../state/GlobalState";
 
 export default function ActiveDepositionDetails() {
+    const { state } = useContext(GlobalStateContext);
+    const { currentUser }: { currentUser: IUser } = state.user;
     const { fetchDeposition, loading, deposition, error } = useFetchDeposition();
     const [updatedDeposition, setUpdatedDeposition] = useState(null);
     const [activeKey, setActiveKey] = useState(CONSTANTS.DEFAULT_ACTIVE_TAB);
     const history = useHistory();
 
     useEffect(() => {
-        fetchDeposition();
-    }, [fetchDeposition]);
+        if (currentUser && currentUser.isAdmin) fetchDeposition();
+    }, [fetchDeposition, currentUser]);
 
     useEffect(() => {
         if (deposition?.status === Status.completed) {
@@ -35,7 +39,7 @@ export default function ActiveDepositionDetails() {
         return <Spinner height="100%" />;
     }
 
-    if (error) {
+    if (error || (currentUser && !currentUser.isAdmin)) {
         return <CardFetchError onClick={fetchDeposition} />;
     }
 
