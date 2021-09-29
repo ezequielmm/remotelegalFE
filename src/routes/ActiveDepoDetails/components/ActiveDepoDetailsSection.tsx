@@ -149,7 +149,7 @@ const DepositionDetailsSection = ({
                     deposition={updatedDeposition || deposition}
                 />
             )}
-            <Space py={6} fullWidth>
+            <Space pt={4} pb={3} fullWidth>
                 <Title
                     level={5}
                     noMargin
@@ -163,7 +163,7 @@ const DepositionDetailsSection = ({
                 title={CONSTANTS.DEPOSITION_CARD_DETAILS_TITLE}
                 actionTrigger={() => setOpenEditDepositionModal(true)}
             >
-                <Space size={12} direction="vertical" fullWidth>
+                <Space size={9} direction="vertical" fullWidth>
                     <Row style={{ width: "100%" }}>
                         <SectionCardCol
                             colProps={{ xl: 9 }}
@@ -237,7 +237,7 @@ const DepositionDetailsSection = ({
                         />
                     </Row>
                 </Space>
-                <Space mt={9} mb={6} fullHeight>
+                <Space mt={6} mb={4} fullHeight>
                     <Divider fitContent hasMargin={false} />
                 </Space>
                 <Text state={ColorStatus.disabled} block dataTestId={CONSTANTS.DEPOSITION_CREATED_TEXT_DATA_TEST_ID}>
@@ -248,7 +248,7 @@ const DepositionDetailsSection = ({
                 title={CONSTANTS.DEPOSITION_REQUESTER_TITLE}
                 actionTrigger={() => setOpenEditRequesterNotesModal(true)}
             >
-                <Space size={12} direction="vertical" fullWidth>
+                <Space size={9} direction="vertical" fullWidth>
                     <Row style={{ width: "100%" }}>
                         <SectionCardCol
                             colProps={{ xl: 9 }}

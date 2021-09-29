@@ -45,7 +45,7 @@ export default function ActiveDepositionDetails() {
 
     return (
         <>
-            <Space direction="vertical" size="large">
+            <Space direction="vertical" size={4}>
                 <Space.Item style={{ margin: 0 }}>
                     <StyledLink
                         icon={<Icon data-testid="depo_active_detail_back_button" icon={BackIcon} />}

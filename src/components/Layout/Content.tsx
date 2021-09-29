@@ -12,12 +12,12 @@ const { Content } = Layout;
 const StyledContent = styled(Content)`
     ${({ theme }) => {
         const styles = `
-            padding: ${getREM(theme.default.spaces[6] * 2)};
+            padding: ${getREM(theme.default.spaces[9])};
             overflow: auto;
             // Fix Firefox bug
             @-moz-document url-prefix() {
                 & > :last-child {
-                    margin-bottom: ${getREM(theme.default.spaces[6] * 2)};
+                    margin-bottom: ${getREM(theme.default.spaces[9])};
                 }
             }
             `;

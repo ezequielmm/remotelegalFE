@@ -97,7 +97,7 @@ const MyCases = () => {
                 fetchCases={refreshList}
             />
             {!error && (data === undefined || data?.length > 0) && (
-                <StyledSpace direction="vertical" size="large" fullWidth>
+                <StyledSpace direction="vertical" size="small" fullWidth>
                     <Row justify="space-between" style={{ width: "100%" }}>
                         <Title level={4} noMargin weight="light">
                             My Cases

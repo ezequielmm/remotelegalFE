@@ -186,7 +186,7 @@ const ParticipantListTable = ({
                     removeParticipant(deposition.id, selectedParticipant.current.id);
                 }}
             />
-            <Space direction="vertical" size="middle" pt={6} fullWidth>
+            <Space direction="vertical" size={4} pt={4} fullWidth>
                 <Space justify="space-between" fullWidth>
                     <Title
                         level={5}
