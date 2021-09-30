@@ -15,6 +15,7 @@ import isInputEmpty from "../../../helpers/isInputEmpty";
 import { useCreateCase } from "../../../hooks/cases/hooks";
 import ColorStatus from "../../../types/ColorStatus";
 import Message from "../../../components/Message";
+import { CASE_INPUT_NAME_MAX_LENGTH, CASE_NAME_PLACEHOLDER } from "../../../constants/cases";
 
 interface IModalProps {
     open: boolean;
@@ -36,8 +37,8 @@ const CaseModal = ({ open, handleClose, fetchCases, noStep2, setCase }: IModalPr
         setValue,
     } = useInput(isInputEmpty, {
         name: "case-name",
-        placeholder: "Type case name",
-        maxLength: 100,
+        placeholder: CASE_NAME_PLACEHOLDER,
+        maxLength: CASE_INPUT_NAME_MAX_LENGTH,
     });
     const caseNameErrorMessage = caseNameInvalid && "Please enter case name";
     const NETWORK_ERROR = "Something went wrong. Please try again.";

@@ -5,6 +5,8 @@ export const EMPTY_STATE_TEXT = "Currently, you don’t have any case added yet.
 export const EMPTY_STATE_BUTTON = "ADD CASE";
 
 export const CASE_COLUMNS_FIELDS = ["name", "caseNumber", "addedBy"];
+export const CASE_INPUT_NAME_MAX_LENGTH = 100;
+export const CASE_NAME_PLACEHOLDER = "Type case name";
 export const EDIT_CASE_CONFIRM_TITLE = "Save changes?";
 export const EDIT_CASE_CONFIRM_SUB_TITLE = "Past work product generated will not reflect the new case name.";
 export const EDIT_CASE_CONFIRM_POSITIVE = "YES, SAVE";

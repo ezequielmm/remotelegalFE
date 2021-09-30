@@ -90,8 +90,8 @@ const EditCaseModal = ({ open, handleClose, currentCase, fetchCases }: IModalPro
                                                         name: e.target.value,
                                                     })
                                                 }
-                                                placeholder="Type case name"
-                                                maxLength={50}
+                                                placeholder={CONSTANTS.CASE_NAME_PLACEHOLDER}
+                                                maxLength={CONSTANTS.CASE_INPUT_NAME_MAX_LENGTH}
                                                 name="case-name"
                                             />
                                             <Text size="small" state={ColorStatus.error}>
