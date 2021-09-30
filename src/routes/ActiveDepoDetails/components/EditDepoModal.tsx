@@ -39,7 +39,7 @@ import getModalTextContent, { getConfirmTextContent } from "../helpers/getModalT
 import isCanceledDateInvalid from "../helpers/isCanceledDateInvalid";
 import { mapTimeZone, TimeZones } from "../../../models/general";
 import { theme } from "../../../constants/styles/theme";
-import formatToDateOffset from "../../../helpers/formatToDateOffset";
+import { formatToDateWithoutTZ } from "../../../helpers/formatToDateOffset";
 
 dayjs.extend(isSameOrBefore);
 dayjs.extend(timezone);
@@ -271,9 +271,9 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
             return null;
         }
 
-        bodyWithoutFile.startDate = formatToDateOffset(calendarDate, formStatus.startDate, formStatus.timeZone);
+        bodyWithoutFile.startDate = formatToDateWithoutTZ(calendarDate, formStatus.startDate, formStatus.timeZone);
 
-        bodyWithoutFile.endDate = formatToDateOffset(calendarDate, formStatus.endDate, formStatus.timeZone);
+        bodyWithoutFile.endDate = formatToDateWithoutTZ(calendarDate, formStatus.endDate, formStatus.timeZone);
 
         return rescheduleDeposition(deposition.id, bodyWithoutFile, file, deleteCaption);
     };
@@ -301,13 +301,13 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
                         const {
                             ...bodyWithoutFile
                         }: { startDate: dayjs.Dayjs | string; endDate: dayjs.Dayjs | string } = formStatus;
-                        bodyWithoutFile.startDate = formatToDateOffset(
+                        bodyWithoutFile.startDate = formatToDateWithoutTZ(
                             calendarDate,
                             formStatus.startDate,
                             formStatus.timeZone
                         );
 
-                        bodyWithoutFile.endDate = formatToDateOffset(
+                        bodyWithoutFile.endDate = formatToDateWithoutTZ(
                             calendarDate,
                             formStatus.endDate,
                             formStatus.timeZone
