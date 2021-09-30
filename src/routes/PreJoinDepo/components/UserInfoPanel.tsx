@@ -64,6 +64,7 @@ const UserInfoPanel = ({
                         name="password"
                         placeholder={CONSTANTS.PASSWORD_PLACEHOLDER}
                         data-testid={CONSTANTS.PASSWORD_INPUT_ID}
+                        autoFocus
                     />
                 </InputWrapper>
                 {password.invalid && (
@@ -86,6 +87,7 @@ const UserInfoPanel = ({
                         name="name"
                         placeholder={CONSTANTS.NAME_PLACEHOLDER}
                         data-testid={CONSTANTS.NAME_INPUT_ID}
+                        autoFocus
                     />
                 </InputWrapper>
                 {name.invalid && (

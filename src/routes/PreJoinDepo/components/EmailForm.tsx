@@ -46,6 +46,7 @@ const EmailForm = ({ loading, onSubmit, defaultEmailValue }: IEmailForm) => {
                         name="email"
                         placeholder={CONSTANTS.EMAIL_PLACEHOLDER}
                         data-testid={CONSTANTS.EMAIL_INPUT_ID}
+                        autoFocus
                     />
                 </InputWrapper>
                 {invalid && (
