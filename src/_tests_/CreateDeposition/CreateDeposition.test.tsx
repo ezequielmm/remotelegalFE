@@ -1,5 +1,5 @@
 /* eslint-disable no-await-in-loop */
-import { fireEvent, waitForElement, waitForDomChange } from "@testing-library/react";
+import { fireEvent, waitForElement, waitForDomChange, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import "mutationobserver-shim";
 import React from "react";
@@ -16,6 +16,7 @@ import getMockDeps from "../utils/getMockDeps";
 import { getUserNotAdmin } from "../constants/signUp";
 import { rootReducer } from "../../state/GlobalState";
 import { wait } from "../../helpers/wait";
+import getNextWorkingDay from "../../helpers/getNextWorkingDay";
 
 global.MutationObserver = window.MutationObserver;
 let customDeps;
@@ -1109,4 +1110,228 @@ it(`add up to ${CONSTANTS.WITNESSES_LIMIT} witnesses and try to add another with
 
     await wait(500);
     expect(addWitnessButton).toBeDisabled();
+});
+
+it("should show a warning for not admin users", async () => {
+    customDeps.apiService.currentUser = jest.fn().mockResolvedValue(getUserNotAdmin());
+    renderWithGlobalContext(<CreateDeposition />, customDeps, {
+        ...rootReducer,
+        initialState: {
+            room: {
+                ...rootReducer.initialState.room,
+            },
+            user: { currentUser: { firstName: "First Name", lastName: "Last Name", isAdmin: false } },
+            signalR: { signalR: null },
+        },
+    });
+
+    await waitFor(() => {
+        expect(screen.queryAllByTestId(CONSTANTS.SCHEDULED_DEPO_WARNING_TEST_ID).length).toBe(1);
+    });
+});
+
+it("should not show a warning for admin users", async () => {
+    customDeps.apiService.currentUser = jest.fn().mockResolvedValue(getUserNotAdmin());
+    renderWithGlobalContext(<CreateDeposition />, customDeps, {
+        ...rootReducer,
+        initialState: {
+            room: {
+                ...rootReducer.initialState.room,
+            },
+            user: { currentUser: { firstName: "First Name", lastName: "Last Name", isAdmin: true } },
+            signalR: { signalR: null },
+        },
+    });
+
+    await waitFor(() => {
+        expect(screen.queryByTestId(CONSTANTS.SCHEDULED_DEPO_WARNING_TEST_ID)).not.toBeInTheDocument();
+    });
+});
+
+it("should show an error message if user is not admin and tries to scheudule a depo before 48hs", async () => {
+    renderWithGlobalContext(<CreateDeposition />, customDeps, {
+        ...rootReducer,
+        initialState: {
+            room: {
+                ...rootReducer.initialState.room,
+            },
+            user: { currentUser: { firstName: "First Name", lastName: "Last Name", isAdmin: false } },
+            signalR: { signalR: null },
+        },
+    });
+
+    // DATE FILL
+    const dateInput = screen.getByPlaceholderText(CONSTANTS.DATE_PLACEHOLDER);
+    await act(async () => {
+        await userEvent.click(dateInput);
+    });
+    await act(async () => {
+        await userEvent.click(dateInput);
+        await fireEvent.change(dateInput, {
+            target: { value: dayjs(getNextWorkingDay(dayjs(), 2)).format(CONSTANTS.DATE_FORMAT) },
+        });
+        await fireEvent.keyDown(dateInput, { key: "enter", keyCode: 13 });
+    });
+    // TIMES FILL
+    const [startInput] = screen.getAllByPlaceholderText(CONSTANTS.START_PLACEHOLDER);
+    await act(async () => {
+        await userEvent.click(startInput);
+        await fireEvent.change(startInput, {
+            target: { value: dayjs(dayjs().minute(0).second(0).toString()).format(CONSTANTS.TIME_FORMAT) },
+        });
+    });
+    await act(async () => {
+        const okButton = screen.getAllByRole("button", { name: /ok/i })[0];
+        await userEvent.click(okButton);
+    });
+    const scheduleDeposition = screen.getByTestId("create_deposition_button");
+    await act(async () => {
+        await userEvent.click(scheduleDeposition);
+    });
+
+    await waitFor(() => {
+        expect(screen.queryAllByTestId(CONSTANTS.INVALID_START_TIME_ERROR_END_USER_TEST_ID).length).toBe(1);
+    });
+});
+
+it("should not show an error message if user is admin and tries to scheudule a depo before 48hs", async () => {
+    renderWithGlobalContext(<CreateDeposition />, customDeps, {
+        ...rootReducer,
+        initialState: {
+            room: {
+                ...rootReducer.initialState.room,
+            },
+            user: { currentUser: { firstName: "First Name", lastName: "Last Name", isAdmin: true } },
+            signalR: { signalR: null },
+        },
+    });
+
+    // DATE FILL
+    const dateInput = screen.getByPlaceholderText(CONSTANTS.DATE_PLACEHOLDER);
+    await act(async () => {
+        await userEvent.click(dateInput);
+    });
+    await act(async () => {
+        await userEvent.click(dateInput);
+        await fireEvent.change(dateInput, {
+            target: { value: dayjs(getNextWorkingDay(dayjs(), 1)).format(CONSTANTS.DATE_FORMAT) },
+        });
+        await fireEvent.keyDown(dateInput, { key: "enter", keyCode: 13 });
+    });
+    // TIMES FILL
+    const [startInput] = screen.getAllByPlaceholderText(CONSTANTS.START_PLACEHOLDER);
+    await act(async () => {
+        await userEvent.click(startInput);
+        await fireEvent.change(startInput, {
+            target: { value: dayjs(dayjs().minute(0).second(0).toString()).format(CONSTANTS.TIME_FORMAT) },
+        });
+    });
+    await act(async () => {
+        const okButton = screen.getAllByRole("button", { name: /ok/i })[0];
+        await userEvent.click(okButton);
+    });
+    const scheduleDeposition = screen.getByTestId("create_deposition_button");
+    await act(async () => {
+        await userEvent.click(scheduleDeposition);
+    });
+
+    await waitFor(() => {
+        expect(screen.queryAllByTestId(CONSTANTS.INVALID_START_TIME_ERROR_END_USER_TEST_ID).length).toBe(0);
+    });
+});
+
+it("should not show an error message if user is not admin and tries to scheudule a depo after 48hs", async () => {
+    renderWithGlobalContext(<CreateDeposition />, customDeps, {
+        ...rootReducer,
+        initialState: {
+            room: {
+                ...rootReducer.initialState.room,
+            },
+            user: { currentUser: { firstName: "First Name", lastName: "Last Name", isAdmin: false } },
+            signalR: { signalR: null },
+        },
+    });
+
+    // DATE FILL
+    const dateInput = screen.getByPlaceholderText(CONSTANTS.DATE_PLACEHOLDER);
+    await act(async () => {
+        await userEvent.click(dateInput);
+    });
+    await act(async () => {
+        await userEvent.click(dateInput);
+        await fireEvent.change(dateInput, {
+            target: { value: dayjs(getNextWorkingDay(dayjs(), 2)).format(CONSTANTS.DATE_FORMAT) },
+        });
+        await fireEvent.keyDown(dateInput, { key: "enter", keyCode: 13 });
+    });
+    // TIMES FILL
+    const [startInput] = screen.getAllByPlaceholderText(CONSTANTS.START_PLACEHOLDER);
+    await act(async () => {
+        await userEvent.click(startInput);
+        await fireEvent.change(startInput, {
+            target: {
+                value: dayjs(dayjs().add(1, "hour").minute(0).second(0).toString()).format(CONSTANTS.TIME_FORMAT),
+            },
+        });
+    });
+    await act(async () => {
+        const okButton = screen.getAllByRole("button", { name: /ok/i })[0];
+        await userEvent.click(okButton);
+    });
+    const scheduleDeposition = screen.getByTestId("create_deposition_button");
+    await act(async () => {
+        await userEvent.click(scheduleDeposition);
+    });
+
+    await waitFor(() => {
+        expect(screen.queryAllByTestId(CONSTANTS.INVALID_START_TIME_ERROR_END_USER_TEST_ID).length).toBe(0);
+    });
+});
+
+it("should show an error message if user is admin and tries to scheudule a depo in the past", async () => {
+    renderWithGlobalContext(<CreateDeposition />, customDeps, {
+        ...rootReducer,
+        initialState: {
+            room: {
+                ...rootReducer.initialState.room,
+            },
+            user: { currentUser: { firstName: "First Name", lastName: "Last Name", isAdmin: true } },
+            signalR: { signalR: null },
+        },
+    });
+
+    // DATE FILL
+    const dateInput = screen.getByPlaceholderText(CONSTANTS.DATE_PLACEHOLDER);
+    await act(async () => {
+        await userEvent.click(dateInput);
+    });
+    await act(async () => {
+        await userEvent.click(dateInput);
+        await fireEvent.change(dateInput, {
+            target: { value: dayjs(dayjs()).format(CONSTANTS.DATE_FORMAT) },
+        });
+        await fireEvent.keyDown(dateInput, { key: "enter", keyCode: 13 });
+    });
+    // TIMES FILL
+    const [startInput] = screen.getAllByPlaceholderText(CONSTANTS.START_PLACEHOLDER);
+    await act(async () => {
+        await userEvent.click(startInput);
+        await fireEvent.change(startInput, {
+            target: {
+                value: dayjs(dayjs().subtract(1, "hour").minute(0).second(0).toString()).format(CONSTANTS.TIME_FORMAT),
+            },
+        });
+    });
+    await act(async () => {
+        const okButton = screen.getAllByRole("button", { name: /ok/i })[0];
+        await userEvent.click(okButton);
+    });
+    const scheduleDeposition = screen.getByTestId("create_deposition_button");
+    await act(async () => {
+        await userEvent.click(scheduleDeposition);
+    });
+
+    await waitFor(() => {
+        expect(screen.queryAllByText(CONSTANTS.INVALID_START_TIME_ERROR).length).toBe(1);
+    });
 });

@@ -19,14 +19,16 @@ import { DeleteWitnessButton, WitnessTitleContainer } from "../../styles";
 import { ReactComponent as DeleteIcon } from "../../../../assets/icons/delete.svg";
 import ColorStatus from "../../../../types/ColorStatus";
 import { TimeZones } from "../../../../models/general";
+import getNextWorkingDay from "../../../../helpers/getNextWorkingDay";
 
 interface WitnessItemProps {
     deposition: Partial<ArrayField<Record<string, any>>>;
     removeWitness: () => void;
     witnessNumber?: number;
+    shouldValidateDepoDate: boolean;
 }
 
-const WitnessItem = ({ deposition, removeWitness, witnessNumber }: WitnessItemProps) => {
+const WitnessItem = ({ deposition, removeWitness, witnessNumber, shouldValidateDepoDate }: WitnessItemProps) => {
     const { control, errors, setValue, trigger, watch } = useFormContext();
     const depositionErrors = errors.depositions ? errors.depositions[witnessNumber] : {};
 
@@ -45,8 +47,12 @@ const WitnessItem = ({ deposition, removeWitness, witnessNumber }: WitnessItemPr
     }, [date]);
 
     const disabledDate = (current) => {
+        const validDateFrom = shouldValidateDepoDate ? getNextWorkingDay(dayjs(), 2) : dayjs();
         return (
-            current && (current.isBefore(dayjs().startOf("day")) || current.isAfter(dayjs().startOf("day").add(1, "y")))
+            current &&
+            (current.isBefore(validDateFrom.startOf("day")) ||
+                current.isAfter(dayjs().startOf("day").add(1, "y")) ||
+                [0, 6].includes(current.day()))
         );
     };
 
@@ -146,6 +152,7 @@ const WitnessItem = ({ deposition, removeWitness, witnessNumber }: WitnessItemPr
                             name={`depositions[${witnessNumber}].startTime`}
                             label={CONSTANTS.START_LABEL}
                             placeholder={CONSTANTS.START_PLACEHOLDER}
+                            disabledErrorEllipsis
                         />
                     </Col>
                     <Col xs={5}>

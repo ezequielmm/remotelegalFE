@@ -1,4 +1,5 @@
 import dayjs from "dayjs";
+import getNextWorkingDay from "../../helpers/getNextWorkingDay";
 import mapDepositions from "../../helpers/mapDepositions";
 import { TimeZones } from "../../models/general";
 import { getCaseAsc } from "./cases";
@@ -15,7 +16,7 @@ export const getDepositions = () => ({
                 phone: null,
             },
             file: null,
-            date: dayjs().hour(0).minute(0).add(2, "days").toDate().toString(),
+            date: getNextWorkingDay(dayjs(), 3).hour(0).minute(0).toDate().toString(),
             startTime: dayjs().hour(24).minute(30).second(0).toString(),
             endTime: dayjs().hour(2).minute(30).second(0).toDate().toString(),
             timeZone: TimeZones.ET,

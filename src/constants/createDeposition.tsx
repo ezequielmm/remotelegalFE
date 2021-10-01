@@ -1,3 +1,5 @@
+import Button from "prp-components-library/src/components/Button";
+
 // eslint-disable-next-line import/prefer-default-export
 export const SCHEDULE_DEPOSITION = "Schedule Deposition";
 
@@ -43,6 +45,17 @@ export const DATE_ERROR = "Please enter a date";
 export const EMAIL_ERROR = "Please enter a valid Email address";
 export const EMAIL_REQUIRED_ERROR = "Please enter an Email address";
 export const INVALID_START_TIME_ERROR = "Invalid start time";
+export const REMOTE_LEGAL_PHONE_NUMBER = "(646) 461-3400";
+export const REMOTE_LEGAL_SCHEDULING_EMAIL = "scheduling@remotelegal.com";
+export const INVALID_START_TIME_ERROR_END_USER_TEST_ID = "INVALID_START_TIME_ERROR_END_USER_TEST_ID";
+export const INVALID_START_TIME_ERROR_END_USER = (
+    <span data-testid={INVALID_START_TIME_ERROR_END_USER_TEST_ID}>
+        To schedule within 48 hours, please call {REMOTE_LEGAL_PHONE_NUMBER} or email{" "}
+        <Button type="link" danger href={`mailto:${REMOTE_LEGAL_SCHEDULING_EMAIL}`}>
+            {REMOTE_LEGAL_SCHEDULING_EMAIL}
+        </Button>
+    </span>
+);
 export const INVALID_END_TIME_ERROR = "Invalid end time";
 export const PHONE_ERROR = "Please enter a valid Phone Number";
 export const NAME_REQUIRED_ERROR = "Please enter a Name";
@@ -105,3 +118,22 @@ export const TIME_PICKER_PROPS = {
 export const WITNESSES_LIMIT = 10;
 export const ADD_WITNESS_BUTTON_TEST_ID = "add_witness_button";
 export const INVALID_CASE_MESSAGE = "Please select a Case";
+
+export const SCHEDULED_DEPO_WARNING = (
+    <span>
+        IF YOU ARE BOOKING A DEPOSITION WITHIN 48 HOURS, PLEASE CALL REMOTE LEGAL AT{" "}
+        <strong>{REMOTE_LEGAL_PHONE_NUMBER}</strong> OR EMAIL{" "}
+        <strong>
+            <a
+                href={`mailto:${REMOTE_LEGAL_SCHEDULING_EMAIL}`}
+                target="_blank"
+                style={{ textTransform: "uppercase" }}
+                rel="noreferrer"
+            >
+                {REMOTE_LEGAL_SCHEDULING_EMAIL}.
+            </a>
+        </strong>
+    </span>
+);
+
+export const SCHEDULED_DEPO_WARNING_TEST_ID = "SCHEDULED_DEPO_WARNING_TEST_ID";

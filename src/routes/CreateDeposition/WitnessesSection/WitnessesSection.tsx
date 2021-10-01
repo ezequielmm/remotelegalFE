@@ -8,7 +8,13 @@ import { ReactComponent as AddIcon } from "../../../assets/general/Add.svg";
 import * as CONSTANTS from "../../../constants/createDeposition";
 import WitnessItem from "./WitnessItem";
 
-const WitnessesSection = ({ addWitnessIsEnabled = false }: { addWitnessIsEnabled: boolean }) => {
+const WitnessesSection = ({
+    addWitnessIsEnabled = false,
+    shouldValidateDepoDate = false,
+}: {
+    addWitnessIsEnabled: boolean;
+    shouldValidateDepoDate: boolean;
+}) => {
     const { errors, control, trigger } = useFormContext();
     const { append, fields, remove } = useFieldArray({ control, name: "depositions" });
 
@@ -22,7 +28,12 @@ const WitnessesSection = ({ addWitnessIsEnabled = false }: { addWitnessIsEnabled
         <Card fullWidth>
             {fields.map((field, index) => (
                 <Fragment key={field.id}>
-                    <WitnessItem removeWitness={() => remove(index)} deposition={field} witnessNumber={index} />
+                    <WitnessItem
+                        removeWitness={() => remove(index)}
+                        deposition={field}
+                        witnessNumber={index}
+                        shouldValidateDepoDate={shouldValidateDepoDate}
+                    />
                     {fields.length > index + 1 && <Divider />}
                 </Fragment>
             ))}

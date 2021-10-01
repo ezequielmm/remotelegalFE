@@ -6,6 +6,7 @@ import Title from "prp-components-library/src/components/Title";
 import { useHistory } from "react-router";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { FormProvider, useForm } from "react-hook-form";
+import StyledAlert from "prp-components-library/src/components/Alert/styles";
 import CaseSection from "./CaseSection";
 import WitnessesSection from "./WitnessesSection";
 import DetailsSection from "./DetailsSection";
@@ -99,6 +100,15 @@ const CreateDeposition = () => {
                             Schedule Deposition
                         </Title>
                     </Space.Item>
+                    {!currentUser.isAdmin && (
+                        <StyledAlert
+                            data-testid={CONSTANTS.SCHEDULED_DEPO_WARNING_TEST_ID}
+                            type="warning"
+                            closable={false}
+                            message={CONSTANTS.SCHEDULED_DEPO_WARNING}
+                            showIcon
+                        />
+                    )}
                     <CaseSection
                         invalidCase={invalidCase}
                         setInvalidCase={setInvalidCase}
@@ -109,7 +119,10 @@ const CreateDeposition = () => {
                         loadingCases={loadingCases}
                         fetchingError={fetchingCasesError}
                     />
-                    <WitnessesSection addWitnessIsEnabled={!!currentUser?.isAdmin} />
+                    <WitnessesSection
+                        addWitnessIsEnabled={!!currentUser?.isAdmin}
+                        shouldValidateDepoDate={!currentUser?.isAdmin}
+                    />
                     <OtherParticipantsSection />
                     <DetailsSection />
                     {!!currentUser?.isAdmin && <RequesterSection invalidRequester={error === 404 && "Invalid email"} />}

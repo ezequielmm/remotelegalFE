@@ -2,6 +2,7 @@ import dayjs from "dayjs";
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
 import * as yup from "yup";
 import * as CONSTANTS from "../constants/createDeposition";
+import getNextWorkingDay from "../helpers/getNextWorkingDay";
 
 dayjs.extend(isSameOrAfter);
 
@@ -28,14 +29,19 @@ const getDepositionSchema = (isAdmin) =>
                     .nullable()
                     .required(CONSTANTS.REQUIRED_TIME_ERROR)
                     .label("Start Time")
-                    .test("start_time_test", CONSTANTS.INVALID_START_TIME_ERROR, function (value) {
-                        const { date } = this.parent;
-                        if (!date || !value) return true;
-                        const today = dayjs();
-                        const isSame = today.isSame(dayjs(date), "day");
-                        if (isSame && today.add(1, "h").isSameOrAfter(dayjs(value))) return false;
-                        return true;
-                    }),
+                    .test(
+                        "start_time_test",
+                        isAdmin ? CONSTANTS.INVALID_START_TIME_ERROR : CONSTANTS.INVALID_START_TIME_ERROR_END_USER,
+                        function (value) {
+                            const { date } = this.parent;
+                            if (!date || !value) return true;
+                            const firstAvailableDay = isAdmin ? dayjs() : getNextWorkingDay(dayjs(), 2);
+                            const compareTo = isAdmin ? dayjs(value) : getNextWorkingDay(dayjs(value), 2);
+                            const isSame = firstAvailableDay.isSame(dayjs(date), "day");
+                            if (isSame && firstAvailableDay.isSameOrAfter(compareTo)) return false;
+                            return true;
+                        }
+                    ),
                 endTime: yup
                     .string()
                     .nullable()
