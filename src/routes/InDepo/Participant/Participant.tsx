@@ -98,9 +98,9 @@ const Participant = ({
             isVideoOnly={isVideoOnly}
             isWitness={isWitness}
         >
+            <img src={AspectRatio} alt="16/9" className="aspect-ratio" />
             <video ref={videoRef} autoPlay />
             <audio ref={audioRef} autoPlay />
-            <img src={AspectRatio} alt="16/9" className="aspect-ratio" />
             {timeZone && (
                 <StyledTimeBox>
                     <Clock timeZone={timeZone} />

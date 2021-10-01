@@ -25,6 +25,8 @@ export const StyledParticipantMask = styled.div<{
         max-width: 100%;
         display: block;
         object-fit: contain;
+        position: relative;
+        z-index: -1; // Fix Safari stacking context problem
     }
 
     video {
@@ -34,6 +36,8 @@ export const StyledParticipantMask = styled.div<{
         max-width: 100%;
         object-fit: contain;
         position: absolute;
+        top: 0;
+        left: 0;
         z-index: -1; // Fix Safari stacking context problem
     }
 
