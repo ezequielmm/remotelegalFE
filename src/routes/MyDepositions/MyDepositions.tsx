@@ -228,6 +228,7 @@ const MyDepositions = () => {
                                 pageSize: DEPOSITIONS_COUNT_PER_PAGE,
                                 total: filter?.PastDepositions === true ? totalPast : totalUpcoming,
                                 showSizeChanger: false,
+                                hideOnSinglePage: true,
                             }}
                             scroll
                             hscroll={1200}
