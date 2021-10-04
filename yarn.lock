@@ -4266,10 +4266,10 @@
   dependencies:
     "@babel/runtime" "^7.12.5"
 
-"@testrtc/watchrtc-sdk@^1.29.2":
-  version "1.29.2"
-  resolved "https://registry.yarnpkg.com/@testrtc/watchrtc-sdk/-/watchrtc-sdk-1.29.2.tgz#140f6a195a4583aa9bc64e622e7efedfdaa709da"
-  integrity sha512-x6i3zvcg4/mLaYdXXOGhXTl5qnkTGWPjID4puLuRp5XaT2tv5KcjU9ULUzXScCK9wRUuVoMQo2sHAniG+2AgUw==
+"@testrtc/watchrtc-sdk@^1.30.2":
+  version "1.30.2"
+  resolved "https://registry.yarnpkg.com/@testrtc/watchrtc-sdk/-/watchrtc-sdk-1.30.2.tgz#10fb8d9a7c93272e8321f9c74203f5bd47cbaf83"
+  integrity sha512-JiDnsD2n9Bqy3v8pgxtnLNOo3JTjzM2aySUCdKHPmLsMuzd9U/iy+dC2oL/vZIBkaayxe9DVoWwbtLFxRM1zMw==
 
 "@tootallnate/once@1":
   version "1.1.2"

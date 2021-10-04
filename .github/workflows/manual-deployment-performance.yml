@@ -6,9 +6,6 @@ on:
 jobs:
   build-test:
     runs-on: ubuntu-latest
-    if: contains('
-      refs/heads/performance
-      ', github.ref)
     steps:
       - uses: actions/checkout@v2
       - name: Cache node modules
@@ -59,9 +56,6 @@ jobs:
 
   pack-deploy:
     runs-on: ubuntu-latest
-    if: contains('
-      refs/heads/performance
-      ', github.ref)
     needs: [build-test]
     steps:
       - uses: actions/checkout@v2

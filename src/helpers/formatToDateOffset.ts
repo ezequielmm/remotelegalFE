@@ -16,3 +16,14 @@ export default (date: Dayjs, time: Dayjs, timeZone: TimeZones) => {
         .second(dayjs(time).second())
         .format("YYYY-MM-DD[T]HH:mm:ss.SSSZ");
 };
+
+export const formatToDateWithoutTZ = (date: Dayjs, time: Dayjs, timeZone: TimeZones) => {
+    if (!date || !time || !timeZone) {
+        return null;
+    }
+    return dayjs(date)
+        .hour(dayjs(time).hour())
+        .minute(dayjs(time).minute())
+        .second(dayjs(time).second())
+        .format("YYYY-MM-DD[T]HH:mm:ss.SSSZ");
+};
