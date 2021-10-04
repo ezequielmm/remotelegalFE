@@ -52,6 +52,7 @@ function App() {
         watchRTC.init({
             rtcApiKey: process.env.REACT_APP_RTC_API_KEY,
             rtcRoomId: process.env.REACT_APP_ENV,
+            rtcPeerId: process.env.REACT_APP_ENV,
         });
     }
     window.DD_LOGS.init({
