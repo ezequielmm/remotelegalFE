@@ -35,6 +35,16 @@ export const GET_AUDIO_EXPECTED_MOCK = (additional?) => ({
         ...additional,
     },
 });
+export const GET_AUDIO_VIDEO_EXPECTED_MOCK = (additional?) => ({
+    audio: {
+        ...MediaStreamConstraints.audioinput,
+        ...additional,
+    },
+    video: {
+        ...MediaStreamConstraints.videoinput,
+        ...additional,
+    },
+});
 
 export const NON_AVAILABLE_DEVICES_LIST_MOCK = [
     { label: "", kind: "audioinput", deviceId: "" },

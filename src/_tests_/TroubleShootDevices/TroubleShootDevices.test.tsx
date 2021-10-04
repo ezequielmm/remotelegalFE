@@ -73,8 +73,7 @@ test("overlay is shown on startup, getUserMedia  is called with the right params
     renderWithGlobalContext(<TroubleShootUserDevices />, customDeps);
     expect(screen.getByTestId("overlay")).toBeInTheDocument();
     await waitFor(() => expect(screen.queryByTestId("overlay")).toBeFalsy());
-    expect(getUserMediaMock).toHaveBeenCalledWith(TEST_CONSTANTS.GET_VIDEO_EXPECTED_MOCK());
-    expect(getUserMediaMock).toHaveBeenCalledWith(TEST_CONSTANTS.GET_AUDIO_EXPECTED_MOCK());
+    expect(getUserMediaMock).toHaveBeenCalledWith(TEST_CONSTANTS.GET_AUDIO_VIDEO_EXPECTED_MOCK());
 });
 test("Blocked message is shown if camera if blocked", async () => {
     getUserMediaMock.mockRejectedValue({ name: "NotAllowedError" });

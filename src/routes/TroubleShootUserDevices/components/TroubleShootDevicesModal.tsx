@@ -25,7 +25,7 @@ import {
 } from "twilio-video";
 import actions from "../../../state/InDepo/InDepoActions";
 import * as CONSTANTS from "../../../constants/TroubleShootUserDevices";
-import useUserTracks, { StreamOption } from "../../../hooks/useUserTracks";
+import useUserTracks, { StreamOption, MediaStreamTypes } from "../../../hooks/useUserTracks";
 import Overlay from "./Overlay";
 import TestVolume from "../../../components/TestVolume";
 import TestVideo from "../../../components/TestVideo";
@@ -260,13 +260,17 @@ const TroubleShootDevicesModal = ({
     const onClickTestIcons = (audio?: boolean) => {
         if (audio === true) {
             if (activeStreams.audioinput.stream) {
-                activeStreams.audioinput.stream.getTracks()[0].enabled = isMuted;
+                activeStreams.audioinput.stream
+                    .getTracks()
+                    .filter((track) => track.kind === MediaStreamTypes.audioinput)[0].enabled = isMuted;
                 return setMuted(!isMuted);
             }
             return null;
         }
         if (activeStreams.videoinput.stream) {
-            activeStreams.videoinput.stream.getTracks()[0].enabled = isVideoOff;
+            activeStreams.videoinput.stream
+                .getTracks()
+                .filter((track) => track.kind === MediaStreamTypes.videoinput)[0].enabled = isVideoOff;
             return setVideoOff(!isVideoOff);
         }
         return null;
