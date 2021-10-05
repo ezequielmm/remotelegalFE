@@ -820,7 +820,9 @@ test("Shows correct info when modal pops up after clicking the edit icon on the 
         fullDeposition.job
     );
     expect(
-        await findByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_CAPTION_BUTTON_TEST_ID)
+        await (
+            await findByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_CAPTION_BUTTON_TEST_ID)
+        ).childNodes[1]
     ).toHaveTextContent(fullDeposition.caption.displayName);
     expect(await findByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_DATA_TEST_ID_DETAILS)).toHaveValue(
         fullDeposition.details
@@ -1431,7 +1433,9 @@ test("shouldn´t revert a depo if the file is invalid", async () => {
         userEvent.click(confirmed[1]);
         await wait(200);
         fireEvent.click(
-            await findByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_CAPTION_BUTTON_REMOVE_FILE_TEST_ID)
+            await (
+                await findByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_CAPTION_BUTTON_TEST_ID)
+            ).childNodes[2]
         );
         const file = new File(["file"], "file.png", { type: "application/image" });
         await act(async () => {

@@ -63,7 +63,7 @@ describe("Tests Edit Deposition Modal", () => {
         userEvent.click(confirmed[1]);
         fireEvent.click(getByTestId("false NO"));
         fireEvent.click(
-            getByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_CAPTION_BUTTON_REMOVE_FILE_TEST_ID)
+            getByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_CAPTION_BUTTON_TEST_ID).childNodes[2]
         );
         expect(getByTestId("caption_input")).toBeInTheDocument();
         const file = new File(["file"], "file.pdf", { type: "application/pdf" });
@@ -187,7 +187,7 @@ describe("Tests Edit Deposition Modal", () => {
             fireEvent.click(editButton[0]);
         });
         fireEvent.click(
-            getByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_CAPTION_BUTTON_REMOVE_FILE_TEST_ID)
+            getByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_CAPTION_BUTTON_TEST_ID).childNodes[2]
         );
         expect(getByTestId("caption_input")).toBeInTheDocument();
         const file = new File(["file"], "file.png", { type: "application/image" });

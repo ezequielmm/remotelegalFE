@@ -505,69 +505,62 @@ const EditDepoModal = ({ open, handleClose, deposition, fetchDeposition }: IModa
                                         />
                                     </InputWrapper>
                                 </Form.Item>
-                                <Form.Item label="Caption (optional)">
-                                    {formStatus.caption ? (
-                                        <Button
-                                            disabled={isStatusCanceled}
-                                            data-testid={
-                                                CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_CAPTION_BUTTON_TEST_ID
-                                            }
-                                            icon={<Icon icon={AttachClipIcon} size={8} />}
-                                        >
-                                            {formStatus.caption.displayName}
-                                            <StyledCloseIcon
-                                                data-testid={
-                                                    CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_CAPTION_BUTTON_REMOVE_FILE_TEST_ID
-                                                }
-                                                onClick={() =>
-                                                    setFormStatus({ ...formStatus, caption: null, deleteCaption: true })
-                                                }
-                                            />
-                                        </Button>
-                                    ) : (
-                                        <Upload
-                                            disabled={isStatusCanceled}
-                                            data-testid={
-                                                CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_UPLOAD_COMPONENT_DATA_TEST_ID
-                                            }
-                                            customRequest={({ file: newFile }: any) => {
-                                                const isInvalid = newFile.type !== "application/pdf";
-                                                if (isInvalid) {
-                                                    setInvalidFile(true);
-                                                }
-                                                return setFormStatus({ ...formStatus, file: newFile });
-                                            }}
-                                            accept=".pdf"
-                                            showUploadList={false}
-                                        >
-                                            <ButtonUpload
-                                                disabled={isStatusCanceled}
-                                                fileName={formStatus.file?.name}
-                                                label={formStatus.file ? formStatus.file.name : "Upload Caption"}
-                                                removeFile={(e) => {
-                                                    e.stopPropagation();
-                                                    if (invalidFile) {
-                                                        setInvalidFile(false);
-                                                    }
-                                                    setFormStatus({ ...formStatus, file: null });
-                                                }}
-                                            />
-                                        </Upload>
-                                    )}
-                                    {invalidFile && !isStatusCanceled && (
-                                        <Text
-                                            size="small"
-                                            dataTestId={
-                                                CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_FILE_ERROR_MESSAGE_DATA_TEST_ID
-                                            }
-                                            state={ColorStatus.error}
-                                        >
-                                            {CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_FILE_ERROR_MESSAGE}
-                                        </Text>
-                                    )}
-                                </Form.Item>
                             </Col>
                         </Row>
+                        <Form.Item label="Caption (optional)">
+                            <Upload
+                                disabled={isStatusCanceled}
+                                data-testid={
+                                    CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_UPLOAD_COMPONENT_DATA_TEST_ID
+                                }
+                                customRequest={({ file: newFile }: any) => {
+                                    const isInvalid = newFile.type !== "application/pdf";
+                                    if (isInvalid) {
+                                        setInvalidFile(true);
+                                    }
+                                    return setFormStatus({ ...formStatus, file: newFile });
+                                }}
+                                accept=".pdf"
+                                showUploadList={false}
+                            >
+                                <ButtonUpload
+                                    disabled={isStatusCanceled}
+                                    data-testid={
+                                        CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_CAPTION_BUTTON_TEST_ID
+                                    }
+                                    fileName={
+                                        formStatus.caption ? formStatus.caption.displayName : formStatus.file?.name
+                                    }
+                                    label={formStatus.caption?.displayName || formStatus.file?.name || "Upload Caption"}
+                                    removeFile={(e) => {
+                                        e.stopPropagation();
+                                        if (formStatus.caption) {
+                                            setFormStatus({
+                                                ...formStatus,
+                                                caption: null,
+                                                deleteCaption: true,
+                                            });
+                                            return;
+                                        }
+                                        if (invalidFile) {
+                                            setInvalidFile(false);
+                                        }
+                                        setFormStatus({ ...formStatus, file: null });
+                                    }}
+                                />
+                            </Upload>
+                            {invalidFile && !isStatusCanceled && (
+                                <Text
+                                    size="small"
+                                    dataTestId={
+                                        CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_FILE_ERROR_MESSAGE_DATA_TEST_ID
+                                    }
+                                    state={ColorStatus.error}
+                                >
+                                    {CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_FILE_ERROR_MESSAGE}
+                                </Text>
+                            )}
+                        </Form.Item>
                         <Form.Item
                             label={
                                 <Space align="center">
