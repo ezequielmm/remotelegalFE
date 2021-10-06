@@ -124,12 +124,7 @@ export const SCHEDULED_DEPO_WARNING = (
         IF YOU ARE BOOKING A DEPOSITION WITHIN 48 HOURS, PLEASE CALL REMOTE LEGAL AT{" "}
         <strong>{REMOTE_LEGAL_PHONE_NUMBER}</strong> OR EMAIL{" "}
         <strong>
-            <a
-                href={`mailto:${REMOTE_LEGAL_SCHEDULING_EMAIL}`}
-                target="_blank"
-                style={{ textTransform: "uppercase" }}
-                rel="noreferrer"
-            >
+            <a href={`mailto:${REMOTE_LEGAL_SCHEDULING_EMAIL}`} target="_blank" rel="noreferrer">
                 {REMOTE_LEGAL_SCHEDULING_EMAIL}.
             </a>
         </strong>
