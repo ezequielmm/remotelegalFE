@@ -230,7 +230,7 @@ const MyDepositions = () => {
                                 showSizeChanger: false,
                                 hideOnSinglePage: true,
                             }}
-                            scroll
+                            vscroll
                             hscroll={1200}
                             style={{ height: "100%" }}
                             locale={{

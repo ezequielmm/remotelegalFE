@@ -120,7 +120,7 @@ const MyCases = () => {
                         onChange={handleListChange}
                         sortDirections={["descend", "ascend"]}
                         pagination={false}
-                        scroll
+                        vscroll
                         style={{ height: "100%" }}
                     />
                 </StyledSpace>
