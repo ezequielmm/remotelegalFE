@@ -38,7 +38,7 @@ export const LAW_COLUMN = {
     title: "LAW FIRM",
     field: "company",
     ellipsis: true,
-    width: "11%",
+    width: "12.5%",
     render: (text) => (
         <Tooltip title={text}>
             <Text weight="bold">{text || "-"}</Text>
@@ -50,7 +50,7 @@ export const CREATED_ON = {
     title: "CREATED ON",
     field: "creationDate",
     ellipsis: true,
-    width: "15%",
+    width: "12.5%",
     render: ({ date, time }: { date: string; time: string }) => (
         <Text>
             <>
@@ -66,6 +66,7 @@ export const CASE_COLUMN = {
     title: "CASE",
     field: "caseName",
     ellipsis: true,
+    width: "12.5%",
     render: (text) => (
         <Tooltip title={text}>
             <Text>{text}</Text>
@@ -76,6 +77,7 @@ export const DATE_COLUMN = {
     title: "DATE AND TIME",
     field: "startDate",
     ellipsis: true,
+    width: "12.5%",
     render: ({ date, time }: { date: string; time: string }) => (
         <Text>
             <>
@@ -85,13 +87,13 @@ export const DATE_COLUMN = {
             </>
         </Text>
     ),
-    width: "15%",
 };
 export const WITNESS_COLUMN = {
     title: "WITNESS",
     sorter: false,
     field: "witness",
     ellipsis: true,
+    width: "12.5%",
     render: (text) => (
         <Tooltip title={text}>
             <Text weight="bold">{text || "-"}</Text>
@@ -103,12 +105,12 @@ export const COURT_REPORTER_COLUMN = {
     sorter: false,
     field: "courtReporter",
     ellipsis: true,
+    width: "12.5%",
     render: (text) => (
         <Tooltip title={text}>
             <Text weight="bold">{text || "-"}</Text>
         </Tooltip>
     ),
-    width: "13%",
 };
 export const JOB_COLUMN = { title: "JOB#", field: "job", render: (text) => <Text>{text || "-"}</Text>, width: "8%" };
 export const getActionColumns = (history) => ({
