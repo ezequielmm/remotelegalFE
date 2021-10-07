@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { Form } from "antd";
 import Button from "prp-components-library/src/components/Button";
 import Space from "prp-components-library/src/components/Space";
@@ -75,6 +75,22 @@ const CreateDeposition = () => {
         });
     };
 
+    const formRef = useRef(null);
+
+    const handleSubmitClick = () => {
+        if (!selectedCaseId) {
+            setInvalidCase(true);
+        }
+        setTimeout(() => {
+            const formErrors = formRef.current.querySelectorAll("[data-invalid='true']");
+            if (formErrors.length > 0) {
+                formErrors[0].closest(".ant-card").scrollIntoView({
+                    behavior: "smooth",
+                });
+            }
+        }, 0);
+    };
+
     return createdDepositions || fetchingCasesError || !currentUser ? (
         <CreateDepositionResultCard
             addNewCase={handleResetForm}
@@ -93,67 +109,67 @@ const CreateDeposition = () => {
         />
     ) : (
         <FormProvider {...methods}>
-            <Form onFinish={methods.handleSubmit(submitDepositions)} layout="vertical">
-                <Space direction="vertical" size="large">
-                    <Space.Item>
-                        <Title dataTestId="schedule_deposition_title" level={4} noMargin weight="light">
-                            Schedule Deposition
-                        </Title>
-                    </Space.Item>
-                    {!currentUser.isAdmin && (
-                        <StyledAlert
-                            data-testid={CONSTANTS.SCHEDULED_DEPO_WARNING_TEST_ID}
-                            type="warning"
-                            closable={false}
-                            message={CONSTANTS.SCHEDULED_DEPO_WARNING}
-                            showIcon
+            <div ref={formRef}>
+                <Form onFinish={methods.handleSubmit(submitDepositions)} layout="vertical">
+                    <Space direction="vertical" size="large">
+                        <Space.Item>
+                            <Title dataTestId="schedule_deposition_title" level={4} noMargin weight="light">
+                                Schedule Deposition
+                            </Title>
+                        </Space.Item>
+                        {!currentUser.isAdmin && (
+                            <StyledAlert
+                                data-testid={CONSTANTS.SCHEDULED_DEPO_WARNING_TEST_ID}
+                                type="warning"
+                                closable={false}
+                                message={CONSTANTS.SCHEDULED_DEPO_WARNING}
+                                showIcon
+                            />
+                        )}
+                        <CaseSection
+                            invalidCase={invalidCase}
+                            setInvalidCase={setInvalidCase}
+                            selectedCaseId={selectedCaseId}
+                            setSelectedCaseId={setSelectedCaseId}
+                            fetchCases={refreshList}
+                            cases={cases}
+                            loadingCases={loadingCases}
+                            fetchingError={fetchingCasesError}
                         />
-                    )}
-                    <CaseSection
-                        invalidCase={invalidCase}
-                        setInvalidCase={setInvalidCase}
-                        selectedCaseId={selectedCaseId}
-                        setSelectedCaseId={setSelectedCaseId}
-                        fetchCases={refreshList}
-                        cases={cases}
-                        loadingCases={loadingCases}
-                        fetchingError={fetchingCasesError}
-                    />
-                    <WitnessesSection
-                        addWitnessIsEnabled={!!currentUser?.isAdmin}
-                        shouldValidateDepoDate={!currentUser?.isAdmin}
-                    />
-                    <OtherParticipantsSection />
-                    <DetailsSection />
-                    {!!currentUser?.isAdmin && <RequesterSection invalidRequester={error === 404 && "Invalid email"} />}
-                    <Space size="large" justify="flex-end" fullWidth>
-                        <Button
-                            type="text"
-                            onClick={() => {
-                                if (history.length === 2) {
-                                    return history.push("/depositions");
-                                }
-                                return history.goBack();
-                            }}
-                        >
-                            Cancel
-                        </Button>
-                        <Button
-                            data-testid="create_deposition_button"
-                            loading={loading}
-                            htmlType="submit"
-                            onClick={() => {
-                                if (!selectedCaseId) {
-                                    setInvalidCase(true);
-                                }
-                            }}
-                            type="primary"
-                        >
-                            {CONSTANTS.SCHEDULE_DEPOSITION}
-                        </Button>
+                        <WitnessesSection
+                            addWitnessIsEnabled={!!currentUser?.isAdmin}
+                            shouldValidateDepoDate={!currentUser?.isAdmin}
+                        />
+                        <OtherParticipantsSection />
+                        <DetailsSection />
+                        {!!currentUser?.isAdmin && (
+                            <RequesterSection invalidRequester={error === 404 && "Invalid email"} />
+                        )}
+                        <Space size="large" justify="flex-end" fullWidth>
+                            <Button
+                                type="text"
+                                onClick={() => {
+                                    if (history.length === 2) {
+                                        return history.push("/depositions");
+                                    }
+                                    return history.goBack();
+                                }}
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                data-testid="create_deposition_button"
+                                loading={loading}
+                                htmlType="submit"
+                                onClick={handleSubmitClick}
+                                type="primary"
+                            >
+                                {CONSTANTS.SCHEDULE_DEPOSITION}
+                            </Button>
+                        </Space>
                     </Space>
-                </Space>
-            </Form>
+                </Form>
+            </div>
         </FormProvider>
     );
 };
