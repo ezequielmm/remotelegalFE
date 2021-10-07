@@ -1,4 +1,4 @@
-import { waitForDomChange, waitForElement } from "@testing-library/react";
+import { waitForDomChange, waitForElement, screen, waitFor } from "@testing-library/react";
 import React from "react";
 import { act } from "react-dom/test-utils";
 import { wait } from "../../helpers/wait";
@@ -13,6 +13,8 @@ import { getTranscriptionsWithOffset } from "../mocks/transcription";
 import getMockDeps from "../utils/getMockDeps";
 import renderWithGlobalContext from "../utils/renderWithGlobalContext";
 import "mutationobserver-shim";
+import * as CONSTANTS from "../../constants/depositionDetails";
+import { Roles } from "../../models/participant";
 
 jest.mock("react-router", () => ({
     ...jest.requireActual("react-router"),
@@ -96,6 +98,9 @@ describe("DepositionDetailsSummary -> Cards", () => {
                         ...rootReducer.initialState.postDepo,
                         currentDeposition: getCurrentDepositionOneCourtReporter(courtReportName),
                     },
+                    user: {
+                        currentUser: { ...rootReducer.initialState.user.currentUser, id: "2", isAdmin: true },
+                    },
                 },
             }
         );
@@ -121,6 +126,9 @@ describe("DepositionDetailsSummary -> Cards", () => {
                         ...rootReducer.initialState.postDepo,
                         currentDeposition: getCurrentDepositionTwoParticipants(),
                     },
+                    user: {
+                        currentUser: { ...rootReducer.initialState.user.currentUser, id: "2", isAdmin: true },
+                    },
                 },
             }
         );
@@ -143,6 +151,9 @@ describe("DepositionDetailsSummary -> Cards", () => {
                     postDepo: {
                         ...rootReducer.initialState.postDepo,
                         currentDeposition: getCurrentDepositionNoParticipants(),
+                    },
+                    user: {
+                        currentUser: { ...rootReducer.initialState.user.currentUser, id: "2", isAdmin: true },
                     },
                 },
             }
@@ -203,4 +214,67 @@ describe("DepositionDetailsSummary -> Cards", () => {
         act(() => expect(queryByTestId("entered_exhibits_count")).toBeInTheDocument());
         act(() => expect(queryByTestId("entered_exhibits_count")).toHaveTextContent("0"));
     });
+
+    test.each`
+        idUser | isUserAdmin | idCourtReporter | isVideoRecordingNeeded | isHasToAllowDownload | description
+        ${"1"} | ${true}     | ${"1"}          | ${true}                | ${true}              | ${"show download recording if user is admin no matter what case 1"}
+        ${"2"} | ${true}     | ${"1"}          | ${true}                | ${true}              | ${"show download recording if user is admin no matter what case 2"}
+        ${"1"} | ${true}     | ${"1"}          | ${false}               | ${true}              | ${"show download recording if user is admin no matter what case 3"}
+        ${"2"} | ${true}     | ${"1"}          | ${false}               | ${true}              | ${"show download recording if user is admin no matter what case 4"}
+        ${"1"} | ${false}    | ${"1"}          | ${true}                | ${true}              | ${"show download recording if user is not admin but is court reporter with video recording needed"}
+        ${"1"} | ${false}    | ${"1"}          | ${false}               | ${true}              | ${"show download recording if user is not admin but is court reporter with video recording NOT needed"}
+        ${"1"} | ${false}    | ${"2"}          | ${true}                | ${true}              | ${"show download recording if user is not admin nor court reporter but video recording is needed"}
+        ${"1"} | ${false}    | ${"2"}          | ${false}               | ${false}             | ${"not show download recording if user is not admin nor court reporter and video recording NOT needed"}
+    `(
+        "it should $description",
+        async ({ idUser, isUserAdmin, idCourtReporter, isVideoRecordingNeeded, isHasToAllowDownload }) => {
+            customDeps.apiService.getDepositionTranscriptions = jest.fn().mockResolvedValue([]);
+            customDeps.apiService.getDepositionEvents = jest.fn().mockResolvedValue([]);
+            customDeps.apiService.getEnteredExhibits = jest.fn().mockRejectedValue(async () => {
+                throw Error("Something wrong");
+            });
+            renderWithGlobalContext(<DepositionDetailsSummary setActiveKey={jest.fn()} />, customDeps, {
+                ...rootReducer,
+                initialState: {
+                    postDepo: {
+                        ...rootReducer.initialState.postDepo,
+                        currentDeposition: {
+                            ...getCurrentDepositionNoParticipants(),
+                            isVideoRecordingNeeded,
+                            participants: [
+                                {
+                                    email: "email@email.com",
+                                    name: "name1",
+                                    role: Roles.courtReporter,
+                                    phone: "1234",
+                                    user: {
+                                        id: idCourtReporter,
+                                        emailAddress: "email@email.com",
+                                        firstName: "name",
+                                        lastName: "name",
+                                    },
+                                },
+                            ],
+                        },
+                    },
+                    user: {
+                        currentUser: { ...rootReducer.initialState.user.currentUser, id: idUser, isAdmin: isUserAdmin },
+                    },
+                },
+            });
+            if (isHasToAllowDownload) {
+                await waitFor(() =>
+                    expect(
+                        screen.getByTestId(CONSTANTS.DEPOSITION_DETAILS_SUMMARY_DOWNLOAD_RECORDING_TITLE)
+                    ).toBeInTheDocument()
+                );
+            } else {
+                await waitFor(() =>
+                    expect(
+                        screen.queryAllByTestId(CONSTANTS.DEPOSITION_DETAILS_SUMMARY_DOWNLOAD_RECORDING_TITLE).length
+                    ).toBe(0)
+                );
+            }
+        }
+    );
 });

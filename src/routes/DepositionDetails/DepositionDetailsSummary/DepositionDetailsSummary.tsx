@@ -32,6 +32,9 @@ import { useTranscriptFileList, useGetSignedUrl } from "../../../hooks/transcrip
 import { StyledSummaryLayout, StyledCard, StyledRealTimeWrapper } from "./styles";
 import { useFetchParticipants } from "../../../hooks/activeDepositionDetails/hooks";
 import { IDeposition } from "../../../models/deposition";
+import { IUser } from "../../../models/user";
+import { Roles } from "../../../models/participant";
+import { IPostDepo } from "../../../state/PostDepo/PostDepoReducer";
 
 interface IDepositionDetailsSummary {
     setActiveKey: (activeKey: string) => void;
@@ -52,7 +55,10 @@ export default function DepositionDetailsSummary({ setActiveKey, deposition }: I
     const { handleFetchFiles: handleFetchTranscriptFileList, transcriptFileList } = useTranscriptFileList(depositionID);
     const { getSignedUrl, documentData: transcriptFileData } = useGetSignedUrl();
     const [fetchParticipants, , , participants] = useFetchParticipants();
-    const { duration, currentTime, transcriptions, currentDeposition, transcriptionsWithoutEvents } = state.postDepo;
+    const { postDepo }: { postDepo: IPostDepo } = state;
+    const { duration, currentTime, transcriptions, currentDeposition, transcriptionsWithoutEvents } = postDepo;
+    const { currentUser }: { currentUser: IUser } = state.user;
+    const [isUserDownloadEnabled, setIsUserDownloadEnabled] = useState<boolean>(false);
 
     const [setTranscriptions] = useAsyncCallback(async () => {
         const newTranscriptions = await getTranscriptions();
@@ -98,12 +104,16 @@ export default function DepositionDetailsSummary({ setActiveKey, deposition }: I
 
     useEffect(() => {
         const courtReporter = currentDeposition?.participants?.find(
-            (participant) => participant.role === "CourtReporter"
+            (participant) => participant.role === Roles.courtReporter
         );
         if (courtReporter) {
             setCourtReporterName(courtReporter?.name);
         }
-    }, [currentDeposition]);
+        const isCurrentUserTheCourtReporter = courtReporter ? courtReporter?.user?.id === currentUser?.id : false;
+        setIsUserDownloadEnabled(
+            currentDeposition?.isVideoRecordingNeeded || isCurrentUserTheCourtReporter || currentUser?.isAdmin
+        );
+    }, [currentDeposition, currentUser]);
 
     useEffect(() => {
         handleFetchExhibitsFiles();
@@ -177,15 +187,18 @@ export default function DepositionDetailsSummary({ setActiveKey, deposition }: I
                     hasPadding={false}
                     fullWidth
                     extra={
-                        <Button
-                            type="link"
-                            icon={<Icon icon={DownloadIcon} size={9} />}
-                            onClick={handleDownloadRecording}
-                            disabled={downloadRecordingDisabled}
-                            loading={downloadRecordingStatus === "pending"}
-                        >
-                            {CONSTANTS.DEPOSITION_DETAILS_SUMMARY_DOWNLOAD_RECORDING_TITLE}
-                        </Button>
+                        isUserDownloadEnabled && (
+                            <Button
+                                type="link"
+                                icon={<Icon icon={DownloadIcon} size={9} />}
+                                onClick={handleDownloadRecording}
+                                disabled={downloadRecordingDisabled}
+                                loading={downloadRecordingStatus === "pending"}
+                                data-testid={CONSTANTS.DEPOSITION_DETAILS_SUMMARY_DOWNLOAD_RECORDING_TITLE}
+                            >
+                                {CONSTANTS.DEPOSITION_DETAILS_SUMMARY_DOWNLOAD_RECORDING_TITLE}
+                            </Button>
+                        )
                     }
                 >
                     <Space p={9} direction="horizontal" size="large">
