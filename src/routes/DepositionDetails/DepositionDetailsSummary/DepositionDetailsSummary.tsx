@@ -51,7 +51,8 @@ export default function DepositionDetailsSummary({ setActiveKey, deposition }: I
     const [courtReporterName, setCourtReporterName] = useState("");
     const [downloadRecordingDisabled, setDownloadRecordingDisabled] = useState<boolean>(true);
     const [downloadRecordingStatus, setDownloadRecordingStatus] = useState<DownloadStatusType>(null);
-    const [downloadTranscripDisabled, setDownloadTranscripDisabled] = useState<boolean>(true);
+    const [downloadTranscriptDisabled, setDownloadTranscriptDisabled] = useState<boolean>(true);
+    const [downloadTranscriptStatus, setDownloadTranscriptStatus] = useState<DownloadStatusType>(null);
     const { handleFetchFiles: handleFetchTranscriptFileList, transcriptFileList } = useTranscriptFileList(depositionID);
     const { getSignedUrl, documentData: transcriptFileData } = useGetSignedUrl();
     const [fetchParticipants, , , participants] = useFetchParticipants();
@@ -84,7 +85,7 @@ export default function DepositionDetailsSummary({ setActiveKey, deposition }: I
     }, [transcriptFileList]);
 
     useEffect(() => {
-        if (transcriptFileData) setDownloadTranscripDisabled(false);
+        if (transcriptFileData) setDownloadTranscriptDisabled(false);
     }, [transcriptFileData]);
 
     useEffect(() => {
@@ -133,7 +134,7 @@ export default function DepositionDetailsSummary({ setActiveKey, deposition }: I
 
     const handleDownloadTranscript = async () => {
         if (transcriptFileData?.url) {
-            downloadFile(transcriptFileData.url);
+            downloadFile(transcriptFileData.url, null, (status) => setDownloadTranscriptStatus(status));
         }
     };
 
@@ -217,9 +218,10 @@ export default function DepositionDetailsSummary({ setActiveKey, deposition }: I
                             type="link"
                             icon={<Icon icon={DownloadIcon} size={9} />}
                             onClick={handleDownloadTranscript}
-                            disabled={downloadTranscripDisabled}
+                            disabled={downloadTranscriptDisabled || downloadTranscriptStatus === "pending"}
+                            loading={downloadTranscriptStatus === "pending"}
                         >
-                            {CONSTANTS.DEPOSITION_DETAILS_SUMMARY_DOWNLOAD_ROUGH_DRAFT_TITLE}
+                           {CONSTANTS.DEPOSITION_DETAILS_SUMMARY_DOWNLOAD_ROUGH_DRAFT_TITLE}
                         </Button>
                     }
                 >
