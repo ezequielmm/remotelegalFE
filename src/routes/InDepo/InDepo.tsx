@@ -44,6 +44,7 @@ import useGetDepoSummaryInfo from "../../hooks/InDepo/useGetDepoSummaryInfo";
 import useFloatingAlertContext from "../../hooks/useFloatingAlertContext";
 import WrongOrientationScreen from "./WrongOrientationScreen/WrongOrientationScreen";
 import ORIENTATION_STATE from "../../types/orientation";
+import { getREM } from "../../constants/styles/utils";
 
 const StyledAlertRow = styled(Row)`
     position: absolute;
@@ -53,7 +54,9 @@ const StyledAlertRow = styled(Row)`
 `;
 
 const StyledAlert = styled(Alert)`
-    max-width: 35%;
+    width: fit-content;
+    top: ${getREM(theme.default.spaces[4])};
+    z-index: 3000;
 `;
 
 const InDepo = () => {
