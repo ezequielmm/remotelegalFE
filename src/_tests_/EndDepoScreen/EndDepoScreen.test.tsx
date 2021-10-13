@@ -34,7 +34,6 @@ test("End Depo Screen is shown with proper text when all the user info is loaded
         },
     });
     expect(queryByTestId("spinner")).not.toBeInTheDocument();
-    expect(getByText(CONSTANTS.END_DEPO_SCREEN_FIRST_TEXT)).toBeInTheDocument();
     expect(getByText(CONSTANTS.END_DEPO_SCREEN_SECOND_TEXT)).toBeInTheDocument();
     expect(queryByTestId("download_assets_button")).toBeInTheDocument();
 });
@@ -53,7 +52,7 @@ test("End Depo Screen user display name should be display well formatted", async
             },
         },
     });
-    expect(queryByText("Joe Doe,")).toBeInTheDocument();
+    expect(queryByText(`Joe Doe, ${CONSTANTS.END_DEPO_SCREEN_FIRST_TEXT}`)).toBeInTheDocument();
 });
 test("Should show endDepo screen for witness", async () => {
     const { getByText } = renderWithGlobalContext(<EndDepoScreen location={{ state: { isWitness: true } }} />);

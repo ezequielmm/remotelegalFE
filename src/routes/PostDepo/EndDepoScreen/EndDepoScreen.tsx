@@ -38,11 +38,10 @@ export default function EndDepoScreen({ location }) {
                                 <Logo version="dark" height={getREM(theme.default.spaces[8] * 2)} />
                             </Space>
                             <Space.Item style={{ textAlign: "center" }}>
-                                <Title level={5} noMargin>
-                                    {`${displayName(currentUser?.firstName, currentUser?.lastName)},`}
-                                </Title>
                                 <Title weight="light" level={5} ellipsis={false} noMargin>
-                                    {CONSTANTS.END_DEPO_SCREEN_FIRST_TEXT}
+                                    {`${displayName(currentUser?.firstName, currentUser?.lastName)}, ${
+                                        CONSTANTS.END_DEPO_SCREEN_FIRST_TEXT
+                                    }`}
                                 </Title>
                             </Space.Item>
                             <Text state={ColorStatus.disabled} size="large" ellipsis={false} align="center">
