@@ -55,12 +55,13 @@ const useTranscriptAudio = (doNotConnectToSocket = false, sampleRate: number) =>
         let manageReceiveNotification;
         if (dispatch && signalR && unsubscribeMethodFromGroup && subscribeToGroup && !isMobileOnly) {
             manageReceiveNotification = (message) => {
-                const { id, transcriptDateTime, text, userName } = message.content;
+                const { id, transcriptDateTime, text, userName, status } = message.content;
                 if (!text) return;
                 const parsedTranscription = {
                     id,
                     text,
                     userName,
+                    status,
                     transcriptDateTime:
                         Array.isArray(transcriptDateTime) && transcriptDateTime.length > 0
                             ? new Date(transcriptDateTime[0])

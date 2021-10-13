@@ -3,6 +3,12 @@ import dayjs from "dayjs";
 
 import { EventModel, TranscriptionModel } from "../models";
 
+export enum TranscriptionStatus {
+    Unknown = "Unknown",
+    Recognized = "Recognized",
+    Recognizing = "Recognizing",
+}
+
 export const setTranscriptionMessages = (
     transcriptions: TranscriptionModel.Transcription[],
     events: EventModel.IEvent[],
@@ -64,15 +70,24 @@ export const addTranscriptionMessages = (newTranscription, transcriptions = [], 
     if (newTranscription.text === "" || !isRecording) return transcriptionsCopy;
 
     const transcriptionsSlicingLength = transcriptionsCopy.length > 20 ? transcriptionsCopy.length - 20 : 0;
-
-    const isTranscriptionInArray = transcriptionsCopy
+    const lastRecognizingTranscriptionOfUserIndex = transcriptionsCopy
         .slice(transcriptionsSlicingLength)
-        .findIndex((item) => item.id === newTranscription.id);
+        .findIndex(
+            (item) => item.status === TranscriptionStatus.Recognizing && item.userName === newTranscription.userName
+        );
 
-    if (isTranscriptionInArray !== -1) {
-        transcriptionsCopy[transcriptionsSlicingLength + isTranscriptionInArray] = newTranscription;
-    } else {
+    const isTranscriptionInArray = lastRecognizingTranscriptionOfUserIndex !== -1;
+    if (isTranscriptionInArray) {
+        transcriptionsCopy.splice(transcriptionsSlicingLength + lastRecognizingTranscriptionOfUserIndex, 1);
+    }
+
+    if (
+        newTranscription.status === TranscriptionStatus.Recognized ||
+        newTranscription.status === TranscriptionStatus.Recognizing
+    ) {
         transcriptionsCopy.push(newTranscription);
+    } else {
+        console.error("Wrong transcription status");
     }
 
     return transcriptionsCopy;
