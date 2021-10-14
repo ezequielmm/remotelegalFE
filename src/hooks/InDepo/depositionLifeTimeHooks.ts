@@ -1,8 +1,10 @@
 import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { connect, createLocalAudioTrack, createLocalVideoTrack, LocalDataTrack, Room, Logger } from "twilio-video";
+import watchRTC from "@testrtc/watchrtc-sdk";
 import { useHistory, useParams } from "react-router";
 import { isMobileOnly } from "react-device-detect";
 import useSound from "use-sound";
+
 import { GlobalStateContext } from "../../state/GlobalState";
 import configParticipantListeners from "../../helpers/configParticipantListeners";
 import useAsyncCallback from "../useAsyncCallback";
@@ -440,6 +442,14 @@ export const useJoinDeposition = (setTranscriptions: React.Dispatch<Transcriptio
                 name: depositionID,
                 tracks,
             });
+            if (process.env.REACT_APP_ENV !== "localhost" && process.env.REACT_APP_ENV !== "develop") {
+                watchRTC.setConfig({
+                    rtcApiKey: process.env.REACT_APP_RTC_API_KEY,
+                    rtcRoomId: room.sid,
+                    rtcPeerId: currentEmail.current,
+                });
+            }
+
             dispatch(actions.addUserTracks(tracks));
             setDepoRoom(room);
             if (!isMounted.current) {
