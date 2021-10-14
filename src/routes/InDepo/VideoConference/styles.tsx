@@ -50,7 +50,7 @@ export const StyledParticipantContainer = styled.div<{
             switch (layout) {
                 case "vertical":
                     return `
-                        height: calc(25% - ${getREM(theme.default.spaces[4])});
+                        height: calc(25% - ${getREM(theme.default.spaces[6])});
                         margin-left: 0;
                         flex: 1 0 100%;
 
