@@ -20,6 +20,7 @@ import { ReactComponent as DeleteIcon } from "../../../../assets/icons/delete.sv
 import ColorStatus from "../../../../types/ColorStatus";
 import { TimeZones } from "../../../../models/general";
 import getNextWorkingDay from "../../../../helpers/getNextWorkingDay";
+import { getREM } from "../../../../constants/styles/utils";
 
 interface WitnessItemProps {
     deposition: Partial<ArrayField<Record<string, any>>>;
@@ -182,7 +183,13 @@ const WitnessItem = ({ deposition, removeWitness, witnessNumber, shouldValidateD
                         />
                     </Col>
                 </Row>
-                <Row gutter={theme.default.baseUnit * theme.default.spaces[9]} style={{ width: "100%" }}>
+                <Row
+                    gutter={theme.default.baseUnit * theme.default.spaces[9]}
+                    style={{
+                        width: "100%",
+                        marginTop: depositionErrors?.startTime?.message ? getREM(theme.default.spaces[12]) : "",
+                    }}
+                >
                     <Col xs={12}>
                         <RHFRadioButton
                             control={control}
