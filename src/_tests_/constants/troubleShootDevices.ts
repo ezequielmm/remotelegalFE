@@ -1,4 +1,4 @@
-import { MediaStreamConstraints } from "../../hooks/useUserTracks";
+import { MediaStreamConstraints } from "../../hooks/userTracks/useUserTracks";
 
 export const STREAM_MOCK = {
     getTracks: jest.fn().mockReturnValue([

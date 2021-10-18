@@ -25,7 +25,7 @@ import {
 } from "twilio-video";
 import actions from "../../../state/InDepo/InDepoActions";
 import * as CONSTANTS from "../../../constants/TroubleShootUserDevices";
-import useUserTracks, { StreamOption, MediaStreamTypes } from "../../../hooks/useUserTracks";
+import useUserTracks, { StreamOption, MediaStreamTypes } from "../../../hooks/userTracks/useUserTracks";
 import Overlay from "./Overlay";
 import TestVolume from "../../../components/TestVolume";
 import TestVideo from "../../../components/TestVideo";
@@ -74,6 +74,9 @@ const StyledForm = styled(Form)`
     }
 `;
 
+const getMediaTracks = (tracks, type) =>
+    tracks.filter((track) => track.kind === type).map((trackPublication) => trackPublication?.mediaStreamTrack);
+
 const SettingsWrapper = ({ isDepo, children, onClose, visible, widthMorethanLg }: SettingsWrapperProps) => {
     return (
         <>
@@ -109,8 +112,6 @@ const TroubleShootDevicesModal = ({
     videoTracks = [],
     shouldUseCurrentStream = false,
 }: TroubleShootDevicesModalProps) => {
-    const [videoStream, setVideoStream] = useState<MediaStream>(null);
-    const [audioStream, setAudioStream] = useState<MediaStream>(null);
     const {
         gettingTracks,
         options,
@@ -119,7 +120,9 @@ const TroubleShootDevicesModal = ({
         errors,
         setSelectedOptions,
         stopOldTrackAndSetNewTrack,
-    } = useUserTracks(visible, audioStream, videoStream, shouldUseCurrentStream);
+        loadUserStreams,
+        stopExampleTrack,
+    } = useUserTracks(visible, shouldUseCurrentStream);
     const [isMuted, setMuted] = useState(true);
     const history = useHistory();
     const { dispatch, state } = useContext(GlobalStateContext);
@@ -148,33 +151,23 @@ const TroubleShootDevicesModal = ({
     const widthMorethanLg = windowWidth >= parseInt(theme.default.breakpoints.lg, 10);
 
     useEffect(() => {
-        if (!visible) {
-            setVideoStream(null);
-            setAudioStream(null);
+        if (visible && !shouldUseCurrentStream) {
+            loadUserStreams(null, null);
         }
-    }, [visible]);
+    }, [visible, shouldUseCurrentStream]);
 
     useEffect(() => {
-        if (visible && videoTracks.length) {
-            const mediaTracks = videoTracks
-                .filter((track) => track.kind === "video")
-                .map((trackPublication) => trackPublication?.mediaStreamTrack);
-
-            const stream = new MediaStream(mediaTracks);
-            setVideoStream(stream);
+        if (visible && audioTracks.length && videoTracks.length) {
+            const audioMediaTracks = getMediaTracks(audioTracks, "audio");
+            const videoMediaTracks = getMediaTracks(videoTracks, "video");
+            const audioStream = new MediaStream(audioMediaTracks);
+            const videoStream = new MediaStream(videoMediaTracks);
+            loadUserStreams(audioStream, videoStream);
         }
-    }, [visible, videoTracks]);
-
-    useEffect(() => {
-        if (visible && audioTracks.length) {
-            const mediaTracks = audioTracks
-                .filter((track) => track.kind === "audio")
-                .map((trackPublication) => trackPublication?.mediaStreamTrack);
-
-            const stream = new MediaStream(mediaTracks);
-            setAudioStream(stream);
+        if (visible === false) {
+            stopExampleTrack();
         }
-    }, [visible, audioTracks]);
+    }, [visible, audioTracks, videoTracks]);
 
     useEffect(() => {
         if (changeAudioDevice) {
@@ -291,8 +284,15 @@ const TroubleShootDevicesModal = ({
     const handleDeviceChange = (device: StreamOption) => {
         const parsedDevice = JSON.parse(device as unknown as string) as StreamOption;
         const oldDevice = selectedOptions[parsedDevice.kind] as StreamOption;
+
         if (isValueValid(parsedDevice.value, oldDevice.value)) {
             if (parsedDevice.kind !== "audiooutput") {
+                if (availableRoom?.localParticipant?.audioTracks) {
+                    const localTrack = trackpubsToTracks(availableRoom.localParticipant.audioTracks)[0];
+                    if (localTrack && typeof localTrack.stop === "function") {
+                        localTrack.stop();
+                    }
+                }
                 stopOldTrackAndSetNewTrack(parsedDevice);
             } else {
                 changeSpeakers(audioRef, parsedDevice.value);

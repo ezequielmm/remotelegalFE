@@ -1,4 +1,4 @@
-import { MediaStreamConstraints, SelectedOptions, StreamOption } from "../../../hooks/useUserTracks";
+import { MediaStreamConstraints, SelectedOptions, StreamOption } from "../../../hooks/userTracks/useUserTracks";
 import * as CONSTANTS from "../../../constants/TroubleShootUserDevices";
 
 export type Device = {

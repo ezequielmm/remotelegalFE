@@ -18,7 +18,7 @@ import trackpubsToTracks from "../../helpers/trackPubsToTracks";
 import { GlobalStateContext } from "../../state/GlobalState";
 import actions from "../../state/InDepo/InDepoActions";
 import useFloatingAlertContext from "../useFloatingAlertContext";
-import { MediaStreamTypes } from "../useUserTracks";
+import { MediaStreamTypes } from "../userTracks/useUserTracks";
 import debounce from "../../helpers/debounce";
 
 const useParticipantTracks = (participant: LocalParticipant | RemoteParticipant, isLocal?: boolean) => {
