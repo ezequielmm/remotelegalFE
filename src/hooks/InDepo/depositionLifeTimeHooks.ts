@@ -277,7 +277,7 @@ export const useJoinDeposition = (setTranscriptions: React.Dispatch<Transcriptio
     const { currentEmail } = useAuthentication();
     const devices = JSON.parse(localStorage.getItem("selectedDevices"));
     return useAsyncCallback(
-        async (depositionID: string, isMobile: boolean) => {
+        async (depositionID: string, isMobile: boolean, newToken?: string) => {
             const participantDevices = {
                 camera: {
                     name: devices?.videoForBE.name || "",
@@ -310,6 +310,7 @@ export const useJoinDeposition = (setTranscriptions: React.Dispatch<Transcriptio
             dispatch(actions.setUserStatus(userStatus));
             const { isOnTheRecord, timeZone, token, isSharing, participants, shouldSendToPreDepo, jobNumber }: any =
                 await generateToken();
+            const currentToken = newToken || token;
             dispatch(actions.setDepoStatus(shouldSendToPreDepo));
             dispatch(actions.setJobNumber(jobNumber));
 
@@ -325,6 +326,7 @@ export const useJoinDeposition = (setTranscriptions: React.Dispatch<Transcriptio
             const transcriptions = !isMobileOnly ? await getTranscriptions() : [];
             const breakrooms = await getBreakrooms();
             const events = await getDepositionEvents(depositionID);
+            dispatch(actions.setEvents(events));
             const settings = await getSystemSettings();
             dispatch(actions.setSystemSettings(settings));
 
@@ -435,9 +437,9 @@ export const useJoinDeposition = (setTranscriptions: React.Dispatch<Transcriptio
                 };
                 logger.setLevel("debug");
             }
-            dispatch(actions.setToken(token));
+            dispatch(actions.setToken(currentToken));
             tracks.push(dataTrack);
-            const room = await connect(token, {
+            const room = await connect(currentToken, {
                 ...selectedTwilioConfig,
                 name: depositionID,
                 tracks,

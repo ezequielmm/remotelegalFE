@@ -1,6 +1,7 @@
 export enum NotificationEntityType {
     transcript = "transcript",
     participantStatus = "participantStatus",
+    participantRole = "participantRole",
     annotation = "annotation",
     bringAllTo = "bringAllTo",
     deposition = "deposition",

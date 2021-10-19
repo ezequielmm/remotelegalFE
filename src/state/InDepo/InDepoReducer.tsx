@@ -54,6 +54,7 @@ export interface IRoom {
     mockDepoRoom?: Room;
     isMuted?: boolean;
     jobNumber?: string;
+    events?: [];
 }
 
 export const RoomReducerInitialState: IRoom = {
@@ -97,6 +98,7 @@ export const RoomReducerInitialState: IRoom = {
     token: null,
     isMuted: false,
     jobNumber: "",
+    events: [],
 };
 
 const RoomReducer: Reducer<IRoom, IAction> = (state: IRoom, action: IAction): IRoom => {
@@ -330,6 +332,11 @@ const RoomReducer: Reducer<IRoom, IAction> = (state: IRoom, action: IAction): IR
             return {
                 ...state,
                 changeAudioDevice: action.payload,
+            };
+        case ACTION_TYPE.IN_DEPO_SET_EVENTS:
+            return {
+                ...state,
+                events: action.payload,
             };
 
         default:

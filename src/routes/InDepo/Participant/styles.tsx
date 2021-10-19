@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { Progress } from "antd";
+import Icon from "prp-components-library/src/components/Icon";
 import { getPX, getREM } from "../../../constants/styles/utils";
 import { Theme } from "../../../types/ThemeType";
 
@@ -117,7 +118,7 @@ export const StyledTimeBox = styled.div`
     padding: ${({ theme }) =>
         `
         ${getREM(theme.default.spaces[7] / 2)}
-        ${getREM(theme.default.spaces[4])} 
+        ${getREM(theme.default.spaces[8] * 2)} 
         ${getREM(theme.default.spaces[12])} 
         `};
     display: flex;
@@ -161,4 +162,16 @@ export const StyledNetworkQuality = styled(Progress)`
             margin-right: 0.12rem;
         }
     }
+`;
+
+export const StyledParticipantOptions = styled.div`
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    color: white;
+`;
+
+export const StyledOptionsIcon = styled(Icon)`
+    border-radius: ${({ theme }) => getREM(theme.default.spaces[3])};
+    background-color: ${({ theme }) => theme.colors.inDepoNeutrals[0]};
 `;

@@ -308,6 +308,14 @@ export class ApiService {
         });
     };
 
+    editParticipantRole = async (depositionID: string, payload) => {
+        return this.request({
+            path: `/api/Depositions/${depositionID}/editParticipantRole`,
+            payload,
+            method: HTTP_METHOD.PATCH,
+        });
+    };
+
     changePassword = async (payload): Promise<boolean> => {
         return this.request<boolean>({
             path: "/api/Users/changePassword",
@@ -671,8 +679,8 @@ export class ApiService {
             }
             return parsedResponse;
         } catch (errorResponse) {
-            this.logFetchError(errorResponse);
-            const error = errorResponse.status || true;
+            const [{ message = true }] = await this.logFetchError(errorResponse);
+            const error = { message, status: errorResponse.status };
             const nextAttemptCount = attemptsLeft - 1;
             const shouldRetryBasedOnStatusCode = this.httpStatusCodeRetryRegex.test(String(errorResponse.status));
             if (shouldRetryBasedOnStatusCode) {
@@ -691,13 +699,16 @@ export class ApiService {
         try {
             window.DD_LOGS.addLoggerGlobalContext("correlation_id", this.correlationId);
             const stackTrace = await this.getErrorFromResponse(errorResponse);
+
             datadogLogs.logger.error(`ApiService fetch error`, {
                 errorStatus: errorResponse?.status || "",
                 errorMessage: errorResponse?.statusText || "",
                 stackTrace,
             });
+            return stackTrace;
         } catch (error) {
             console.error("logFetchError", error);
+            return error;
         }
     };
 

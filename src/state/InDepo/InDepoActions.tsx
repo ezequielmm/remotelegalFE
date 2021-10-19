@@ -40,6 +40,7 @@ export enum ACTION_TYPE {
     IN_DEPO_SET_IS_MUTED = "IN_DEPO_SET_IS_MUTED",
     IN_DEPO_SET_JOB_NUMBER = "IN_DEPO_SET_JOB_NUMBER",
     IN_DEPO_SET_MY_EXHIBITS = "IN_DEPO_SET_MY_EXHIBITS",
+    IN_DEPO_SET_EVENTS = "IN_DEPO_SET_EVENTS",
     ADD_WITNESS = "IN_DEPO_ADD_WITNESS",
     SET_TIMEZONE = "IN_DEPO_SET_TIMEZONE",
     IN_DEPO_SET_PERMISSIONS = "IN_DEPO_SET_PERMISSIONS",
@@ -229,6 +230,10 @@ const actions = {
     }),
     changeAudioDevice: (payload: MediaDeviceInfo) => ({
         type: ACTION_TYPE.CHANGE_AUDIO_DEVICE,
+        payload,
+    }),
+    setEvents: (payload) => ({
+        type: ACTION_TYPE.IN_DEPO_SET_EVENTS,
         payload,
     }),
 };

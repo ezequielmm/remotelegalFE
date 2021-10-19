@@ -410,6 +410,10 @@ const InDepo = () => {
                             layoutSize={videoLayoutSize}
                             atendeesVisibility={atendeesVisibility}
                             enableMuteUnmute
+                            canChangeParticipantRole={
+                                currentUser?.isAdmin || userStatus?.participant?.role === Roles.courtReporter
+                            }
+                            onUpdateParticipantRole={(token) => joinDeposition(depositionID, null, token)}
                         />
                     </StyledInDepoLayout>
                     <StyledRoomFooter>
