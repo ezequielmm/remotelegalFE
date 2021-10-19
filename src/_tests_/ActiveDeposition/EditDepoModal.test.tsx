@@ -367,12 +367,14 @@ describe("Tests Edit Deposition Modal", () => {
             const editButton = screen.getAllByTestId(CONSTANTS.DEPOSITION_CARD_DETAILS_EDIT_BUTTON_DATA_TEST_ID);
             fireEvent.click(editButton[0]);
         });
-        const startTimeInput = screen.getByTestId(
+        const startTimeInput = await screen.findByTestId(
             CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_START_TIME_TEST_ID
         );
         expect(startTimeInput).toBeInTheDocument();
 
-        const startDateInput = screen.getByTestId(CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_DATA_TEST_ID_DATE);
+        const startDateInput = await screen.findByTestId(
+            CONSTANTS.DEPOSITION_DETAILS_EDIT_DEPOSITION_MODAL_DATA_TEST_ID_DATE
+        );
 
         expect(startDateInput).toBeInTheDocument();
 
