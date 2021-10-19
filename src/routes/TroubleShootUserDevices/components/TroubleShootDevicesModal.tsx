@@ -154,7 +154,7 @@ const TroubleShootDevicesModal = ({
         if (visible && !shouldUseCurrentStream) {
             loadUserStreams(null, null);
         }
-    }, [visible, shouldUseCurrentStream]);
+    }, [visible, shouldUseCurrentStream, loadUserStreams]);
 
     useEffect(() => {
         if (visible && audioTracks.length && videoTracks.length) {
@@ -167,7 +167,7 @@ const TroubleShootDevicesModal = ({
         if (visible === false) {
             stopExampleTrack();
         }
-    }, [visible, audioTracks, videoTracks]);
+    }, [visible, audioTracks, videoTracks, loadUserStreams, stopExampleTrack]);
 
     useEffect(() => {
         if (changeAudioDevice) {

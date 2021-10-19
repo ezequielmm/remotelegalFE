@@ -6,7 +6,7 @@ export const listDevices = async () => {
         audioinput: ["-"],
         audiooutput: ["-"],
     };
-    const availableStreams = await navigator.mediaDevices.enumerateDevices();
+    const availableStreams = (await navigator.mediaDevices.enumerateDevices()) || [];
     availableStreams.forEach((currentStream) => {
         const firstStream = initialOptions[currentStream.kind][0];
         if (firstStream === "-") {
