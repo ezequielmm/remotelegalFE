@@ -93,3 +93,4 @@ export const FIRST_DEVICES_BODY = {
 };
 export const CONNECTION_UNSTABLE = "Your connection is unstable";
 export const NETWORK_INDICATOR_TEST_ID = "NETWORK_INDICATOR";
+export const COPY_INVITATION_BUTTON_TEST_ID = "copy_invitation_button";

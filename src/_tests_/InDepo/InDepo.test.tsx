@@ -4,6 +4,8 @@ import AudioRecorder from "audio-recorder-polyfill";
 import React from "react";
 import { act } from "react-dom/test-utils";
 import { Route, Switch } from "react-router-dom";
+import * as rdd from "react-device-detect";
+
 import * as MODULE_CONSTANTS from "../../constants/inDepo";
 import InDepo from "../../routes/InDepo";
 import * as TRANSCRIPTIONS_MOCKS from "../mocks/transcription";
@@ -19,6 +21,7 @@ import * as AUTH from "../mocks/Auth";
 import { getUserDepoStatusWithParticipantAdmitted } from "../constants/preJoinDepo";
 import "mutationobserver-shim";
 import { DevicesStatus } from "../../constants/TroubleShootUserDevices";
+import ProtectedRoute from "../../components/ProtectedRoute";
 import ORIENTATION_STATE from "../../types/orientation";
 import { theme } from "../../constants/styles/theme";
 
@@ -1082,6 +1085,40 @@ it("calls createLocalAudioTrack with default value if first time if fails", asyn
     await waitFor(() => {
         expect(mockAudioTracks).toHaveBeenCalled();
         expect(JSON.parse(localStorage.getItem("selectedDevices"))).toEqual(expectedNewLocalStorageObject);
+    });
+});
+
+it("should show Block Firefox Modal if you try to access a depo from Firefox browser", async () => {
+    rdd.isFirefox = true;
+    renderWithGlobalContext(
+        <ProtectedRoute exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,
+        customDeps,
+        {
+            ...rootReducer,
+        },
+        history
+    );
+
+    await waitFor(() => {
+        const copyBtn = screen.queryByTestId(TESTS_CONSTANTS.COPY_INVITATION_BUTTON_TEST_ID);
+        expect(copyBtn).toBeInTheDocument();
+    });
+});
+
+it("shouldn't show Block Firefox Modal if you try to access a depo from another browser", async () => {
+    rdd.isFirefox = false;
+    renderWithGlobalContext(
+        <ProtectedRoute exact path={TESTS_CONSTANTS.ROUTE} component={InDepo} />,
+        customDeps,
+        {
+            ...rootReducer,
+        },
+        history
+    );
+
+    await waitFor(() => {
+        const copyBtn = screen.queryByTestId(TESTS_CONSTANTS.COPY_INVITATION_BUTTON_TEST_ID);
+        expect(copyBtn).not.toBeInTheDocument();
     });
 });
 

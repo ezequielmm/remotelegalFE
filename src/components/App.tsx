@@ -36,6 +36,7 @@ import TroubleShootUserDevices from "../routes/TroubleShootUserDevices/TroubleSh
 import TechInfo from "../routes/TechInfo";
 import CacheBuster from "../helpers/cacheBuster";
 import withDDContext from "./WithDDContext";
+import ProtectedRoute from "./ProtectedRoute";
 
 declare global {
     interface Window {
@@ -112,13 +113,13 @@ function App() {
                                         <Route exact path="/" component={Login} />
                                         <Route path="/verifyUser" component={Login} />
                                         <Route exact path="/sign-up" component={SignUp} />
-                                        <Route
+                                        <ProtectedRoute
                                             exact
                                             path="/deposition/pre-join/:depositionID"
                                             component={withDDContext(PreJoinDepo)}
                                         />
                                         <Authenticator routesWithGuestToken={ROUTES_WITH_GUEST_TOKEN}>
-                                            <Route
+                                            <ProtectedRoute
                                                 exact
                                                 path="/deposition/pre-join/troubleshoot-devices/:depositionID"
                                                 component={withDDContext(TroubleShootUserDevices)}
@@ -152,7 +153,7 @@ function App() {
                                                 component={withDDContext(Breakroom)}
                                             />
                                             <Route exact path="/deposition/end" component={EndDepoScreen} />
-                                            <Route
+                                            <ProtectedRoute
                                                 exact
                                                 path="/deposition/join/:depositionID"
                                                 component={withDDContext(InDepo)}
