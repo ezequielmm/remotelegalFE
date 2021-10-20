@@ -188,7 +188,7 @@ const InDepo = () => {
             <ThemeProvider theme={inDepoTheme}>
                 <StyledInDepoContainer data-testid="videoconference">
                     <StyledInDepoLayout>
-                        <Exhibits visible={exhibitsOpen} />
+                        <Exhibits visible={exhibitsOpen} togglerExhibits={togglerExhibits} />
                         {realTimeOpen && <RealTime timeZone={timeZone} />}
                         <VideoConference
                             localParticipant={mockDepoRoom.localParticipant}
