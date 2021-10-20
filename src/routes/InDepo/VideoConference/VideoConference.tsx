@@ -21,6 +21,9 @@ import {
     EDIT_PARTICIPANT_ROLE_EXISTING_WITNESS_OK_LABEL,
     EDIT_PARTICIPANT_ROLE_EXISTING_WITNESS_SUBTITLE,
     EDIT_PARTICIPANT_ROLE_EXISTING_WITNESS_TITLE,
+    EDIT_PARTICIPANT_ROLE_HAS_BEEN_ON_THE_RECORD_OK_LABEL,
+    EDIT_PARTICIPANT_ROLE_HAS_BEEN_ON_THE_RECORD_SUBTITLE,
+    EDIT_PARTICIPANT_ROLE_HAS_BEEN_ON_THE_RECORD_TITLE,
     EDIT_PARTICIPANT_ROLE_ON_THE_RECORD_OK_LABEL,
     EDIT_PARTICIPANT_ROLE_ON_THE_RECORD_SUBTITLE,
     EDIT_PARTICIPANT_ROLE_ON_THE_RECORD_TITLE,
@@ -64,6 +67,7 @@ const VideoConference = ({
     const [isParticipantEditRoleModalOpen, setIsParticipantEditRoleModalOpen] = useState(false);
     const [isExistingWitnessConfirmModalOpen, setIsExistingWitnessConfirmModalOpen] = useState(false);
     const [isOnTheRecordConfirmModalOpen, setIsOnTheRecordConfirmModalOpen] = useState(false);
+    const [isHasBeenOnTheRecordConfirmModalOpen, setIsHasBeenOnTheRecordConfirmModalOpen] = useState(false);
     const [currentParticipantEdited, setCurrentParticipantEdited] = useState<IIdentity>(null);
     const participants = [localParticipant, ...Array.from(attendees.values())];
     const witness = participants.find((participant) => JSON.parse(participant.identity).role === "Witness");
@@ -101,6 +105,11 @@ const VideoConference = ({
             return setIsOnTheRecordConfirmModalOpen(true);
         }
 
+        if (error?.message?.includes("HasBeenOnTheRecord")) {
+            setIsParticipantEditRoleModalOpen(false);
+            return setIsHasBeenOnTheRecordConfirmModalOpen(true);
+        }
+
         return addAlert({
             message: EDIT_PARTICIPANT_ROLE_ERROR_MESSAGE,
             type: "error",
@@ -133,6 +142,7 @@ const VideoConference = ({
                 onPositiveClick={() => {
                     setIsExistingWitnessConfirmModalOpen(false);
                 }}
+                onNegativeClick={() => setIsExistingWitnessConfirmModalOpen(false)}
             >
                 <span data-testid="existing-witness-modalconfirm" />
             </Confirm>
@@ -144,8 +154,21 @@ const VideoConference = ({
                 onPositiveClick={() => {
                     setIsOnTheRecordConfirmModalOpen(false);
                 }}
+                onNegativeClick={() => setIsOnTheRecordConfirmModalOpen(false)}
             >
-                <span data-testid="existing-witness-modalconfirm" />
+                <span data-testid="on-the-record-modalconfirm" />
+            </Confirm>
+            <Confirm
+                title={EDIT_PARTICIPANT_ROLE_HAS_BEEN_ON_THE_RECORD_TITLE}
+                subTitle={EDIT_PARTICIPANT_ROLE_HAS_BEEN_ON_THE_RECORD_SUBTITLE}
+                positiveLabel={EDIT_PARTICIPANT_ROLE_HAS_BEEN_ON_THE_RECORD_OK_LABEL}
+                visible={isHasBeenOnTheRecordConfirmModalOpen}
+                onPositiveClick={() => {
+                    setIsHasBeenOnTheRecordConfirmModalOpen(false);
+                }}
+                onNegativeClick={() => setIsHasBeenOnTheRecordConfirmModalOpen(false)}
+            >
+                <span data-testid="has-been-on-the-record-modalconfirm" />
             </Confirm>
             <EditParticipantRoleModal
                 currentParticipant={currentParticipantEdited}

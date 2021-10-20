@@ -15,6 +15,7 @@ import {
     EDIT_PARTICIPANT_ROLE_CHANGED_SUCCESSFULLY_MESSAGE,
     EDIT_PARTICIPANT_ROLE_ERROR_MESSAGE,
     EDIT_PARTICIPANT_ROLE_EXISTING_WITNESS_TITLE,
+    EDIT_PARTICIPANT_ROLE_HAS_BEEN_ON_THE_RECORD_TITLE,
     EDIT_PARTICIPANT_ROLE_ON_THE_RECORD_TITLE,
 } from "../../constants/editParticipantRole";
 
@@ -653,7 +654,7 @@ test("Should display error `There is already a witness` when the api return an s
     await waitFor(() => expect(screen.queryByText(EDIT_PARTICIPANT_ROLE_EXISTING_WITNESS_TITLE)).toBeInTheDocument());
 });
 
-test("Should display error `The deposition is already on the record` when the api return an status message that contains `IsOnTheRecord`", async () => {
+test(`Should display error ${EDIT_PARTICIPANT_ROLE_ON_THE_RECORD_TITLE} when the api return an status message that contains "IsOnTheRecord"`, async () => {
     useGetParticipantStatus.mockImplementation(() => ({
         participantsStatus: {
             "test@test.com": {
@@ -717,6 +718,74 @@ test("Should display error `The deposition is already on the record` when the ap
 
     fireEvent.click(screen.queryByTestId("edit-participant-role-save-button"));
     await waitFor(() => expect(screen.queryByText(EDIT_PARTICIPANT_ROLE_ON_THE_RECORD_TITLE)).toBeInTheDocument());
+});
+
+test(`Should display error ${EDIT_PARTICIPANT_ROLE_HAS_BEEN_ON_THE_RECORD_TITLE} when the api return an status message that contains "IsOnTheRecord"`, async () => {
+    useGetParticipantStatus.mockImplementation(() => ({
+        participantsStatus: {
+            "test@test.com": {
+                email: "test2@test.com",
+                isMuted: false,
+            },
+        },
+    }));
+
+    (useEditParticipantRole as jest.Mock).mockImplementation((onClose = null, onUpdateRole = null, onError) => {
+        return {
+            editParticipantRole: () => onError({ status: 400, message: "HasBeenOnTheRecord error" }),
+        };
+    });
+
+    const participant = getParticipant("test2", "Observer", "test@test.com");
+    renderWithGlobalContext(
+        <VideoConference
+            attendees={participantMap}
+            timeZone={TimeZones.ET}
+            layoutSize={1}
+            localParticipant={participant}
+            enableMuteUnmute
+            canChangeParticipantRole
+            isBreakroom
+        />,
+        customDeps,
+        {
+            ...rootReducer,
+            initialState: {
+                user: {
+                    currentUser: {
+                        firstName: "First Name",
+                        lastName: "Last Name",
+                        emailAddress: "test@test.com",
+                        isAdmin: true,
+                    },
+                },
+                signalR: { signalR: null },
+                room: {
+                    ...rootReducer.initialState.room,
+                    newSpeaker: null,
+                },
+            },
+        }
+    );
+    await waitFor(() => expect(screen.queryAllByTestId("participant-mask").length > 0).toBeTruthy());
+    const participantElement = screen.queryAllByTestId("participant-mask")[0];
+    fireEvent.mouseOver(participantElement);
+    fireEvent.click(screen.queryAllByTestId("dropdown_options")[0].children[0].firstChild);
+    await waitFor(() => expect(screen.queryAllByTestId("option_edit_participant_button")[0]).toBeInTheDocument());
+    await waitFor(() => expect(screen.queryAllByText("Edit Participant")[0]).toBeInTheDocument());
+    fireEvent.click(screen.queryAllByText("Edit Participant")[0]);
+    await waitFor(() => expect(screen.queryByTestId("edit-participant-role-save-button")).toBeInTheDocument());
+    await waitFor(() => expect(screen.queryByTestId("edit-participant-role-options")).toBeInTheDocument());
+    await act(async () => {
+        userEvent.click(await screen.findByRole("combobox"));
+        const role = await screen.findByTestId("participant-role-name-Attorney");
+        userEvent.click(role);
+    });
+
+    fireEvent.click(screen.queryByTestId("edit-participant-role-save-button"));
+    await waitFor(() =>
+        expect(screen.queryByText(EDIT_PARTICIPANT_ROLE_HAS_BEEN_ON_THE_RECORD_TITLE)).toBeInTheDocument()
+    );
 });
 
 test(`Should display error "${EDIT_PARTICIPANT_ROLE_ERROR_MESSAGE}" when the api return a different error`, async () => {

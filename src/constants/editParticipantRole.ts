@@ -7,7 +7,10 @@ export const EDIT_PARTICIPANT_ROLE_EXISTING_WITNESS_TITLE = "There is already a 
 export const EDIT_PARTICIPANT_ROLE_EXISTING_WITNESS_SUBTITLE =
     "To replace the witness, please remove the current witness from the witness box and assign that person to a different role in the deposition.";
 export const EDIT_PARTICIPANT_ROLE_EXISTING_WITNESS_OK_LABEL = "ok";
-export const EDIT_PARTICIPANT_ROLE_ON_THE_RECORD_TITLE = "The deposition is already on the record";
-export const EDIT_PARTICIPANT_ROLE_ON_THE_RECORD_SUBTITLE =
-    "You cannot assign another participant to the witness box because this deposition has already been put on the record with a witness";
+export const EDIT_PARTICIPANT_ROLE_ON_THE_RECORD_TITLE = "Role cannot be changed";
+export const EDIT_PARTICIPANT_ROLE_ON_THE_RECORD_SUBTITLE = "This deposition is on the record";
 export const EDIT_PARTICIPANT_ROLE_ON_THE_RECORD_OK_LABEL = "ok";
+export const EDIT_PARTICIPANT_ROLE_HAS_BEEN_ON_THE_RECORD_TITLE = "Role cannot be changed";
+export const EDIT_PARTICIPANT_ROLE_HAS_BEEN_ON_THE_RECORD_SUBTITLE =
+    "This deposition has already been put on the record with a witness";
+export const EDIT_PARTICIPANT_ROLE_HAS_BEEN_ON_THE_RECORD_OK_LABEL = "ok";
