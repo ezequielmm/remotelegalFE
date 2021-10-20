@@ -1,9 +1,9 @@
 import React from "react";
-import Button from "prp-components-library/src/components/Button";
-import CardResult from "prp-components-library/src/components/CardResult";
-import Icon from "prp-components-library/src/components/Icon";
-import { CustomStatus } from "prp-components-library/src/components/Result/Result";
-import Space from "prp-components-library/src/components/Space";
+import Button from "@rl/prp-components-library/src/components/Button";
+import CardResult from "@rl/prp-components-library/src/components/CardResult";
+import Icon from "@rl/prp-components-library/src/components/Icon";
+import { CustomStatus } from "@rl/prp-components-library/src/components/Result/Result";
+import Space from "@rl/prp-components-library/src/components/Space";
 import * as CONSTANTS from "../../../constants/createDeposition";
 import CardFetchError from "../../../components/CardFetchError";
 import { ReactComponent as SuccessCreateIcon } from "../../../assets/icons/success-schedule.svg";

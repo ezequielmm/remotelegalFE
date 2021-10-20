@@ -1,8 +1,8 @@
-import Button from "prp-components-library/src/components/Button";
+import Button from "@rl/prp-components-library/src/components/Button";
 import { useHistory } from "react-router";
-import Icon from "prp-components-library/src/components/Icon";
-import Space from "prp-components-library/src/components/Space";
-import Text from "prp-components-library/src/components/Text";
+import Icon from "@rl/prp-components-library/src/components/Icon";
+import Space from "@rl/prp-components-library/src/components/Space";
+import Text from "@rl/prp-components-library/src/components/Text";
 import { ReactComponent as DepositionIcon } from "../../assets/icons/deposition.svg";
 import * as CONSTANTS from "../../constants/depositions";
 import ColorStatus from "../../types/ColorStatus";

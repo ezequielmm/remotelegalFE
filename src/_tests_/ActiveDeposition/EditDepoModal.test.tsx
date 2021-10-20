@@ -6,7 +6,7 @@ import localeData from "dayjs/plugin/localeData";
 import weekday from "dayjs/plugin/weekday";
 import utc from "dayjs/plugin/utc";
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
-import { Status } from "prp-components-library/src/components/StatusPill/StatusPill";
+import { Status } from "@rl/prp-components-library/src/components/StatusPill/StatusPill";
 import * as CONSTANTS from "../../constants/activeDepositionDetails";
 import * as TEST_CONSTANTS from "../constants/activeDepositionDetails";
 import { getDepositionWithOverrideValues } from "../constants/depositions";

@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext } from "react";
-import Space from "prp-components-library/src/components/Space";
-import Table from "prp-components-library/src/components/Table";
-import Title from "prp-components-library/src/components/Title";
+import Space from "@rl/prp-components-library/src/components/Space";
+import Table from "@rl/prp-components-library/src/components/Table";
+import Title from "@rl/prp-components-library/src/components/Title";
 import CardFetchError from "../../../components/CardFetchError";
 import {
     DEPOSITION_DETAILS_ATTENDEES_TITLE,

@@ -1,6 +1,6 @@
 import { UploadFileStatus } from "antd/lib/upload/interface";
 import { ReactElement, useEffect, useState, useRef, useContext } from "react";
-import ProgressBar from "prp-components-library/src/components/ProgressBar";
+import ProgressBar from "@rl/prp-components-library/src/components/ProgressBar";
 import { GlobalStateContext } from "../../../../../../state/GlobalState";
 import * as CONSTANTS from "../../../../../../constants/exhibits";
 import useSignalR from "../../../../../../hooks/useSignalR";

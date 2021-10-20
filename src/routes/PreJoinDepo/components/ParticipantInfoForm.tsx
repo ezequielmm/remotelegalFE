@@ -1,8 +1,8 @@
 import { Form, Checkbox } from "antd";
 import { useEffect, useState } from "react";
-import Button from "prp-components-library/src/components/Button";
-import Text from "prp-components-library/src/components/Text";
-import Wizard from "prp-components-library/src/components/Wizard";
+import Button from "@rl/prp-components-library/src/components/Button";
+import Text from "@rl/prp-components-library/src/components/Text";
+import Wizard from "@rl/prp-components-library/src/components/Wizard";
 import styled from "styled-components";
 import UserInfoPanel from "./UserInfoPanel";
 import isInputEmpty from "../../../helpers/isInputEmpty";

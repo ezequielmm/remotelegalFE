@@ -1,11 +1,11 @@
 import dayjs from "dayjs";
 import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
-import Title from "prp-components-library/src/components/Title";
-import Text from "prp-components-library/src/components/Text";
-import Button from "prp-components-library/src/components/Button";
-import Icon from "prp-components-library/src/components/Icon";
-import ColorStatus from "prp-components-library/src/types/ColorStatus";
+import Title from "@rl/prp-components-library/src/components/Title";
+import Text from "@rl/prp-components-library/src/components/Text";
+import Button from "@rl/prp-components-library/src/components/Button";
+import Icon from "@rl/prp-components-library/src/components/Icon";
+import ColorStatus from "@rl/prp-components-library/src/types/ColorStatus";
 import { NETWORK_ERROR } from "../../../../constants/inDepo";
 import { mapTimeZone } from "../../../../models/general";
 import { GlobalStateContext } from "../../../../state/GlobalState";

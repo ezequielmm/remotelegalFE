@@ -1,7 +1,7 @@
-import Text from "prp-components-library/src/components/Text";
-import Space from "prp-components-library/src/components/Space";
-import Title from "prp-components-library/src/components/Title";
-import Spinner from "prp-components-library/src/components/Spinner";
+import Text from "@rl/prp-components-library/src/components/Text";
+import Space from "@rl/prp-components-library/src/components/Space";
+import Title from "@rl/prp-components-library/src/components/Title";
+import Spinner from "@rl/prp-components-library/src/components/Spinner";
 import { useState, useEffect } from "react";
 import Content from "../../components/Layout/Content";
 import ColorStatus from "../../types/ColorStatus";

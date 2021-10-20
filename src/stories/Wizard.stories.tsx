@@ -3,11 +3,11 @@ import { useEffect, useState } from "react";
 import { Story, Meta } from "@storybook/react/types-6-0";
 
 import { Form } from "antd";
-import Button from "prp-components-library/src/components/Button";
-import { InputWrapper } from "prp-components-library/src/components/Input/styles";
-import Select from "prp-components-library/src/components/Select";
-import Text from "prp-components-library/src/components/Text";
-import Wizard from "prp-components-library/src/components/Wizard";
+import Button from "@rl/prp-components-library/src/components/Button";
+import { InputWrapper } from "@rl/prp-components-library/src/components/Input/styles";
+import Select from "@rl/prp-components-library/src/components/Select";
+import Text from "@rl/prp-components-library/src/components/Text";
+import Wizard from "@rl/prp-components-library/src/components/Wizard";
 import styled from "styled-components";
 
 import isInvalidEMail from "../helpers/isInvalidEmail";

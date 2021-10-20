@@ -1,9 +1,9 @@
 import { Row, Col, Image } from "antd";
-import Button from "prp-components-library/src/components/Button";
-import Space from "prp-components-library/src/components/Space";
-import Text from "prp-components-library/src/components/Text";
-import Title from "prp-components-library/src/components/Title";
-import Icon from "prp-components-library/src/components/Icon";
+import Button from "@rl/prp-components-library/src/components/Button";
+import Space from "@rl/prp-components-library/src/components/Space";
+import Text from "@rl/prp-components-library/src/components/Text";
+import Title from "@rl/prp-components-library/src/components/Title";
+import Icon from "@rl/prp-components-library/src/components/Icon";
 import { ReactComponent as browserIcon } from "../../../assets/in-depo/Browser.svg";
 import { ReactComponent as CopyIcon } from "../../../assets/icons/copy.svg";
 import { StyledBlockFirefoxScreen, StyledButton, StyledCard, StyledCopyInvitationCard, StyledSpace } from "./styles";

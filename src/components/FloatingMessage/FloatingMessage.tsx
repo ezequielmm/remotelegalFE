@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import Icon from "prp-components-library/src/components/Icon";
-import Text from "prp-components-library/src/components/Text";
+import Icon from "@rl/prp-components-library/src/components/Icon";
+import Text from "@rl/prp-components-library/src/components/Text";
 import { getREM, hexToRGBA } from "../../constants/styles/utils";
 import { theme } from "../../constants/styles/theme";
 import ColorStatus from "../../types/ColorStatus";

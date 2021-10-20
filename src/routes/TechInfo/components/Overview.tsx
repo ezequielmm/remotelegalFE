@@ -1,10 +1,10 @@
-import Text from "prp-components-library/src/components/Text";
-import { Status } from "prp-components-library/src/components/StatusPill/StatusPill";
-import Title from "prp-components-library/src/components/Title";
+import Text from "@rl/prp-components-library/src/components/Text";
+import { Status } from "@rl/prp-components-library/src/components/StatusPill/StatusPill";
+import Title from "@rl/prp-components-library/src/components/Title";
 import { Col } from "antd/lib/grid";
 import Row from "antd/lib/row";
-import Space from "prp-components-library/src/components/Space";
-import ColorStatus from "prp-components-library/src/types/ColorStatus";
+import Space from "@rl/prp-components-library/src/components/Space";
+import ColorStatus from "@rl/prp-components-library/src/types/ColorStatus";
 import * as CONSTANTS from "../../../constants/techInfo";
 import { StyledStatusPill } from "../styles";
 

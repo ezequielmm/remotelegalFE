@@ -1,5 +1,5 @@
 import { ButtonProps, ButtonType } from "antd/lib/button";
-import Text from "prp-components-library/src/components/Text";
+import Text from "@rl/prp-components-library/src/components/Text";
 import { StyledRoundedControl, StyledCircleControl, StyledRoundedButton } from "./styles";
 import ColorStatus from "../../types/ColorStatus";
 

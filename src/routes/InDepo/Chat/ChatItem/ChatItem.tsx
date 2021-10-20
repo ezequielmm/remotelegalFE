@@ -2,9 +2,9 @@
 import dayjs from "dayjs";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
-import Icon from "prp-components-library/src/components/Icon";
-import Space from "prp-components-library/src/components/Space";
-import Text from "prp-components-library/src/components/Text";
+import Icon from "@rl/prp-components-library/src/components/Icon";
+import Space from "@rl/prp-components-library/src/components/Space";
+import Text from "@rl/prp-components-library/src/components/Text";
 import ColorStatus from "../../../../types/ColorStatus";
 import { ReactComponent as InfoIcon } from "../../../../assets/icons/information.filled.svg";
 import { StyledItem, StyledText, StyledBubble } from "./styles";

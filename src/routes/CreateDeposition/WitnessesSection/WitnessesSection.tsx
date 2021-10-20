@@ -1,8 +1,8 @@
 import React, { Fragment } from "react";
 import { Divider } from "antd";
-import Button from "prp-components-library/src/components/Button";
-import Card from "prp-components-library/src/components/Card";
-import Icon from "prp-components-library/src/components/Icon";
+import Button from "@rl/prp-components-library/src/components/Button";
+import Card from "@rl/prp-components-library/src/components/Card";
+import Icon from "@rl/prp-components-library/src/components/Icon";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import { ReactComponent as AddIcon } from "../../../assets/general/Add.svg";
 import * as CONSTANTS from "../../../constants/createDeposition";

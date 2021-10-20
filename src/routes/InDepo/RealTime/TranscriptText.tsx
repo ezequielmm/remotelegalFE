@@ -1,6 +1,6 @@
 import styled from "styled-components";
-import Text from "prp-components-library/src/components/Text";
-import { ITextProps } from "prp-components-library/src/components/Text/Text";
+import Text from "@rl/prp-components-library/src/components/Text";
+import { ITextProps } from "@rl/prp-components-library/src/components/Text/Text";
 
 interface TranscriptTextProps extends ITextProps {
     highlighted: boolean;

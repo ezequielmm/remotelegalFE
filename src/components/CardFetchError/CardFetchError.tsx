@@ -1,7 +1,7 @@
 import React from "react";
-import Button from "prp-components-library/src/components/Button";
-import CardResult from "prp-components-library/src/components/CardResult";
-import { CustomStatus } from "prp-components-library/src/components/Result/Result";
+import Button from "@rl/prp-components-library/src/components/Button";
+import CardResult from "@rl/prp-components-library/src/components/CardResult";
+import { CustomStatus } from "@rl/prp-components-library/src/components/Result/Result";
 import * as ERRORS_CONSTANTS from "../../constants/errors";
 
 export default function CardError({ onClick, width }: { onClick: (ev: React.MouseEvent) => void; width?: string }) {

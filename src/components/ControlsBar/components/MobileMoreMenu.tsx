@@ -1,11 +1,11 @@
 import React from "react";
-import Button from "prp-components-library/src/components/Button";
-import Drawer from "prp-components-library/src/components/Drawer";
-import Text from "prp-components-library/src/components/Text";
-import Icon from "prp-components-library/src/components/Icon";
-import Menu from "prp-components-library/src/components/Menu";
-import Space from "prp-components-library/src/components/Space";
-import ColorStatus from "prp-components-library/src/types/ColorStatus";
+import Button from "@rl/prp-components-library/src/components/Button";
+import Drawer from "@rl/prp-components-library/src/components/Drawer";
+import Text from "@rl/prp-components-library/src/components/Text";
+import Icon from "@rl/prp-components-library/src/components/Icon";
+import Menu from "@rl/prp-components-library/src/components/Menu";
+import Space from "@rl/prp-components-library/src/components/Space";
+import ColorStatus from "@rl/prp-components-library/src/types/ColorStatus";
 import { StyledMobileMenu } from "../styles";
 import * as CONSTANTS from "../../../constants/inDepo";
 import { ReactComponent as SettingsIcon } from "../../../assets/in-depo/settings.svg";

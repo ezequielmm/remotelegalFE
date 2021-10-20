@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { RowSelectionType } from "antd/lib/table/interface.d";
-import Button from "prp-components-library/src/components/Button";
-import Icon from "prp-components-library/src/components/Icon";
-import Space from "prp-components-library/src/components/Space";
-import Title from "prp-components-library/src/components/Title";
+import Button from "@rl/prp-components-library/src/components/Button";
+import Icon from "@rl/prp-components-library/src/components/Icon";
+import Space from "@rl/prp-components-library/src/components/Space";
+import Title from "@rl/prp-components-library/src/components/Title";
 import { DEPOSITION_DETAILS_ENTERED_EXHIBITS_TITLE } from "../../../constants/depositionDetails";
 import { useEnteredExhibit } from "../../../hooks/useEnteredExhibits";
 import { ReactComponent as DownloadIcon } from "../../../assets/icons/download.svg";

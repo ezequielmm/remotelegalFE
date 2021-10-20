@@ -1,10 +1,10 @@
 import { ReactElement, useState, useContext } from "react";
 import { datadogLogs } from "@datadog/browser-logs";
 import { UploadRequestOption } from "rc-upload/lib/interface";
-import Dragger from "prp-components-library/src/components/Dragger";
-import Icon from "prp-components-library/src/components/Icon";
-import Space from "prp-components-library/src/components/Space";
-import Text from "prp-components-library/src/components/Text";
+import Dragger from "@rl/prp-components-library/src/components/Dragger";
+import Icon from "@rl/prp-components-library/src/components/Icon";
+import Space from "@rl/prp-components-library/src/components/Space";
+import Text from "@rl/prp-components-library/src/components/Text";
 import { ReactComponent as uploadIcon } from "../../../../../assets/icons/upload-cloud.svg";
 import ProgressBarRender from "./ProgressBarRender";
 import { MY_EXHIBITS_ALLOWED_FILE_TYPES } from "../../../../../constants/exhibits";

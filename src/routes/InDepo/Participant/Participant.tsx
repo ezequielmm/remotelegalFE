@@ -1,12 +1,12 @@
 import { useContext, useEffect, useState } from "react";
 import { LocalParticipant, RemoteParticipant } from "twilio-video";
 import { datadogLogs } from "@datadog/browser-logs";
-import Dropdown from "prp-components-library/src/components/Dropdown";
-import Menu from "prp-components-library/src/components/Menu";
-import Button from "prp-components-library/src/components/Button";
-import Icon from "prp-components-library/src/components/Icon";
-import Space from "prp-components-library/src/components/Space";
-import Text from "prp-components-library/src/components/Text";
+import Dropdown from "@rl/prp-components-library/src/components/Dropdown";
+import Menu from "@rl/prp-components-library/src/components/Menu";
+import Button from "@rl/prp-components-library/src/components/Button";
+import Icon from "@rl/prp-components-library/src/components/Icon";
+import Space from "@rl/prp-components-library/src/components/Space";
+import Text from "@rl/prp-components-library/src/components/Text";
 import useDataTrack from "../../../hooks/InDepo/useDataTrack";
 import useParticipantTracks from "../../../hooks/InDepo/useParticipantTracks";
 import { TimeZones } from "../../../models/general";

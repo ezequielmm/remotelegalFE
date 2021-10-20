@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import Button from "prp-components-library/src/components/Button";
+import Button from "@rl/prp-components-library/src/components/Button";
 
 import { getREM, hexToRGBA } from "../../constants/styles/utils";
 

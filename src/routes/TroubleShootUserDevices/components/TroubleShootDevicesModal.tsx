@@ -3,17 +3,17 @@ import { Col } from "antd/lib/grid";
 import Row from "antd/lib/row";
 import styled, { ThemeProvider } from "styled-components";
 import { Form } from "antd";
-import Button from "prp-components-library/src/components/Button";
-import Icon from "prp-components-library/src/components/Icon";
-import Modal from "prp-components-library/src/components/Modal";
-import { ModalSize } from "prp-components-library/src/components/Modal/Modal";
-import { InputWrapper } from "prp-components-library/src/components/Input/styles";
-import Select from "prp-components-library/src/components/Select";
-import Space from "prp-components-library/src/components/Space";
-import Title from "prp-components-library/src/components/Title";
-import Divider from "prp-components-library/src/components/Divider";
+import Button from "@rl/prp-components-library/src/components/Button";
+import Icon from "@rl/prp-components-library/src/components/Icon";
+import Modal from "@rl/prp-components-library/src/components/Modal";
+import { ModalSize } from "@rl/prp-components-library/src/components/Modal/Modal";
+import { InputWrapper } from "@rl/prp-components-library/src/components/Input/styles";
+import Select from "@rl/prp-components-library/src/components/Select";
+import Space from "@rl/prp-components-library/src/components/Space";
+import Title from "@rl/prp-components-library/src/components/Title";
+import Divider from "@rl/prp-components-library/src/components/Divider";
 import { useHistory, useParams } from "react-router";
-import Drawer from "prp-components-library/src/components/Drawer";
+import Drawer from "@rl/prp-components-library/src/components/Drawer";
 import {
     createLocalVideoTrack,
     createLocalAudioTrack,

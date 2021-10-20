@@ -1,11 +1,11 @@
 import React from "react";
 // also exported from '@storybook/react' if you can deal with breaking changes in 6.1
 import { Story, Meta } from "@storybook/react/types-6-0";
-import Button from "prp-components-library/src/components/Button";
-import Dropdown from "prp-components-library/src/components/Dropdown";
-import { IDropdownProps } from "prp-components-library/src/components/Dropdown/Dropdown";
-import Menu from "prp-components-library/src/components/Menu";
-import Space from "prp-components-library/src/components/Space";
+import Button from "@rl/prp-components-library/src/components/Button";
+import Dropdown from "@rl/prp-components-library/src/components/Dropdown";
+import { IDropdownProps } from "@rl/prp-components-library/src/components/Dropdown/Dropdown";
+import Menu from "@rl/prp-components-library/src/components/Menu";
+import Space from "@rl/prp-components-library/src/components/Space";
 import { ContainerCentered } from "./Decorators";
 
 const menu = (

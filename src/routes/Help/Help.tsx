@@ -1,10 +1,10 @@
 import { Col, Row } from "antd";
-import Button from "prp-components-library/src/components/Button";
-import Card from "prp-components-library/src/components/Card";
-import Icon from "prp-components-library/src/components/Icon";
-import Result from "prp-components-library/src/components/Result";
-import Space from "prp-components-library/src/components/Space";
-import Text from "prp-components-library/src/components/Text";
+import Button from "@rl/prp-components-library/src/components/Button";
+import Card from "@rl/prp-components-library/src/components/Card";
+import Icon from "@rl/prp-components-library/src/components/Icon";
+import Result from "@rl/prp-components-library/src/components/Result";
+import Space from "@rl/prp-components-library/src/components/Space";
+import Text from "@rl/prp-components-library/src/components/Text";
 import { ReactComponent as HelpIcon } from "../../assets/layout/Help.svg";
 import * as CONSTANTS from "../../constants/help";
 import ColorStatus from "../../types/ColorStatus";

@@ -1,11 +1,11 @@
 import { Redirect } from "react-router-dom";
 import { Col, Row, Form } from "antd";
-import Alert from "prp-components-library/src/components/Alert";
-import Button from "prp-components-library/src/components/Button";
-import { InputWrapper } from "prp-components-library/src/components/Input/styles";
-import Space from "prp-components-library/src/components/Space";
-import Text from "prp-components-library/src/components/Text";
-import Title from "prp-components-library/src/components/Title";
+import Alert from "@rl/prp-components-library/src/components/Alert";
+import Button from "@rl/prp-components-library/src/components/Button";
+import { InputWrapper } from "@rl/prp-components-library/src/components/Input/styles";
+import Space from "@rl/prp-components-library/src/components/Space";
+import Text from "@rl/prp-components-library/src/components/Text";
+import Title from "@rl/prp-components-library/src/components/Title";
 import Container from "../../components/Container";
 import * as CONSTANTS from "../../constants/resetPassword";
 import isInvalidEMail from "../../helpers/isInvalidEmail";

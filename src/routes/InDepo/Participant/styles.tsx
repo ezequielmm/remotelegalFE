@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Progress } from "antd";
-import Icon from "prp-components-library/src/components/Icon";
+import Icon from "@rl/prp-components-library/src/components/Icon";
 import { getPX, getREM } from "../../../constants/styles/utils";
 import { Theme } from "../../../types/ThemeType";
 

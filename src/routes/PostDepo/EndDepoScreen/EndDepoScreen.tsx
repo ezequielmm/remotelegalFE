@@ -1,10 +1,10 @@
 import { useContext } from "react";
 import { Row, Col } from "antd";
-import Button from "prp-components-library/src/components/Button";
-import Card from "prp-components-library/src/components/Card";
-import Space from "prp-components-library/src/components/Space";
-import Text from "prp-components-library/src/components/Text";
-import Title from "prp-components-library/src/components/Title";
+import Button from "@rl/prp-components-library/src/components/Button";
+import Card from "@rl/prp-components-library/src/components/Card";
+import Space from "@rl/prp-components-library/src/components/Space";
+import Text from "@rl/prp-components-library/src/components/Text";
+import Title from "@rl/prp-components-library/src/components/Title";
 import Logo from "../../../components/Logo";
 import { theme } from "../../../constants/styles/theme";
 import { getREM } from "../../../constants/styles/utils";

@@ -1,11 +1,11 @@
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
-import Button from "prp-components-library/src/components/Button";
-import Divider from "prp-components-library/src/components/Divider";
-import Icon from "prp-components-library/src/components/Icon";
-import Space from "prp-components-library/src/components/Space";
-import Spinner from "prp-components-library/src/components/Spinner";
-import Text from "prp-components-library/src/components/Text";
-import Title from "prp-components-library/src/components/Title";
+import Button from "@rl/prp-components-library/src/components/Button";
+import Divider from "@rl/prp-components-library/src/components/Divider";
+import Icon from "@rl/prp-components-library/src/components/Icon";
+import Space from "@rl/prp-components-library/src/components/Space";
+import Spinner from "@rl/prp-components-library/src/components/Spinner";
+import Text from "@rl/prp-components-library/src/components/Text";
+import Title from "@rl/prp-components-library/src/components/Title";
 import { ReactComponent as CloseIcon } from "../../../assets/icons/close.svg";
 import { ReactComponent as SendIcon } from "../../../assets/in-depo/send.svg";
 import { ReactComponent as ErrorIcon } from "../../../assets/icons/Error.svg";

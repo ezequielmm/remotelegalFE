@@ -1,8 +1,8 @@
 import React from "react";
 // also exported from '@storybook/react' if you can deal with breaking changes in 6.1
 import { Story, Meta } from "@storybook/react/types-6-0";
-import FileIcon from "prp-components-library/src/components/FileIcon";
-import { IFileIconProps } from "prp-components-library/src/components/FileIcon/FileIcon";
+import FileIcon from "@rl/prp-components-library/src/components/FileIcon";
+import { IFileIconProps } from "@rl/prp-components-library/src/components/FileIcon/FileIcon";
 import { ContainerSmall } from "./Decorators";
 import FileTypes from "../types/FileTypes";
 

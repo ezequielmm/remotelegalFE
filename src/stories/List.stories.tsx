@@ -1,10 +1,10 @@
 // also exported from '@storybook/react' if you can deal with breaking changes in 6.1
 import { Story, Meta } from "@storybook/react/types-6-0";
 import { Row } from "antd";
-import Card from "prp-components-library/src/components/Card";
-import Button from "prp-components-library/src/components/Button";
-import List from "prp-components-library/src/components/List";
-import Text from "prp-components-library/src/components/Text";
+import Card from "@rl/prp-components-library/src/components/Card";
+import Button from "@rl/prp-components-library/src/components/Button";
+import List from "@rl/prp-components-library/src/components/List";
+import Text from "@rl/prp-components-library/src/components/Text";
 import { ContainerSmall } from "./Decorators";
 import ColorStatus from "../types/ColorStatus";
 

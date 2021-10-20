@@ -1,10 +1,10 @@
 import React, { SetStateAction, useEffect, useState } from "react";
 import { Row, Form } from "antd";
-import Button from "prp-components-library/src/components/Button";
-import Modal from "prp-components-library/src/components/Modal";
-import Space from "prp-components-library/src/components/Space";
-import Title from "prp-components-library/src/components/Title";
-import TextArea from "prp-components-library/src/components/TextArea";
+import Button from "@rl/prp-components-library/src/components/Button";
+import Modal from "@rl/prp-components-library/src/components/Modal";
+import Space from "@rl/prp-components-library/src/components/Space";
+import Title from "@rl/prp-components-library/src/components/Title";
+import TextArea from "@rl/prp-components-library/src/components/TextArea";
 import * as CONSTANTS from "../../../constants/activeDepositionDetails";
 import { DepositionModel } from "../../../models";
 import { useEditDeposition } from "../../../hooks/activeDepositionDetails/hooks";

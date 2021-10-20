@@ -1,5 +1,5 @@
 import { Dayjs } from "dayjs";
-import { Status } from "prp-components-library/src/components/StatusPill/StatusPill";
+import { Status } from "@rl/prp-components-library/src/components/StatusPill/StatusPill";
 import { DateLike, TimeZones } from "./general";
 import { IParticipant } from "./participant";
 import { IUser } from "./user";

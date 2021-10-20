@@ -1,10 +1,10 @@
 import React, { useContext, useState } from "react";
-import Button from "prp-components-library/src/components/Button";
-import Icon from "prp-components-library/src/components/Icon";
-import Dropdown from "prp-components-library/src/components/Dropdown";
-import Menu from "prp-components-library/src/components/Menu";
-import Space from "prp-components-library/src/components/Space";
-import Text from "prp-components-library/src/components/Text";
+import Button from "@rl/prp-components-library/src/components/Button";
+import Icon from "@rl/prp-components-library/src/components/Icon";
+import Dropdown from "@rl/prp-components-library/src/components/Dropdown";
+import Menu from "@rl/prp-components-library/src/components/Menu";
+import Space from "@rl/prp-components-library/src/components/Space";
+import Text from "@rl/prp-components-library/src/components/Text";
 import { Auth } from "aws-amplify";
 import { useHistory, useLocation } from "react-router-dom";
 import { Layout } from "antd";

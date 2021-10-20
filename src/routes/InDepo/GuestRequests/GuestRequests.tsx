@@ -1,9 +1,9 @@
 import { notification, Tooltip } from "antd";
 import { useEffect, useState } from "react";
-import Button from "prp-components-library/src/components/Button";
-import Confirm from "prp-components-library/src/components/Confirm";
-import Space from "prp-components-library/src/components/Space";
-import Text from "prp-components-library/src/components/Text";
+import Button from "@rl/prp-components-library/src/components/Button";
+import Confirm from "@rl/prp-components-library/src/components/Confirm";
+import Space from "@rl/prp-components-library/src/components/Space";
+import Text from "@rl/prp-components-library/src/components/Text";
 import { ThemeProvider } from "styled-components";
 import { theme } from "../../../constants/styles/theme";
 import { ThemeMode } from "../../../types/ThemeType";

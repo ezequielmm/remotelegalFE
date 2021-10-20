@@ -1,8 +1,8 @@
 import styled from "styled-components";
 import { Layout } from "antd";
-import Space from "prp-components-library/src/components/Space";
-import Card from "prp-components-library/src/components/Card";
-import Button from "prp-components-library/src/components/Button";
+import Space from "@rl/prp-components-library/src/components/Space";
+import Card from "@rl/prp-components-library/src/components/Card";
+import Button from "@rl/prp-components-library/src/components/Button";
 import backgroundImage from "../../../assets/in-depo/In-depo-bg.png";
 import { getREM } from "../../../constants/styles/utils";
 

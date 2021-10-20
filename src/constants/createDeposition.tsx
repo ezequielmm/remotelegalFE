@@ -1,4 +1,4 @@
-import Button from "prp-components-library/src/components/Button";
+import Button from "@rl/prp-components-library/src/components/Button";
 
 // eslint-disable-next-line import/prefer-default-export
 export const SCHEDULE_DEPOSITION = "Schedule Deposition";

@@ -1,10 +1,10 @@
 import React from "react";
 import { Tooltip } from "antd";
 import Column from "antd/lib/table/Column";
-import FileIcon from "prp-components-library/src/components/FileIcon";
-import Table from "prp-components-library/src/components/Table";
-import { ITableProps } from "prp-components-library/src/components/Table/Table";
-import Text from "prp-components-library/src/components/Text";
+import FileIcon from "@rl/prp-components-library/src/components/FileIcon";
+import Table from "@rl/prp-components-library/src/components/Table";
+import { ITableProps } from "@rl/prp-components-library/src/components/Table/Table";
+import Text from "@rl/prp-components-library/src/components/Text";
 import { StyledFileNameCell } from "./styles";
 import ColorStatus from "../../../../types/ColorStatus";
 

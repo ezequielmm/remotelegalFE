@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useParams } from "react-router";
-import Space from "prp-components-library/src/components/Space";
-import Tabs from "prp-components-library/src/components/Tabs";
+import Space from "@rl/prp-components-library/src/components/Space";
+import Tabs from "@rl/prp-components-library/src/components/Tabs";
 import * as CONSTANTS from "../../../constants/depositionDetails";
 import { IDeposition } from "../../../models/deposition";
 import { DepositionID } from "../../../state/types";

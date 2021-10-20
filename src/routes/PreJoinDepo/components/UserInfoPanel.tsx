@@ -1,11 +1,11 @@
 import { Dispatch, SetStateAction } from "react";
 import { Form } from "antd";
 import { Link } from "react-router-dom";
-import Button from "prp-components-library/src/components/Button";
-import Input from "prp-components-library/src/components/Input";
-import { InputWrapper } from "prp-components-library/src/components/Input/styles";
-import Select from "prp-components-library/src/components/Select";
-import Text from "prp-components-library/src/components/Text";
+import Button from "@rl/prp-components-library/src/components/Button";
+import Input from "@rl/prp-components-library/src/components/Input";
+import { InputWrapper } from "@rl/prp-components-library/src/components/Input/styles";
+import Select from "@rl/prp-components-library/src/components/Select";
+import Text from "@rl/prp-components-library/src/components/Text";
 import * as CONSTANTS from "../../../constants/preJoinDepo";
 import ColorStatus from "../../../types/ColorStatus";
 import { InputState } from "../../../types/PreJoinDepo";

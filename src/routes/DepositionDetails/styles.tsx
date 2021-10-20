@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import Button from "prp-components-library/src/components/Button";
+import Button from "@rl/prp-components-library/src/components/Button";
 import { getPX, getREM, hexToRGBA } from "../../constants/styles/utils";
 
 export const RoughDraftDetailDepoPill = styled.div`

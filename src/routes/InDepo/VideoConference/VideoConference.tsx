@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { LocalParticipant, RemoteParticipant, Room } from "twilio-video";
-import Confirm from "prp-components-library/src/components/Confirm";
+import Confirm from "@rl/prp-components-library/src/components/Confirm";
 import { useGetParticipantStatus } from "../../../hooks/InDepo/useParticipantStatus";
 import { TimeZones } from "../../../models/general";
 import Participant from "../Participant";

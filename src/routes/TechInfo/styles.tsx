@@ -1,7 +1,7 @@
 import styled from "styled-components";
-import Menu from "prp-components-library/src/components/Menu";
-import Tag from "prp-components-library/src/components/Tag";
-import StatusPill from "prp-components-library/src/components/StatusPill";
+import Menu from "@rl/prp-components-library/src/components/Menu";
+import Tag from "@rl/prp-components-library/src/components/Tag";
+import StatusPill from "@rl/prp-components-library/src/components/StatusPill";
 import { Layout } from "antd";
 import Sider from "../../components/Layout/Sider";
 import { getPX, getREM } from "../../constants/styles/utils";

@@ -26,7 +26,7 @@ module.exports = {
 
                         const newIncludePaths = [
                             // relative path to my yarn workspace library
-                            path.resolve(__dirname, "node_modules/prp-components-library/src"),
+                            path.resolve(__dirname, "node_modules/@rl/prp-components-library/src"),
                         ];
                         if (tsxRule) {
                             if (Array.isArray(tsxRule.include)) {

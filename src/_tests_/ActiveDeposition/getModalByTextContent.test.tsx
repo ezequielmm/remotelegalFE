@@ -1,4 +1,4 @@
-import { Status } from "prp-components-library/src/components/StatusPill/StatusPill";
+import { Status } from "@rl/prp-components-library/src/components/StatusPill/StatusPill";
 import getModalTextContent from "../../routes/ActiveDepoDetails/helpers/getModalTextContent";
 import * as CONSTANTS from "../../constants/activeDepositionDetails";
 import { getDepositionWithOverrideValues } from "../constants/depositions";

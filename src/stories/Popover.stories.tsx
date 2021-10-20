@@ -1,10 +1,10 @@
 // also exported from '@storybook/react' if you can deal with breaking changes in 6.1
 import { Story, Meta } from "@storybook/react/types-6-0";
-import Button from "prp-components-library/src/components/Button";
-import Popover from "prp-components-library/src/components/Popover";
-import Space from "prp-components-library/src/components/Space";
-import { IPopoverProps } from "prp-components-library/src/components/Popover/Popover";
-import Text from "prp-components-library/src/components/Text";
+import Button from "@rl/prp-components-library/src/components/Button";
+import Popover from "@rl/prp-components-library/src/components/Popover";
+import Space from "@rl/prp-components-library/src/components/Space";
+import { IPopoverProps } from "@rl/prp-components-library/src/components/Popover/Popover";
+import Text from "@rl/prp-components-library/src/components/Text";
 import { ContainerCentered } from "./Decorators";
 
 const content = (

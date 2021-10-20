@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import { Checkbox, Col, Form, Row } from "antd";
-import Alert from "prp-components-library/src/components/Alert";
+import Alert from "@rl/prp-components-library/src/components/Alert";
 import { Redirect, Link } from "react-router-dom";
-import Button from "prp-components-library/src/components/Button";
-import Space from "prp-components-library/src/components/Space";
-import Text from "prp-components-library/src/components/Text";
-import Title from "prp-components-library/src/components/Title";
-import { InputWrapper } from "prp-components-library/src/components/Input/styles";
+import Button from "@rl/prp-components-library/src/components/Button";
+import Space from "@rl/prp-components-library/src/components/Space";
+import Text from "@rl/prp-components-library/src/components/Text";
+import Title from "@rl/prp-components-library/src/components/Title";
+import { InputWrapper } from "@rl/prp-components-library/src/components/Input/styles";
 import useInput from "../../hooks/useInput";
 import { useFrontEndContent } from "../../hooks/frontEndContent/useFrontEndContent";
 import Container from "../../components/Container";

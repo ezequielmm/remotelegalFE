@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import Result, { IResultProps } from "prp-components-library/src/components/Result/Result";
+import Result, { IResultProps } from "@rl/prp-components-library/src/components/Result/Result";
 import { theme } from "../../constants/styles/theme";
 import { getREM } from "../../constants/styles/utils";
 

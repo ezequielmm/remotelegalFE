@@ -1,6 +1,6 @@
 import { Col, Row } from "antd";
-import Icon from "prp-components-library/src/components/Icon";
-import Result, { CustomStatus } from "prp-components-library/src/components/Result/Result";
+import Icon from "@rl/prp-components-library/src/components/Icon";
+import Result, { CustomStatus } from "@rl/prp-components-library/src/components/Result/Result";
 import styled from "styled-components";
 import * as CONSTANTS from "../../../constants/preJoinDepo";
 import { theme } from "../../../constants/styles/theme";

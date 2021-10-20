@@ -1,5 +1,5 @@
 import { Story, Meta } from "@storybook/react/types-6-0";
-import Icon from "prp-components-library/src/components/Icon";
+import Icon from "@rl/prp-components-library/src/components/Icon";
 import VideoPlaceholder from "../components/VideoPlaceholder";
 import { ReactComponent as VideoAlertIcon } from "../assets/icons/Video-alert.svg";
 

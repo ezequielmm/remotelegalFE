@@ -1,9 +1,9 @@
 import React from "react";
 import styled from "styled-components";
-import Modal from "prp-components-library/src/components/Modal";
-import Space from "prp-components-library/src/components/Space";
-import Text from "prp-components-library/src/components/Text";
-import Title from "prp-components-library/src/components/Title";
+import Modal from "@rl/prp-components-library/src/components/Modal";
+import Space from "@rl/prp-components-library/src/components/Space";
+import Text from "@rl/prp-components-library/src/components/Text";
+import Title from "@rl/prp-components-library/src/components/Title";
 import ColorStatus from "../../types/ColorStatus";
 
 export interface IWizard {

@@ -1,0 +1,9 @@
+{
+  "name": "login-codeartifact",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@aws-sdk/client-codeartifact": "^3.31.0"
+  }
+}

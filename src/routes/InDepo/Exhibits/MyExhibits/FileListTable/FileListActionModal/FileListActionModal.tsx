@@ -1,9 +1,9 @@
 import { ReactElement, useEffect } from "react";
 import { Col, Row, Form } from "antd";
-import Confirm from "prp-components-library/src/components/Confirm";
-import { InputWrapper } from "prp-components-library/src/components/Input/styles";
-import { IConfirmProps } from "prp-components-library/src/components/Confirm/Confirm";
-import Text from "prp-components-library/src/components/Text";
+import Confirm from "@rl/prp-components-library/src/components/Confirm";
+import { InputWrapper } from "@rl/prp-components-library/src/components/Input/styles";
+import { IConfirmProps } from "@rl/prp-components-library/src/components/Confirm/Confirm";
+import Text from "@rl/prp-components-library/src/components/Text";
 import * as CONSTANTS from "../../../../../../constants/exhibits";
 import useInput from "../../../../../../hooks/useInput";
 import ColorStatus from "../../../../../../types/ColorStatus";

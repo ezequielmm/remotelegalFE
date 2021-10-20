@@ -1,11 +1,11 @@
 import React, { useRef, useState, useEffect, useCallback } from "react";
-import Button from "prp-components-library/src/components/Button";
-import Confirm from "prp-components-library/src/components/Confirm";
-import Icon from "prp-components-library/src/components/Icon";
-import Space from "prp-components-library/src/components/Space";
-import { Status } from "prp-components-library/src/components/StatusPill/StatusPill";
-import Table from "prp-components-library/src/components/Table";
-import Title from "prp-components-library/src/components/Title";
+import Button from "@rl/prp-components-library/src/components/Button";
+import Confirm from "@rl/prp-components-library/src/components/Confirm";
+import Icon from "@rl/prp-components-library/src/components/Icon";
+import Space from "@rl/prp-components-library/src/components/Space";
+import { Status } from "@rl/prp-components-library/src/components/StatusPill/StatusPill";
+import Table from "@rl/prp-components-library/src/components/Table";
+import Title from "@rl/prp-components-library/src/components/Title";
 import AddParticipantModal from "./AddParticipantModal";
 import { DepositionModel } from "../../../models";
 import * as CONSTANTS from "../../../constants/activeDepositionDetails";

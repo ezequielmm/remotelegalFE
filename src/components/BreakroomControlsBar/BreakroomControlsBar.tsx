@@ -1,11 +1,11 @@
 import React, { ReactElement, useContext, useEffect, useState } from "react";
 import { LocalAudioTrack, LocalParticipant, LocalVideoTrack } from "twilio-video";
-import Confirm from "prp-components-library/src/components/Confirm";
-import Divider from "prp-components-library/src/components/Divider";
-import Icon from "prp-components-library/src/components/Icon";
-import Space from "prp-components-library/src/components/Space";
-import Tag from "prp-components-library/src/components/Tag";
-import Text from "prp-components-library/src/components/Text";
+import Confirm from "@rl/prp-components-library/src/components/Confirm";
+import Divider from "@rl/prp-components-library/src/components/Divider";
+import Icon from "@rl/prp-components-library/src/components/Icon";
+import Space from "@rl/prp-components-library/src/components/Space";
+import Tag from "@rl/prp-components-library/src/components/Tag";
+import Text from "@rl/prp-components-library/src/components/Text";
 import { Col, Row } from "antd";
 import useParticipantTracks from "../../hooks/InDepo/useParticipantTracks";
 import useTracksStatus from "../../hooks/InDepo/useTracksStatus";

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import Card from "prp-components-library/src/components/Card";
+import Card from "@rl/prp-components-library/src/components/Card";
 import { getREM } from "../../../constants/styles/utils";
 
 export const StyledSummaryLayout = styled.div`

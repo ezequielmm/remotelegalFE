@@ -1,5 +1,5 @@
 import { Story, Meta } from "@storybook/react/types-6-0";
-import Tag from "prp-components-library/src/components/Tag";
+import Tag from "@rl/prp-components-library/src/components/Tag";
 
 import ColorStatus from "../types/ColorStatus";
 

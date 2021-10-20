@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
-import Drawer from "prp-components-library/src/components/Drawer";
-import Space from "prp-components-library/src/components/Space";
+import Drawer from "@rl/prp-components-library/src/components/Drawer";
+import Space from "@rl/prp-components-library/src/components/Space";
 import ExhibitTabs from "./ExhibitTabs";
 import { TabPane, Tabs, ExhibitTabPaneContainer } from "./ExhibitTabs/styles";
 import { StyledLayoutCotainer, StyledLayoutContent, ContainerProps } from "../styles";

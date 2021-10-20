@@ -1,4 +1,4 @@
-import Button from "prp-components-library/src/components/Button";
+import Button from "@rl/prp-components-library/src/components/Button";
 import styled from "styled-components";
 
 export const DeleteWitnessButton = styled(Button)`

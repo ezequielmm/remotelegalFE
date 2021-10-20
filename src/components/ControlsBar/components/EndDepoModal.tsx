@@ -1,5 +1,5 @@
 import React from "react";
-import Confirm from "prp-components-library/src/components/Confirm";
+import Confirm from "@rl/prp-components-library/src/components/Confirm";
 
 const EndDepoModal = ({
     visible,

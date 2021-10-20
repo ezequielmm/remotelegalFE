@@ -1,9 +1,9 @@
 import { MutableRefObject, forwardRef } from "react";
 import styled from "styled-components";
-import Icon from "prp-components-library/src/components/Icon";
-import Space from "prp-components-library/src/components/Space";
-import Text from "prp-components-library/src/components/Text";
-import Title from "prp-components-library/src/components/Title";
+import Icon from "@rl/prp-components-library/src/components/Icon";
+import Space from "@rl/prp-components-library/src/components/Space";
+import Text from "@rl/prp-components-library/src/components/Text";
+import Title from "@rl/prp-components-library/src/components/Title";
 import { theme } from "../../constants/styles/theme";
 import { getREM } from "../../constants/styles/utils";
 import Control from "../Control/Control";

@@ -1,7 +1,7 @@
-import Alert from "prp-components-library/src/components/Alert";
-import Space from "prp-components-library/src/components/Space";
-import Text from "prp-components-library/src/components/Text";
-import Title from "prp-components-library/src/components/Title";
+import Alert from "@rl/prp-components-library/src/components/Alert";
+import Space from "@rl/prp-components-library/src/components/Space";
+import Text from "@rl/prp-components-library/src/components/Text";
+import Title from "@rl/prp-components-library/src/components/Title";
 import { NETWORK_ERROR } from "../../constants/codeSent";
 import { StyledButtonLink } from "./styles";
 import { theme } from "../../constants/styles/theme";

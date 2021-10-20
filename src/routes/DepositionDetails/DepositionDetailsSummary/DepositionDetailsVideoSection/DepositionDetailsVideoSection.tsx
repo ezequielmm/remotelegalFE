@@ -1,7 +1,7 @@
 import { ReactElement } from "react";
-import Icon from "prp-components-library/src/components/Icon";
-import Space from "prp-components-library/src/components/Space";
-import Spinner from "prp-components-library/src/components/Spinner";
+import Icon from "@rl/prp-components-library/src/components/Icon";
+import Space from "@rl/prp-components-library/src/components/Space";
+import Spinner from "@rl/prp-components-library/src/components/Spinner";
 import VideoPlayer from "../../../../components/VideoPlayer";
 import { ReactComponent as TimeIcon } from "../../../../assets/icons/time.svg";
 import { ReactComponent as RecordOnIcon } from "../../../../assets/in-depo/Record.on.svg";

@@ -251,5 +251,9 @@ Good examples:
 To be completed
 
 ## App setup / Tests
-
-To be completed after
+In order to install the dependencies, you must login into CodeArtifact on AWS. Follow these steps:
+1. Set up AWS CLI with your credentials if you haven't yet. [For Mac](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2-mac.html), [for Windows](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2-windows.html) or [Linux](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2-linux.html).
+2. For Mac and Linux, run the following command to login:
+    ```sh yarn-install.sh```
+3. For Windows, run the following command as administrator to login:
+    ```./yarn-install.bat```    

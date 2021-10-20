@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { useParams, Redirect, useHistory } from "react-router";
-import Alert from "prp-components-library/src/components/Alert";
-import Spinner from "prp-components-library/src/components/Spinner";
-import Wizard from "prp-components-library/src/components/Wizard";
+import Alert from "@rl/prp-components-library/src/components/Alert";
+import Spinner from "@rl/prp-components-library/src/components/Spinner";
+import Wizard from "@rl/prp-components-library/src/components/Wizard";
 import { useAuthentication } from "../../hooks/auth";
 import backgroundImage from "../../assets/pre-depo/bg.png";
 import { useCheckUserStatus, useRegisterParticipant, useLogin } from "../../hooks/preJoinDepo/hooks";

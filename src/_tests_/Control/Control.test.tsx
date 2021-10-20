@@ -1,7 +1,7 @@
 import React from "react";
 import { render } from "@testing-library/react";
 import { ThemeProvider } from "styled-components";
-import Icon from "prp-components-library/src/components/Icon";
+import Icon from "@rl/prp-components-library/src/components/Icon";
 import { theme } from "../../constants/styles/theme";
 import Control from "../../components/Control/Control";
 import "@testing-library/jest-dom";

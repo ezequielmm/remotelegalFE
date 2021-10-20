@@ -1,8 +1,8 @@
 import { useContext } from "react";
-import Modal from "prp-components-library/src/components/Modal";
-import Space from "prp-components-library/src/components/Space";
-import Text from "prp-components-library/src/components/Text";
-import Title from "prp-components-library/src/components/Title";
+import Modal from "@rl/prp-components-library/src/components/Modal";
+import Space from "@rl/prp-components-library/src/components/Space";
+import Text from "@rl/prp-components-library/src/components/Text";
+import Title from "@rl/prp-components-library/src/components/Title";
 import backgroundImage from "../../../assets/pre-depo/bg.png";
 import Logo from "../../../components/Logo";
 import { LOADING_DEPOSITION_MESSAGE } from "../../../constants/preJoinDepo";

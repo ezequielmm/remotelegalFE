@@ -1,9 +1,9 @@
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import dayjs from "dayjs";
-import Alert from "prp-components-library/src/components/Alert";
-import Icon from "prp-components-library/src/components/Icon";
-import Space from "prp-components-library/src/components/Space";
-import Text from "prp-components-library/src/components/Text";
+import Alert from "@rl/prp-components-library/src/components/Alert";
+import Icon from "@rl/prp-components-library/src/components/Icon";
+import Space from "@rl/prp-components-library/src/components/Space";
+import Text from "@rl/prp-components-library/src/components/Text";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import AutoSizer from "react-virtualized-auto-sizer";

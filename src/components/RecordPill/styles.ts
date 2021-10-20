@@ -1,5 +1,5 @@
 import styled, { keyframes } from "styled-components";
-import Icon from "prp-components-library/src/components/Icon";
+import Icon from "@rl/prp-components-library/src/components/Icon";
 import { getREM, hexToRGBA, getWeightNumber } from "../../constants/styles/utils";
 import { theme } from "../../constants/styles/theme";
 

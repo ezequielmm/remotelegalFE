@@ -1,6 +1,6 @@
 // also exported from '@storybook/react' if you can deal with breaking changes in 6.1
 import { Story, Meta } from "@storybook/react/types-6-0";
-import Title from "prp-components-library/src/components/Title";
+import Title from "@rl/prp-components-library/src/components/Title";
 
 export default {
     title: "Title",

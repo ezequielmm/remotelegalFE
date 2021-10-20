@@ -1,8 +1,8 @@
 import { useContext } from "react";
 import { Row, Col } from "antd";
-import Icon from "prp-components-library/src/components/Icon";
-import Result from "prp-components-library/src/components/Result";
-import { CustomStatus } from "prp-components-library/src/components/Result/Result";
+import Icon from "@rl/prp-components-library/src/components/Icon";
+import Result from "@rl/prp-components-library/src/components/Result";
+import { CustomStatus } from "@rl/prp-components-library/src/components/Result/Result";
 import { EXHIBIT_TABS, LIVE_EXHIBITS_SUBTITLE, LIVE_EXHIBITS_TITLE } from "../../../../constants/exhibits";
 import { ReactComponent as LiveExhibitsIcon } from "../../../../assets/icons/LiveExhibits-empty.svg";
 import { ExhibitTabPaneSpacer } from "../styles";

@@ -1,11 +1,11 @@
 import { useContext, useEffect, useState } from "react";
 import { Redirect, useHistory, useParams } from "react-router";
-import Button from "prp-components-library/src/components/Button";
-import Modal from "prp-components-library/src/components/Modal";
-import Space from "prp-components-library/src/components/Space";
-import Spinner from "prp-components-library/src/components/Spinner";
-import Text from "prp-components-library/src/components/Text";
-import Title from "prp-components-library/src/components/Title";
+import Button from "@rl/prp-components-library/src/components/Button";
+import Modal from "@rl/prp-components-library/src/components/Modal";
+import Space from "@rl/prp-components-library/src/components/Space";
+import Spinner from "@rl/prp-components-library/src/components/Spinner";
+import Text from "@rl/prp-components-library/src/components/Text";
+import Title from "@rl/prp-components-library/src/components/Title";
 import { DepositionID } from "../../state/types";
 import backgroundImage from "../../assets/pre-depo/bg.png";
 import Logo from "../../components/Logo";

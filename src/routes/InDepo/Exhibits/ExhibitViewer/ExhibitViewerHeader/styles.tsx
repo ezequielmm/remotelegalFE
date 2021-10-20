@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import button from "prp-components-library/src/components/Button";
+import button from "@rl/prp-components-library/src/components/Button";
 
 // eslint-disable-next-line import/prefer-default-export
 export const StyledCloseButton = styled(button)`

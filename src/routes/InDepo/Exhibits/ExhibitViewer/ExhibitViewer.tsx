@@ -1,8 +1,8 @@
 import { Col, Row } from "antd";
 import { ReactElement, useCallback, useContext, useState } from "react";
-import Icon from "prp-components-library/src/components/Icon";
-import Result from "prp-components-library/src/components/Result";
-import Spinner from "prp-components-library/src/components/Spinner";
+import Icon from "@rl/prp-components-library/src/components/Icon";
+import Result from "@rl/prp-components-library/src/components/Result";
+import Spinner from "@rl/prp-components-library/src/components/Spinner";
 import PDFTronViewer from "../../../../components/PDFTronViewer";
 import { useBringAllToMe, useSignedUrl, useStampMediaExhibits } from "../../../../hooks/exhibits/hooks";
 import { StyledExhibitViewerContainer } from "./styles";

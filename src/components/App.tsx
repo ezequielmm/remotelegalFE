@@ -8,7 +8,7 @@ import watchRTC from "@testrtc/watchrtc-sdk";
 import { Route, Router, Switch } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 import { QueryClient, QueryClientProvider } from "react-query";
-import GlobalStyle from "prp-components-library/src/components/GlobalStyle";
+import GlobalStyle from "@rl/prp-components-library/src/components/GlobalStyle";
 import React from "react";
 import { theme } from "../constants/styles/theme";
 import MockInDepo from "../routes/MockInDepo";

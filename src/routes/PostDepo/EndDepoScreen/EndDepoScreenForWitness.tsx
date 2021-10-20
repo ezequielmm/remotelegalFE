@@ -1,8 +1,8 @@
 import React from "react";
 import { Row, Col } from "antd";
-import Card from "prp-components-library/src/components/Card";
-import Result from "prp-components-library/src/components/Result";
-import Space from "prp-components-library/src/components/Space";
+import Card from "@rl/prp-components-library/src/components/Card";
+import Result from "@rl/prp-components-library/src/components/Result";
+import Space from "@rl/prp-components-library/src/components/Space";
 import styled from "styled-components";
 import Logo from "../../../components/Logo";
 import { theme } from "../../../constants/styles/theme";

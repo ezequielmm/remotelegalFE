@@ -1,4 +1,4 @@
-import Text from "prp-components-library/src/components/Text";
+import Text from "@rl/prp-components-library/src/components/Text";
 import useShowTime from "../../hooks/useShowTime";
 import { TimeZones } from "../../models/general";
 import ColorStatus from "../../types/ColorStatus";

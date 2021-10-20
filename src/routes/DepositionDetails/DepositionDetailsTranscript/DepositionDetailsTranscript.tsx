@@ -1,13 +1,13 @@
 import { useEffect, useState, useRef, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { RowSelectionType } from "antd/lib/table/interface.d";
-import Button from "prp-components-library/src/components/Button";
-import Confirm from "prp-components-library/src/components/Confirm";
-import Icon from "prp-components-library/src/components/Icon";
-import Table from "prp-components-library/src/components/Table";
-import ProgressBar from "prp-components-library/src/components/ProgressBar";
-import Space from "prp-components-library/src/components/Space";
-import Title from "prp-components-library/src/components/Title";
+import Button from "@rl/prp-components-library/src/components/Button";
+import Confirm from "@rl/prp-components-library/src/components/Confirm";
+import Icon from "@rl/prp-components-library/src/components/Icon";
+import Table from "@rl/prp-components-library/src/components/Table";
+import ProgressBar from "@rl/prp-components-library/src/components/ProgressBar";
+import Space from "@rl/prp-components-library/src/components/Space";
+import Title from "@rl/prp-components-library/src/components/Title";
 import {
     useTranscriptFileList,
     useUploadFile,

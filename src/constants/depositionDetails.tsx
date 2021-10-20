@@ -1,5 +1,5 @@
 import React from "react";
-import Text from "prp-components-library/src/components/Text";
+import Text from "@rl/prp-components-library/src/components/Text";
 import { formatBytes } from "../helpers/formatBytes";
 import DepositionDetailsSummary from "../routes/DepositionDetails/DepositionDetailsSummary";
 import DepositionDetailsEnteredExhibits from "../routes/DepositionDetails/DepositionDetailsEnteredExhibits";

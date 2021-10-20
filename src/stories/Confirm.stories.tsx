@@ -1,7 +1,7 @@
 import React from "react";
 // also exported from '@storybook/react' if you can deal with breaking changes in 6.1
 import { Story, Meta } from "@storybook/react/types-6-0";
-import Confirm from "prp-components-library/src/components/Confirm";
+import Confirm from "@rl/prp-components-library/src/components/Confirm";
 import * as CONSTANTS from "../constants/otherParticipants";
 
 export default {

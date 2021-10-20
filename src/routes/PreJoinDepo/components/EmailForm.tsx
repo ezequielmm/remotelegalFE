@@ -1,10 +1,10 @@
 import { Form } from "antd";
 import { useState } from "react";
-import Button from "prp-components-library/src/components/Button";
-import Input from "prp-components-library/src/components/Input";
-import Text from "prp-components-library/src/components/Text";
-import { InputWrapper } from "prp-components-library/src/components/Input/styles";
-import Wizard from "prp-components-library/src/components/Wizard";
+import Button from "@rl/prp-components-library/src/components/Button";
+import Input from "@rl/prp-components-library/src/components/Input";
+import Text from "@rl/prp-components-library/src/components/Text";
+import { InputWrapper } from "@rl/prp-components-library/src/components/Input/styles";
+import Wizard from "@rl/prp-components-library/src/components/Wizard";
 import isInvalidEmail from "../../../helpers/isInvalidEmail";
 import ColorStatus from "../../../types/ColorStatus";
 import * as CONSTANTS from "../../../constants/preJoinDepo";

@@ -1,10 +1,10 @@
 import { useContext, useEffect, useState } from "react";
 import { useHistory } from "react-router";
-import Space from "prp-components-library/src/components/Space";
-import Spinner from "prp-components-library/src/components/Spinner";
-import { Status } from "prp-components-library/src/components/StatusPill/StatusPill";
-import Title from "prp-components-library/src/components/Title";
-import Icon from "prp-components-library/src/components/Icon";
+import Space from "@rl/prp-components-library/src/components/Space";
+import Spinner from "@rl/prp-components-library/src/components/Spinner";
+import { Status } from "@rl/prp-components-library/src/components/StatusPill/StatusPill";
+import Title from "@rl/prp-components-library/src/components/Title";
+import Icon from "@rl/prp-components-library/src/components/Icon";
 import CardFetchError from "../../components/CardFetchError";
 import { ReactComponent as BackIcon } from "../../assets/general/Back.svg";
 import { DEPOSITION_DETAILS_TITLE } from "../../constants/activeDepositionDetails";

@@ -1,11 +1,11 @@
 import { useContext, useEffect, useState } from "react";
 import { Row, Col } from "antd";
-import Badge from "prp-components-library/src/components/Badge";
-import Icon from "prp-components-library/src/components/Icon";
-import Result from "prp-components-library/src/components/Result";
-import { CustomStatus } from "prp-components-library/src/components/Result/Result";
-import Space from "prp-components-library/src/components/Space";
-import Text from "prp-components-library/src/components/Text";
+import Badge from "@rl/prp-components-library/src/components/Badge";
+import Icon from "@rl/prp-components-library/src/components/Icon";
+import Result from "@rl/prp-components-library/src/components/Result";
+import { CustomStatus } from "@rl/prp-components-library/src/components/Result/Result";
+import Space from "@rl/prp-components-library/src/components/Space";
+import Text from "@rl/prp-components-library/src/components/Text";
 
 import {
     ENTERED_EXHIBITS_EMPTY_STATE_SUBTITLE,

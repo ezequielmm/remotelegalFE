@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import Space from "prp-components-library/src/components/Space";
+import Space from "@rl/prp-components-library/src/components/Space";
 import { VariableSizeList as RealTimeContainer } from "react-window";
 import { getPX, getREM, hexToRGBA } from "../../../constants/styles/utils";
 

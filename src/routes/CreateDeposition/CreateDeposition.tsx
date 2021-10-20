@@ -1,12 +1,12 @@
 import React, { useRef, useState } from "react";
 import { Form } from "antd";
-import Button from "prp-components-library/src/components/Button";
-import Space from "prp-components-library/src/components/Space";
-import Title from "prp-components-library/src/components/Title";
+import Button from "@rl/prp-components-library/src/components/Button";
+import Space from "@rl/prp-components-library/src/components/Space";
+import Title from "@rl/prp-components-library/src/components/Title";
 import { useHistory } from "react-router";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { FormProvider, useForm } from "react-hook-form";
-import StyledAlert from "prp-components-library/src/components/Alert/styles";
+import StyledAlert from "@rl/prp-components-library/src/components/Alert/styles";
 import CaseSection from "./CaseSection";
 import WitnessesSection from "./WitnessesSection";
 import DetailsSection from "./DetailsSection";

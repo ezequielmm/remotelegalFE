@@ -1,9 +1,9 @@
 import React from "react";
 import { Row, Col } from "antd";
-import Button from "prp-components-library/src/components/Button";
-import Card from "prp-components-library/src/components/Card";
-import Result from "prp-components-library/src/components/Result";
-import { CustomStatus } from "prp-components-library/src/components/Result/Result";
+import Button from "@rl/prp-components-library/src/components/Button";
+import Card from "@rl/prp-components-library/src/components/Card";
+import Result from "@rl/prp-components-library/src/components/Result";
+import { CustomStatus } from "@rl/prp-components-library/src/components/Result/Result";
 import { StyledInDepoContainer } from "../../routes/InDepo/styles";
 
 const ErrorScreen = ({

@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, useCallback, useRef, useEffect } from "react";
-import Alert from "prp-components-library/src/components/Alert";
+import Alert from "@rl/prp-components-library/src/components/Alert";
 import styled, { ThemeProvider } from "styled-components";
 import { theme } from "../constants/styles/theme";
 import { getREM } from "../constants/styles/utils";

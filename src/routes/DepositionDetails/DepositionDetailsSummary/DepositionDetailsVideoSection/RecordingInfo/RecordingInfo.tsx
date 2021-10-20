@@ -1,7 +1,7 @@
 import React from "react";
-import Icon from "prp-components-library/src/components/Icon";
-import Text from "prp-components-library/src/components/Text";
-import { ITextProps } from "prp-components-library/src/components/Text/Text";
+import Icon from "@rl/prp-components-library/src/components/Icon";
+import Text from "@rl/prp-components-library/src/components/Text";
+import { ITextProps } from "@rl/prp-components-library/src/components/Text/Text";
 import ColorStatus from "../../../../../types/ColorStatus";
 import { RecordingInfoContainer, RecordingInfoTextsContainer } from "./styles";
 

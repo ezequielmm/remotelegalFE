@@ -11,7 +11,7 @@ import {
     RemoteVideoTrack,
     VideoTrack,
 } from "twilio-video";
-import Icon from "prp-components-library/src/components/Icon";
+import Icon from "@rl/prp-components-library/src/components/Icon";
 import { ReactComponent as UnmuteIcon } from "../../assets/in-depo/Unmute.svg";
 import changeSpeakers from "../../helpers/changeSpeakers";
 import trackpubsToTracks from "../../helpers/trackPubsToTracks";

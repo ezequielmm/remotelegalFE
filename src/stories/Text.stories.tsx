@@ -1,6 +1,6 @@
 // also exported from '@storybook/react' if you can deal with breaking changes in 6.1
 import { Story, Meta } from "@storybook/react/types-6-0";
-import Text from "prp-components-library/src/components/Text";
+import Text from "@rl/prp-components-library/src/components/Text";
 import ColorStatus from "../types/ColorStatus";
 
 export default {

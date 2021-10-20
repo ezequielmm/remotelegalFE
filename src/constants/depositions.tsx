@@ -1,11 +1,11 @@
 import { History } from "history";
 import React from "react";
 import { Tooltip } from "antd";
-import Button from "prp-components-library/src/components/Button";
-import Space from "prp-components-library/src/components/Space";
-import Text from "prp-components-library/src/components/Text";
-import StatusPill from "prp-components-library/src/components/StatusPill";
-import { Status } from "prp-components-library/src/components/StatusPill/StatusPill";
+import Button from "@rl/prp-components-library/src/components/Button";
+import Space from "@rl/prp-components-library/src/components/Space";
+import Text from "@rl/prp-components-library/src/components/Text";
+import StatusPill from "@rl/prp-components-library/src/components/StatusPill";
+import { Status } from "@rl/prp-components-library/src/components/StatusPill/StatusPill";
 import { MappedDeposition } from "../routes/MyDepositions/MyDepositions";
 
 export interface TableColumn {

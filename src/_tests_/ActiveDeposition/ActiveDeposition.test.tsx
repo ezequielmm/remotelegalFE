@@ -3,7 +3,7 @@ import { createMemoryHistory } from "history";
 import userEvent from "@testing-library/user-event";
 import { Route, Router, Switch } from "react-router";
 import dayjs from "dayjs";
-import { Status } from "prp-components-library/src/components/StatusPill/StatusPill";
+import { Status } from "@rl/prp-components-library/src/components/StatusPill/StatusPill";
 import timezone from "dayjs/plugin/timezone";
 import Do from "dayjs/plugin/advancedFormat";
 import { wait } from "../../helpers/wait";

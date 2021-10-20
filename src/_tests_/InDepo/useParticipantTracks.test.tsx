@@ -1,5 +1,5 @@
 import { renderHook } from "@testing-library/react-hooks";
-import Icon from "prp-components-library/src/components/Icon";
+import Icon from "@rl/prp-components-library/src/components/Icon";
 import changeSpeakers from "../../helpers/changeSpeakers";
 import useParticipantTracks from "../../hooks/InDepo/useParticipantTracks";
 import getParticipant from "../mocks/participant";

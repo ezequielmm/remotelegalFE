@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 import { Form, Row } from "antd";
-import Button from "prp-components-library/src/components/Button";
-import Modal from "prp-components-library/src/components/Modal";
-import { InputWrapper } from "prp-components-library/src/components/Input/styles";
-import Select from "prp-components-library/src/components/Select";
-import Space from "prp-components-library/src/components/Space";
-import Title from "prp-components-library/src/components/Title";
+import Button from "@rl/prp-components-library/src/components/Button";
+import Modal from "@rl/prp-components-library/src/components/Modal";
+import { InputWrapper } from "@rl/prp-components-library/src/components/Input/styles";
+import Select from "@rl/prp-components-library/src/components/Select";
+import Space from "@rl/prp-components-library/src/components/Space";
+import Title from "@rl/prp-components-library/src/components/Title";
 import * as CONSTANTS from "../../../../constants/editParticipantRole";
 import normalizedRoles, { ROLES } from "../../../../constants/roles";
 import useEditParticipantRole from "../../../../hooks/useEditParticipantRole";

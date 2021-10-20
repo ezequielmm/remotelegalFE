@@ -1,9 +1,9 @@
 import { ReactElement, useContext, useState } from "react";
 import { Tooltip } from "antd";
-import Button from "prp-components-library/src/components/Button";
-import Icon from "prp-components-library/src/components/Icon";
-import Space from "prp-components-library/src/components/Space";
-import Text from "prp-components-library/src/components/Text";
+import Button from "@rl/prp-components-library/src/components/Button";
+import Icon from "@rl/prp-components-library/src/components/Icon";
+import Space from "@rl/prp-components-library/src/components/Space";
+import Text from "@rl/prp-components-library/src/components/Text";
 import styled from "styled-components";
 import { StyledExhibitViewerHeader } from "../styles";
 import { ReactComponent as backIcon } from "../../../../../assets/in-depo/back.svg";
