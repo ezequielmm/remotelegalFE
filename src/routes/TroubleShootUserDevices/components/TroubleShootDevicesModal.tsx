@@ -157,6 +157,12 @@ const TroubleShootDevicesModal = ({
     }, [visible, shouldUseCurrentStream, loadUserStreams]);
 
     useEffect(() => {
+        if (!options) {
+            loadUserStreams(null, null);
+        }
+    }, [options, loadUserStreams]);
+
+    useEffect(() => {
         if (visible && audioTracks.length && videoTracks.length) {
             const audioMediaTracks = getMediaTracks(audioTracks, "audio");
             const videoMediaTracks = getMediaTracks(videoTracks, "video");

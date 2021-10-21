@@ -32,6 +32,7 @@ beforeEach(() => {
 });
 (global.navigator as any).mediaDevices = {
     getUserMedia: jest.fn().mockResolvedValue(true),
+    enumerateDevices: jest.fn().mockResolvedValue([]),
 };
 
 test("Exhibits is opened when exhibits Open is true", async () => {
