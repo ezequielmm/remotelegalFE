@@ -3319,7 +3319,7 @@
     prop-types "^15.6.1"
     react-lifecycles-compat "^3.0.4"
 
-"@rl/prp-components-library@^0.2.0":
+"@rl/prp-components-library@^0.2.1":
   version "0.2.2"
   resolved "https://rl-domain-747865543072.d.codeartifact.us-east-1.amazonaws.com:443/npm/rl-dev-fe/@rl/prp-components-library/-/prp-components-library-0.2.2.tgz#c20af6894975139404804b043200769f0120b1af"
   integrity sha512-djQsQB//ob94uQNA0gNL1IJIXmS5hsbg6FhFXvE/904HEbs9E9rQmZOyT1BMgl4sNlhjUdZjyMAj5xbr0WQsHw==
